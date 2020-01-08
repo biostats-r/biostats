@@ -1,2 +1,2 @@
 # biostats
-Repository for shared pages at biostats.uib.no
+Repository for Rmarkdown-based pages and posts published at http://biostats.uib.no
