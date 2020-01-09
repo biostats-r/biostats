@@ -1,0 +1,61 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: one-sample analysis? For what..?
+# author: jonathan
+# revised: 8/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/1-sample/for-what.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/1-sample/for-what.Rmd")
+```
+
+One does not need to have more than one single group to perform statistical tests! In fact there is a (short) list of tests used to verify hypotheses based on one group. Here are a few examples.
+
+Many common statistical tests ( [Student’s t-test](http://biostats.w.uib.no/comparing-two-means-t-test/){target="_blank"}, [ANOVA](http://biostats.w.uib.no/which-anova-one-way-two-way-repeated-measures/){target="_blank"}) assume that the data originate from a normal distribution. Very often, you will be forced to **check for normality of distribution** in all the tested groups prior to performing the test of choice. The [Shapiro-Wilk test](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"} checks this for you! It is performed on one group at a time and is thus one of the first one-sample statistical tests that you will learn to use.
+
+There are a few other one-sample tests which are used to **compare the known mean of a population to the mean of a specific subpopulation**. You may thus check whether a group of individuals exhibit the same properties or behaviour as the population it originates from just by comparing the mean and standard deviation of that subgroup to the mean (and, if available, the standard deviation) of the population.
+
+Not sure to understand the point? Let’s take an example:
+
+> During the course of the year 2019, a university teacher had the feeling that his students were particularly clever and efficient. Wondering whether this was “just a feeling” or a fact, he organized an IQ test and obtained the score of 40 of these students. Knowing only the average IQ of the students at that precise university (which is 120), he performed a one-sample test to verify whether the average IQ score of his group of “clever students” differed from 120.
+
+Let's now have a look at the IQ score. For that we use the function `stat.desc()` from the package `pastecs` introduced [here](https://biostats.w.uib.no/9-pastecs/){target="_blank"}. First, we load the package and tune the display of decimals:
+
+```{r activate-package, warning=FALSE}
+library(pastecs)
+options(scipen="100")
+options(digits="2")
+```
+<br />
+Now we process the IQ scores:
+```{r pastecs}
+scores <- c(123, 135, 142, 127, 117, 134, 123, 133, 111, 130, 113, 118, 105, 126, 125, 122, 147, 106, 117, 129, 144, 112, 126, 140, 129, 115, 118, 129, 125, 137, 135, 138, 134, 124, 128, 135, 124, 137, 121, 120)
+stat.desc(scores)
+```
+As you may read, the average IQ score in the group of 40 students is 126.35, which is above the university average of 120. 
+<br /><br />
+Looking at the spread of the data in the table above and the corresponding boxplot below, some individuals in the group are high on the IQ scale; most of the IQR is also above the reference IQ of 120. But there are clearly individuals below the reference IQ of 120 too.
+```{r boxplot}
+boxplot(scores, xlab = "group", ylab = "IQ score")
+```
+<br /><br/>
+Note also that the distribution of individual IQ scores seems “rather normal” looking at the histogram:
+```{r histogram}
+hist(scores)
+```
+
+Is this enough to declare that these 40 students are "better than the rest"? To answer that we definitely need a test. Two rather similar tests are available to us: the [one-sample z-test](https://biostats.w.uib.no/4-run-a-one-sample-z-test/){target="_blank"} and the [one-sample t-test](https://biostats.w.uib.no/3-run-a-one-sample-t-test/){target="_blank"}. To choose the right test, read [this](https://biostats.w.uib.no/2-lets-choose-and-run-a-one-sample-test/){target="_blank"}. finally, if you do not have enough patience, you can read the answer [there](https://biostats.w.uib.no/5-so-what-about-our-example/){target="_blank"}.
+
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
