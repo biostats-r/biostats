@@ -1,0 +1,54 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: comparing two proportions - which test
+# author: jonathan
+# revised: 10/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/2-sample/student.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/2-sample/student.Rmd")
+library(ggplot2)
+Location_A <- c(6.3, 6.3, 8.1, 8.9, 11.6, 10.4, 6.8)
+Location_B <- c(6.9, 7.7, 7.9, 9.1, 11.3,  11.8, 14.2)
+temperature <- c(Location_A, Location_B)
+location <- rep(c("Location_A", "Location_B"), each =7)
+df <- data.frame(location, temperature)
+```
+Student’s t-test (also known as Welch two-sample test) requires that samples are independent, of equal variance and normally distributed. The [Shapiro-Wilk test](http://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"} may thus be employed to check for normality prior to performing the comparison; [Fisher’s F test](http://biostats.w.uib.no/1-comparing-two-variances/){target="_blank"} will help checking for equal variances.
+
+In Student’s t-test, the null hypothesis `H0` states that the means of the two samples are equal.
+
+In the following example, we’ll compare the samples `Location_A` and `Location_B`. These 2 samples contain the daily temperatures recorded during the first week of May 2015 at two distinct locations near Bergen. 
+```{r boxplot, echo=FALSE}
+ggplot(df, aes(location, temperature)) +
+  geom_boxplot()
+```
+<br /><br />
+As you may see, the samples and their medians appear to differ slightly, but the respective spreads of the samples seem similar. So, are the samples different? Let’s proceed with verifying the assumptions of normality and equal variance:
+```{r assumptions}
+shapiro.test(Location_A)
+shapiro.test(Location_B)
+var.test(Location_A, Location_B)
+```
+According to the output from Shapiro-Wilk test, both samples are likely to come from normal distributions. Looking at Fisher’s F test, the variances of the groups are equal. All assumptions for running Student’s t-test are respected.
+
+Satisfied? Let’s keep going then. Now it is (finally) time to perform Student’s t test:
+```{r student}
+t.test(Location_A, Location_B)
+```
+The p-value that results from the test is *greater* than 0.05 (the typical value of α); therefore, the null hypothesis `H0` (the means of temperature observed at the locations A and B are not different) cannot be rejected.
+
+
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
