@@ -1,1 +1,71 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
 
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: comparing two proportions - Student's paired t-test
+# author: jonathan
+# revised: 13/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/2-sample/student-paired.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/2-sample/student-paired.Rmd")
+date <- c(5:15)
+GFI <- c(8.2, 6.0, 6.1,	4.9, 4.8, 6.7, 7.5, 8.0, 7.2, 5.7, 3.5)
+Yr <-  c(8.6, 6.6, 6.6, 5.5, 5.4, 6.8, 7.9, 8.4, 7.3, 6.0, 4.2)
+data.source <- rep(c("GFI", "Yr"), each = 11)
+temperature <- c(GFI, Yr)
+df <- data.frame(date, data.source, temperature)
+library(ggplot2)
+```
+Student’s paired t-test may be used to compare the means of two dependent samples. As for [Student’s t-test for independent samples](http://biostats.w.uib.no/comparing-two-means-t-test/){target="_blank"}, the assumptions are that the samples are normally distributed, and have equal variances.
+
+The function in R is `t.test(x, y, paired = TRUE)` where `x` and `y` are the vectors containing the samples and `paired = TRUE` the argument indicating that samples are dependent (note that `paired = FALSE` is the argument by default in `t.test()`, which explains why one does not need to (but can) write `paired = FALSE` whenever running the test on independent samples).
+
+Let’s take an example. We have access to weather records for the period April 5-15th, 2016 at Florida, close to Bergen City Centre. Daily mean temperatures were recorded by two stations relatively close to each other. The data from the first station is provided by [GFI](https://veret.gfi.uib.no/){target="_blank"} and data from the second station is provided by [Yr](https://www.yr.no/){target="_blank"}. Our whole data set thus consists of *pairs of measurements* for the same location and the same period. We may thus run Student’s paired t-test, but we still need to check for normal distribution ([Shapiro-Wilk test](http://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"}) and equal variances ([Fisher’s F test](http://biostats.w.uib.no/1-comparing-two-variances/){target="_blank"}):
+```{r normality-variance, echo=FALSE}
+shapiro.test(GFI)
+shapiro.test(Yr)
+var.test(GFI, Yr)
+
+```
+All p-values are greater than 0.005; the samples thus have equal variances and originate from a normal distribution.
+
+Let's visualize the data with a boxplot:
+```{r boxplot, echo=FALSE}
+ggplot(df, aes(data.source, temperature)) +
+  geom_boxplot()
+```
+<br /><br />
+Here, the medians are relatively close to each other but not equal, and the spread is rather similar. 
+Let's look at the data with a line plot:
+```{r lineplot, echo=FALSE}
+ggplot(df, aes(date, temperature, color = data.source)) +
+  geom_line(size=1.25) +
+  geom_point(size=2.5)
+```
+<br /><br />
+It seems like there is a rather small, but constant gap between the lines. Is that enough to declare that the 2 samples are significantly different? 
+
+Let's test it with Student's paired t-test:
+
+```{r student, warning=FALSE}
+t.test(GFI, Yr, paired = TRUE)
+```
+So, the test results in a p-value *less* than 0.05, thus indicating that the null hypothesis (the sample means are not different) may be rejected. 
+
+Note: If you wonder whether the argument `paired = TRUE` makes a difference or not, let's try the test without it:
+```{r student2, warning=FALSE}
+t.test(GFI, Yr)
+```
+This time, the p-value is *greater* than 0.05 and `H0` cannot be rejected anymore... So it is clearly important to know about the dependency of your samples; the conclusion of the test relies on that.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
