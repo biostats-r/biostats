@@ -38,21 +38,21 @@ location <- as.factor(c(rep("ForestA",10), rep("ForestB",10), rep("ForestC",10),
 year <- as.factor(c(rep("2005",30), rep("2015",30)))
 my.dataframe <- data.frame(size,location,year)
 ```
-
+<br/><br/>
 The assumptions are globally the same as for one-way ANOVA:
 
 + **independence of observations** (each individual is represented by 1 entry/measurement ONLY)
-+ **normality of distribution** (to be tested for each group, for example with the Shapiro-Wilk test)
-+ **homogeneity of variance** (to be tested with, for example, [Levene’s test](https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/){target="_blank"}).
++ **normality of distribution** (to be tested for each group, for example with the [Shapiro-Wilk test](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"})
++ **homogeneity of variance** (to be tested with, for example, [Levene's test](https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/){target="_blank"}).
  
 
-We start by visualizing the data with boxplots. Since we have several factors, we’ll group some of the boxes according to these factors.
+We start by visualizing the data with boxplots. Since we have several factors, we'll group some of the boxes according to these factors.
 
 ```{r boxplot}
 ggplot(my.dataframe, aes(x = location, y = size, fill = year)) +
   geom_boxplot()
 ```
-
+<br/><br/>
 Before going further, we need to check for normality of distribution with the [Shapiro-Wilk test](http://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"}. Since we have 6 groups to check based on two parameters in our dataframe, the syntax is a bit more complicated than usual. For each group , we need to restrict the test to the data matching both a specific `location` and a specific `year`. We write it like this:
 
 ```{r normality}
@@ -67,7 +67,7 @@ shapiro.test(my.dataframe$size[location=="ForestC" & year=="2015"])
 None of the tests shows a p-value under 0.05. The null hypothesis stating that the data in the groups are normally distributed is thus accepted.
 <br/><br/>
 
-Let’s go on with [Levene’s test](https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/){target="_blank"} for homogeneity of variance. Do not forget to activate the package `car` prior to the test otherwise `“Error: could not find function “leveneTest”` will be the only answer that you will get:
+Let's go on with [Levene's test](https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/){target="_blank"} for homogeneity of variance. Do not forget to activate the package `car` prior to the test otherwise `"Error: could not find function "leveneTest"` will be the only answer that you will get:
 
 
 ```{r variances}
@@ -78,7 +78,7 @@ The p-value is largely greater than 0.05. We thus assume that variances are equa
 
 <br/><br/> 
 
-#### Let’s go for the ANOVA test!
+#### Let's go for the ANOVA test!
 
 We use the functions `lm()` and `anova()` the following way:
 
@@ -90,7 +90,7 @@ anova(results.lm)
 The table above shows the F value and p-value for each of the main effects, `location` and `year`, as well as for the interaction `location:year`. It also conveniently indicates with stars where significance levels are reached. For instance, `size` is significantly affected by the factor `location`, and the p-value is very small (p<0.001, ***).
 <br/><br/>
 
-**But this does not tell us anything about the groups which means are significantly different…**
+**But this does not tell us anything about the groups which means are significantly different.**
 
 Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests such as [Tukey HSD](http://biostats.w.uib.no/post-hoc-tests-tukey-hsd/){target="_blank"}.
 
