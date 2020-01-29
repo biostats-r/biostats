@@ -9,90 +9,71 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: One-way ANOVA
 # author: jonathan
-# revised: 16/1/2020 
+# revised: 29/1/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/1way.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/1way.Rmd")
-size <- c(25,22,28,24,26,24,22,21,23,25,26,30,25,24,21,27,28,23,25,24,20,22,24,23,22,24,20,19,21,22)
-location <- as.factor(c(rep("ForestA",10), rep("ForestB",10), rep("ForestC",10)))
-my.dataframe <- data.frame(size,location)
 library(ggplot2)
 
 ```
 
-One-way ANOVA is a parametric test designed to **compare the means of three or more groups**. The null hypothesis states that the means of all groups to be tested are equal. As usual, the test will return a p-value in the end, and you will be able to decide whether or not to reject the null hypothesis depending on this p-value.
-
- 
-
-Assumptions are:
-
-+ **independence** of observations (each individual is represented by 1 entry/measurement ONLY)
-+ **normality of distribution** (to be tested for each group, for example with the Shapiro-Wilk test)
-+ **homogeneity of variance** (to be tested with, for example, Levene’s test).
- 
+One-way ANOVA is a parametric test designed to **compare the means of three or more groups**. The null hypothesis `H0` states that the means of all groups to be tested are equal. As usual, the test will return a p-value in the end, and you will be able to decide whether or not to reject the null hypothesis depending on this p-value.
 
 The function to use in R is `lm()` followed by `anova()`. This option is used to fit a linear model and will work in virtually all cases. 
 
-Let’s take an example. Here, let’s say that we want to check whether the average size of blue ground beetles (*Carabus intricatus*) differs depending on their location. We consider 3 different locations, for example 3 forests beautifully named A, B and C. In each location, we measure the size (in millimeters) of 10 individuals.
+Letâs take an example. Here, letâs say that we want to check whether the average size of blue ground beetles (*Carabus intricatus*) differs depending on their location. We consider 3 different locations, for example 3 forests beautifully named `A`, `B` and `C`. In each location, we measure the size (in millimeters) of 10 individuals.
 
 To create the corresponding dataframe in R, use the following code:
-```{r dataframe, eval=FALSE}
+```{r dataframe}
+# response variable
 size <- c(25,22,28,24,26,24,22,21,23,25,26,30,25,24,21,27,28,23,25,24,20,22,24,23,22,24,20,19,21,22)
+
+# predictor variable
 location <- as.factor(c(rep("ForestA",10), rep("ForestB",10), rep("ForestC",10)))
+
+# dataframe
 my.dataframe <- data.frame(size,location)
 ```
-
-It is always nice and useful to get an overview of the whole dataset, so let’s plot the data:
+<br/><br/> 
+It is always nice and useful to start with visualizing the whole dataset, so letâs plot the data:
 ```{r boxplot, echo=FALSE}
 ggplot(my.dataframe, aes(x = location, y = size)) +
   geom_boxplot()
 ```
+<br/><br/> 
+
+### Assumptions
+
+The assumptions are:
+
++ **independence of observations** (each individual is represented by 1 entry/measurement ONLY)
++ **normality of distribution** (to be tested for each group, for example with the [Shapiro-Wilk test](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"})
++ **homogeneity of variance** (to be tested with, for example, [Levene's test](https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/){target="_blank"})
++ groups contain [**no outliers**](http://biostats.w.uib.no/finding-outliers/){target="_blank"}.
+
 <br/><br/>
 
-Now we need to check the assumptions of *normality of distribution* and *homogeneity of variance*. We thus run the [Shapiro-Wilk test](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"} on each group and then [Levene’s test](https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/){target="_blank"} (for which you will need to load/activate the package `car` via the command `library(car)`).
-```{r normality variance}
-library(car)
-shapiro.test(my.dataframe$size[location=="ForestA"])
-shapiro.test(my.dataframe$size[location=="ForestB"])
-shapiro.test(my.dataframe$size[location=="ForestC"])
-leveneTest(size~location, data=my.dataframe, center=mean)
-```
+### Running the test
 
-So, each of the 3 groups (`ForestA`, `ForestB` and `ForestC`) is assumed to come from normal distribution since the p-value of the Shapiro-Wilk test is greater than 0.05; additionally, variances are not different according to Levene’s test (p-value greater than 0.05).
-
-Note: if you are a bit confused about the way data/groups are retrieved for running the Shapiro-Wilk test, here is a quick explanation. Let’s consider the group ForestA: we need to tell the function to retrieve all size data located in the object `my.dataframe` (hence `my.dataframe$size`) but we need to restrict the selection to data matching the criteria ForestA only (hence `[location==ForestA]`). Putting everything together, we write `my.dataframe$size[location=="ForestA"]` inside `shapiro.test()`. 
-
- 
-<br/><br/>
-
-#### Running the ANOVA with `lm()`
-
-The syntax is `lm(variable ~ groups, data=dataframe)` where `variable` is the vector that contain the response variable, `groups` is the vector that contains the grouping variable or factor (which categorizes the observations) and `dataframe` the name of the dataframe that contains the data. We first need to fit a linear model with `lm()` and then we store the results in the object `results.lm` and display them out using `anova()`:
+The syntax is `lm(response ~ predictor, data = dataframe)` where `response` is the vector that contain the response variable, `predictor` is the vector that contains the predictor variable or factor (which categorizes the observations) and `dataframe` the name of the dataframe that contains the data. 
+We first need to fit a linear model with `lm()` and then we store the results in the object `results.lm`. We thus display the result of the analysis using `anova()`:
 ```{r lm}
 results.lm <- lm(size~location, data=my.dataframe)
 anova(results.lm)
 ```
-This output provides you with the F-value (7.1101) and the corresponding p-value (0.003307). The hypothesis stating that the means of the groups are equal is thus to be rejected.
+This output provides you with the F-value (7.1101) and the corresponding p-value (0.003307). The hypothesis `H0` stating that the means of the groups are equal is thus to be rejected.
 
 <br/><br/>
 
-#### But this does not tell us anything about the groups which means are significantly different…
+** But this does not tell us anything about the groups which means are significantly differentâ¦**
 
-Indeed, the ANOVA needs to be followed by another test if we want to check which of the groups are different from the others. For that we’ll need a *post-hoc* test, possibly a [pairwise t-test](http://biostats.w.uib.no/post-hoc-tests-pairwise-comparisons/){target="_blank"} or a [Tukey HSD](http://biostats.w.uib.no/post-hoc-tests-tukey-hsd/){target="_blank"}.
+Indeed, the ANOVA needs to be followed by another test if we want to check which of the groups are different from the others. For that weâll need a *post-hoc* test, possibly a [pairwise t-test](http://biostats.w.uib.no/post-hoc-tests-pairwise-comparisons/){target="_blank"} or a [Tukey HSD](http://biostats.w.uib.no/post-hoc-tests-tukey-hsd/){target="_blank"}.
 
 <br/><br/>
 
-#### What to do if the assumption of normality is not met?
+### Alternative
 
-In this case you may simply apply the non-parametric [Kruskal-Wallis test](http://biostats.w.uib.no/comparing-two-means-kruskal-wallis-test/){target="_blank"}.
-
-The syntax is the following:
-
-```{r kruskalwallis}
-kruskal.test(size~location, data=my.dataframe)
-```
-Again, the test shows that the null hypothesis may be rejected. There are differences between the group means.
-
+The non-parametric [Kruskal-Wallis test](http://biostats.w.uib.no/comparing-two-means-kruskal-wallis-test/){target="_blank"} is a good alternative to the one-way ANOVA when the assumption of normality of distribution is violated.
 
 <br/><br/>
 
