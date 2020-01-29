@@ -29,9 +29,11 @@ Letâs take an example where 5 rats are weighed 4 times with intervals of 4 
 # response variable
 rat.weight <- c(164,164,158,159,155,220,230,226,227,222,261,275,264,280,272,306,326,320,330,312)
 
-# predictor variables
-rat.ID <- as.factor(rep(c("rat1","rat2","rat3", "rat4", "rat5"),4))
+# predictor variable
 time.point <- as.factor(c(rep("week08",5), rep("week12",5), rep("week16",5), rep("week20",5)))
+
+# individual ID
+rat.ID <- as.factor(rep(c("rat1","rat2","rat3", "rat4", "rat5"),4))
 
 # dataframe
 my.dataframe <- data.frame(rat.ID,time.point,rat.weight)
@@ -56,7 +58,7 @@ Assumptions are:
 + each individual is represented in the form of a **measurement in each of the tested groups** (there cannot be any missing value),
 + **normality** of distribution (use the  [Shapiro-Wilk](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"}),
 + **sphericity**, which means that equality of variance is verified when comparing any two groups (all possible pairs of groups) in the experimental design (commonly checked via [Mauchly’s test](https://biostats.w.uib.no/test-for-sphericity-mauchly-test/){target="_blank"}), 
-+ groups contain [**no outliers**](http://biostats.w.uib.no/finding-outliers/){target="_blank"}.
++ groups contain [**no outliers**](https://biostats.w.uib.no/finding-outliers/){target="_blank"}.
 
 <br/><br/>
 
@@ -70,7 +72,7 @@ library(nlme)
 ```
 <br/><br/>
 
-The following code fits the linear mixed model. The syntax is `lme(response ~ predictor, data = my.dataframe)`, and we must not forget to add the argument `random=~1|rat.ID` to link the repeated measurements to the corresponding individual in `rat.ID`:
+The following code fits the linear mixed model. The syntax is `lme(response ~ predictor, data = my.dataframe)`, and we must not forget to add the argument `random=~1|rat.ID` to link the repeated measurements to the corresponding individuals in `rat.ID`:
 
 ```{r lme}
 results.lme <- lme(rat.weight ~ time.point, random=~1|rat.ID, data=my.dataframe)
