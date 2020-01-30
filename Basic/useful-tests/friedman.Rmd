@@ -1,1 +1,71 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
 
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: Friedman test
+# author: jonathan
+# revised: 30/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/useful-tests/friedman.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/useful-tests/friedman.Rmd")
+library(ggplot2)
+```
+
+**Friedman rank sum test (or simply Friedman test)** is a non-parametric test that may be used as an alternative to [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"} when, for example, you suspect or you know that the assumption of normality of distribution is not met. 
+
+In this test, the null hypothesis `H0` states that there is no difference between the means of the groups.
+
+The function to use in R is `friedman.test()`. It is possible to use the following two syntaxes `friedman.test(response, predictor-group, predictor-block)` and `friedman.test(response ~ predictor-group | predictor-block)`. In both cases, `response` is response variable, `predictor-group` is the predictor variable corresponding to the grouping factor and `predictor-block` is the predictor variable corresponding to the blocking factor. Note that the position of the variables in the function is important; inverting `predictor-group` and `predictor-block` will most likely result in a different test outcome.  
+
+Let's take an example where 5 rats are weighed 4 times with intervals of 4 weeks (week8 to 20). Here is the code for the dataframe:
+
+```{r dataframe}
+# response variable
+rat.weight <- c(164,164,158,159,155,220,230,226,227,222,261,275,264,280,272,306,326,320,330,312)
+
+# predictor variables
+rat.ID <- as.factor(rep(c("rat1", "rat2", "rat3", "rat4", "rat5"),4))
+time.point <- as.factor(c(rep("week08",5), rep("week12",5), rep("week16",5), rep("week20",5)))
+
+# dataframe
+my.dataframe <- data.frame(rat.ID,time.point,rat.weight)
+```
+<br/><br/>
+
+Let's visualize the data with a multiple line chart:
+```{r plot, echo=FALSE}
+ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, color = rat.ID)) +
+  geom_line(size = 1.25) +
+  geom_point(size = 2) +
+  scale_color_viridis_d()
+```
+<br/><br/>
+
+### Running the test
+
+In such an experimental design where subjects (rats) are being tested in a time series, the time points are the groups and the subjects are the blocks. We thus write:
+```{r friedman}
+friedman.test(rat.weight, time.point, rat.ID)
+```
+
+The null hypothesis `H0` stating that there is no difference between the means of the groups is rejected due to the low p-value.
+
+As mentioned earlier, there is an alternative syntax for the function. Here is the code:
+```{r friedman2}
+friedman.test(rat.weight ~ time.point | rat.ID)
+```
+As you see, the result is identical.
+
+
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
