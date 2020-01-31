@@ -7,15 +7,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/post-hoc tests/tukeyHSD.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/post-hoc tests/tukeyHSD.Rmd")
+library(multcomp)
 ```
 
 **Tukey’s Honest Significant Difference (HSD)** test is a *post hoc* test commonly used to assess the significance of differences between pairs of group means. Tukey HSD is often a follow up of [one-way ANOVA](https://biostats.w.uib.no/one-way-anova/){target="_blank"}, [factorial ANOVA](https://biostats.w.uib.no/factorial-design/){target="_blank"}, when the F-test has revealed the existence of a significant difference between some of the tested groups.
 
 The null hypothesis `H0` states that the means of the tested groups are equal. 
 
-The function is `TukeyHSD()` and the syntax is `TukeyHSD(aov(response ~ predictor), conf.level)` where `response` is the response variable, `predictor` is the predictor variable, and `conf.level` is the confidence level that you want to define (usually fixed at 0.95).
+Here we will described 2 alternatives for running a Tukey HSD test. The first one involves the function `TukeyHSD()` which does not require any additional package installation, and the second one involves the function `glht()` which is part of the package `multcomp`. 
 
-Here we will reuse the example introduced [here (one-way ANOVA)](https://biostats.w.uib.no/one-way-anova/){target="_blank"}.
+We will reuse the example introduced [here (one-way ANOVA)](https://biostats.w.uib.no/one-way-anova/){target="_blank"}.
 To create the corresponding dataframe, use the following code:
 ```{r dataframe}
 # response variable
@@ -41,15 +42,37 @@ NB: these are indeed the same assumptions as for one-way ANOVA or factorial ANOV
 
 <br/><br/>
 
-### Running the test
+### Running the test with `TukeyHSD()`
 
-Let's apply the function `TukeyHSD()` to our example:
+The syntax is `TukeyHSD(aov(response ~ predictor), conf.level)` where `response` is the response variable, `predictor` is the predictor variable, and `conf.level` is the confidence level that you want to define (usually fixed at 0.95).
+Let's apply it to our example:
 ```{r TukeyHSD}
 TukeyHSD(aov(size ~ location), conf.level=0.95)
 ```
 
 The output displays the results of all pairwise comparisons among the tested groups (here three groups: ForestA, ForestB and ForestC, thus 3 comparisons).  You’ll find the actual difference between the means under `diff` and the adjusted p-value (`p adj`) for each pairwise comparison. Looking at the last column, the only significant difference to be reported in the present test is between the means of the groups `ForestB` and `ForestC`.
 
+<br/><br/>
+
+### Running the test with `glht()`
+
+First we need to activate the package `multcomp`:
+```{r package, eval=FALSE}
+library(multcomp)
+```
+
+
+Running `glht()` involves two other functions:
+
++ `lm()` which fits a linear model to your data, and which you might have already used in the context of a [one-way ANOVA](https://biostats.w.uib.no/one-way-anova/){target="_blank"},
++ `summary()` which computes and displays the result table.
+
+The syntax is `summary(glht(lm(response ~ predictor), linfct=mcp(predictor='Tukey')))` where `response` is the response variable and `predictor` is the predictor variable. Let's apply it to our example:
+```{r glht}
+summary(glht(lm(size ~ location), linfct=mcp(location='Tukey')))
+```
+
+As for `TukeyHSD()`, the output shows all three comparisons, p-values and corresponding stars. Note that the values of the p-values are very, very close to those printed by `TukeyHSD()`, but they are not strictly identical.
 
 
 <br/><br/>
