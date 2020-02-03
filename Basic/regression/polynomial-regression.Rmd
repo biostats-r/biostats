@@ -1,0 +1,81 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: polynomial regression
+# author: jonathan
+# revised: 3/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/regression/polynomial-regression.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/regression/polynomial-regression.Rmd")
+library(ggplot2)
+```
+
+When plotting your dataset, you will often realize (or have the feeling) that there is no way that a simple, straight line can represent the data. You might think that there exists a curved relationship between the response variable and the predictor variable, in which case polynomial regression may help you.
+
+Let’s take an example. We follow the growth of a rat (bodyweight in grams) between the 4th and the 20th week after birth. Here is the code for the dataframe:
+```{r dataframe}
+# variable1
+bodyweight <- c(65,99,123,148,172,194,212,230,248,276,288,296,307,321,325,337,345)
+
+# variable2
+week <- 4:20
+
+# dataframe
+my.dataframe <- data.frame(week, bodyweight)
+```
+
+Let's start with a scatter plot of the dataset:
+```{r scatter}
+ggplot(my.dataframe, aes(week, bodyweight)) + 
+  geom_point(color = "blue", size = 2.5)
+```
+
+<br/><br/>
+
+A quick look at this plot makes you realize that growth has not been very linear…
+Let’s try to fit a linear model to see whether that fits anyway:
+```{r scatter-smooth}
+ggplot(my.dataframe, aes(week, bodyweight)) + 
+  geom_point(color = "blue", size = 2.5) +
+  geom_smooth(method="lm", se=FALSE)
+```
+
+The linear model does not appear to be a great fit… The regression line underpredicts the data in the central part of the range while it overpredicts the data at both the start and the end of the range. You might thus be interested in running a polynomial regression to find a better curve to fit the data.
+<br/><br/>
+
+### Fitting a polynomial with `lm()` and `poly()`
+
+The way to go is to use `lm()` and introduce the function `poly(predictor, n)` to set the order of the polynomial. Here `predictor` is the predictor variable, and `n` is the order of the polynomial. Assuming that we wish to get a second order polynomial, we can run the following code:
+```{r polynomial}
+lm(bodyweight ~ poly(week,2))
+```
+<br/><br/>
+
+To draw the corresponding curve on top of the scatter plot, we use `stat_smooth(method="lm", formula = y ~ poly(x, 2, raw = TRUE))`. We could replace `x` and `y` with `week` and `bodyweight`, respectively. However `x` and `y` have already been associated with the variables in the function `ggplot(aes(x, y))`; thus there is no need to repeat.
+```{r scatter-and-smoother}
+ggplot(my.dataframe, aes(week, bodyweight)) + 
+  geom_point(color = "blue", size = 2.5) +
+  stat_smooth(method="lm", formula= y ~ poly(x, 2, raw=TRUE), colour="red")
+
+```
+<br/><br/>
+
+The new curve (in red) fits much better the data.
+
+<br/><br/>
+
+
+
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
