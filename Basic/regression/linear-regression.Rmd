@@ -1,0 +1,91 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: Linear regression
+# author: jonathan
+# revised: 3/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/regression/linear-regression.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/regression/linear-regression.Rmd")
+library(ggplot2)
+```
+
+**Linear regression** helps you simplify a dataset by modelling and drawing a straight line representing this dataset. It is often used to find a relationship between a *continuous* response variable and a *continuous* predictor variable. Examples are numerous: finding the relationship between bodyweight and height is one of them. 
+
+Let’s use the following dataset as an example:
+```{r dataframe}
+# variable1
+bodyweight <- c(70, 75, 72, 58, 80, 80, 48, 56, 103, 51)
+
+# variable2
+size <- c(177, 178, 167, 153, 174, 177, 152, 134, 191, 136)
+
+# dataframe
+my.dataframe <- data.frame(bodyweight, size)
+```
+<br/><br/>
+
+As usual, everything starts with a plot. A scatter plot of the dataset is usually a good beginning to assess relationship between continuous variables:
+```{r scatter}
+ggplot(my.dataframe, aes(size, bodyweight)) + 
+  geom_point(color = "blue", size = 2.5)
+```
+<br/><br/>
+
+### Fitting a linear model with `lm()`
+
+We may try to fit a linear model with the function `lm()` which we have already encountered when performing [analysis of variance (ANOVA)](https://biostats.w.uib.no/one-way-anova/){target="_blank"}.
+
+```{r lm}
+lm(bodyweight~size)
+```
+The output gives us everything we need to draw a line in our original plot:
+
+ + the intercept is -56.2716,  
+ + the slope is 0.7661.
+ 
+Using the function `summary()`, we get much more from the linear model. We get of course the slope and intercept in the column *Estimates* in the table *coefficients*, but we also get the range, interquartile range and median, among other useful values:
+ 
+```{r lm-summary}
+summary(lm(bodyweight~size))
+```
+Of interest is the (adjusted) R-squared (R^2^) at the bottom of the output, which describes how well the model matches the data (NB: be careful when interpreting R-squared, see this [blogpost](https://blog.minitab.com/blog/adventures-in-statistics-2/regression-analysis-how-do-i-interpret-r-squared-and-assess-the-goodness-of-fit){target="_blank"} for some info).
+<br/><br/>
+
+### Plotting the line
+
+Having these values, we may thus add  this line "manually" to our previous scatter plot:
+```{r scatter-and-line}
+ggplot(my.dataframe, aes(size, bodyweight)) + 
+  geom_point(color = "blue", size = 2.5) +
+  geom_abline(slope=0.7661,intercept=-56.2716)
+```
+<br/><br/>
+
+Note that the function `geom_smooth()` in `ggplot2` can draw the line directly on top of the scatter plot. Make sure that you use the argument `method="lm"`:
+```{r scatter-and-smoother}
+ggplot(my.dataframe, aes(size, bodyweight)) + 
+  geom_point(color = "blue", size = 2.5) +
+  geom_smooth(method="lm")
+```
+
+The gray area along the line is the confidence interval. If this is irrelevant, it may be removed with the extra argument `se=FALSE`:
+```{r scatter-smoother-noSE}
+ggplot(my.dataframe, aes(size, bodyweight)) + 
+  geom_point(color = "blue", size = 2.5) +
+  geom_smooth(method="lm", se=FALSE)
+```
+
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
