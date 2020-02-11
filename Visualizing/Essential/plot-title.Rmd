@@ -1,0 +1,84 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: plot title
+# author: jonathan
+# revised: 11/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Essential/plot-title.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Essential/plot-title.Rmd")
+library(ggplot2)
+```
+A good graph is always introduced by a title that tells the reader what the figure is about. It does not need to be long or detailed. Often it only states which variables are represented, or it summarizes the purpose of the graph.
+
+A few examples:
+
++ temperature vs. time,
++ effect of various salt concentrations on the growth of *Saccharomyces cerevisiae*,
++ goose population in Longyearbyen, 1990-2010.
+<br/><br/>
+
+Here we will see a simple way to set up a title above the graph. Let’s see that with the scatter plot below. This plot is the result by the following code and is stored in the object `baseplot` so that we can reuse it throughout the whole tutorial:
+
+```{r variables and plot}
+# variable 1
+values1 <- rnorm(200, mean=50, sd=10) 
+
+# variable 2
+values2 <- c(rnorm(100, mean=20, sd=10), rnorm(100, mean=40, sd=10))
+
+# dataframe
+df <- data.frame(values1, values2)
+
+# scatter plot
+baseplot <- ggplot(df, aes(values1, values2)) +
+  geom_point(size=2) 
+baseplot
+```
+<br/><br/>
+
+### Adding plot title, subtitle and tag
+
+A simple way to add a title to the plot is to use the function `labs()`:
+
+```{r labs}
+baseplot +
+  labs(title="values2 vs. values1")
+```
+<br/><br/>
+As you may see above, the title appears by default at the top left corner, just above the plot. This is not directly modifiable with the function `labs()`. In fact, `labs()` does not allow you to do much more than displaying a title (with `title =`), a subtitle just under the title (with `subtitle =`) and a tag in the top left corner of the whole figure (with `tag =`):
+
+```{r labs2}
+baseplot +
+  labs(title = "values2 vs. values1", subtitle = "presented in the form of a scatterplot", tag="Fig.1A")
+```
+<br/><br/>
+
+### Tuning the look of the title
+
+In order to modify the look of the title that has been added by `labs()`, you will have to modify the *theme*. To do so, you will have to add an additional line to the code and use the function `theme(plot.title = element_text())`. Using this line and a few additional arguments, you will be able to set the position (with `hjust =` and `vjust =`), color (with `color =`), size (with `size =`), font (with `family =`), etc:
+
+```{r theme}
+baseplot +
+  labs(title="values2 vs. values1") +
+  theme(plot.title = element_text(family = "serif", 
+                                  face = "bold", 
+                                  color = "blue",
+                                  size = 18,
+                                  hjust = .5,
+                                  vjust = 2))
+```
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
