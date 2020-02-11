@@ -1,0 +1,103 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: Key components of ggplot()
+# author: jonathan
+# revised: 11/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Starting/key-components.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Starting/key-components.Rmd")
+library(ggplot2)
+```
+
+Any plot designed with the function `ggplot()` has 3 necessary components:
+
++ the data to display, which must be contained in a **dataframe**,
++ **æsthetics**, introduced by the function `aes()` that takes care of positioning/mapping the variables on the plot,
++ **geometry**, introduced by the function `geom()` that takes care of drawing the graph (bar graph, line, scatter plot, etc).
+
+Simplified a lot, these 3 components can be seen as *layers* which, added on top of each other, will form the resulting plot. The code for the “simplest plot ever” has the following syntax:
+```{r plot, eval=FALSE}
+ggplot(dataframe, aes(x = variable1, y = variable2)) +
+  geom()
+```
+Note that both the dataframe and `aes()` are inside `ggplot()` while `geom()` is added to `ggplot()`.
+
+
+
+### Example
+
+Let's take a simple example where we draw a *scatter plot* based on the variables `var1` and `var2` which are contained in the dataframe `df`. Here is the code for the variables and dataframe:
+
+```{r variables}
+# variable 1
+var1 <- c(1,2,3,4,5,6,7,8,9,10)
+
+# variable 2
+var2 <- c(45,12,48,79,65,32,78,95,12,75)
+
+# dataframe
+df <- data.frame(var1, var2)
+```
+
+The code for the scatter plot is:
+```{r scatter}
+ggplot(df, aes(x = var1, y = var2)) +   # maps var1 and var2 contained in df
+  geom_point()                          # draws the dots of the scatter plot
+```
+
+### Changing your mind?
+
+Let’s now assume that you change your mind and want to draw a bar plot instead of a scatter plot. The only thing you need to change in the code is the layer that is responsible for drawing, aka the geometry. You shall thus replace `geom_point()` with a more appropriate function such as `geom_col()`. The code becomes:
+```{r bar}
+ggplot(df, aes(x = var1, y = var2)) +   
+  geom_col()                            # draws bars instead of dots
+```
+<br/><br/>
+
+The relative simplicity in the syntax and structure of `ggplot()` will allow you to not only rapidly modify layers, but also add other layers, thus creating [multiple plots](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/overlay-plots-multiple-plots/){target="_blank"}, [faceted plots](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/faceted-plots/){target="_blank"}, etc. 
+<br/><br/>
+
+### What happens if you omit one of the three layers?
+
+#### Omitting the geometry
+
+Here we omit the function `geom_point()`:
+
+```{r omit1}
+ggplot(df, aes(x = var1, y = var2))
+```
+<br/><br/>
+`ggplot()` is left with the dataframe and the aesthetics, but it does not know what you want to do with it. As a result, it shows you the axes, scales, grid and background, but nothing more.
+<br/><br/>
+
+
+#### Omitting the dataframe
+
+Here we omit the datafram `df`. Doing so, `ggplot()` knows that you want to draw a scatter plot, that the data is in two variables called `var1` and `var2`, but it does not find the data frame that contains them. It just ends with an error message:
+```{r omit2, echo=TRUE, error=TRUE}
+ggplot(aes(x = var1, y = var2)) +
+  geom_point()
+```
+
+
+<br/><br/>
+
+#### Omitting the æsthetics
+
+Here we omit the function `aes()` and its content. Doing so, `ggplot()` knows that the data is in the dataframe `df`, that you want to draw a scatter plot, but it cannot map the data. It thus ends again with an error message:
+```{r omit3, echo=TRUE, error=TRUE, eval=TRUE}
+ggplot(df) +
+  geom_point()
+```
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
