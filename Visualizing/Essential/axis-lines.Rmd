@@ -1,1 +1,56 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
 
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: axis lines
+# author: jonathan
+# revised: 13/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Essential/axis-lines.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Essential/axis-lines.Rmd")
+library(ggplot2)
+
+# variable 1
+values1 <- 1:100 
+# variable 2
+values2 <- values1*(rnorm(100, mean=1, sd=.1))
+
+# dataframe
+df <- data.frame(values1, values2)
+```
+ggplot does not draw axis lines by default. If you desperately miss them, this post is for you. Adding X- and Y-axis lines to your plot implies that you modify the *theme* of the plot itself. Nothing very complicated about it, as you will see further below.
+
+Letâs start with the code for a reference plot. This plot is stored in the object `baseplot` so that we can reuse it throughout the whole tutorial:
+```{r plot}
+baseplot <- ggplot(df, aes(values1, values2)) +
+  geom_point(size=2)
+baseplot
+```
+<br/><br/>
+
+To add both X- and Y-axis lines to your plot, add an extra line of code and write `theme(axis.line = element_line())`. In the parentheses, you may add additional arguments for modifying the size/thickness (`size=`), color (`color=`) and pattern of the line (`linetype=`):
+
+```{r lines}
+baseplot +
+  theme(axis.line = element_line(linetype = "solid", size = 1, colour = "darkblue"))
+```
+<br/><br/>
+
+If you wish to use different parameters for each axis, use `axis.line.x` and `axis.line.y` to operate on the X- and Y-axis separately:
+```{r lines2}
+baseplot +
+  theme(axis.line.y = element_line(size = 1, colour = "darkblue", linetype = "solid"), 
+        axis.line.x = element_line(size = 1.25, colour = "red", linetype = "dotted"))
+```
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
