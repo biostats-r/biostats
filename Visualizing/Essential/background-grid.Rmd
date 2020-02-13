@@ -1,0 +1,106 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Background colors and grids
+# author: jonathan
+# revised: 13/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Essential/background-grid.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Essential/background-grid.Rmd")
+library(ggplot2)
+
+# variable 1
+values <- c(rnorm(150, mean=20, sd=5), rnorm(150, mean=30, sd=4), rnorm(150, mean=15, 3), rnorm(150, mean=40, sd=5)) 
+# variable 2
+category <- c(rep("Gr1", 150), rep("Gr2", 150), rep("Gr3", 150), rep("Gr4", 150))
+
+# dataframe
+df <- data.frame(category, values)
+```
+Both the grid and the background colors (i.e. the color of the area that contains the data points and the color behind the area that surrounds the plot) are probably not critical elements of the plot, but may give a better look to your plot, or on the contrary make the plot look unreadable, or atrociously confusing. Here is a quick overview of the codes that let you modify them easily.
+
+Let’s start with the code for a reference violin plot. This plot is stored in the object `baseplot` so that we can reuse it throughout the whole tutorial:
+```{r plot}
+baseplot <- ggplot(df, aes(category, values, fill=category)) +
+  geom_violin()
+baseplot
+```
+<br/><br/>
+
+In ggplot, the grid and background colors are *elements defined by the theme*. When you create a simple plot without specific instructions about the theme, ggplot puts one by default which sets the background color of the plot to gray, the background of the whole figure to white, and places white grid lines wherever required (according to the ticks). To realize how much the theme does for your plot, let’s just erase it by use the command `theme_void()`:
+```{r void}
+baseplot +
+  theme_void()
+```
+
+As you may realize, there is nothing left but the data and the legend. Even the axes and axis titles are gone.
+<br/><br/>
+
+### Preset themes
+
+ggplot offers a series of predetermined complete themes which are listed here with examples.
+Here is our example with one of these predefined themes, namely `theme_dark()`:
+
+```{r dark}
+baseplot +
+  theme_dark()
+```
+
+And here is our same example with another theme called `theme_classic()`:
+```{r classic}
+baseplot +
+  theme_classic()
+```
+
+Check [here](https://ggplot2.tidyverse.org/reference/ggtheme.html){target="_blank"} for a list of all preset themes in ggplot.
+
+It is possible to tweak all the elements of the theme to make your own personalized theme. It is not the purpose of this page, but if you wish to do so, adjust the various arguments that `theme()` offers or uses (type `?theme` in the R console for the documentation or click [here](https://ggplot2.tidyverse.org/reference/theme.html){target="_blank"} for a full list of these arguments.
+<br/><br/>
+
+### Background colors
+
+To set the color of the plot background, use the argument `panel.background = element_rect()` in `theme()`:
+```{r bkg color}
+baseplot +
+  theme(panel.background = element_rect(fill = "lightblue"))
+```
+
+To set the color of the surrounding area, use the argument `plot.background = element_rect()` in `theme()`:
+```{r bkg color2}
+baseplot +
+  theme(plot.background = element_rect(fill = "lightblue"))
+```
+<br/><br/>
+
+### Grid
+
+To set the parameters of the grid (not only its color, but also the thickness, line type, etc), use the argument `panel.grid.major = element_line()` or/and `panel.grid.minor = element_line()` in `theme()`. The arguments that you may use in these two functions are `color=`, `size=`, `linetype=` and `lineend=`:
+
+```{r grid}
+baseplot +
+  theme(
+    panel.grid.major = element_line(colour="darkblue", size=0.5, linetype="solid"),
+    panel.grid.minor = element_line(colour="lightblue", size=0.4, linetype="dashed"))
+```
+
+Finally, here is a way to remove specific elements of the theme (text, lines,…). Use `element_blank()` to simply discard whatever you do not need (for example, the grid) in the following way:
+```{r nogrid}
+baseplot +
+ theme(panel.grid.major = element_blank(),
+       panel.grid.minor = element_blank())
+```
+
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
