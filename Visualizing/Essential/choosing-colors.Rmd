@@ -38,7 +38,7 @@ There are several ways to bring colors to your plot in ggplot2. You may:
 + pick a predefined palette, 
 + pick single colors.
 
-We will see how to modify colors in a plot using simple examples. Let’s start with the code for two reference plots, a density plot and a violin plot. These plots are stored in the objects `baseplot1` and `baseplot2` so that we can reuse them throughout the whole tutorial:
+We will see how to modify colors in a plot using simple examples. Letâs start with the code for two reference plots, a density plot and a violin plot. These plots are stored in the objects `baseplot1` and `baseplot2` so that we can reuse them throughout the whole tutorial:
 ```{r code, fig.width=10, fig.height=4}
 # code for violin plot
 baseplot1 <- ggplot(df, aes(category, values, fill=category)) +
@@ -53,14 +53,14 @@ baseplot2 <- ggplot(df2, aes(values1, values2)) +
 
 ### Color palette by default
 
-ggplot2 automatically generates a palette based on the number of items to color (number of categories, etc.) and a color wheel. You may read more about this palette [HERE](http://applied-r.com/colors-in-ggplot/){target="_blank"}. The aim is to provide you with a “well-balanced” set of colors which can easily be distinguished from each other without drawing to much attention onto one specific items. Here are our reference plots colored by ggplot2:
+ggplot2 automatically generates a palette based on the number of items to color (number of categories, etc.) and a color wheel. You may read more about this palette [HERE](http://applied-r.com/colors-in-ggplot/){target="_blank"}. The aim is to provide you with a âwell-balancedâ set of colors which can easily be distinguished from each other without drawing to much attention onto one specific items. Here are our reference plots colored by ggplot2:
 ```{r default, fig.width=10, fig.height=4}
 grid.arrange(
   baseplot1,
   baseplot2,
   nrow=1)
 ```
-The colors are “OK” as long as you do not have more than a handful of groups, but probably this reaches its limits in terms of aesthetics when handling a larger number of groups.
+The colors are âOKâ as long as you do not have more than a handful of groups, but probably this reaches its limits in terms of aesthetics when handling a larger number of groups.
 <br/><br/>
 
 ### The viridis color palettes
@@ -99,14 +99,22 @@ grid.arrange(
 
 ### Picking your own colors 
 
-If you are really picky about colors and have the time to select every single color for your graph, use `scale_fill_manual()`, `scale_color_manual()` or `scale_fill_gradient()` and then indicate between the parentheses that either the R name or the *hex* code of each of them. 
+If you are really picky about colors and have the time to select every single color for your graph, use `scale_fill_manual()`, `scale_color_manual()` or `scale_fill_gradient()` and then indicate between the parentheses either the R name or the *hex* code for each of them. 
 
-Note that `scale_fill_manual()` and `scale_color_manual()` are to be used with discrete variables. Always make sure that you have chosen a color for each of the groups or categories, otherwise, ggplot will return a warning and no plot. `scale_fill_gradient()` shall be used with continuous variablees and will create a gradient based on two given colors. Here you will find the [R names](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf){target="_blank"} and a [tool](https://htmlcolorcodes.com/) to provide you with hex codes.
-
+Note that `scale_fill_manual()` and `scale_color_manual()` shall be used with discrete variables. Always make sure that you have chosen a color for each of the groups or categories, otherwise, ggplot will return a warning/error message and no plot. `scale_fill_gradient()` shall be used with continuous variables and will create a gradient based on two given colors. Here you will find the [R names](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf){target="_blank"} and a [tool](https://htmlcolorcodes.com/) to provide you with hex codes.
+Here are our two reference plots colored using R names:
 ```{r manual, fig.width=10, fig.height=4}
 grid.arrange(
   baseplot1 + scale_fill_manual(values=c("darkblue", "aquamarine1", "lightsalmon2", "orange2")),
   baseplot2 + scale_fill_gradient(low= "darkblue", high= "lightsalmon2"),
+  nrow=1)
+```
+<br/><br/>
+And the same plots colored using the matching Hex codes (not that Hex codes start with `#` followed by 6 digits:
+```{r manual2, fig.width=10, fig.height=4}
+grid.arrange(
+  baseplot1 + scale_fill_manual(values=c("#00008B", "#7FFFD4", "#EE9572", "#EE9A00")),
+  baseplot2 + scale_fill_gradient(low= "#00008B", high= "#EE9572"),
   nrow=1)
 ```
 <br/><br/>
