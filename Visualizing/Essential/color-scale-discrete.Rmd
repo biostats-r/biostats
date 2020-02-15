@@ -1,1 +1,82 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Color scale for discrete variables
+# author: jonathan
+# revised: 14/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Essential/color-scale-discrete.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Essential/color-scale-discrete.Rmd")
+library(ggplot2)
+library(gridExtra)
+# data for violin plot
+# variable 1
+values <- c(rnorm(150, mean=20, sd=5), rnorm(150, mean=30, sd=4), rnorm(150, mean=15, 3), rnorm(150, mean=40, sd=5)) 
+# variable 2
+category <- c(rep("Gr1", 150), rep("Gr2", 150), rep("Gr3", 150), rep("Gr4", 150))
+# dataframe
+df <- data.frame(category, values)
+```
+Here we will see a couple of common methods to introduce colors in your plot to differenciate among categories/groups in discrete variables. Check [this page](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"} to see how to *choose a palette of colors* for your plot. Let's start with the code for a reference plot without colors:
+```{r baseplot}
+ggplot(df, aes(category, values)) +
+    geom_violin()
+```
+
+
+<br/><br/>
+
+### `fill=` vs. `color=`
+
+There are two easy ways to bring colors to categories. You may either color the *frame and lines* of the items (in which case you will use `color=` followed by the name of the variable), and/or you may *fill the items* (in which case you will use `fill=` followed by the name of the variable). In both cases, the code must be placed in `aes()`. 
+NB: Note that these arguments may be placed either in `aes()` *within `ggplot()`*, or in `aes()` *within the geometry `geom_violin()`*. We will use the latter in the present tutorial. 
+
+Let's first see what `color=` does to our plot: 
+```{r color}
+ggplot(df, aes(category, values)) +   
+    geom_violin(aes(color=category))
+```
+<br/><br/>
+And here is the same plot with `fill=`
+```{r fill}
+ggplot(df, aes(category, values)) +   
+    geom_violin(aes(fill=category))
+```
+<br/><br/>
+
+### Changing the color palette
+
+ggplot uses a palette of colors by default. This set of colors is rather good when few categories are displayed, but becomes hard to read when the numbers of items is greater than 6-8. You may thus want to use another palette such as `viridis` or `brewer`. 
+
+Note that the functions that will apply for discrete variables are:
+
++ `scale_fill_viridis_d()`,
++ `scale_fill_brewer()`,
++ `scale_fill_manual()`,
++ etc.
+
+Their use is further explained [HERE](https://biostats.w.uib.no/choosing-colors-for-your-plot/).
+<br/><br/>
+
+### Removing the legend from the plot
+
+Finally, if you think that the colors and labels talk for themselves and that the legend that comes automatically to the right of the plot is just useless, modify the theme by adding the argument `legend.position="none"` to `theme()`in the following manner:
+```{r legend}
+ggplot(df, aes(category, values)) +
+    geom_violin(aes(fill=category)) +
+    theme(legend.position="none")
+```
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
 
