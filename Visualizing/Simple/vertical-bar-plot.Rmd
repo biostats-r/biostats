@@ -1,1 +1,64 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
 
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a vertical bar plot
+# author: jonathan
+# revised: 18/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/vertical-bar-plot.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/vertical-bar-plot.Rmd")
+library(ggplot2)
+library(gridExtra)
+```
+A bar plot represents the relationship between a measurement variable and a categorical variable. In most cases, each of the bars will display the mean of a specific group, which will allow for visualizing the difference between groups in an experiment.
+
+There are two variants of the bar plot: [horizontal](https://biostats.w.uib.no/creating-a-horizontal-bar-plot/){target="_blank"} and vertical. One would prefer to use a horizontal bar plot when the categorical variable is nominal (labels/names), while the vertical plot is preferred when the categorical variable is ordinal (numbers, series, dates). Here, we will see how to make a vertical bar plot.
+
+In the following example, we will draw a bar plot that show the total precipitations registered in Lygra, Hordaland in 2016, 2017 and 2018.
+
+Let’s use `ggplot()` to draw the line plot for a simple dataset representing the solar irradiance (registered every 30 minutes during 24 hours) in Aurland on July 22nd, 2017. Here are the variables and dataframe:
+```{r dataframe}
+# variable 1
+year <- c("2016", "2017", "2018")
+# variable 2
+precipitation <- c(1315.7,1453.1,1229.8)
+# dataframe
+df <- data.frame(year, precipitation)
+```
+<br/><br/>
+
+We can use either `geom_col()` or `geom_bar()` to create the plot with `ggplot()`. However, when using `geom_bar()`, we must not forget the argument `stat="identity"`. Here are the 2 corresponding plots
+```{r plots, fig.width=10, fig.height=4}
+grid.arrange(
+  ggplot(df, aes(year, precipitation)) +      # left plot using geom_bar()
+    geom_bar(stat="identity"),
+  ggplot(df, aes(year, precipitation)) +      # right plot using geom_col()
+    geom_col(),
+ncol=2)
+```
+These two plots are virtually identical. You may thus use whichever geometry you want, but there is often a preference for `geom_col()`.
+<br/><br/>
+
+We can bring colors to the bars using `color=` and `fill=`:
+```{r color}
+ggplot(df, aes(year, precipitation)) +     
+    geom_col(color = "blue", fill = "white", width = .5)
+```
+<br/><br/>
+
+Finally you may adjust the width of the bars with the argument `width=`:
+```{r width}
+ggplot(df, aes(year, precipitation)) +     
+    geom_col(width = .25)
+```
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
