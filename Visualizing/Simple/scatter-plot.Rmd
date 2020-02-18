@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align='center')
 
 # title: Creating a scatter plot
 # author: jonathan
-# revised: 16/2/2020 
+# revised: 18/2/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/scatter-plot.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/scatter-plot.Rmd")
@@ -17,7 +17,7 @@ library(ggplot2)
 ```
 A scatter plot is probably one of the simplest forms of plot that can be drawn. The data is represented in the form of dots (alternatively squares, crosses, circles or other simple geometrical shapes), one per data point, providing that the data can be described by two variables, one plotted along the X-axis and the other along the Y-axis.
 
-Let's take a simple example to see how to build a scatter plot with `ggplot()`.
+Let's take a simple example to see how to build a scatter plot with `ggplot()`. Here are the variables and dataframe:
 ```{r dataframe}
 # variable 1
 x <- 1:100
@@ -45,6 +45,34 @@ ggplot(df, aes(x,y)) +
   geom_point(size=2, colour="blue", shape=17)
 ```
 <br/><br/>
+
+### Scatter plot with groups
+
+Until now, we have been drawing scatter plots representing only one sample. We may use such a plot to compare several groups or samples by the means of `color=` or `shape=` in `aes()`. To illustrate this, we need a more appropriate dataframe:
+```{r dataframe2}
+# ID
+x <- rep(1:300)
+# sample data
+group <- rep(c("A","B","C"), each = 100)
+values <- c((rnorm(100, mean=1, sd=.1)), (rnorm(100, mean=1.1, sd=.1)), (rnorm(100, mean=1.2, sd=.1)))
+# dataframe
+df2 <- data.frame(x, group, values)
+```
+<br/><br/>
+
+Here is the code that creates a scatter plot with 3 groups recognizable by color:
+```{r multiple}
+ggplot(df2, aes(x = x, y = values)) + 
+  geom_point(aes(color = group), size = 2)
+```
+
+And here is the same plot, this time with shapes to differentiate between groups:
+```{r multiple2}
+ggplot(df2, aes(x = x, y = values)) + 
+  geom_point(aes(shape = group), size = 2)
+```
+<br/><br/>
+
 
 
 ***
