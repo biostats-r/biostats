@@ -1,0 +1,64 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a violin plot
+# author: jonathan
+# revised: 19/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/violin-plot.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/violin-plot.Rmd")
+library(ggplot2)
+```
+A violin plot has a lot in common with a [boxplot](https://biostats.w.uib.no/creating-a-multiple-boxplot/){target="_blank"}. The difference is that it represents the probability density of the data. Instead of just being a *box delimited by quartiles*, the violin takes the shape of a density curve (positioned vertically).
+
+We will see how to use `ggplot()` to code for a violin plot representing 4 groups of 150 data points each. This example is based on the same data set used to illustrate how to draw [boxplots](https://biostats.w.uib.no/creating-a-multiple-boxplot/){target="_blank"} and [jitter plots](https://biostats.w.uib.no/creating-a-jitter-plot/){target="_blank"}, among others. Here are the variables and dataframe:
+```{r dataframe}
+# variable 1
+response <- c(rnorm(150, mean=20, sd=5), rnorm(150, mean=30, sd=4), rnorm(150, mean=15, 3), rnorm(150, mean=40, sd=5)) 
+# variable 2
+group <- c(rep("Gr1", 150), rep("Gr2", 150), rep("Gr3", 150), rep("Gr4", 150))
+# dataframe
+df <- data.frame(group, response)
+```
+<br/><br/>
+We first map the data with `aes(group, response)` and we use `geom_violin()` to draw the plot. The code is as follows:
+```{r plot}
+ggplot(df, aes(group, response)) +     
+  geom_violin() 
+```
+<br/><br/>
+
+As you may notice, the violins look trimmed at the top and bottom. This is the *default* version of the plot where the violin "stops" with the data range. In other words, the trim is just æsthetics, it does not mean that data was excluded. If you want to see the violins with their "tails", you will need to use the argument `trim=FALSE`:
+```{r trim}
+ggplot(df, aes(group, response)) +     
+  geom_violin(trim=FALSE)                  
+```
+<br/><br/>
+
+The colors of the violins are tunable with `color=` and `fill=`:
+```{r tune}
+ggplot(df, aes(group, response)) + 
+  geom_violin(color= "blue", fill="lightblue")        
+```
+<br/><br/>
+
+Finally, if you feel that you are missing the overview over the quartiles, you can always add a layer that shows the boxplots on top of the violins:
+```{r boxplots}
+ggplot(df, aes(group, response)) + 
+  geom_violin(fill="lightgreen") +
+  geom_boxplot(width=0.2, fill="lightblue")
+```
+  
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
