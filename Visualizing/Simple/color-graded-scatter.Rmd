@@ -1,0 +1,59 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a color-graded scatter plot
+# author: jonathan
+# revised: 20/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/color-graded-scatter.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/color-graded-scatter.Rmd")
+library(ggplot2)
+```
+A regular scatter plot represents with dots (or any other symbols) the relationship between two given variables. But one can plot a third variable to any scatter plot by the mean of a gradient of colors applied onto the dots.
+
+We will see how to use `ggplot()` to code for such a color-graded scatter plot. Here are the three variables and the dataframe:
+```{r dataframe}
+# variable 1
+values1 <- c(rnorm(100, mean=50, sd=15), rnorm(100, mean=75, sd=15), rnorm(100, mean=100, sd=15))
+# variable 2
+values2 <- c(rnorm(100, mean=20, sd=10), rnorm(100, mean=30, sd=10),rnorm(100, mean=40, sd=10))
+# variable 3
+values3 <- runif(300, min = 1, max = 6)
+# dataframe
+df <- data.frame(values1, values2, values3)
+```
+<br/><br/>
+
+We use `geom_point()` as for any scatter plot, but we need to add `aes(color=)` to represent the values of the variable `values3` as a gradient of colors:
+```{r plot}
+ggplot(df, aes(values1, values2)) +
+  geom_point(aes(color = values3))
+```
+<br/><br/>
+
+It is of course possible to tune the look of the plot with, for example, `size=` and `shape=`:
+```{r tune}
+ggplot(df, aes(values1, values2)) +
+  geom_point(aes(color = values3), size = 2.5, shape = 17)   
+```
+<br/><br/>
+And it is possible to swap the blue scale by default for another palette such as viridis (read more [here](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"} about colors):
+```{r line}
+ggplot(df, aes(values1, values2)) +
+  geom_point(aes(color = values3)) +
+  scale_color_viridis_c()  
+```
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
