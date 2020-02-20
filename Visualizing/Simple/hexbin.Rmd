@@ -1,1 +1,68 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
 
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a Hexbin plot
+# author: jonathan
+# revised: 20/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/hexbin.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/hexbin.Rmd")
+library(ggplot2)
+```
+When a scatter plot becomes so dense that the symbols overlap massively, the plot lacks clarity and loses its purpose. This is called overplotting. In such a case, there are a few alternatives, one of them being a Hexbin plot (i.e. Hexagonal heatmap of 2d bin counts). While a regular one-dimensional histogram uses bars to display the count of observations by intervals (or bins) on the X-axis, the Hexbin plot displays a map of hexagons made by the intersection of intervals (or bins) on both the X- and Y-axis. Each hexagon is thus defined by an interval on the X- and Y-axis, and a color (or shade) which describes the local count. Note that this is a variant of the plot called [2D histogram](https://biostats.w.uib.no/creating-a-2d-histogram/){target="_blank"}.
+
+Let's take the following example where the variable to be plotted along the X-axis (`values1`) and the variable to be plotted along the Y-axis (`values2`) both contain 4000 points (!). Here are the variables and the dataframe:
+```{r dataframe}
+# variable 1
+values1 <- rnorm(4000, mean=50, sd=10)
+# variable 2
+values2 <- rnorm(4000, mean=5, sd=1)
+# dataframe
+df <- data.frame(values1, values2)
+```
+<br/><br/>
+
+If we attempt to draw a regular scatter plot with `geom_point()`, we obtain this unreadable figure:
+```{r scatterplot}
+ggplot(df, aes(values1, values2)) +
+  geom_point()
+```
+<br/><br/>
+
+In such a case of overplotting, it is logical to switch to a different plot type.
+To draw a 2D histogram, we will use `geom_hex()`:
+```{r 2D}
+ggplot(df, aes(values1, values2)) +
+  geom_hex()  
+```
+
+A color bar guide named `count` automatically appears to the right, showing the different shades of blue (color by default) used in the figure to help you define approximately the count for each of the hexagons.
+<br/><br/>
+
+As for the regular histogram, there is a possibility to change the value of the bins, either by defining the binwidth with `binwidth=` or by defining the number of bins with `bins=`:
+```{r bins}
+ggplot(df, aes(values1, values2)) +
+  geom_hex(bins = 70)  
+```
+The size of the hexagons changes and the scale of the color bar guide is redefined accordingly.
+<br/><br/>
+
+If you feel like changing the colors used in the color bar guide, you can use `scale_fill_gradient()` or `scale_fill_viridis_c()` for example:
+```{r colors}
+ggplot(df, aes(values1, values2)) +
+  geom_hex(bins = 70) + 
+  scale_fill_viridis_c()
+```
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
