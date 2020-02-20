@@ -1,1 +1,75 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a 2D density plot
+# author: jonathan
+# revised: 20/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/2D-density.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/2D-density.Rmd")
+library(ggplot2)
+```
+When a scatter plot becomes so dense that the symbols overlap massively, the plot lacks clarity and loses its purpose. This is called overplotting. In such a case, there are a few alternatives, one of them being a 2D density plot (the 2D version of the density plot described [HERE](https://biostats.w.uib.no/creating-a-density-plot/){target="_blank"}). The 2D density plot brings an extra dimension to the scatter plot by allowing to visualize the density of observations with a colored scale.
+
+Let's take the following example where the variable to be plotted along the X-axis (`values1`) and the variable to be plotted along the Y-axis (`values2`) both contain 4000 points (!). Here are the variables and the dataframe:
+```{r dataframe}
+# variable 1
+values1 <- rnorm(4000, mean=50, sd=10)
+# variable 2
+values2 <- rnorm(4000, mean=5, sd=1)
+# dataframe
+df <- data.frame(values1, values2)
+```
+<br/><br/>
+
+If we attempt to draw a regular scatter plot with `geom_point()`, we obtain this unreadable figure:
+```{r scatterplot}
+ggplot(df, aes(values1, values2)) +
+  geom_point()
+```
+<br/><br/>
+
+In such a case of overplotting, it is logical to switch to a different plot type.
+To draw a 2D density plot, we will use `stat_density_2d()` with a series of arguments:
+```{r 2D}
+ggplot(df, aes(values1, values2)) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon")  
+```
+A color bar guide named `level` automatically appears to the right, showing the different shades of blue (color by default) used in the figure to help you define approximately the count for each of the pixels in the figure.
+<br/><br/>
+
+If you feel like changing the colors used in the color bar guide, you can use `scale_fill_gradient()` or `scale_fill_viridis_c()` for example:
+```{r colors}
+ggplot(df, aes(values1, values2)) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon") +
+  scale_fill_viridis_c()
+```
+<br/><br/>
+
+Note that it is possible to highlight the borders between the levels in the plot by adding contours. To do so, you simply have to add the arguments `color=` to the function `stat_density_2d()`. You may also modulate the thickness of these contour lines by adding `size=`:
+```{r borders}
+ggplot(df, aes(values1, values2)) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="red", size = 1.5) +
+  scale_fill_viridis_c()
+```
+<br/><br/>
+
+And if you are solely interested in the contour lines, not in the rest (i.e. the colored areas), you may replace the function `stat_density_2d()` with `geom_density_2d()`:
+```{r lines}
+ggplot(df, aes(values1, values2)) +
+  geom_density_2d(size=1.5)
+```
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
 
