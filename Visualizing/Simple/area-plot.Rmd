@@ -1,0 +1,68 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating an area plot
+# author: jonathan
+# revised: 21/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/area-plot.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/area-plot.Rmd")
+library(ggplot2)
+library(gridExtra)
+```
+An area plot is very similar in appearance to a [line plot](https://biostats.w.uib.no/creating-a-line-plot/){target="_blank"}. It represents a data series based on two numerical variables in the form of a simple line “joining the dots”; in addition, the area under the line may be filled/colored. When more than one data series is represented, the area plot becomes a multiple or stacked area plot which helps visualize how different components contribute to a total/sum (this will be further explained [here](https://biostats.w.uib.no/creating-a-multiple-area-chart/){target="_blank"}).
+
+Let's see here how to use `ggplot()` to draw such a plot. We will consider the following example where precipitations were measured daily at Lygra, Hordaland in January 2020. Here are the variables and the dataframe:
+```{r dataframe}
+# variable 1
+day <- 1:31
+# variable 2
+precipitations <- c(.4, 9.8, 9.0, 3.2, 21.6, 14.4, 20.2, 3.0, 3.6, 0.2, 22.6, 2.4, 1.8, 10.4, 12.6, .6, 4.6, 6.8, .6, 18.6, 4.8, .8, 3.4, 2.6, 4.4, 2.4, 2.0, .2, 1.8, 3.0, 4.8)
+# dataframe
+df <- data.frame(day, precipitations)
+```
+<br/><br/>
+
+We map the variables with `aes(day, precipitations)` and use `geom_area()` to draw the plot:
+```{r plot}
+ggplot(df, aes(day, precipitations)) +
+  geom_area()
+```
+<br/><br/>
+
+As usual, you may change the look of the plot with a handful of arguments. With `fill=` and `alpha=`, you may change the color of the area and its transparency, respectively:
+```{r 2D tune}
+ggplot(df, aes(day, precipitations)) +
+  geom_area(fill="darkblue", alpha=.5) 
+```
+
+If you are interested in plotting only one fragment of the data series, you can use `ifelse()` in `aes()`. You may for instance decide to display only the first 15 days of the month with `time<=12`:
+```{r partial}
+ggplot(df, aes(day, precipitations)) +                       
+  geom_area(aes(x = ifelse(day<=15, day, NA))) +
+  xlim(1,31)
+```
+Note the warning message telling you that some data has been excluded (as expected).
+<br/><br/>
+
+Alternatively you can highlight a specific interval of the area plot (for example the period January 10^th^-23^th^) by making a two-layered area plot: a first `geom_area()` layer shows the whole interval from January 1^st^ to 31^st^ in dark and a second layer `geom_area()` shows only the interval January 10^th^-23^th^ in orange on top of (and thus hiding) the first layer:
+```{r highlight}
+ggplot(df, aes(day, precipitations)) +
+  geom_area(fill="darkslategrey") +
+  geom_area(aes(x = ifelse(day>=10 & day<=23, day, NA)), fill="orange")
+```
+<br/><br/>
+
+
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
