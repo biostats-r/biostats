@@ -16,9 +16,9 @@ GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizin
 library(ggplot2)
 library(gridExtra)
 ```
-There is no such thing as a `geom_pie()` function that creates a pie chart in ggplot. Instead of that, one must use a “weird” strategy which consists in building first a *single stacked bar plot* from a dataframe, and then displaying it in a *polar coordinate system*. The stacked bar will thus be stretched to the point of becoming a pie. This reminds in a way of the strategy used when one wants to create a miniature planet from a panorama picture using the “[little planet effect](https://www.photographymad.com/pages/view/little-planet-photos-5-simple-steps-to-making-panorama-worlds){target="_blank"}”.
+There is no such thing as a `geom_pie()` function that creates a pie chart in ggplot. Instead of that, one must use a "weird" strategy which consists in building first a *single stacked bar plot* from a dataframe, and then displaying it in a *polar coordinate system*. The stacked bar will thus be stretched to the point of becoming a pie. This reminds in a way of the strategy used when one wants to create a miniature planet from a panorama picture using the "[little planet effect](https://www.photographymad.com/pages/view/little-planet-photos-5-simple-steps-to-making-panorama-worlds){target="_blank"}".
 
-Let’s take a simple example with this data set (blood type distribution in Norway, data retrieved [here](https://en.wikipedia.org/wiki/Blood_type_distribution_by_country){target="_blank"}, original source: GiBlod.no). Here are the variables and the dataframe:
+Let's take a simple example with this data set (blood type distribution in Norway, data retrieved [here](https://en.wikipedia.org/wiki/Blood_type_distribution_by_country){target="_blank"}, original source: GiBlod.no). Here are the variables and the dataframe:
 ```{r dataframe}
 # variable 1
 type <- c("O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-")
@@ -31,16 +31,16 @@ df <- data.frame(type, proportion)
 
 In this example, we will decompose the procedure into four steps:
 
-+ 1. Building the stacked bar chart from the dataframe
-+ 2. Changing the coordinate system
-+ 3. Getting rid of the useless axis
-+ 4. Getting a better set of colors.
++ Building the stacked bar chart from the dataframe
++ Changing the coordinate system
++ Getting rid of the useless axis
++ Getting a better set of colors.
 
 <br/><br/>
 
 ### 1. Building the stacked bar chart from the dataframe
 
-We use `geom_col()` to draw the bar plot and map the variable with `aes()`. Here, `x=` is set, but not named by the mean of `""`, while `y =` is set to `proportion`. Finally we use `fill=` to attribute a specific color to each blood type:
+We use `geom_col()` to draw the bar plot and map the variable with `aes()`. Here, `x=` is set but not named by the mean of `""`, while `y =` is set to `proportion`. Finally we use `fill=` to attribute a specific color to each blood type:
 ```{r plot}
 ggplot(df, aes(x="", y=proportion, fill=type))+
   geom_col()
@@ -73,7 +73,7 @@ ggplot(df, aes(x="", y=proportion, fill=type)) +
 
 ### 4. Getting a better set of colors.
 
-To be honest, the set of colors which comes automatically in `ggplot()` is not very appetizing. Let’s use `scale_fill_viridis_d()` to exchange the 8 original colors against 8 colors from the palette viridis:
+To be honest, the set of colors which comes automatically in `ggplot()` is not very appetizing. Let's use `scale_fill_viridis_d()` to exchange the 8 original colors against 8 colors from the palette viridis:
 ```{r colors}
 ggplot(df, aes(x="", y=proportion, fill=type))+
   geom_col() +
