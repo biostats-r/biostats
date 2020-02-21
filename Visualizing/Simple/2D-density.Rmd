@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align='center')
 
 # title: Creating a 2D density plot
 # author: jonathan
-# revised: 20/2/2020 
+# revised: 21/2/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Simple/2D-density.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Simple/2D-density.Rmd")
@@ -37,19 +37,21 @@ ggplot(df, aes(values1, values2)) +
 <br/><br/>
 
 In such a case of overplotting, it is logical to switch to a different plot type.
-To draw a 2D density plot, we will either use `stat_density_2d()` or `geom_density_2d()` with a series of necessary arguments:
-```{r 2D, fig.width=10, fig.height=4}
-grid.arrange(
-  ggplot(df, aes(values1, values2)) +                         # left plot with stat_density_2d
-    stat_density_2d(aes(fill = ..level..), geom = "polygon"), 
-  ggplot(df, aes(values1, values2)) +                         # right plot with geom_density_2d
-    geom_density_2d(aes(color = ..level..)),
-  ncol=2)
+To draw a 2D density plot, we will either use `stat_density_2d()` or `geom_density_2d()` with a series of necessary arguments. Here is an example with `stat_density_2d()`:
+```{r 2D stat}
+ggplot(df, aes(values1, values2)) +                       
+  stat_density_2d(aes(fill = ..level..), geom = "polygon") 
+```
+
+And here is the same example with `geom_density_2d()`:
+```{r 2D geom}
+ggplot(df, aes(values1, values2)) +                       
+  geom_density_2d(aes(color = ..level..))
 ```
 A color bar guide named `level` automatically appears to the right thanks to the parameter `..level..`. It shows the different shades of blue (color by default) used in the figure to help you define approximately the density level in the figure.
 <br/><br/>
 
-If you feel like changing the colors used in the color bar guide, you can use `scale_fill/color_gradient()` or `scale_fill/color_viridis_c()` for example:
+If you feel like changing the colors used in the color bar guide, you can use `scale_fill/color_gradient()` or `scale_fill/color_viridis_c()`:
 ```{r 2Dviridis, fig.width=10, fig.height=4}
 grid.arrange(
   ggplot(df, aes(values1, values2)) +                         # left plot with stat_density_2d
