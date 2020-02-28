@@ -1,0 +1,74 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: About faceting
+# author: jonathan
+# revised: 28/2/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Faceted/about-faceting.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Faceted/Faceted/about-faceting.Rmd")
+library(ggplot2)
+
+```
+If you are working with a massive data set which contains one or more categorical variables, and you feel that making one single plot does not result in anything interpretable due to overplotting, then you will be happy to know that ggplot has a couple of useful functions that create a grid of smaller plots, each displaying a specific level of the categorical variable(s). These functions are `facet_grid()` (further developed [here](https://biostats.w.uib.no/facet_grid/){target="_blank"}) and `facet_wrap()` (further developed [here](https://biostats.w.uib.no/facet_wrap/){target="_blank"}).
+
+Let's take the following example to see what these functions do. In this example, there are 2 categorical predictor variables (`group` and `category`) and 2 continuous response variables (`values_x` and `values_y`). In total, there are 3000 entries in the resulting variables.
+
+```{r variables and dataframe}
+# predictor variables
+group <- c(rep("A", 500), rep("B", 500), rep("C", 500), rep("D", 500), rep("E", 500), rep("F", 500))
+category <- as.factor(floor(runif(3000, min=1, max=4)))
+
+# response variables
+values_x <- c(rnorm(500, mean=80, sd=10), rnorm(500, mean=100, sd=15), rnorm(500, mean=120, sd=10), rnorm(500, mean=75, sd=20), rnorm(500, mean=95, sd=10), rnorm(500, mean=115, sd=15))
+values_y <- c(rnorm(500, mean=115, sd=10), rnorm(500, mean=125, sd=5), rnorm(500, mean=105, sd=10), rnorm(500, mean=85, sd=20), rnorm(500, mean=95, sd=10), rnorm(500, mean=90, sd=15))
+
+# dataframe
+df <- data.frame(group, category, values_x, values_y)
+```
+<br/><br/>
+
+Here is a single scatter plot that displays ALL the data points at once. As you will realize, it is hardly revealing any specific pattern. NB: we will store the code in the object `baseplot` for later reuse:
+```{r overplot}
+baseplot <- ggplot(df, aes(values_x, values_y)) +
+  geom_point()
+baseplot
+```
+<br/><br/>
+
+### `facet_wrap()`
+
+In our example, the first categorical variable `group` has 6 levels called `A`, `B`, `C`, `D`, `E` and `F`, and the second categorical variable `category` has 3 levels, `1`, `2` and `3  `. `facet_wrap()` filters the data corresponding to all the  combinations `group`x`category` and makes as many *mini-plots* as necessary: 
+```{r wrap}
+baseplot +
+  facet_wrap(category~group)
+```
+<br/><br/>
+
+
+### `facet_grid()`
+
+`facet_grid()` creates an organized matrix of mini-plots where the two categorical variables are individually plotted either on the X- or the Y-axis. The resulting matrix shows thus the same plots as with `facet_wrap(s))` but in a different order:
+```{r grid}
+baseplot +
+  facet_grid(category~group)
+```
+<br/><br/>
+
+In the following pages of this [section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/faceted-plots/){target="_blank"}, you will learn how to make use of these functions, how to modify their look, the labels and so on. Keep in mind that there is no universal solution for all data sets and that you may have to try several plots or designs before you find what represents best your data.
+
+<br/><br/>
+
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
+
