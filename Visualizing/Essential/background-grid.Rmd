@@ -9,10 +9,10 @@ knitr::opts_chunk$set(echo = TRUE, fig.align='center')
 
 # title: Background colors and grids
 # author: jonathan
-# revised: 13/2/2020 
+# revised: 15/3/2020 
 
-WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Essential/background-grid.html")
-GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Essential/background-grid.Rmd")
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Essential/background-grid.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Essential/background-grid.Rmd")
 library(ggplot2)
 
 # variable 1
@@ -25,7 +25,7 @@ df <- data.frame(category, values)
 ```
 Both the grid and the background colors (i.e. the color of the area that contains the data points and the color behind the area that surrounds the plot) are probably not critical elements of the plot, but may give a better look to your plot, or on the contrary make the plot look unreadable, or atrociously confusing. Here is a quick overview of the codes that let you modify them easily.
 
-Let’s start with the code for a reference violin plot. This plot is stored in the object `baseplot` so that we can reuse it throughout the whole tutorial:
+Letâs start with the code for a reference violin plot. This plot is stored in the object `baseplot` so that we can reuse it throughout the whole tutorial:
 ```{r plot}
 baseplot <- ggplot(df, aes(category, values, fill=category)) +
   geom_violin()
@@ -33,7 +33,7 @@ baseplot
 ```
 <br/><br/>
 
-In ggplot, the grid and background colors are *elements defined by the theme*. When you create a simple plot without specific instructions about the theme, ggplot puts one by default which sets the background color of the plot to gray, the background of the whole figure to white, and places white grid lines wherever required (according to the ticks). To realize how much the theme does for your plot, let’s just erase it by use the command `theme_void()`:
+In ggplot, the grid and background colors are *elements defined by the theme*. When you create a simple plot without specific instructions about the theme, ggplot puts one by default which sets the background color of the plot to gray, the background of the whole figure to white, and places white grid lines wherever required (according to the ticks). To realize how much the theme does for your plot, letâs just erase it by use the command `theme_void()`:
 ```{r void}
 baseplot +
   theme_void()
@@ -60,18 +60,18 @@ baseplot +
 
 Check [here](https://ggplot2.tidyverse.org/reference/ggtheme.html){target="_blank"} for a list of all preset themes in ggplot.
 
-It is possible to tweak all the elements of the theme to make your own personalized theme. It is not the purpose of this page, but if you wish to do so, adjust the various arguments that `theme()` offers or uses (type `?theme` in the R console for the documentation or click [here](https://ggplot2.tidyverse.org/reference/theme.html){target="_blank"} for a full list of these arguments.
+It is possible to tweak all the elements of the theme to make your own personalized theme. It is not the purpose of this page, but if you wish to do so, adjust the various arguments that `theme()` offers or uses (type `?theme` in the R console for the documentation or click [here](https://ggplot2.tidyverse.org/reference/theme.html){target="_blank"} for a full list of these arguments).
 <br/><br/>
 
 ### Background colors
 
-To set the color of the plot background, use the argument `panel.background = element_rect()` in `theme()`:
+To set the color of the plot background, use the argument `fill=` in `panel.background = element_rect()` in `theme()`:
 ```{r bkg color}
 baseplot +
   theme(panel.background = element_rect(fill = "lightblue"))
 ```
 
-To set the color of the surrounding area, use the argument `plot.background = element_rect()` in `theme()`:
+To set the color of the surrounding area, use the argument `fill=` in `plot.background = element_rect()` in `theme()`:
 ```{r bkg color2}
 baseplot +
   theme(plot.background = element_rect(fill = "lightblue"))
@@ -80,7 +80,7 @@ baseplot +
 
 ### Grid
 
-To set the parameters of the grid (not only its color, but also the thickness, line type, etc), use the argument `panel.grid.major = element_line()` or/and `panel.grid.minor = element_line()` in `theme()`. The arguments that you may use in these two functions are `color=`, `size=`, `linetype=` and `lineend=`:
+To set the parameters of the grid (not only its color, but also the thickness, line type, etc), use the necessary arguments in  `panel.grid.major = element_line()` or/and `panel.grid.minor = element_line()` in `theme()`. The arguments that you may use in these two functions are `color=`, `size=`, `linetype=` and `lineend=`:
 
 ```{r grid}
 baseplot +
@@ -89,13 +89,14 @@ baseplot +
     panel.grid.minor = element_line(colour="lightblue", size=0.4, linetype="dashed"))
 ```
 
-Finally, here is a way to remove specific elements of the theme (text, lines,…). Use `element_blank()` to simply discard whatever you do not need (for example, the grid) in the following way:
+Finally, here is a way to remove specific elements of the theme (text, lines,â¦). Use `element_blank()` to simply discard whatever you do not need (for example, the grid) in the following way:
 ```{r nogrid}
 baseplot +
  theme(panel.grid.major = element_blank(),
        panel.grid.minor = element_blank())
 ```
-
+<br/><br/>
+Again, type `?theme` in the R console for the documentation or click [here](https://ggplot2.tidyverse.org/reference/theme.html){target="_blank"} for a full list of the components of the theme.
 
 <br/><br/>
 
