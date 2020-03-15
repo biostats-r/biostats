@@ -9,10 +9,10 @@ knitr::opts_chunk$set(echo = TRUE, fig.align='center')
 
 # title: axis limits
 # author: jonathan
-# revised: 12/2/2020 
+# revised: 14/3/2020 
 
-WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Essential/axis-limits.html")
-GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Essential/axis-limits.Rmd")
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Essential/axis-limits.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Essential/axis-limits.Rmd")
 library(ggplot2)
 library(gridExtra)
 
@@ -29,6 +29,16 @@ category <- c(rep("A", 150), rep("B", 150), rep("C", 150), rep("D", 150))
 df <- data.frame(values1, values2)
 # dataframe for the boxplot
 df2 <- data.frame(category, values)
+
+# scatter plot
+baseplot1 <- ggplot(df, aes(values1, values2)) +
+  geom_point(size=2) 
+baseplot1
+
+# boxplot
+baseplot2 <- ggplot(df2, aes(category, values)) +
+  geom_boxplot()
+baseplot2
 ```
 For better clarity of your chart, it is important to set correctly the limits of the axes, i.e. the minimum and maximum values. If the limits are too narrow, part of your data might not be visible; if the limits are to broad, your plot might look small, empty and less readable.
 
@@ -37,17 +47,20 @@ The default arguments in `ggplot()` take care of setting appropriate dimensions 
 + a (scatter) plot where both variables are continuous,
 + a (box-) plot with a continuous response variable and a categorical predictor variable. 
 
-Let’s start with the code for the plots. These plot are stored in the objects `baseplot1` and `baseplot2` so that we can reuse them throughout the whole tutorial:
+Letâs start with the code for the plots. These plot are stored in the objects `baseplot1` and `baseplot2` so that we can reuse them throughout the whole tutorial:
 
-```{r variables and plot}
-# scatter plot
+```{r variables and plot, eval=FALSE}
+# left plot,  scatter plot
 baseplot1 <- ggplot(df, aes(values1, values2)) +
   geom_point(size=2) 
+baseplot1
 
-# boxplot
+# right plot, boxplot
 baseplot2 <- ggplot(df2, aes(category, values)) +
   geom_boxplot()
-
+baseplot2
+```
+```{r variables and plot2, echo=FALSE, fig.width=10, fig.height=4}
 #grid of plots
 grid.arrange(baseplot1, baseplot2, ncol=2)
 ```
@@ -64,7 +77,7 @@ baseplot1 +
   xlim(0, 90) +
   ylim(0, 90)
 ```
-Note the presence of a warning message above the plot. It tells you that negative values in `values2` have been omitted as a result of the new limits.
+Note the presence of a warning message above the plot. It tells you that negative values in `values2` have been omitted as a result of the new limits. Always make sure that the limits that you impose with `xlim()` or `ylim()` do not accidentally prevent the display of data points
 
 Using the same function with inverted limits, you can actually "turn around the axes":
 
@@ -85,15 +98,16 @@ baseplot1 +
 
 ### Setting the limits of the axes with `xlim()` and `ylim()` - discrete variable(s) 
 
-If your predictor variable is discrete (categorical), you may use the same function `xlim()` to ajust the range of the axis or the number of categories. As illustrated here, we limit the display to the categories to A, B and D instead of A, B, C and D:
+If your predictor variable is discrete (categorical), you may use the same function `xlim()` to ajust the range of the axis or the number of categories. As illustrated here, we limit the display to the categories to A, C and D instead of A, B, C and D:
 ```{r lim-cat}
 baseplot2 +
   xlim("A", "C", "D") +
   ylim(0, 90)
 ```
+Note the warning message that confirms that 150 values (matching the category B) have not been included.
 <br/><br/>
 
-This function also lets you play with the order the categories:
+`This function`xlim()` also lets you set the order the categories:
 ```{r lim-cat2}
 baseplot2 +
   xlim("D", "A", "C", "B") +
@@ -104,7 +118,7 @@ baseplot2 +
 
 ### Using `scale_ _discrete()` and `scale_ _continuous()`
 
-You may achieve the same results using the family of functions `scale_ _discrete()` and `scale_ _continuous()` instead of `xlim()` and `ylim()`. `scale_x_discrete()` and `scale_y_discrete()` allow for tuning the display of discrete variables while `scale_x_continuous()` and `scale_y_continuous()` apply to continuous variables. In the present case where we tune the limits of the axes, the argument `limit=` will come handy.
+You may achieve the same results using the family of functions `scale_ _discrete()` and `scale_ _continuous()` instead of `xlim()` and `ylim()`. `scale_x_discrete()` and `scale_y_discrete()` allow for tuning the display of discrete variables while `scale_x_continuous()` and `scale_y_continuous()` apply to continuous variables. In the present case where we tune the limits of the axes, the argument `limits=` will come handy.
 
 Here is an example with two continuous variables:
 ```{r cont-scale}
