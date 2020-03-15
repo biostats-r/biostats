@@ -9,10 +9,10 @@ knitr::opts_chunk$set(echo = TRUE, fig.align='center')
 
 # title: Color scale for continuous variables
 # author: jonathan
-# revised: 15/2/2020 
+# revised: 15/3/2020 
 
-WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/Visualizing/Essential/color-scale-continuous.html")
-GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/Visualizing/Essential/color-scale-continuous.Rmd")
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Essential/color-scale-continuous.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Essential/color-scale-continuous.Rmd")
 library(ggplot2)
 library(gridExtra)
 # variable 1
@@ -55,11 +55,19 @@ Their use is further explained [HERE](https://biostats.w.uib.no/choosing-colors-
 ### Using a gradient based on two given colors
 
 Now, if you do not find the exact set of colors that you want, you may use the color/gradient of your choice by adding `scale_color_gradient()` with the arguments `low=` and `high=` to the original code. The function will produce a two-color gradient ranging from the color indicated by `low=` to the color indicated by `high=`. Whether you indicate the colors by their [R name](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf){target="_blank"} or by their [Hex code](https://htmlcolorcodes.com/) is up to you. Here are two examples:
-```{r gradient, fig.width=10, fig.height=4}
+```{r gradient1, eval=FALSE}
+ggplot(df, aes(values1, values2)) +                       
+  geom_point(aes(color = values3), size = 2) +
+  scale_color_gradient(low = "yellow", high = "darkblue")             # left plot, colors coded with R names
+ggplot(df, aes(values1, values2)) +                     
+  geom_point(aes(color = values3), size = 2) +
+  scale_color_gradient(low = "#AF7AC5", high = "#E74C3C")             # right plot, colors coded with Hex codes
+```
+```{r gradient2, echo=FALSE, fig.width=10, fig.height=4}
 grid.arrange(
   ggplot(df, aes(values1, values2)) +                       
     geom_point(aes(color = values3), size = 2) +
-    scale_color_gradient(low = "yellow", high = "darkblue"),      # left plot, colors coded with R names
+    scale_color_gradient(low = "yellow", high = "darkblue"),          # left plot, colors coded with R names
   ggplot(df, aes(values1, values2)) +                     
     geom_point(aes(color = values3), size = 2) +
     scale_color_gradient(low = "#AF7AC5", high = "#E74C3C"),          # right plot, colors coded with Hex codes
@@ -69,8 +77,8 @@ grid.arrange(
 
 ### Using a gradient based on two given colors and a breaking point
 
-`scale_fill_gradient2()` is a function that also produces a gradient of colors, but this time based on three colors defined by `low=`, `mid=` and `high=`. This color `mid=` is special in the way that you can use it to highlight a breaking point in your data (encoded by the argument `midpoint=`). For example, if the average of the variable `values3` has a special meaning for the interpretation of the data, you may set `midpoint=mean(values3)`. Thus all values close to the average will get a color close to the one defined by `mid=`. Here is the code and the result:
-```{r gradient2}
+`scale_fill_gradient2()` is a function that also produces a gradient of colors, but this time based on three colors defined by `low=`, `mid=` and `high=`. This color `mid=` is special in the way that you can use it to highlight a breaking point in your data (encoded by the argument `midpoint=`). For example, if the average of the variable `values3` has a special meaning for the interpretation of the data, you may set `midpoint = mean(values3)`. Thus all values close to the average will get a color close to the one defined by `mid=`. Here is the code and the result:
+```{r gradient3}
 ggplot(df, aes(values1, values2, values3)) +
   geom_point(aes(color = values3), size = 2) +
   scale_color_gradient2(low = "yellow", mid = "darkblue", high = "red", midpoint = mean(values3))
