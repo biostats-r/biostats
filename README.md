@@ -1,7 +1,7 @@
 # biostats
-Repository for Rmarkdown-based pages and posts published at http://biostats.uib.no
+Repository for Rmarkdown-based pages and posts about statistics and data management in R/Rstudio published at http://biostats.uib.no
 
-# Table of contents biostats-website structure and links:
+## Table of contents biostats-website structure and links:
 
 BASIC: Basic Statistics in R (https://biostats.w.uib.no/up-in-the-r-2/basic-statistics-in-r/)
   - Descr: Descriptive Stats (https://biostats.w.uib.no/topics/basic-stats-in-r/descriptive-stats/)
