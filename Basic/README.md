@@ -1,4 +1,4 @@
-# BASIC: Basic Statistics in R (https://biostats.w.uib.no/up-in-the-r-2/basic-statistics-in-r/)
+## BASIC: Basic Statistics in R (https://biostats.w.uib.no/up-in-the-r-2/basic-statistics-in-r/)
 
 - Descr: Descriptive Stats (https://biostats.w.uib.no/topics/basic-stats-in-r/descriptive-stats/)
 - 1-sample: One-sample analysis (https://biostats.w.uib.no/topics/basic-stats-in-r/one-sample-analysis/)
