@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: Factorial Repeated Measures ANOVA
 # author: jonathan
-# revised: 29/1/2020 
+# revised: 10/4/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/factorial-repeated.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/factorial-repeated.Rmd")
@@ -17,13 +17,13 @@ library(nlme)
 library(ggplot2)
 
 ```
-Things are getting quite complicated here… It is possible to mix [factorial ANOVA](http://biostats.w.uib.no/factorial-design/){target="_blank"} and [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"} in order to perform a test where, for example, individuals in the sample are described according to a feature/factor (such as gender or species) and tested repeatedly under different conditions. The corresponding test is a **two-way repeated measures ANOVA** (or more generally factorial repeated measures ANOVA, if there are even more factors).
+Things are getting quite complicated hereâ¦ It is possible to mix [factorial ANOVA](http://biostats.w.uib.no/factorial-design/){target="_blank"} and [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"} in order to perform a test where, for example, individuals in the sample are described according to a feature/factor (such as gender or species) and tested repeatedly under different conditions. The corresponding test is a **two-way repeated measures ANOVA** (or more generally factorial repeated measures ANOVA, if there are even more factors).
 
 The null hypothesis `H0` in this test is that all means are equal.
 
 As for the "simple" repeated measures ANOVA, you may fit a **linear mixed effect model** with the function `lme()` that is found in the package `nlme`.
 
-Let’s take an example where 10 rats (5 rats from strain A and 5 rats from strain B) are weighed 4 times with intervals of 4 weeks (week8 to week20). Here is the code for the dataframe:
+Letâs take an example where 10 rats (5 rats from strain A and 5 rats from strain B) are weighed 4 times with intervals of 4 weeks (week8 to week20). Here is the code for the dataframe:
 
 
 ###################################
@@ -62,7 +62,7 @@ The assumptions are:
 
 + each individual is represented in the form of a **measurement in each of the tested groups** (there cannot be any missing value),
 + **normality** of distribution (use the  [Shapiro-Wilk](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"}),
-+ **sphericity**, which means that equality of variance is verified when comparing any two groups (all possible pairs of groups) in the experimental design (commonly checked via [Mauchly’s test](https://biostats.w.uib.no/test-for-sphericity-mauchly-test/){target="_blank"}), 
++ **sphericity**, which means that equality of variance is verified when comparing any two groups (all possible pairs of groups) in the experimental design (commonly checked via [Mauchlyâs test](https://biostats.w.uib.no/test-for-sphericity-mauchly-test/){target="_blank"}), 
 + groups contain [**no outliers**](https://biostats.w.uib.no/finding-outliers/){target="_blank"}.
  
 
@@ -86,10 +86,11 @@ anova(results.lme)
 ```
 
 The large F-value and the very small p-value on the lines `rat.strain` and `time.point` indicate that there is indeed an effect of both strain and time on rat weight. Further down, the last line of the table shows also an interaction between time and strain.
+<br/><br/>
 
 **But this does not tell us anything about the groups which means are significantly different.**
 
-Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests such as [Tukey HSD](http://biostats.w.uib.no/post-hoc-tests-tukey-hsd/){target="_blank"}.
+Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests.
 
 <br/><br/>
 
