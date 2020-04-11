@@ -9,19 +9,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: Repeated Measures ANOVA
 # author: jonathan
-# revised: 10/4/2020 
+# revised: 11/4/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/repeated.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/repeated.Rmd")
 library(nlme)
 library(ggplot2)
-
 ```
-**Repeated measures ANOVA** is a test that seems close to [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"} as it allows to check for differences between the means of three and more groups. The essential difference is that the groups are **dependent** (i.e. related). This means that the groups contain data or measurements from the same individuals. What differs in terms of design may be **when** measurements were taken (measurements were repeated in time: before, during, and after an experiment OR every day during a given time frame, OR etc) or **in which circumstances or conditions measurements** were performed (for example, measurements were done 3 times, each time following application of a new drug). 
+**Repeated measures ANOVA** is a test that seems close to [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"} as it allows to check for differences between the means of three and more groups. The essential difference is that the groups are **dependent** (i.e. related). This means that the groups contain data or measurements from the same individuals or entities. What differs in terms of design may be **when** measurements were taken (measurements were repeated in time: before, during, and after an experiment OR every day during a given time frame, OR etc) or **in which circumstances or conditions measurements** were performed (for example, measurements were done 3 times, each time following application of a new drug). 
 
 In this test, the null hypothesis `H0` states that the means of all groups are equal.
 
-Unlike [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"} where one fits a linear model with `lm()`, you may fit a **linear mixed effect model** with the function `lme()` that is found in the package `nlme`. However, we need to tell the function that some of the measurements are not replicates but that they concern the same individual. We will thus use the argument `random=~1|subjects` in `lme()`.
+Unlike [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"} where one fits a linear model with `lm()`, you may fit a **linear mixed effect model** with the function `lme()` that is found in the package `nlme`. However, we need to tell the function that some of the measurements are not replicates but that they originate from the same individual. We will thus use the argument `random=~1|subjects` in `lme()`.
 
 Letâs take an example where 5 rats are weighed 4 times with intervals of 4 weeks (week8 to 20). Here is the code for the dataframe:
 
@@ -72,19 +71,19 @@ library(nlme)
 ```
 <br/><br/>
 
-The following code fits the linear mixed model. The syntax is `lme(response ~ predictor, data = my.dataframe)`, and we must not forget to add the argument `random=~1|rat.ID` to link the repeated measurements to the corresponding individuals in `rat.ID`:
+The following code fits the linear mixed model. The syntax is `lme(response ~ predictor, data = my.dataframe)`, and we must not forget to add the argument `random=~1|subjects` to link the repeated measurements to the corresponding individuals in `rat.ID`:
 
 ```{r lme}
 results.lme <- lme(rat.weight ~ time.point, random=~1|rat.ID, data=my.dataframe)
 anova(results.lme)
 ```
 
-The output shows a F-value close to 794 and a p-value under 0.0001. The null hypothesis can be rejected; there is a significant difference between the means of the groups. Unsurprisingly, this difference is due to the factor `time.point`, meaning that the rats grow with time (as expected in normal conditions). However, there is no indication of difference between individuals.
+The output shows an F-value close to 794 and a p-value under 0.0001. The null hypothesis can be rejected; there is a significant difference between the means of the groups. Unsurprisingly, this difference is due to the factor `time.point`, meaning that the rats grow with time (as expected in normal conditions). However, there is no indication of difference between individuals.
 <br/><br/>
 
 **But this does not tell us anything about the groups which means are significantly different.**
 
-Indeed, this test tells you about an effect of the predictor variable, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests.
+Indeed, this test tells you about an effect of the predictor variable, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests. We can run [multiple comparisons in linear mixed effect models with glht()](https://biostats.w.uib.no/post-hoc-tests-multiple-comparisons-in-linear-mixed-effect-models/){target="_blank"}.
 
 <br/><br/>
 
