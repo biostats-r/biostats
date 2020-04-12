@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: One-way ANOVA
 # author: jonathan
-# revised: 11/4/2020 
+# revised: 12/4/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/1way.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/1way.Rmd")
@@ -17,9 +17,9 @@ library(ggplot2)
 
 ```
 
-One-way ANOVA is a parametric test designed to **compare the means of three or more groups**. The null hypothesis `H0` states that the means of all groups to be tested are equal. As usual, the test will return a p-value in the end, and you will be able to decide whether or not to reject the null hypothesis depending on this p-value.
+One-way ANOVA is a parametric test designed to **compare the means of two or more samples**. The null hypothesis `H0` states that the means of all samples to be tested are equal. The test returns an F-statistic and a p-value which will help you decide whether or not to reject the null hypothesis.
 
-The function to use in R is `lm()` followed by `anova()`. This option is used to fit a linear model and will work in virtually all cases. 
+One of the options to perform a one-way ANOVA in R is to run the function `lm()`;  followed by `anova()`. This option fits a linear model and will work in virtually all cases. 
 
 Let's take an example. Here, let's say that we want to check whether the average size of blue ground beetles (*Carabus intricatus*) differs depending on their location. We consider 3 different locations, for example 3 forests beautifully named `A`, `B` and `C`. In each location, we measure the size (in millimeters) of 10 individuals.
 
@@ -36,7 +36,7 @@ my.dataframe <- data.frame(size,location)
 ```
 <br/><br/> 
 
-It is always nice and useful to start with visualizing the whole dataset, so let's plot the data:
+It is always nice and useful to start by visualizing the whole dataset, so let's plot the data:
 ```{r boxplot, echo=FALSE}
 ggplot(my.dataframe, aes(x = location, y = size)) +
   geom_boxplot()
@@ -56,11 +56,11 @@ The assumptions are:
 
 ### Running the test
 
-The syntax is `lm(response ~ predictor, data = dataframe)` where `response` is the vector that contain the response variable, `predictor` is the vector that contains the predictor variable or factor (which categorizes the observations) and `dataframe` the name of the dataframe that contains the data. 
-We first need to fit a linear model with `lm()` and then we store the results in the object `results.lm`. We thus display the result of the analysis using `anova()`:
+The syntax is `lm(response ~ predictor, data = dataframe)` where `response` is the response variable, `predictor` is the predictor variable or factor (which categorizes the observations) and `dataframe` the name of the dataframe that contains the data. 
+We first need to fit the linear model with `lm()` and then we store it in the object `model`. We then compute and display the table for the analysis using `anova()`:
 ```{r lm}
-results.lm <- lm(size~location, data=my.dataframe)
-anova(results.lm)
+model <- lm(size ~ location, data = my.dataframe)
+anova(model)
 ```
 This output provides you with the F-value (7.1101) and the corresponding p-value (0.003307). The hypothesis `H0` stating that the means of the groups are equal is thus to be rejected.
 
