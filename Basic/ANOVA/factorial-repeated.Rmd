@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: Factorial Repeated Measures ANOVA
 # author: jonathan
-# revised: 10/4/2020 
+# revised: 12/4/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/factorial-repeated.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/factorial-repeated.Rmd")
@@ -17,17 +17,13 @@ library(nlme)
 library(ggplot2)
 
 ```
-Things are getting quite complicated hereâ¦ It is possible to mix [factorial ANOVA](http://biostats.w.uib.no/factorial-design/){target="_blank"} and [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"} in order to perform a test where, for example, individuals in the sample are described according to a feature/factor (such as gender or species) and tested repeatedly under different conditions. The corresponding test is a **two-way repeated measures ANOVA** (or more generally factorial repeated measures ANOVA, if there are even more factors).
+A factorial repeated measures ANOVA (or two-way repeated measures ANOVA) is quite similar to a [factorial ANOVA](http://biostats.w.uib.no/factorial-design/){target="_blank"} with the difference that there is **dependency** between groups in the data set like in a [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"}. This means that subjects have been measured repeatedly in time or in different circumstances or treatments. 
 
 The null hypothesis `H0` in this test is that all means are equal.
 
-As for the "simple" repeated measures ANOVA, you may fit a **linear mixed effect model** with the function `lme()` that is found in the package `nlme`.
+As for the "simple" [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"}, you may fit a **linear mixed effect model** with the function `lme()` that is found in the package `nlme`.
 
 Letâs take an example where 10 rats (5 rats from strain A and 5 rats from strain B) are weighed 4 times with intervals of 4 weeks (week8 to week20). Here is the code for the dataframe:
-
-
-###################################
-
 ```{r dataframe}
 
 # response variable
@@ -45,7 +41,7 @@ my.dataframe <- data.frame(rat.ID,rat.strain,time.point,rat.weight)
 ```
 <br/><br/>
 
-Lets visualize the data with a boxplot:
+Lets visualize the data with a line plot:
 <br/><br/>
 ```{r plot, echo=FALSE}
 ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, shape = rat.strain, color = rat.ID)) +
@@ -53,7 +49,6 @@ ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, shape =
   geom_point(size = 4) +
   scale_color_viridis_d(option = "inferno")
 ```
-
 <br/><br/>
 
 ### Assumptions
@@ -76,21 +71,22 @@ Since `lme()` is part of the package `nlme()`, you need to install and load it. 
 install.packages("nlme")
 library(nlme)
 ```
+<br/>
 
-
-Things get a bit more complicated here. We will indeed look at the effects of the predictor variables `time.point` and `rat.strain` on the response variable `rat.weight`, but we will also look at interactions between `time.point` and `rat.strain`. The syntax will be `lme(rat.weight ~ time.point * rat.strain)`. And here again, we must not forget to add the argument `random=~1|rat.ID` to link the repeated measurements to the corresponding individual in `rat.ID`:
-
+We first need to fit the mixed effect model with `lme()`. The syntax is as follows: `lme(response ~ predictor1 * predictor2, random=~1|subjects, data = my.dataframe)`, where `response` is the response variable, `predictor1` and `predictor2` are the predictor variables or factors (which categorize the observations), `subjects` is the variable that defines the individuals, and `dataframe` the name of the dataframe that contains the data.
+In our example, the predictor variables are `time.point` and `rat.strain`, the response variable is `rat.weight`, and the subjects are described by the variable `rat.ID`. 
+We will store the model in the object `model`, and we finally compute and display the table for the analysis using `anova()`:
 ```{r lme}
-results.lme <- lme(rat.weight ~ time.point * rat.strain, random=~1|rat.ID, data=my.dataframe)
-anova(results.lme)
+model <- lme(rat.weight ~ time.point * rat.strain, random=~1|rat.ID, data=my.dataframe)
+anova(model)
 ```
 
-The large F-value and the very small p-value on the lines `rat.strain` and `time.point` indicate that there is indeed an effect of both strain and time on rat weight. Further down, the last line of the table shows also an interaction between time and strain.
+The large F-value and the very small p-value on the lines `rat.strain` and `time.point` indicate that there is indeed a main effect of both `rat.strain` and `time.point` on `rat.weight`. Further down, the last line of the table (`time.point:rat.strain`) also shows a very low p-value and thus indicate an interaction between `time.point` on `rat.weight`.
 <br/><br/>
 
 **But this does not tell us anything about the groups which means are significantly different.**
 
-Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests.
+Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests. We can run [multiple comparisons in linear mixed effect models with glht() [factorial design]](https://biostats.w.uib.no/post-hoc-tests-multiple-comparisons-in-linear-mixed-effect-models-2/){target="_blank"}.
 
 <br/><br/>
 
