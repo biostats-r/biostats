@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: factorial design
 # author: jonathan
-# revised: 29/1/2020 
+# revised: 12/4/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/factorial.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/factorial.Rmd")
@@ -18,9 +18,9 @@ library(ggplot2)
 
 ```
 
-Whereas one-way ANOVA allows for comparison of three and more group means based on the different levels of a single factor, **factorial design** allows for comparison of groups based on **several independent variables and their various levels**. Thus, comparing data (such as tree size, egg sizeâ¦) split in groups according to two variables (for example location and species) may be done via a **two-way ANOVA**; if data are split in groups according to three independent variables (for example location, species and date of measurement), then a **three-way ANOVA** may be usedâ¦ Further below, we will essentially talk about two-way ANOVA , but youâll quickly understand how the functions may be adapted to more factors.
+Whereas one-way ANOVA allows for comparison of three and more group means based on the different levels of a single factor, **factorial design** allows for comparison of groups based on **several independent variables and their various levels**. Thus, comparing observations (such as tree size, egg sizeâ¦) categorized by to two predictor variables (for example location and species) may be done via a **two-way ANOVA**; if three predictor variables are involved (for example location, species and year), then a **three-way ANOVA** may be usedâ¦ Further below, we will essentially talk about two-way ANOVA, but youâll quickly understand how the functions may be adapted to more factors.
 
-Using factorial ANOVA, we get to assess **main effects**, in other words the impact of single, independent factors on a given variable (plant size, egg number, individual bodyweightâ¦). We also get to see whether there exist **interactions** between factors, i.e. whether the effect of a specific factor is influenced by (one of the) other factors.
+Using factorial ANOVA, we get to assess **main effects**, in other words the impact of single factors (predictor variables) on a given response variable (plant size, egg number, individual bodyweightâ¦). We also get to see whether there exist **interactions** between factors, i.e. whether the effect of a specific factor is influenced by (one of the) other factors.
 
 As for [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"}, the function to use is `lm()`, followed by `anova()`.
 
@@ -60,21 +60,30 @@ The assumptions are globally the same as for one-way ANOVA:
 
 <br/><br/>
 
-### Running the test!
+### Running the test
 
-We use the functions `lm()` and `anova()` the following way:
-
+The syntax is `lm(response ~ predictor1 * predictor2, data = dataframe)` where `response` is the response variable, `predictor1` and `predictor2` are the predictor variables or factors (which categorize the observations) and `dataframe` the name of the dataframe that contains the data. 
+We first need to fit the linear model with `lm()` and then we store it in the object `model`. We then compute and display the table for the analysis using `anova()`:
 ```{r lm}
-results.lm <- lm(size ~ location*year)
-anova(results.lm)
+model <- lm(size ~ location * year, data = my.dataframe)
+anova(model)
 ```
 
 The table above shows the F value and p-value for each of the main effects, `location` and `year`, as well as for the interaction `location:year`. It also conveniently indicates with stars where significance levels are reached. For instance, `size` is significantly affected by the factor `location`, and the p-value is very small (p<0.001, ***). There is no indication of an effect of `year`, nor an interaction between the two predictor variables.
 <br/><br/>
 
+Since there is no interaction, we may remove the interaction term from the model and run this syntax instead: `lm(response ~ predictor1 + predictor2, data = dataframe)`. The only difference is that a `+` replaces the `*`:
+```{r lm2}
+model2 <- lm(size ~ location + year, data = my.dataframe)
+anova(model2)
+```
+
+Here again, `size` is significantly affected by the factor `location`, but not `year`. Note that the p-values are different from those we obtained for the first model. 
+<br/><br/>
+
 **But this does not tell us anything about the groups which means are significantly different.**
 
-Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests such as [Tukey HSD](http://biostats.w.uib.no/post-hoc-tests-tukey-hsd/){target="_blank"}.
+Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests.  We can run [multiple comparisons in linear models with glht()](https://biostats.w.uib.no/post-hoc-tests-multiple-comparisons-in-linear-models-2/){target="_blank"}.
 
 <br/><br/>
 
