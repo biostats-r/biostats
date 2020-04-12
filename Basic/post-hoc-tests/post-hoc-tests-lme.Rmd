@@ -56,12 +56,12 @@ library(multcomp)
 
 Running the test with `glht()` involves using two other functions:
 
-+ `lme()` which fits a linear mixed effect model to your data, and which syntax is `lme(response ~ predictor, random=~1|subject, data = my.dataframe)`
++ `lme()` which fits a linear mixed effect model to your data, and which syntax is `lme(response ~ predictor, random=~1|subjects, data = my.dataframe)`
 + `summary()` which computes and displays the result table.
 
 <br/>
-
-The syntax is `glht(model, linfct=mcp(predictor='Tukey'))` where `predictor` is the predictor variable which levels have to be compared pairwise. Let's apply it to our example:
+First, we need to fit the linear model with `lme()`, which you have certainly already done. Then we run the model in `glht()`. The syntax is `glht(model, linfct=mcp(predictor='Tukey'))` where `predictor` is the predictor variable which levels have to be compared pairwise.
+Let's apply this to our example:
 ```{r glht}
 # fit the model
 model <- lme(rat.weight ~ time.point, random=~1|rat.ID, data=my.dataframe)
@@ -73,7 +73,6 @@ post.hoc <- glht(model, linfct=mcp(time.point='Tukey'))
 summary(post.hoc)
 ```
 The output shows all six pairwise comparisons, p-values and corresponding stars, and all pairwise comparisons are accompanied by a p-value less than 0.05. 
-
 
 <br/><br/>
 
