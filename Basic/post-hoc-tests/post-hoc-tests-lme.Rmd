@@ -7,18 +7,19 @@ output:
 ```{r setup&variables, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# title: Post Hoc Tests - multiple comparisons in linear mixed effect models with glht()
+# title: Post Hoc Tests - multiple comparisons in linear mixed effect models
 # author: jonathan
-# revised: 11/4/2020 
+# revised: 13/4/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/post-hoc tests/post-hoc-tests-lme.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/post-hoc tests/post-hoc-tests-lme.Rmd")
 library(multcomp)
 library(ggplot2)
 library(nlme)
+library(emmeans)
 ```
 
-You have been running a [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"} with `lme()` and `anova()`, and the F-test has revealed the existence of a significant difference between some of the tested groups. But which groups? To answer that question, you will need to run the appropriate *post-hoc* tests to assess the significance of differences between pairs of group means. The function `glht()` in the package `multcomp` will help you do this.
+You have been running a [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"} with `lme()` and `anova()`, and the F-test has revealed the existence of a significant difference between some of the tested groups. But which groups? To answer that question, you will need to run the appropriate *post-hoc* tests to assess the significance of differences between pairs of group means. The functions `emmeans()` and `glht()` will help you do this.
 
 We will reuse the example introduced [here (repeated measures ANOVA)](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"}.
 To create the corresponding dataframe, use the following code:
@@ -46,30 +47,48 @@ ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, color =
 ```
 <br/><br/>
 
-### Running the test with `glht()`
+and the model that was fitted with `lme()`:
+```{r model}
+# linear mixed effect model stored in the object 'model'
+model <- lme(rat.weight ~ time.point, random=~1|rat.ID, data=my.dataframe)
+```
+<br/><br/>
 
-First we need to activate the package `multcomp`:
+### Alternative 1: running the test with `emmeans()`
+
+`emmeans()` is part of the package `emmeans`, which we first need to activate:
 ```{r package, eval=FALSE}
+library(emmeans)
+```
+<br/>
+
+The next step consists in "feeding" the linear mixed effect model to `emmeans()`. The syntax is `emmeans(model, pairwise ~ predictor)` where `predictor` is the predictor variable which levels have to be compared pairwise:
+```{r emmeans}
+# running emmeans()
+emmeans(model, pairwise ~ time.point)
+```
+The output shows first some statistics for each group in the upper part, while the lower part displays the six pairwise comparisons and p-values. Here, all comparisons are associated with a p-value under 0.05.
+<br/><br/>
+
+### Alternative 2: running the test with `glht()`
+
+`glht()` is part of the package `multcomp` which we first need to activate:
+```{r package2, eval=FALSE}
 library(multcomp)
 ```
 <br/>
 
-Running the test with `glht()` involves using two other functions:
+Running the test with `glht()` involves two steps:
 
-+ `lme()` which fits a linear mixed effect model to your data, and which syntax is `lme(response ~ predictor, random=~1|subjects, data = my.dataframe)`
-+ `summary()` which computes and displays the result table.
++ feeding the linear mixed effect model to `glht` for which the syntax is `glht(model, linfct = mcp(predictor = 'Tukey'))` where `predictor` is the predictor variable which levels have to be compared pairwise,
++ computing the result table with `summary()`.
 
-<br/>
-First, we need to fit the linear mixed effect model with `lme()`, which you have certainly already done. Then we run the model in `glht()`. The syntax is `glht(model, linfct=mcp(predictor='Tukey'))` where `predictor` is the predictor variable which levels have to be compared pairwise.
 Let's apply this to our example:
 ```{r glht}
-# fit the model
-model <- lme(rat.weight ~ time.point, random=~1|rat.ID, data=my.dataframe)
+# running glht()
+post.hoc <- glht(model, linfct = mcp(time.point = 'Tukey'))
 
-# run glht()
-post.hoc <- glht(model, linfct=mcp(time.point='Tukey'))
-
-# get the result table
+# displaying the result table with summary()
 summary(post.hoc)
 ```
 The output shows all six pairwise comparisons, p-values and corresponding stars, and all pairwise comparisons are accompanied by a p-value less than 0.05. 
