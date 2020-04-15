@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: Factorial Repeated Measures ANOVA
 # author: jonathan
-# revised: 12/4/2020 
+# revised: 15/4/2020 
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/factorial-repeated.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/factorial-repeated.Rmd")
@@ -73,7 +73,7 @@ library(nlme)
 ```
 <br/>
 
-We first need to fit the mixed effect model with `lme()`. The syntax is as follows: `lme(response ~ predictor1 * predictor2, random=~1|subjects, data = my.dataframe)`, where `response` is the response variable, `predictor1` and `predictor2` are the predictor variables or factors (which categorize the observations), `subjects` is the variable that defines the individuals, and `dataframe` the name of the dataframe that contains the data.
+We first need to fit the linear mixed effect model with `lme()`. The syntax is as follows: `lme(response ~ predictor1 * predictor2, random=~1|subjects, data = my.dataframe)`, where `response` is the response variable, `predictor1` and `predictor2` are the predictor variables or factors (which categorize the observations), `subjects` is the variable that defines the individuals, and `dataframe` the name of the dataframe that contains the data.
 In our example, the predictor variables are `time.point` and `rat.strain`, the response variable is `rat.weight`, and the subjects are described by the variable `rat.ID`. 
 We will store the model in the object `model`, and we finally compute and display the table for the analysis using `anova()`:
 ```{r lme}
@@ -81,12 +81,12 @@ model <- lme(rat.weight ~ time.point * rat.strain, random=~1|rat.ID, data=my.dat
 anova(model)
 ```
 
-The large F-value and the very small p-value on the lines `rat.strain` and `time.point` indicate that there is indeed a main effect of both `rat.strain` and `time.point` on `rat.weight`. Further down, the last line of the table (`time.point:rat.strain`) also shows a very low p-value and thus indicate an interaction between `time.point` on `rat.weight`.
+The large F-value and the very small p-value on the lines `rat.strain` and `time.point` indicate that there is indeed a main effect of both `rat.strain` and `time.point` on `rat.weight`. Further down, the last line of the table (`time.point:rat.strain`) also shows a very low p-value and thus indicates an interaction between `time.point` and `rat.strain`.
 <br/><br/>
 
 **But this does not tell us anything about the groups which means are significantly different.**
 
-Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests. We can run [multiple comparisons in linear mixed effect models with glht() [factorial design]](https://biostats.w.uib.no/post-hoc-tests-multiple-comparisons-in-linear-mixed-effect-models-2/){target="_blank"}.
+Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests. We can run [multiple comparisons in linear mixed effect models [factorial design]](https://biostats.w.uib.no/post-hoc-tests-multiple-comparisons-in-linear-mixed-effect-models-2/){target="_blank"}.
 
 <br/><br/>
 
