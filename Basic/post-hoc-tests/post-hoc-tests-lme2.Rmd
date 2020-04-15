@@ -1,1 +1,94 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: Post Hoc Tests - multiple comparisons in linear mixed effect models [factorial design]
+# author: jonathan
+# revised: 15/4/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/post-hoc tests/post-hoc-tests-lme2.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/post-hoc tests/post-hoc-tests-lme2.Rmd")
+library(emmeans)
+library(ggplot2)
+library(nlme)
+```
+You have been running a [factorial (two-way) repeated measures ANOVA](https://biostats.w.uib.no/factorial-repeated-measures-anova-two-way-repeated-measures-anova/){target="_blank"} with `lme()` and `anova()`, and the F-test has revealed a main effect of at least one of the factors, and possibly an interaction. You would like to investigate further to find out which group means are significantly different from each other. To do so, you will need to run the appropriate *post-hoc* tests to assess the significance of differences between pairs of group means. The function `emmeans()` will help you do this.
+
+We will reuse the example introduced [here (factorial (two-way) repeated measures ANOVA)](https://biostats.w.uib.no/factorial-repeated-measures-anova-two-way-repeated-measures-anova/){target="_blank"}.
+To create the corresponding dataframe, use the following code:
+```{r dataframe}
+# response variable
+rat.weight <- c(166,168,155,159,151,166,170,160,162,153,220,230,223,233,229,262,274,267,283,274,261,275,264,280,282,343,354,351,359,349,297,311,305,315,303,375,399,388,405,395)
+
+# predictor variables
+rat.strain <- as.factor(rep(c(rep("strainA",5),rep("strainB",5)),4))
+time.point <- as.factor(c(rep("week08",10), rep("week12",10), rep("week16",10), rep("week20",10)))
+
+# individual ID
+rat.ID <- as.factor(rep(c("rat01","rat02","rat03","rat04","rat05","rat06","rat07","rat08","rat09","rat10"),4))
+
+#dataframe
+my.dataframe <- data.frame(rat.ID,rat.strain,time.point,rat.weight)
+```
+<br/><br/>
+
+For recall, here is the corresponding plot:
+```{r plot, echo=FALSE}
+ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, shape = rat.strain, color = rat.ID)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 4) +
+  scale_color_viridis_d(option = "inferno")
+```
+<br/><br/>
+
+and the model that was fitted with `lme()` was:
+```{r model}
+# linear mixed effect model stored in the object 'model'
+model <- lme(rat.weight ~ time.point * rat.strain, random=~1|rat.ID, data=my.dataframe)
+```
+The analysis of variance had shown that there is a main effect of both `rat.strain` and `time.point` on `rat.weight`, as well as an interaction `rat.strain:time.point`
+<br/><br/>
+
+### Running the test with `emmeans()`
+
+`emmeans()` is part of the package `emmeans`, which we first need to activate:
+```{r package, eval=FALSE}
+library(emmeans)
+```
+<br/>
+
+The next step consists in "feeding" the linear mixed effect model to `emmeans()`. The syntax is `emmeans(model, pairwise ~ predictor1 * predictor2)` where `predictor1` and `predictor2` are the predictor variables which levels have to be compared pairwise:
+```{r emmeans}
+# running emmeans()
+emmeans(model, pairwise ~ rat.strain * time.point)
+```
+The lower part of the table shows all the pairwise comparisons and the corresponding estimates and p-values. This table is rather confusing due to the large amount of information; in addition, not all pairs are meaningful for interpretating the data.
+<br/><br/>
+
+An option to obtain a list of more meaningful pairs is to run the result of `emmeans(model, ~ predictor1 * predictor2)` through the function `pairs()` with the argument `simple = "each"`. This creates a table with pairs of means grouped by each single factor. The syntax is `pairs(result, simple = "each")`: 
+```{r emmeans2}
+# running pairs()
+emm <- emmeans(model, ~ rat.strain * time.point)
+pairs(emm, simple = "each")
+```
+<br/><br/>
+
+If you are not interested in the full table, but only the part showing the breakdown based on the levels of a specific factor, run `pairs(emm, simple = "predictor")` instead:
+```{r emmeans3}
+# running pairs()
+emm <- emmeans(model, ~ rat.strain * time.point)
+pairs(emm, simple = "time.point")
+```
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
 
