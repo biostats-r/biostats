@@ -1,0 +1,230 @@
+---
+title: ""
+output: learnr::tutorial
+runtime: shiny_prerendered
+
+# output:
+#   html_document:
+#     highlight: tango
+#     toc: true
+#     toc_float: true
+#     css: ../css/style-chapters.css
+--- 
+
+
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(ggplot2)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Before you start {.facta}
+
+You need to be familiar with different types of data (continous, categorical) and be able to handle dataframes.
+
+# Getting started with ggplot
+
+## Install the ggplot2 package
+Before using the package for the first time, run the `install.packages()` command:
+ 
+```{r install, eval=FALSE, echo=TRUE}
+install.packages("ggplot2")
+```
+
+To activate the package, run this code:
+```{r load, eval=TRUE, echo=TRUE}
+library(ggplot2)
+```
+
+## The basics
+ggplot is based on the grammar of graphics, a terminology describing the components a figure to visualize data is based on. Let us have a look at these terms.
+
+To produce a figure or plot, we take data values and use elements like dots, squares, lines, and colour to convert the data into a visual graphic. There are many different ways of visualizing data, but there are some rules that apply in general. A plot is always built on data, and a number of other components such as aestetics, geometry, scales. These different components combined make up a plot.
+
+```{r ggplot hierarchy, echo=FALSE, fig.cap="Visualization of how ggplots are built.", out.width = '100%'}
+knitr::include_graphics("Figures/ggplot_setup.png")
+```
+
+## The code
+
+The code for a basic scatterplot looks something like this:
+```{r plot, eval=FALSE}
+ggplot(data, aes(x, y, colour)) +
+  geom_point()
+```
+
+The main function is `ggplot()` and is used to define the data and the aestetics. Each other component of the plot is added with `+`, like a different layer.
+
+
+## Exercise {.tabset}
+### Position
+Now it is your turn. 
+Add the required R code to plot Petal.Length against Petal.Width.
+
+```{r position, exercise=TRUE}
+ggplot(iris, aes(x = , y = , colour = Species)) +
+  geom_point() +
+  theme_minimal()
+
+```
+
+### Colour
+Add the required R code to colour each species in a different colour.
+
+```{r colour, exercise=TRUE}
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width, colour = )) +
+  geom_point()  +
+  theme_minimal()
+
+```
+
+
+### Geom
+Add the required R code to plot the data as points.
+
+```{r two-plus-two, exercise=TRUE}
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width, colour = Species))
+
+
+```
+
+## {.toc-ignore}
+
+Here we will describe the different components a plot is made of:
+<br/><br/>
+
+### Aestetics
+To display the data, we use different elements, the aestetics. The most important element is the position which describes the location on the plot, usually by x and y. Other important elements are shape, size, colour, line type and line width, which describe how the data is presented on the plot.
+
+Let us get started with an example. To draw a plot we use the function `ggplot()`. The first element in this function is data. The second element is the aestetic where we define the position with x and y and the other elements like colour, shape etc.
+
+```{r first plot, eval = TRUE}
+ggplot(data = iris, aes(x = Sepal.Length, y = Petal.Length, colour = Species))
+```
+
+This will make a plot, but so far the data is not plotted. We will need some more component. Let us look at the geom function.
+
+Aestetics only allow, variables from the dataframe. E.g. colour = "red" does not work. Maybe show an example.
+<br/><br/>
+
+### Geoms
+To plot the actual data, you need the geom function. There are many different geom functions that you can choose. See chapter XXX for an overview. Here, we will use geom_point, which displays the data as points. Each species gets a different colour, and there is automatically plotted a legend to the right of the plot.
+
+```{r add geom, eval = TRUE}
+ggplot(data = iris, aes(x = Sepal.Length, y = Petal.Length, colour = Species)) +
+  geom_point()
+```
+
+In the geoms one can also define specifics like data, colours, etc. geom_point(colour = "red")...
+
+Let us look at some other important components.
+<br/><br/>
+
+### Stats
+Stat is a powerful way to summarize your data or adding statistics to your plot. You can add a regression lines or plot means on top of your data.
+
+```{r smooth, eval = TRUE}
+ggplot(data = iris, aes(x = Sepal.Length, y = Petal.Length, colour = Species)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ x")
+```
+
+```{r stats, eval = TRUE}
+ggplot(data = iris, aes(x = Species, y = Petal.Length, colour = Species)) +
+  geom_point() +
+  stat_summary(fun = "mean", colour = "red", size = 2)
+```
+<br/><br/>
+
+### Scales
+... defince aestitics...
+colour, shape, linetype, and fit it to the variable type.
+What should we show here?
+
+
+### Facets
+Facets divides the plot into subplots to display the data of different groups.
+
+```{r faceting, eval = TRUE}
+ggplot(data = iris, aes(x = Petal.Width, y = Petal.Length, colour = Species)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ x") +
+  facet_wrap(~ Species)
+```
+<br/><br/>
+
+
+### Themes
+There are many different themes to display the data, for example removing the grey background. Each element of the plot can also be manipulated manually, see here.
+
+```{r theme, eval = TRUE}
+ggplot(data = iris, aes(x = Petal.Width, y = Petal.Length, colour = Species)) +
+  geom_point() +
+  theme_minimal()
+```
+<br/><br/>
+
+
+### A ggplots is built with layers
+The order of the different components of a plot often does not matter very much (although there are discussions around that topic). You can see the different components of the plot as different layers that are plotted on top of each other. Usually, the order is not so important, unless something needs to be plotted on top of something else. 
+
+For examle, you want to plot the data below and the mean values on top, and not the other way round. See below, the red points showing the means have disapeard. So, the things you want on top are plotted after.
+
+```{r wrong order, eval = TRUE}
+ggplot(data = iris, aes(x = Species, y = Petal.Length, colour = Species)) +
+    stat_summary(fun = "mean", colour = "red", size = 2) +
+  geom_boxplot()
+
+```
+
+
+
+## Common mistakes {.tabset}
+
+In the beginning you will make mistakes which will result in error messages, warnings or incomplete plots. These mistakes often occur when one of the layers is missing, because a `+` is forgotten at the end of a line, due to a typo, or the data or other elements are forgotten. Let us look at some common mistakes.
+<br><br>
+
+```{r variables, echo=FALSE}
+# variable1
+var1 <- c(1:20)
+
+# variable2
+var2 <- c(49,55,48,36,28,32,45,65,78,92,88,70,52,31,15,9,18,27,31,30)
+
+# dataframe
+df <- data.frame(var1, var2)
+```
+
+### No data
+
+If you forget to specify the data ggplot will not be able to make a plot and you will get the following error message:
+
+```{r omit2, echo=TRUE, error=TRUE}
+ggplot(aes(x = var1, y = var2)) +
+  geom_point()
+```
+
+### Missing aesthetics
+
+If you forget to define the aestetics `aes()` you will also get an error message and a empty image:
+```{r omit3, echo=TRUE, error=TRUE, eval=TRUE}
+ggplot(data = df) +
+  geom_point()
+```
+
+### Missing geometry
+
+If the geometry is missing `geom_point()`, ggplot will draw a empty plot, with axis labels, but show not data, because you have not defined how to plot the data.
+
+```{r omit1a}
+ggplot(data = df, aes(x = var1, y = var2))
+```
+
+
+
+# What's next? {.facta}
+
+Next, we will show the [essential elements]() of a plot (title, axes, legend, ...) and you can learn how to change and adapt each of these elements.
+Further you can learn the most common [plots types]() that are commonly used.
