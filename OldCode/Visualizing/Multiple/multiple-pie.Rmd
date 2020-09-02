@@ -1,0 +1,117 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a multiple pie/donut chart
+# author: jonathan
+# revised: 5/4/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Multiple/multiple-pie.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Multiple/multiple-pie.Rmd")
+library(ggplot2)
+type <- rep(c("O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-"), 2)
+country <- c(rep("Norway", 8), rep("UK",8))
+percentage <- c(33.2,	41.6,	6.8,	3.4,	5.8,	7.4,	1.2,	0.6,
+                37.0,	31.0,	8.0,	3.0,	11.0,	7.0,	2.0,	1.0)
+```
+We have seen previously how to make a [pie chart](https://biostats.w.uib.no/creating-a-pie-chart/){target="_blank"} and a [donut chart](https://biostats.w.uib.no/creating-a-donut-chart/){target="_blank"} based on a single data series. Making a multiple pie/donut chart which allows for comparison of 2+ data series is nothing complicated. If you know already how to make a multiple [stacked bar plot](https://biostats.w.uib.no/stacking-data-series-in-bars/){target="_blank"}, then you know almost everything about multiple pie/donut chart. The principle is as follows: start by making a multiple stacked bar plot, then transform it by placing it into a polar coordinate system.
+
+Before going any further, if you are not so familiar with pie/donut plots or stacked bars, have a quick look at these pages:
+
++ [Creating a pie chart](https://biostats.w.uib.no/creating-a-pie-chart/){target="_blank"},
++ [Creating a donut chart](https://biostats.w.uib.no/creating-a-donut-chart/){target="_blank"},
++ [Stacking data series in bars](https://biostats.w.uib.no/stacking-data-series-in-bars/){target="_blank"}.
+
+Here we will plot the distributions (response variable `percentage`) of blood types (predictor variable `type`) in Norway and in the UK (predictor variable `country`).
+
+The dataframe for this tutorial is as follows:
+```{r dataframe}
+# dataframe
+df <- data.frame(type, country, percentage)
+# structure of the dataframe
+str(df)
+```
+<br/><br/>
+
+We start by making the stacked bar showing both data series. The function to use for drawing the bars is `geom_col()`. We must map the variables with the function `aes()` which will look more or less like this: `aes(country, percentage, type)`.  Our plan is to:
+
++ plot the predictor variable `country` on the X-axis, 
++ plot the response variable `percentage` on the Y-axis,
++ use `fill=` to display the data in colored stacked bars based on the predictor variable `type`.
+
+The code for the plot is as follows:
+```{r plot}
+ggplot(df, aes(x = country, y = percentage, fill = type)) +
+  geom_col() +
+  scale_fill_viridis_d()
+```
+NB: here we used `scale_fill_viridis_d()` to change the color palette.
+<br/><br/>
+
+From here, we place the plot in a polar coordinate system with `coord_polar("y")`:
+```{r plot2}
+ggplot(df, aes(x = country, y = percentage, fill = type)) +
+  geom_col() +
+  scale_fill_viridis_d() +
+  coord_polar("y")
+```
+<br/><br/>
+
+Note that the legend does not help determine which country is represented by the pie. Is Norway inside or outside? We can solve the problem by adding `color=country` in `aes()` to highlight the elements based on the variable country. And with  `scale_color_manual(values=c("red", "blue"))` and `size=.8`, we change the thickness and colors of the frames around the elements:
+```{r plot3}
+ggplot(df, aes(x = country, y = percentage, fill = type, color = country)) +
+  geom_col(size=.8) +
+  scale_color_manual(values=c("red", "blue")) +
+  scale_fill_viridis_d() +
+  coord_polar("y")
+```
+<br/><br/>
+
+If you prefer to have a multiple donut chart instead of a multiple pie chart, the only thing to do is to expand the original X-axis towards the left. Since the variable `country` used on the X-axis is discrete, we must add an empty, discrete element to the left of the countries. We use `scale_x_discrete(limits= )` to do so and indicate the order of the elements, starting with the empty element `" "`, then `"Norway"` and `"UK"`:
+```{r plot4}
+ggplot(df, aes(x = country, y = percentage, fill = type)) +
+  geom_col() +
+  scale_x_discrete(limits = c(" ", "Norway","UK")) +
+  scale_fill_viridis_d() +
+  coord_polar("y")
+```
+<br/><br/>
+
+Finally, we may use `theme_void()` to get rid of the useless elements of the theme such as background and axes:
+```{r plot5}
+ggplot(df, aes(x = country, y = percentage, fill = type)) +
+  geom_col() +
+  scale_x_discrete(limits = c(" ", "Norway","UK")) +
+  scale_fill_viridis_d() +
+  coord_polar("y") +
+  theme_void()
+```
+<br/><br/>
+
+
+
+### Adding plot title, axis titles, ticks, labels and other essential elements
+
+In [this section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}, you will learn how to set/modify all the necessary elements that make a plot complete and comprehensible. Such elements are:
+
++ [plot title](https://biostats.w.uib.no/title/){target="_blank"}, 
++ [axis title](https://biostats.w.uib.no/axis-titles/){target="_blank"},
++ [axis scale](https://biostats.w.uib.no/axis-scale/){target="_blank"},
++ [axis ticks](https://biostats.w.uib.no/axis-ticks/){target="_blank"},
++ [category labels](https://biostats.w.uib.no/category-labels/){target="_blank"},
++ [legend](https://biostats.w.uib.no/legend/){target="_blank"},
++ [colors](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"},
++ [etc](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}.
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

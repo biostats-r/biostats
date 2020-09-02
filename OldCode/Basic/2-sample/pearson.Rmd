@@ -1,0 +1,84 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: comparing two variables - Pearson's product-moment correlation
+# author: jonathan
+# revised: 14/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/2-sample/pearson.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/2-sample/pearson.Rmd")
+library(ggplot2)
+library(gridExtra)
+weight<-c(84,64,73,78,70,79,74,68,73,63,62,69,54,64,66,70)
+heigth<-c(183,174,179,174,164,184,179,154,167,170,168,164,166,163,154,174)
+df <- data.frame(heigth, weight)
+```
+
+The Pearson product-moment correlation (often called Pearson’s *r*, among others) is a parametric test which measures the *linear* relationship between two variables. In brief, Pearson’s correlation virtually draws a line through the cloud of data points trying to make the best fit line; the coefficient tells you how well the data are “dispatched” relative to that line.
+
+This test comes with assumptions, and one must check that everything is OK before going further:
+
++ this is a parametric test, samples/variables must be normally distributed (run the [Shapiro-Wilk test](http://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"}),
++ the variables are continuous,
++ the variables work in pairs,
++ outliers are not allowed,
++ the variances of these variables are “relatively” similar (Run [Fisher’s F-test](http://biostats.w.uib.no/1-comparing-two-variances/){target="_blank"}).
+
+Let’s see this with an example. Here, we consider the weight and height of 16 individuals. Both weight and height are continuous variables, arranged in pairs ( 1 weight entry and 1 height entry per individual).
+
+We need to check that both variables are normally distributed:
+``` {r normality}
+shapiro.test(weight)
+shapiro.test(heigth)
+```
+<br/><br/>
+The Shapiro-Wilk test confirms that both samples come from normal distributions.
+
+Let's now check for equal variance with Fisher's F test.
+
+``` {r variance}
+var.test(weight, heigth)
+```
+Variances are apparently not significantly different according to Fisher’s F test, and no outlier seems to show up on the following boxplots: 
+``` {r outliers, echo=FALSE}
+plot1 <- ggplot(df, aes(X = "heigth", y = heigth)) +
+geom_boxplot(outlier.colour = "red", outlier.shape = 1) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+plot2 <- ggplot(df, aes(X = "weight", y = weight)) +
+geom_boxplot(outlier.colour = "red", outlier.shape = 1)+
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+grid.arrange(plot1, plot2, ncol=2)
+
+```
+<br/><br/>
+We can thus proceed. Let's now visualize the 2 variables in a scatter plot and add a line of best fit (in blue):
+``` {r scatterplot, echo=FALSE}
+ggplot(df, aes(x = weight, y = heigth)) +
+  geom_point(size = 2, color = "red") + 
+  geom_smooth(method = "lm", color = "blue", se=FALSE)
+```
+<br/><br/>
+Now that the assumptions are checked and that we have a quick idea of the linear relationship, let’s check Pearson’s product-moment correlation. The function is `cor.test()`. Note that the function is the same as for Spearman’s *rho* and Kendall’s *tau*. The extra parameter `method=" "` defines which correlation coefficient is to be considered in the test (choose between *"pearson"*, *"spearman"* and *"kendall"*; if the parameter method is omitted, the default test will be Pearson’s *r*).
+
+In this test, the null hypothesis `H0` states that there is no relationship between the variables.
+``` {r correlation}
+cor.test(heigth, weight, method="pearson")
+```
+The test concludes that it is very unlikely that there exists no relationship between the variables (p-value less than 0.05). The alternative hypothesis (there is a relationship…) is thus accepted.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

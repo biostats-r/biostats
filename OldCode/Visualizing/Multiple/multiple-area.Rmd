@@ -1,0 +1,87 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a multiple area chart
+# author: jonathan
+# revised: 5/4/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Multiple/multiple-area.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Multiple/multiple-area.Rmd")
+library(ggplot2)
+gender<-rep(c("Men", "Women"), each = 106)
+age<- rep(0:105,2)
+population<-c(28556,29649,31187,31157,31303,31242,32372,32712,33540,34217,33752,32858,32986,32088,32377,32092,31517,32501,34379,34676,34048,34896,35746,35789,35857,36328,37618,38224,38744,38696,38400,37094,37425,36912,36433,36697,36765,35618,36496,35890,35731,34544,35594,36237,37644,38042,39157,38968,38611,39296,38891,37784,37842,37089,36341,34436,33786,32967,32503,32448,31775,30837,30966,29972,29040,28378,27952,26627,26679,26489,26585,26482,26920,23382,22031,18987,16856,14071,13975,12839,11687,10445,9328,8177,7463,6759,6345,5434,4833,3838,3245,2625,2110,1682,1197,835,579,356,234,131,75,38,20,18,12,16,26835,27901,29160,29452,29663,30034,30713,30910,31964,32349,31875,31203,31367,30750,30786,30554,30214,30672,31982,31912,31815,32531,33458,33285,33806,34469,35357,36612,37725,37415,37281,36174,35522,34968,34763,34148,34599,34097,34252,33835,33516,32815,33435,34612,36083,35791,37092,37258,36742,37471,37063,36134,35504,35004,34392,33287,32172,31709,31261,31131,31079,30376,30709,29818,29171,28768,28049,26413,26856,26793,26784,27395,28009,24811,23392,20493,18780,16169,16341,15536,14462,13307,12339,11351,10651,9974,9908,9172,8379,7179,6388,5449,4784,3848,3220,2388,1860,1400,1002,556,365,250,110,82,41,52)
+
+```
+A multiple area plot (also called stacked area plot) is useful to visualize how different components or groups in a dataset contribute to a sum or a population. 
+
+Here we will plot data from Statistics Norway describing the Norwegian population (response variable `population`) in 2019. Each observation (Norwegian person) is characterized by gender and age (predictor variables). Data source: Statistics Norway, the national statistical institute of Norway ([ssb.no](http://ssb.no){target="_blank"}).
+
+The dataframe for this tutorial is as follows:
+```{r dataframe}
+# dataframe
+df <- data.frame(age, population, gender)
+# structure of the dataframe
+str(df)
+```
+<br/><br/>
+
+The function to use for drawing the areas is `geom_area()`. We must map the variables with the function `aes()` which will look more or less like this: `aes(age, population, gender)`.  Our plan is to:
+
++ plot the predictor variable `age` on the X-axis, 
++ plot the response variable `population` on the Y-axis,
++ use `fill=` to display the data in colored areas based on the predictor variable `gender`.
+
+The code for the plot is as follows:
+```{r plot}
+ggplot(df, aes(x = age, y = population, fill=gender)) +
+  geom_area()
+```
+<br/><br/>
+
+As you see here, `geom_area()` creates automatically a stacked area plot where the values projected onto the Y-axis are **cumulative**, not absolute. If you prefer to plot the absolute values, in other words if you want to have the two genders to overlap, you may use the argument `position = position_dodge()`:
+```{r plot2, warning=FALSE}
+ggplot(df, aes(x = age, y = population, fill=gender)) +
+  geom_area(position = position_dodge())
+```
+However, the opacity of the top area (`Women`) makes it impossible to read the values from `Men`. This may be solved by making the layers semi-transparent with `alpha=`:
+```{r plot3, warning=FALSE}
+ggplot(df, aes(x = age, y = population, fill=gender)) +
+  geom_area(position = position_dodge(), alpha=.5)
+```
+<br/><br/>
+
+Finally, here is a trick if you want to display both genders in a symmetric way, one *above* the X-axis, and the other one *below* it. Use `ifelse()` to create a conditional display, where the values linked to the variable `Women` are displayed normally (positive values, `population`) while the others are displayed negatively (`-population`):
+```{r plot4}
+ggplot(df, aes(x = age, y = population, fill=gender)) +
+  geom_area(aes(y = ifelse(gender=="Women", population, -population)))
+```
+<br/><br/>
+
+
+### Adding plot title, axis titles, ticks, labels and other essential elements
+
+In [this section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}, you will learn how to set/modify all the necessary elements that make a plot complete and comprehensible. Such elements are:
+
++ [plot title](https://biostats.w.uib.no/title/){target="_blank"}, 
++ [axis title](https://biostats.w.uib.no/axis-titles/){target="_blank"},
++ [axis scale](https://biostats.w.uib.no/axis-scale/){target="_blank"},
++ [axis ticks](https://biostats.w.uib.no/axis-ticks/){target="_blank"},
++ [category labels](https://biostats.w.uib.no/category-labels/){target="_blank"},
++ [legend](https://biostats.w.uib.no/legend/){target="_blank"},
++ [colors](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"},
++ [etc](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}.
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

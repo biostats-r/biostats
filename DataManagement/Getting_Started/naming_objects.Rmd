@@ -1,0 +1,228 @@
+---
+title: "Naming objects"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# author: Richard Telford
+# contributors: jonathan
+# revised: 15/4/2020 
+
+library("learnr")
+```
+
+## Assigning an object to a name
+
+If you run an R command, the resulting object will be printed to the screen.
+
+```{r}
+mean(1:10) # mean of sequence of numbers from 1:10
+# result printed to screen
+```
+
+If you want to use the object again, you need to assign it to a name so it can be stored.
+
+The usual assign operator is `<-`. 
+The name is put on the left of the arrow and the object on the right.
+The result can be accessed by typing the name of the object.
+
+```{r}
+result <- mean(1:10) # mean of sequence of numbers from 1:10
+result
+# result printed to screen
+```
+
+The object can now be used in further calculations.
+
+```{r}
+result * result
+```
+
+
+```{r assign_quiz, echo = FALSE}
+question_checkbox(
+  "Select all statements that are true",
+  answer("The arrow `<-` is the best way to assign an object to a name.", correct = TRUE),
+  answer("If the result of a function is not assigned to a name, it is printed to the screen and lost.", correct = TRUE),
+  answer("Forgetting to assign an object is a  common error.", correct = TRUE),
+  random_answer_order = TRUE,
+  allow_retry = TRUE
+)
+```
+
+## Legal names
+
+### Allowed characters
+
+Object names can only include
+
+- lower case letters
+- UPPER case letters
+- numbers
+- dots `.` and underscores `_`
+
+The first character must be a letter or a dot.
+
+```{r legal_names_quiz, echo = FALSE}
+question_checkbox(
+  "Select all the names that are legal",
+  answer("tomato", correct = TRUE),
+  answer("_apple", correct = FALSE, message = "Names cannot start with an underscore"),
+  answer("BASil", correct = TRUE),
+  answer("extra virgin olive oil", correct = FALSE, message = "Names cannot include spaces"),
+  answer(".banana", message = "The object `.banana` will be invisible.", correct = TRUE),
+  answer("2onions", correct = FALSE, message = "Names cannot start with a number"),
+  answer("mushroom2", correct = TRUE),
+  answer("carrot/cabbage", correct = FALSE, message = "Names can only include letters, numbers, `.` and `_`."),
+  answer(".", correct = TRUE, message = "The object `.` will be invisible."),
+  answer("spinach_potato", correct = TRUE),
+  answer("kål", correct = TRUE, message = "Names with `æ`, `ø`, or `å` are legal but can cause huge problems with locale. Avoid."),
+  random_answer_order = TRUE,
+  allow_retry = TRUE,
+  try_again = "Be sure to select all seven legal names!"
+)
+```
+
+### Invisible objects
+
+If the first character in a name is a dot, the object is invisible (this is sometime useful). 
+Use `ls(all.names = TRUE)` to find any invisible objects. 
+
+```{r invisible_names_quiz, echo = FALSE}
+question_checkbox(
+  "Select all statements that are true",
+  answer("Object names that start with a `.` are invisible", correct = TRUE),
+  answer("Object names cannot start with a `.`", correct = FALSE),
+  answer("Invisible objects appear in the RStudio Environment tab", correct = FALSE),
+  answer("The R command `ls(all.names = TRUE)` will show invisible objects", correct = TRUE),
+  random_answer_order = TRUE,
+  allow_retry = TRUE
+)
+```
+
+### Special characters
+
+Object names can include characters with diacritics such as `æ`, `ø`, and `å` but these are best avoided. 
+
+ - You may collaborate with people who do not have these characters on their keyboard.
+ - Worse, computers with different locales may fail to read code with these characters (see `Sys.getlocale()` to find your current locale)
+ - There are several characters that look like `å` but are treated as different characters by R.
+ - Representing these characters depends on the file encoding. 
+File encoding and locale problems open up a whole world of pain you will want to avoid!
+
+```{r diacritic_names_quiz, echo = FALSE}
+question_checkbox(
+  "Select all statements that are true",
+  answer("Object names can include characters with diacritics such as `ø` and `å`.", correct = TRUE),
+  answer("Using characters with diacritics is a very bad idea.", correct = TRUE),
+  random_answer_order = TRUE,
+  allow_retry = TRUE
+)
+```
+
+## Reserved names
+
+Some names are reserved for R.
+These include `function`, `if`, `else`, `for`, `while`, `next` and `TRUE`. 
+You can see the full list with `?Reserved`.
+If you try to use one of these names, you will get an error.
+
+Here are examples of the errors you can get trying to use reserved words as names.
+```{r reserved_names1, error = TRUE}
+function <- 7 #error
+```
+```{r reserved_names2, error = TRUE}
+next <- 1 #error
+```
+```{r reserved_names3, error = TRUE}
+TRUE <- FALSE #error!
+```
+
+
+```{r reserved_names_quiz, echo = FALSE}
+question_checkbox(
+  "Select all the legal names",
+  answer("TRUE", correct = FALSE),
+  answer("false", correct = TRUE),
+  answer("T", correct = TRUE, message = "Some people use `T` as a shortcut for TRUE. Using `T` as an object name will ruin their code."),
+  answer("function", correct = FALSE),
+  answer("NULL", correct = FALSE),
+  answer("na", correct = TRUE),
+  answer("mean", correct = TRUE, message = "It is legal but can be confusing to give objects the same name existing R functions such as `mean`."),
+  answer("Bergen", correct = TRUE),
+  answer("Function", correct = TRUE),
+  random_answer_order = TRUE,
+  allow_retry = FALSE,
+  try_again = "Be sure to select all six legal names!"
+)
+```
+
+## Case Sensitivity
+
+R is a case sensitive language. 
+This means that `fun`, `Fun` and `FUN` are all different objects.
+
+```{r case_sensitivity_quiz, echo = FALSE}
+question_checkbox(
+  "Select all statements that are true",
+  answer("R is a case sensitive language", correct = TRUE),
+  answer("The names `data`, `Data`, and `DATA` refer to the same object.", correct = TRUE),
+  random_answer_order = TRUE,
+  allow_retry = FALSE
+)
+```
+
+## Good names
+
+    “There are only two hard things in Computer Science: cache invalidation and naming things.”
+
+    — Phil Karlton
+    
+###
+
+Naming things is surprisingly hard.
+
+- Names should be legal
+- Names should be concise
+- Names should be meaningful
+- Avoid using names of common functions
+
+```{r good_names_quiz, echo = FALSE}
+question_checkbox(
+  "Select all the good names",
+  answer("T", correct = FALSE, message = "Some people use `T` as a shortcut for TRUE. Using `T` as an object name will ruin their code."),
+  answer("bird_raw", correct = TRUE),
+  answer("weather", correct = TRUE),
+  answer("fish_clean", correct = TRUE),
+  answer("jja1b", correct = FALSE),
+  answer("mean", correct = FALSE, message = "It is legal but can be confusing to give objects the same name existing R functions such as `mean`."),
+  answer("data", correct = FALSE, message = "`data` is not very informative, especially if you have multiple datasets to analyse."),
+  answer("ddd", correct = FALSE, message = "You will never remember what `ddd` represents."),
+  random_answer_order = TRUE,
+  allow_retry = FALSE,
+  try_again = "Be sure to select all three good names!"
+)
+```
+
+### Combining words
+
+Make the word breaks clear. Here are some strategies. 
+
+- snake_case
+- camelCase
+- UpperCamelCase
+- best.avoided (possible confusion with R functions)
+
+I usually use snake_case as I find it easiest to read.
+
+Code completion in RStudio can help with typing longer names (type the first few letters then wait or press `tab`).
+
+## More resources
+
+- Tidyverse [style guide](https://style.tidyverse.org/syntax.html#object-names)

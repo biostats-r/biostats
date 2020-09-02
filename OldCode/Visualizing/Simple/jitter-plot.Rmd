@@ -1,0 +1,78 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a jitter plot
+# author: jonathan
+# revised: 18/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Simple/jitter-plot.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Simple/jitter-plot.Rmd")
+library(ggplot2)
+# variable 1
+response <- c(rnorm(150, mean=20, sd=5), rnorm(150, mean=30, sd=4), rnorm(150, mean=15, 3), rnorm(150, mean=40, sd=5)) 
+# variable 2
+group <- c(rep("Gr1", 150), rep("Gr2", 150), rep("Gr3", 150), rep("Gr4", 150))
+```
+A jitter plot represents data points in the form of single dots, in a similar manner to a scatter plot. The difference is that the jitter plot helps visualize the relationship between a measurement variable and a categorical variable. It is quite useful to evaluate the spread of the data within groups, and has the advantage of showing a lot of data points, without risking massive overlap (overplotting) and thus lack of clarity.
+
+We will see how to use `ggplot()` to code for a jitter plot representing 4 groups of 150 data points each. This example is based on the same data set used to illustrate how to draw [boxplots](https://biostats.w.uib.no/creating-a-multiple-boxplot/){target="_blank"} and [violin plots](https://biostats.w.uib.no/creating-a-violin-plot/){target="_blank"}, among others. Here are the variables and dataframe:
+```{r dataframe}
+# dataframe
+df <- data.frame(group, response)
+str(df)
+```
+<br/><br/>
+we first map the data with `aes(group, response)` and we use `geom_jitter()` to draw the plot. The code is as follows:
+```{r plot}
+ggplot(df, aes(group, response)) +     
+  geom_jitter()
+```
+<br/><br/>
+
+As you may notice, the data is well organized in four delimited areas so that the dots from adjacent groups do not overlap. The spread of the data is well represented, but the default width of these groups (or *horizontal jitter*) makes it slightly difficult to estimate the density. We may try to reduce the jitter by using the argument `width=` in `geom_jitter()`:
+```{r narrow}
+ggplot(df, aes(group, response)) +     
+  geom_jitter(width= 0.1)                  
+```
+<br/><br/>
+
+Do not try to overdo it as it will result in a plot which wonât be readable:
+```{r narrower}
+ggplot(df, aes(group, response)) + 
+  geom_jitter(width=.01)       
+```
+<br/><br/>
+
+The shape, size and color of the dots are of course tunable with `shape=`, `size=` and `color=`. Check [this table](https://www.statmethods.net/advgraphs/images/points.png){target="_blank"} and pick the number that matches the shape you want.
+```{r tune}
+ggplot(df, aes(group, response)) + 
+  geom_jitter(shape= 18, size=1.2, color="red")        
+```
+<br/><br/>
+
+### Adding plot title, axis titles, ticks, labels and other essential elements
+
+In [this section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}, you will learn how to set/modify all the necessary elements that make a plot complete and comprehensible. Such elements are:
+
++ [plot title](https://biostats.w.uib.no/title/){target="_blank"}, 
++ [axis title](https://biostats.w.uib.no/axis-titles/){target="_blank"},
++ [axis scale](https://biostats.w.uib.no/axis-scale/){target="_blank"},
++ [axis ticks](https://biostats.w.uib.no/axis-ticks/){target="_blank"},
++ [category labels](https://biostats.w.uib.no/category-labels/){target="_blank"},
++ [legend](https://biostats.w.uib.no/legend/){target="_blank"},
++ [secondary Y-axis](https://biostats.w.uib.no/secondary-y-axis/){target="_blank"},
++ [colors](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"},
++ [etc](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
