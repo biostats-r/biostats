@@ -1,5 +1,5 @@
 ---
-title: "xxx"
+title: "Template for Biostats webpage"
 output:
   html_document:
     highlight: tango
@@ -9,14 +9,56 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-#library(learnr)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(palmerpenguins)
+library("tidyverse")
+data(package = 'palmerpenguins')
 ```
+
+This document describes the workflow and template for creating **Biostats webpage**.
+Each page is created by a separate RMarkdown file.
+The RMarkdown files are created in a forked biostats repo: https://github.com/biostats-r/biostats
+and via pull request pushed to the main repo.
+For more information on the use of GitHub, forks and branches see the git tutorials in the Data Management section: https://github.com/biostats-r/biostats/tree/master/DataManagement
+
+Please read this document very carefully before starting your first file.
+
+
+# Organizing files
+
+Save your Rmd files in one of the main folder in the biostats repo:
+
+- 1. Working in R
+- 2. Statistics in R
+- 3. Data visualization
+- 4. Data management
+
+Organize all files inside each main folder using the following numbering system:
+
+- 4.1_getting_started_with_git.Rmd
+- 4.2_forks_and_branches.Rmd
+
+
+# Naming convention
+
+The naming convention for the biostats GitHub repo is **snake_case**.
+The first letter of each word is lowercase and teh space is replaced by an underscore _.
+
+Here is an example: simple_linear_regression.Rmd
+
+Give each file and object a meaningful and concise name.
+This will help the others to understand what is goining on.
+
+
+In the **chunks** in the Rmakrdown files, the underscore should be replaces with a dash:
+```{r download-git}```
 
 
 # Starting an .Rmd file
 
-Use the following code at the top of your file. Don't define the title as it might be displayed with the table of contents. Note that you must have the file "style-chapters.css" in the folder "css" located in the same folder as your .Rmd file:
+Use the following code at the top of your file. 
+Don't define the title as it might be displayed with the table of contents. 
+Note that you must have the file "style-chapters.css" in the folder "css".
 
 ```{r starting, eval=FALSE}
 ---
@@ -30,6 +72,74 @@ output:
 ---
 ```
 
+Add this chunk to load libraries, define options and source the figure setting file.
+!!! HOW CAN I DISPLAY THE FULL CHUNK? !!!
+```{r setup-template, eval=FALSE, include=TRUE}
+#add all libraries that need loading
+library(learnr)
+
+#define options
+knitr::opts_chunk$set(echo = TRUE)
+
+#source figure settings
+source("set_theme_file.R")
+```
+
+
+
+# Text size, colours, etc
+
+Don't worry, the css styleguide file will take care of this.
+
+
+# Figures
+
+The set_theme_file.R will take care of colours, text size, theme etc in all the figures.
+This file has to be sourced in each Rmarkdown file (see Starting an .Rmd file above).
+
+The figures have the following settings:
+- theme_minimal()
+- text size: 12
+- colour: ... for discrete data use... and for continouse data use ...
+
+
+Each figure will have two chunks of code:
+- a chunk that displays the code, but does not do anything
+- a chunk that makes and prints the figure with the correct settings
+
+
+Here is an example:
+
+```{r make-figure, eval=FALSE}
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ x")
+
+
+```
+
+```{r display-figure, echo=FALSE, fig.cap="Figure 3.1 Penguine flipper and bill length."}
+p <- ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ x")
+
+p
+
+```
+
+Number the figures in the text in a logical order: e.g. Figure 4.1
+And refer to each figure in the text as: Figure 4.1
+
+Add an **informative figure caption** to each figure. 
+Start with a title and then the details.
+The figure caption is defined in the chunk for the figure (see chuck above).
+
+
+# Text
+
+Make a space after each title.
+
+Put one sentence per line.
 
 
 # Facta boxes
@@ -40,6 +150,13 @@ To display facta boxes (Before we start/Next steps), add an h3 title (with `###`
 ### Before you start {.facta .toc-ignore}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 ```
+
+Each document will have up to three facta boxes:
+
+- **Before we start** describing the knowledge/chapters one should have before reading this section
+- **What is next?** naming the section(s) that logically follow this section
+- **Further reading** important literature/webpages
+
 
 
 ### Before we start {.facta .toc-ignore}
@@ -94,6 +211,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 
 ## {.toc-ignore}
+
 
 # Headers
 
