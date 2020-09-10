@@ -1,7 +1,7 @@
 ---
 title: "Template for Biostats webpage"
 output:
-  html_document:
+  bookdown::html_document2:
     highlight: tango
     toc: true
     toc_float: true
@@ -10,9 +10,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
-library(palmerpenguins)
 library("tidyverse")
-data(package = 'palmerpenguins')
+data(penguins, package = 'palmerpenguins')
 ```
 
 This document describes the workflow and template for creating **Biostats webpage**.
@@ -56,7 +55,13 @@ In the **chunks** in the Rmakrdown files, the underscore should be replaces with
 
 # Starting an .Rmd file
 
-Use the following code at the top of your file. 
+In RStudio click File > New File > RMarkdown... which will create the file below:
+```{r markdown, echo=FALSE, out.width = '120%'}
+knitr::include_graphics("Pics/1_markdown.png")
+```
+
+
+Add the following code in the first section.
 Don't define the title as it might be displayed with the table of contents. 
 Note that you must have the file "style-chapters.css" in the folder "css".
 
@@ -64,7 +69,7 @@ Note that you must have the file "style-chapters.css" in the folder "css".
 ---
 title: ""
 output:
-  html_document:
+  bookdown::html_document2:
     highlight: tango
     toc: true
     toc_float: true
@@ -72,18 +77,21 @@ output:
 ---
 ```
 
-Add this chunk to load libraries, define options and source the figure setting file.
-!!! HOW CAN I DISPLAY THE FULL CHUNK? !!!
-```{r setup-template, eval=FALSE, include=TRUE}
+
+In the second part you can add any libraries that need loading and source the file that sets the figure options (also see below).
+
+\```{r setup-template, eval=FALSE, include=TRUE}
+
 #add all libraries that need loading
 library(learnr)
 
-#define options
-knitr::opts_chunk$set(echo = TRUE)
-
 #source figure settings
 source("set_theme_file.R")
-```
+
+\```
+
+
+
 
 
 
@@ -118,7 +126,7 @@ ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species
 
 ```
 
-```{r display-figure, echo=FALSE, fig.cap="Figure 3.1 Penguine flipper and bill length."}
+```{r display-figure, echo=FALSE, fig.cap="Penguine flipper and bill length."}
 p <- ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) +
   geom_point() +
   geom_smooth(method = "lm", formula = "y ~ x")
@@ -127,8 +135,9 @@ p
 
 ```
 
-Number the figures in the text in a logical order: e.g. Figure 4.1
-And refer to each figure in the text as: Figure 4.1
+The RMarkdown file will take care of the numbering of the figures (bookdown html).
+
+The figures can be referd to in the text using @ref(fig:display-figure)
 
 Add an **informative figure caption** to each figure. 
 Start with a title and then the details.
