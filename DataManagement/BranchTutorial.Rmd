@@ -238,12 +238,34 @@ This will delete the branch remotely.
 ### When things go wrong
 
 !!! Still needs to be added:
-- Need to explain that working on the master branch summons zombies. Maybe explain how to lock master branch (bit advanced - maybe a link is sufficient)
-- what is a merge conflict and how to handle it
+
+Working in git is not painless and sometimes things will go wrong. Don't panic, there is a solution for your problem.
+
+#### Merge confilcs
+What is a merge conflict and how do you solve it...
 
 
+#### Do not mess with the master
 
-<br/><br/>
+Working on the master branch summons zombies...
+
+But there is a solution to prevent yourselve from commiting to master.
+Type the following and the next time you forget to make a new branch and commit it will tell you not to.
+
+```
+usethis::use_git_hook(
+hook = "pre-commit",
+  script =
+'#!/bin/sh
+branch="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$branch" = "master" ]; then
+echo "You cannot commit directly to master branch"
+exit 1
+fi'
+)<
+```
+
+br/><br/>
 <br/><br/>
 
 ### Further reading {.facta .toc-ignore}
