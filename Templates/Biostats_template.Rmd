@@ -11,7 +11,12 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 library("tidyverse")
+
 data(penguins, package = 'palmerpenguins')
+
+source("biostats_theme.R")
+theme_set(theme_biostats)
+
 ```
 
 This document describes the workflow and template for creating **Biostats webpage**.
@@ -78,11 +83,11 @@ output:
 ```
 
 
-In the second part you can add any libraries that need loading and source the file that sets the figure options (also see below).
+In the second part you can add any packages that need loading and source the file that sets the figure options (also see below).
 
 \```{r setup-template, eval=FALSE, include=TRUE}
 
-#add all libraries that need loading
+#add all packages that need loading
 library(learnr)
 
 #source figure settings
@@ -112,32 +117,25 @@ The figures have the following settings:
 
 
 Each figure will have two chunks of code:
-- a chunk that displays the code, but does not do anything
-- a chunk that makes and prints the figure with the correct settings
+- the first chunk will make the plot, display the code, but not show the figure
+- the second chunk will print the plot and ypu can add specific colour, fill, linetype settings.
 
 
-Here is an example:
-
-```{r make-figure, eval=FALSE}
-ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = "y ~ x")
-
-
-```
-
-```{r display-figure, echo=FALSE, fig.cap="Penguine flipper and bill length."}
+```{r make-figure, echo = TRUE, eval = TRUE, results='hide'}
 p <- ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) +
   geom_point() +
   geom_smooth(method = "lm", formula = "y ~ x")
 
-p
+```
+
+```{r print-figure, echo = FALSE, eval = TRUE, fig.cap="Penguin flipper and bill length."}
+p + scale_color_viridis_d()
 
 ```
 
 The RMarkdown file will take care of the numbering of the figures (bookdown html).
 
-The figures can be referd to in the text using @ref(fig:display-figure)
+The figures can be referred to in the text using `\@ref(fig:display-figure)`
 
 Add an **informative figure caption** to each figure. 
 Start with a title and then the details.
