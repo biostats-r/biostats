@@ -1,7 +1,7 @@
 ---
 title: ""
 output:
-  html_document:
+  bookdown::html_document2:
     highlight: tango
     toc: true
     toc_float: true
@@ -9,99 +9,258 @@ output:
 --- 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library("ggplot2")
+
+# load penguine data set
+data(penguins, package = 'palmerpenguins')
+
+# set biostats theem
+source("../Templates/biostats_theme.R")
+theme_set(theme_biostats)
 ```
 
 # Plot types
 
-Choosing the right type of plot, depends on your data. Wheather you have continous data, a factor, grouped variables, will define what type of plots you can do. Here, we present a number of common plot types. You can find the code to plot these figures below.
-Here is a guide that can help you choose the plot type (if we still want to keep it...)
+The type of data will define what type of plot you can make. 
+For example with continous data you can make a scatter plot, but you will need categorical data to make a boxplot.
+The next step is then to think about what you want to show with the figure.
+What are the important elements to vizalize.
 
-In ggplot, the `geom_xxx()` funciton defines the type of plot that is drawn. in the example below, we use `geom_point()`, which makes dots.
+Here, we present a number of common plot types related to different types of data.
+The code to make each plot is alwys shown above or below the plot.
 
-```{r simple plot2, eval=TRUE, echo=FALSE}
-ggplot(data = iris, aes(x = Sepal.Length, y = Petal.Length, colour = Species, shape = Species)) +
-  geom_point(size = 2, alpha = 0.6) +
-  labs(title = "Iris data", x = "Sepal Length", y = "Petal Length") +
-  scale_color_viridis_d() +
-  theme_minimal()
+If you are very uncertain, here is a guide to help you choose the plot type.
+
+In ggplot, the `geom_xxx()` function defines the type of plot that is drawn. 
+In the first example, we use `geom_point()`, which makes dots or is also called a scatterplot.
+
+```{r simple-plot, eval=TRUE, echo=TRUE}
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, shape = species)) +
+  geom_point(size = 2) +
+  labs(title = "Iris data", x = "Bill Length  in mm", y = "Bill depth in mm") +
+  scale_color_viridis_d()
 ```
 <br/><br/>
 
-## Continous variables
-Continous data is often visualized using dots, boxplots or bars. A heat map can also be used.
+## Continous data {.tabset .tabset-fade}
+Continous data is often visualized using a scatterplot or boxplot.
+A heat map can also be used.
 
 ```{r continous, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("Figures/Continous.png")
 ```
 <br/><br/>
 
-## Code {.tabset .tabset-fade}
+### Scatterplot
+A scatterplot is made using the function `geom_point()`.
 
-### Points
-Here is the code to make a dotplot using `geom_point()`:
-
-```{r geom_point, eval=TRUE}
-ggplot(data = iris, aes(x = Sepal.Length, y = Petal.Length, colour = Species, shape = Species)) +
-  geom_point(size = 2, alpha = 0.6) +
-  labs(title = "Iris data", x = "Sepal Length", y = "Petal Length") +
-  scale_color_viridis_d() +
-  theme_minimal()
+```{r geom-point, eval=TRUE}
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, shape = species)) +
+  geom_point(size = 2) +
+  labs(x = "Bill Length  in mm", y = "Bill depth in mm") +
+  scale_color_viridis_d()
 ```
 
-### Box
-Here is the code to make a boxplot using `geom_boxplot()`:
+### Boxplot
+Similarly, a boxplot uses the function `geom_boxplot()`.
 
-```{r geom_box, eval=TRUE}
-ggplot(data = iris, aes(x = Species, y = Petal.Length, fill = Species)) +
+```{r geom-box, eval=TRUE}
+ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species)) +
   geom_boxplot() +
-  labs(title = "Iris data", x = "Sepal Length", y = "Petal Length") +
-  scale_fill_viridis_d() +
-  theme_minimal()
+  labs(x = "", y = "Bill Length  in mm") +
+  scale_fill_viridis_d()
 ```
 
-### Bars
-Here is the code to make a barplot using `geom_bar()`:
+**What does a boxplot show?**
+The bold line in the middle of the box shows the median.
+Half of the data points are larger and half are lower then the median.
 
-```{r geom_bar, eval=TRUE}
-ggplot(data = iris, aes(y = Petal.Length, x = Species, fill = Species)) +
-  geom_bar(stat = "identity") +
-  labs(x = "", y = "") +
-  scale_fill_viridis_d() +
-  theme_minimal()
-```
+The box represents the 50% quartile.
+Basically, half of the observations fall into the box and half of them outside.
 
+The wiskers of each side of the box show the 25% upper and lower quartile.
+
+Outliers are shown as points above and below the wiskers.
+
+For more details on boxplots see here.
+
+
+**How to interprete a boxplot**
+The boxplots show the distribution of the data.
+A tall box means that the data is variable, while a short box means that most data points are similar to the median.
+
+Boxplots make it easy to compare different groups.
+If the boxplots are placed at different heights, this means that the groups that are compared are different.
+A boxplot is however not a test, but gives an indication if groups differ from each other.
 ## {.toc-ignore}
 
 
-## Categorical data, factors and groups
-To show categorical data, factors and groups we often use boxplots, or other elements. We can use colour, size, shape or linetype to distinguish different groups. Another option is to divide the plot into subplots using the facet function.
+## Categorical data, factors and groups {.tabset .tabset-fade}
+Categorical data, factors and groups is often vizualized using boxplots, but other types of plots like scatterplots are possible.
+We can use fill, colour, size, shape or linetype to distinguish the different groups in the plot.
+Another option is to divide the plot into subplots using the facet function.
 
 ```{r categorical, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("Figures/Categorical.png")
 ```
 <br/><br/>
 
-## Distributions
-Histograms and density plots are most commonly used to plot densities. To visualize several density at the same time, boxplots, violin and sina plot are useful. 
+### Scatterplot
+Shape and colour can be used to show the different groups.
 
-Boxplots, show the median, quantiles, outliers = useful. Violin plots... Sina even show the data. Ridgeline plots
+```{r geom-point2, eval=TRUE}
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, shape = species)) +
+  geom_point(size = 2) +
+  labs(x = "Bill Length  in mm", y = "Bill depth in mm") +
+  scale_color_viridis_d()
+```
+
+### Boxplot
+Boxplots are commonly used to show factors and groups.
+
+```{r geom-box2, eval=TRUE}
+ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species)) +
+  geom_boxplot() +
+  labs(x = "", y = "Bill Length  in mm") +
+  scale_fill_viridis_d()
+```
+## {.toc-ignore}
+
+
+
+## Distributions {.tabset .tabset-fade}
+Histograms and density plots are most commonly used to plot distributions.
+To visualize several densities at the same time, boxplots, violin and sina plot can be useful. 
+Violin and sina plots are an extension to the boxplots.
+They also show the actual distribution of the data or the data iteslf. 
+Another type of plots are rigdeline plots.
 
 ```{r distribution, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("Figures/Distribution.png")
 ```
 <br/><br/>
 
-## Proportions
+### Histogram
+Histograms display counts in a size class using bars.
+The argument bins can be used to define how many size classes should be used.
+
+```{r hist, eval=TRUE}
+ggplot(data = penguins, aes(x = bill_length_mm)) +
+  geom_histogram(bins = 50) +
+  labs(x = "Bill Length  in mm")
+```
+
+
+### Densities
+Similarly to the histgrams, density plots show the kernel desnity estimate.
+This is a smoothed version of a histogram.
+
+Densities can for example be coloured by species to show each species distribution separately.
+Note that we have added `alpha = 0.5`, which makes the fill transparent and we can see the three distributions more clearly.
+
+```{r density, eval=TRUE}
+ggplot(data = penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_density(alpha = 0.5) +
+  labs(x = "Bill Length  in mm")
+```
+
+
+### Ridgeline
+...
+
+```{r ridgeline, eval=TRUE}
+
+```
+
+
+### Violin
+Violin plots...
+
+```{r violin, eval=TRUE}
+ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  labs(x = "", y = "Bill Length  in mm")
+```
+
+### Sina
+Sina plots are in the ggforce package.
+The package needs to be installed before this function can be used.
+
+Sina plots show the data in the form of the density distribution.
+A very informative way, is to plot the violin plot and the data on top of it.
+
+```{r sina, eval=TRUE}
+library("ggforce")
+
+ggplot(data = penguins, aes(x = species, y = bill_length_mm, colour = species)) +
+  geom_violin() +
+  geom_sina() +
+  labs(x = "", y = "Bill Length  in mm")
+```
+## {.toc-ignore}
+
+## Proportions {.tabset .tabset-fade}
 Proportions are often displayed using barplots or stacked barplots.
 
 ```{r proportion, echo=FALSE, out.width = '100%'}
-knitr::include_graphics("Figures/Proportion.png")
+knitr::include_graphics("Figures/Proportions.png")
 ```
+
+### Bars
+We can use either `geom_col()` or `geom_bar()` to create a barplot.
+`geom_col` makes the heights of the bars to represent the values in the data.
+`geom_bar` on the other hand makes the height of the bar proportional to the number of cases in each group.
+When using `geom_bar`, we must not forget the argument `stat = "identity"`, which 
+
+```{r bars, eval=TRUE}
+ggplot(data = penguins, aes(x = species, y = bill_length_mm)) +
+  geom_col()
+
+ggplot(data = penguins, aes(x = species, y = bill_length_mm)) +
+  geom_bar(stat = "identity")
+
+```
+
+
+### Stacked bars
+**Grouped bars**
+A grouped barplot displays the values, here bill length for the three different species in the three years the data was collected.
+Note year needs to be a factor
+
+x is a group, y is the continous variable with the data, fill is the subgroup.
+in `geom_bar()` the argument position and stat need to be defined.
+The argument `position = "dodge"` defines the position of the bars, so next to each other.
+
+```{r grouped-bars, eval=TRUE}
+ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = factor(year))) +
+  geom_bar(position = "dodge", stat = "identity")
+```
+
+**Stacked bars**
+The bars can also be stacked.
+Here the bars are stacked on top of each other.
+Switch the argument `position = "stack"`.
+
+```{r stacked-bars, eval=TRUE}
+ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = factor(year))) +
+  geom_bar(position = "stack", stat = "identity")
+```
+
+**Proportional**
+The data can also be displayed proportional.
+Now, the percentage of each subgroup is represented, and in each group the bar summs up to 1.
+Switch the argument `position = "fill"`.
+
+```{r precentage, eval=TRUE}
+ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = factor(year))) +
+  geom_bar(position = "fill", stat = "identity")
+```
+## {.toc-ignore}
 <br/><br/>
 
-## x~y relationships
+
+## x~y relationships {.tabset .tabset-fade}
 To show relationships between two continous variables, we often use scatterplots.
 Contour lines
 Correlations between variables can be shown using a correlogram.
@@ -109,18 +268,20 @@ Correlations between variables can be shown using a correlogram.
 ```{r x-y, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("Figures/X-Y.png")
 ```
+## {.toc-ignore}
 <br/><br/>
 
-## Spatial and temporal data
+## Spatial and temporal data {.tabset .tabset-fade}
 Spatial data is often shown on maps.
 Temporal data, is often shown with lines/smooth
 
 ```{r spatial temporal, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("Figures/SpatTemp.png")
 ```
+## {.toc-ignore}
 <br/><br/>
 
-## Uncertainty
+## Uncertainty {.tabset .tabset-fade}
 Errorbars are often used to show uncertainty of the data or likely values
 - posterior distribbution/eye plot
 - confidence bands
@@ -128,5 +289,6 @@ Errorbars are often used to show uncertainty of the data or likely values
 ```{r uncertainty, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("Figures/Uncertainty.png")
 ```
+## {.toc-ignore}
 <br/><br/>
 
