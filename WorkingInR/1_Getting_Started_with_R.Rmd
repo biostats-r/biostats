@@ -1,0 +1,318 @@
+---
+title: "Getting started with R"
+output:
+  bookdown::html_document2:
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: ../css/style-chapters.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library("tidyverse")
+
+data(penguins, package = 'palmerpenguins')
+
+source("./Templates/biostats_theme.R")
+theme_set(theme_biostats)
+
+```
+
+
+# What is R?
+
+R is a free, powerful statistical and graphical tool which is available for most platforms (Windows, Mac, Linux, FreeBSD, etc.). More than that, it is open source, which means that one can freely modify and adapt R to fit a specific use (providing that one has enough knowledge in terms of programming, of course). In fact, R is not a software for statistics; it is a language organized around **objects** or **vectors**, linked to data and functions. R is flexible, and it is rather easy to import data for text files (.txt, .csv, .xls, .xlsx…).
+
+# Why using R?
+
+R is not a conventional software where functions and tools are available via a graphical user interface with menus and buttons.  
+
+
+# Using RStudio as a graphical user interface
+
+R comes originally with a rather simple GUI (graphical user interface) which allows you to write and run scripts, and display results and plots. However, this simple GUI is not so appealing or friendly-looking. and lacks useful functionalities that makes your work efficient and tidy. 
+RStudio is an Integrated Development Environment (IDE) which can "talk" with R, providing you with a user friendly interface that makes your life easier. 
+
+# Installing R, R Studio and packages
+
+Here we will see how to install R and RStudio from scratch, and we will see how to load additional packages which will come handy when making plots and analyzing data sets.
+
+
+## Installing R
+
+Go to the website [could.r-project.org](https://cloud.r-project.org/) and choose on which platform you wish to install R. Then download the package and install it as any other software.
+
+VIDEO
+
+
+## Installing R Studio
+
+Go to the website [rstudio.com](https://rstudio.com/), click "download", choose the free version and download RStudio that fits your platform. Then install it as any other software.
+
+VIDEO
+
+
+
+
+
+
+## Installing packages
+
+install.packages("tidyverse")
+
+
+
+## Loading packages
+
+library(tidyverse)
+
+# Starting with a project
+
+
+## Why using projects
+
+
+## Creating a project
+
+
+
+
+
+
+# Finding help
+
+
+
+
+
+
+
+# Organizing files
+
+Save your Rmd files in one of the main folder in the biostats repo:
+
+- 1. Working in R
+- 2. Statistics in R
+- 3. Data visualization
+- 4. Data management
+
+Organize all files inside each main folder using the following numbering system:
+
+- 4.1_getting_started_with_git.Rmd
+- 4.2_forks_and_branches.Rmd
+
+
+# Naming convention
+
+The naming convention for the biostats GitHub repo is **snake_case**.
+The first letter of each word is lowercase and teh space is replaced by an underscore _.
+
+Here is an example: simple_linear_regression.Rmd
+
+Give each file and object a meaningful and concise name.
+This will help the others to understand what is goining on.
+
+
+In the **chunks** in the Rmakrdown files, the underscore should be replaces with a dash:
+```{r download-git}```
+
+
+# Starting an .Rmd file
+
+In RStudio click File > New File > RMarkdown... which will create the file below:
+```{r markdown, echo=FALSE, out.width = '120%'}
+
+```
+
+
+Add the following code in the first section.
+Don't define the title as it might be displayed with the table of contents. 
+Note that you must have the file "style-chapters.css" in the folder "css".
+
+```{r starting, eval=FALSE}
+---
+title: ""
+output:
+  bookdown::html_document2:
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: css/style-chapters.css
+---
+```
+
+
+In the second part you can add any packages that need loading and source the file that sets the figure options (also see below).
+
+\```{r setup-template, eval=FALSE, include=TRUE}
+
+#add all packages that need loading
+library(learnr)
+
+#source figure settings
+source("set_theme_file.R")
+
+\```
+
+
+
+
+
+
+# Text size, colours, etc
+
+Don't worry, the css styleguide file will take care of this.
+
+
+# Figures
+
+The set_theme_file.R will take care of colours, text size, theme etc in all the figures.
+This file has to be sourced in each Rmarkdown file (see Starting an .Rmd file above).
+
+The figures have the following settings:
+- theme_minimal()
+- text size: 12
+- colour: ... for discrete data use... and for continouse data use ...
+
+
+Each figure will have two chunks of code:
+- the first chunk will make the plot, display the code, but not show the figure
+- the second chunk will print the plot and ypu can add specific colour, fill, linetype settings.
+
+
+```{r make-figure, echo = TRUE, eval = TRUE, results='hide'}
+p <- ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ x")
+
+```
+
+```{r print-figure, echo = FALSE, eval = TRUE, fig.cap="Penguin flipper and bill length."}
+p + scale_color_viridis_d()
+
+```
+
+The RMarkdown file will take care of the numbering of the figures (bookdown html).
+
+The figures can be referred to in the text using `\@ref(fig:display-figure)`
+
+Add an **informative figure caption** to each figure. 
+Start with a title and then the details.
+The figure caption is defined in the chunk for the figure (see chuck above).
+
+
+# Text
+
+Make a space after each title.
+
+Put one sentence per line.
+
+
+# Facta boxes
+
+To display facta boxes (Before we start/Next steps), add an h3 title (with `###`) and place `{.facta .toc-ignore}` after the title. 
+
+```{r facta, eval=FALSE}
+### Before you start {.facta .toc-ignore}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+```
+
+Each document will have up to three facta boxes:
+
+- **Before we start** describing the knowledge/chapters one should have before reading this section
+- **What is next?** naming the section(s) that logically follow this section
+- **Further reading** important literature/webpages
+
+
+
+### Before we start {.facta .toc-ignore}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+# Tabbed sections
+
+To display tabbed sections:
+
+1. Add {.tabset .tabset-fade} to the section title (for example: ## Title {.tabset .tabset-fade} )
+2. Use direct subsection title to add tabs (if section title is ##, use ### for each of the tabs)
+3. End the whole tabbed section with an empty title of same level as the section titl (here ##) followed by {.toc-ignore}
+
+```{r tabbed, eval=FALSE}
+
+## Tabbed Section - Example {.tabset .tabset-fade}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+### Tab1
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+
+### Tab2
+
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+
+### Tab3
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+## {.toc-ignore}
+
+```
+
+## Tabbed Section - Example  {.tabset .tabset-fade}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+### Tab1
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+
+### Tab2
+
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+
+### Tab3
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+## {.toc-ignore}
+
+
+# Headers
+
+Headers are defined by #, ##, ###, ####, #####, ######; their font and color are coded by the css file.
+
+```{r headers, eval=FALSE}
+# Header h1
+## Header h2
+### Header h3
+#### Header h4
+##### Header h5
+###### Header h6
+```
+
+# Header h1
+## Header h2
+### Header h3
+#### Header h4
+##### Header h5
+###### Header h6
+
+
+# Displaying a shiny app  
+
+The following `<iframe>` tag places a shiny app in the webpage.
+FILENAME is the filename of the .Rmd file which makes the app.
+When you send me an Rmd file that codes for the app, I will try to produce a URL that include the name of that file 
+
+`<iframe src ="https://bioceed.shinyapps.io/FILENAME/" height=800px width=110% />`
+
+```{r app, eval=FALSE}
+
+The following code displays the app "Viz1-TheCode" created with learnr by the file "Viz1-TheCode.Rmd" and which is located at "https://bioceed.shinyapps.io/Viz1-TheCode/" 
+
+<iframe src ="https://bioceed.shinyapps.io/Viz1-TheCode/" height=800px width=110% />
+```
+
