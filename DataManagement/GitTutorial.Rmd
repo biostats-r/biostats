@@ -1,5 +1,5 @@
 ---
-title: "Version control with GitHub and Rstudio"
+title: "Version control with GitHub and RStudio"
 output:
   bookdown::html_document2:
     highlight: tango
@@ -19,9 +19,9 @@ Version control makes it is easy to share code, collaborate on the same project,
 
 Here we will guide you through the process of installing git, connecting RStudio and GitHub and explain the basic workflow.
 
-GitHub is a online tool using the software git to store data and track changes. 
+Git is a **version control system**, which manages the evolution of files. GitHub is a online tool using the software git to store data and track changes. 
 GitHub can be used with any files but works best with text files, for example R scripts. 
-Here we will focus on using git and GitHub with Rstudio.
+Here we will focus on using git and GitHub with RStudio.
 
 Let's start with explaining the basic workflow briefly.
 On GitHub you can make repositories, which is a kind of project.
@@ -31,7 +31,7 @@ You can write and edit R code locally on your computer.
 The new code is then committed and pushed back to the remote. 
 If you follow this workflow consistently, GitHub will keep track of all the changes you make.
 
-For the sake of this tutorial, Kingsley and Angelina will show us the workflow with Rstudio and GitHub.
+For the sake of this tutorial, Kingsley and Angelina will show us the workflow with RStudio and GitHub.
 
 
 <br/><br/>
@@ -56,8 +56,19 @@ knitr::include_graphics("Pics/gittutorial/1_sign_up.png")
 ```
 <br/><br/>
 <br/><br/>
+
+Now you have to configure your name and email associated with your GitHub account.
+Go to RStudio and type:
+
+```
+## install if needed (do this exactly once):
+## install.packages("usethis")
+
+library(usethis)
+use_git_config(user.name = "kingsleyshaklebolt", user.email = "kingsleyshaklebolt@ministryofmagic.com")
+```
+
 The next step is to connect RStudio and GitHub.
-Note that this tutorial is shown on a Mac and will look slightly different if you are using Windows or Linux.
 
 
 ## Connect RStudio and GitHub
@@ -119,7 +130,7 @@ Now you are ready to start using RStudio and GitHub.
 
 ## Create a GitHub repository
 
-Go to Github, click on the plus sign in the upper right corner and create a **New Repository**. 
+Go to Github, click on the green **New** button or the plus sign in the upper right corner and create a **New Repository**. 
 Give a meaningful and concise name.
 Spaces will not be accepted in the name, use underscore or dashes instead.
 You can choose if you want to add a **README** file (advisable), a **.gitignore** file and choose the relevant type (advisable) and select a **licence** (relevant for publishing a project).
@@ -129,7 +140,7 @@ Keeping your repository private makes collaborations more difficult.
 
 <br/><br/>
 ```{r new-repo}
-knitr::include_graphics("Pics/gittutorial/8_new_repo.png")
+knitr::include_graphics("Pics/gittutorial/8_make_new_repo.png")
 ```
 <br/><br/>
 <br/><br/>
@@ -149,8 +160,9 @@ knitr::include_graphics("Pics/gittutorial/10_new_repo.png")
 
 Cloning your GitHub repository means that you are making a copy of your **remote** repository on Github, **locally** on your computer. 
 You can clone any repository on GitHub, whether it is your own or belongs to somebody else, as long as it is public. 
-This also means that all your repositories that are public can be seen by everybody and it is therefore important not to commit sensitive information like passwords.
-But don't worry too much about this, GitHub has millions of repos.
+This also means that all your repositories that are public can be seen by everybody, but do not worry too much about this, GitHub has millions of repos.
+Therefore it is important not to commit sensitive information like passwords.
+
 
 Go to the GitHub repository you just created or any other that you want to clone. 
 Click on the green **Code** button and copy the repository URL.
@@ -203,7 +215,7 @@ knitr::include_graphics("Pics/gittutorial/15_paste_url.png")
 Now it is time to commit and push.
 
 
-## Push existing RStudio project to GitHub
+## Connect existing RStudio project to GitHub
 
 The general workflow for how to start a new project is described above (see \@ref(create-a-github-repository) Create a GitHub repository). 
 But you might have existing RStudio projects that you want to connect to GitHub, which we will explain here.
@@ -229,9 +241,9 @@ git clone git:kingsleyshacklebolt/dragon_study.git
 
 ```
 <br/><br/>
-Restart Rstudio.
+Restart RStudio.
 And now you should see the git panel with a green and blue arrow to push and pull.
-All the files that already exist in your repo will show up with yellwo question marks and are ready to be pushed to github.
+All the files that already exist in your repo will show up with yellow question marks and are ready to be committed.
 
 <br/><br/>
 ```{r git_window}
@@ -241,13 +253,13 @@ knitr::include_graphics("Pics/gittutorial/17_git_window.png")
 It is time to commit and push code to GitHub.
 
 
-## GitHub workflow
-
-### Commit
+## Stage, commit and push
 
 If you create or edit a file in your repository and save the changes the file will appear in the **Git** panel.
 There will be two yellow boxes with **question marks** if you add a file, a blue box with a **M** if you edit a file that has already been committed.
-And a red box with a **D** if you delete a file. 
+And a red box with a **D** if you delete a file.
+You can also move files and they will show up as deleted **and** added in the new place.
+Once you have staged (ticking the box by the file name) both the deleted and new file, it will become a purple **R**.
 
 <br/><br/>
 ```{r changed_file}
@@ -283,7 +295,8 @@ Click **Commit** to save the changes which creates a permanent snapshot of the f
 ### Some rules
 
 Commits are cheap.
-It does not take much time to click on **Commit**, stage the file and write a few words about the commit (aim for max 50 characters).
+It does not take much time to click on **Commit**, stage the file(s) and write a few words about the commit (aim for max 50 characters).
+A good rule is if you use the word *and* then this should probably have been two commits.
 Therefore, commit often and provide useful messages so you can keep track of what you are doing. 
 
 This is an example of useless commit messages:
@@ -328,14 +341,14 @@ We strongly suggest to use forks and branches when collaborating on a project (s
 
 ## .gitignore file
 
-When creating a new GitHub repository you can add a .gitignore text file, which tells git all the files that should be ignored.
+When creating a new GitHub repository you can add a `.gitignore` text file, which tells git all the files that should be ignored.
 In general only data or output files should be committed, but exceptions can be useful for relatively small and unchanging files.
 
 Every change you are making to a file in your R project and commit to GitHub, will be tracked. 
 Commit files, code and output to GitHub, where you want to track changes.
 Do not commit all files, for example output files like figures which can easily be recreated with code. 
 
-Here is an example of a .gitignore file:
+Here is an example of a `.gitignore` file:
 <br/><br/>
 ```
 # History files
@@ -369,74 +382,31 @@ data/*
 
 ## Useful terminal comands
 
-Most commands can also be executed in the terminal in RStudio (**Terminal** tab).
-Here is a list with a few imporant commands that might come in handy.
-
-### Clone a repo from GitHub
-
-To **clone** or make a local copy of a **remote** repository on GitHub type:
-
-```git clone https://github.com/git:kingsleyshacklebolt/dragon_study.git```
-
-
-### Check configurations
-
-To check the configurations of your repo type:
-
-```git remote -v```
-
-This command will show you the origin or your repo, basically from were you push and pull.
-If you have forked a repo it will also show you the upstream repo (see \@collaborating-with-forks-and-branches Collaborating with forks and branches tutorial for more details).
-
-
-You might want to configure the information of your local repositories.
-This command sets the name you want attached to your commit transactions.
-Note that this will change the name for all your local repos.
-
-```
-$ git config --global user.name "yourname"
-$ git config --global user.name "kingsleyshaklebolt"
-```
-
-Similarly, you can sets the email you want attached to your commit transactions.
-
-```
-$ git config --global user.email "youremail"
-$ git config --global user.email "kingsleyshaklebolt@ministryofmagic.com"
-```
-
-The url points to a repository on GitHub.
-
-```
-$ git remote add origin [url]
-$ git remote add origin https://github.com/git:kingsleyshacklebolt/dragon_study.git
-```
+RStudio has a range of possibilities to work with Git and GitHub as shown in this tutorial.
+The **Terminal** has more commands and options and will be handy for trouble shooting.
+In this tutorial we only explain a limited selection of things that can go wrong.
 
 
 ### Trouble shooting
 
-**Remove a file from the previous commit**
-If you have added a file (*myfile*) and committed and now you want to remove the file from your last commit, then type:
+**Undo last commit**
+If you have committed something that you do not want to, you can undo the last commit.
+This only works if you have **not pushed** yet.
+Go to the terminal and type:
 
 ```
-$ git rm --cached myfile
-$ git commit --amend --no-edit
+git reset --soft HEAD@{1}
 ```
 
-**Delete or remove my last commit**
-
-This only works if you have **not pushed** yet, then type:
-```
-(my-branch*)$ git reset --soft HEAD@{1}
-```
-
-
+For more help with trouble shooting see the [https://github.com/k88hudson/git-flight-rules git](flight rules is a good source).
 
 
 ### Useful resources {.facta .toc-ignore}
 
-- Happy Git: https://happygitwithr.com/
-- git flight rules: https://github.com/k88hudson/git-flight-rules
+**Happy Git** provides instructions for how to getting started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong.
+https://happygitwithr.com/ 
+
+The **Git fligh rules** are an exaustive ressource for what to do whne things go wrong. https://github.com/k88hudson/git-flight-rules
 
 
 
