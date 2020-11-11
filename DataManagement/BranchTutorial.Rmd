@@ -22,24 +22,31 @@ knitr::include_graphics("Pics/fork_branch_tutorial/0_forks_branches.jpg")
 GitHub is useful for developing your own code, but at some point you might want to collaborate with other people on a project. 
 Or you might come across a GitHub repository that you want to use as a starting point for your own work. In both cases **forks** are the way to go. 
 
-A fork is making a copy of somebody's GitHub repository. 
+A fork is a copy of somebody's GitHub repository. 
 You can fork a repo and work independently of the original project. 
 Or if you are collaborating with other people you can stay connected with the original repository via **pull requests**.
 
 However, you cannot directly affect (or damage) the original project, which is somewhat less scary, right?
+<br/><br/>
 
-Let's return back to our two GitHub heros Angelina and Kingsley.
+### the workflow
 
-```{r github}
+To understand the **workflow**, let's see how Angelina and Kingsley collaborate (see Figure \@ref(fig:github)).
+
+Kingsley owns a GitHub repo. Angelina **forks** this repo (1) and then **clones** is to her computer (2). Angelina develops code using **branches** and makes **commits** (3). then she **pushes** these changes to her **remote repo** on GitHub (4) and makes a **pull request** to the original repo, which Kingsley **merges** (5).
+
+From now on Angelina will **fetch** (6) and **merge** (7) the newest changes from **upstream** and continue the workflow (3-5). 
+
+```{r github, fig.cap="GitHub workflow"}
 knitr::include_graphics("Pics/fork_branch_tutorial/1_workflow3.png")
 ```
 <br/><br/>
 
-### Fork a repo on Github
+### Fork a repo on GitHub
 
-Go to GitHub, log into your account (see section \@Preparation for how to make an GitHub account) and go to the repository you want to fork.
+Go to GitHub, log into your account (see section \@ref(preparation) for how to make an GitHub account) and go to the repository you want to fork.
 
-Angelina wants to fork the magic_dragon repo from biostats.
+Let us assume that Angelina wants to fork the magic_dragon repo from biostats.
 Click on the **fork** button on the top right of the webpage and wait until the repo is forked.
 
 ```{r fork-repo}
@@ -48,9 +55,9 @@ knitr::include_graphics("Pics/fork_branch_tutorial/2_fork_repo.png")
 <br/><br/>
 <br/><br/>
 
-### Clone a GitHub repository
+### Clone a the forked GitHub repository
 
-On the top is the name of the **forked repository** and the project name it has been forked from.
+On the top is the name of the **forked repository** and the project name.
 Click on the green **Code** button on the top right and copy the url link.
 
 ```{r clone}
@@ -79,7 +86,7 @@ knitr::include_graphics("Pics/gittutorial/14_git.png")
 ```
 <br/><br/>
 <br/><br/>
-And paste the url link from above.
+Paste the url link from above and click **Create Project**.
 
 ```{r add-url, out.width = '60%'}
 knitr::include_graphics("Pics/fork_branch_tutorial/4_add_url.png")
@@ -89,9 +96,12 @@ If you want to **work independently** from the original repo, then this is it.
 
 However, if you want to stay connected to the **upstream repo**, then go to terminal and type:
 
-```s
+```
 git remote add upstream git@github.com:user_name/repo_name.git
+```
 
+So Angelina would then type:
+```
 git remote add upstream git@github.com:biostats_r/magic_dragons.git
 ```
 
@@ -105,16 +115,21 @@ Let's talk about **branches**.
 
 A **branch** lets you develop code, fix a problem, or test an idea without affecting the original project. 
 A **branch** is created from an existing **branch**, usually from the **main branch** of the project.
-You can work on a **branch**, bravely develop code that works or does not work and it  does not affect the changes other people make to this repo.
+Note that **main branch** was previously named master branch, but removed because of the reference to slavery.
+Because of this change you might find references to the old name when looking for help elsewhere.
+
+You can work on a **branch**, bravely develop code that works or does not work and it  does not break the code on the **main branch**.
 Basically, you can experiment on your own.
 
 If the idea did not work or you have another idea, the **branch** can be deleted and nobody ever needs to know about it. 
 Make a new **branch** and start all over again. 
 None of this will affect the original project.
 
-If you are working **on your own** project, and happy with the new code, or the idea is tested and working, you can **merge** the branch you are working on with the **main branch**.
+If you are working **on your own** project, and happy with the new code, or the idea is tested and working, you can **merge** the **branch** you are working on with the **main branch**.
 
-If you are **collaborating** with other people an you have forked a repo you do not want to work directly on the **main branch**. When you change the **main branch** and later update your repo from the original repo, it will cause **merge conflicts**. Therefore, when collaborating with others, you always work on **brnaches** and you can make a **pull requests** by **merging** the changes in the **current branch** to the **main branch** (see \@make-pull-request-in-github). 
+If you are **collaborating** with other people and you have forked a repo you should not work on the **main branch**.
+When you change the **main branch** and later update your repo from the original repo, it will cause **merge conflicts**.
+Therefore, when collaborating with others, you always work on **branches**, and then you make a **pull requests** by **merging** the changes in the **current branch** to the **main branch** (see \@ref(make-pull-request-in-github)). 
 
 Let's have a look how to create, use and delete branches.
 
@@ -145,23 +160,23 @@ knitr::include_graphics("Pics/fork_branch_tutorial/7_new_branch.png")
 ```
 
 
-### Code, commit and push to origin in Rstudio
+### Code, commit and push to origin in RStudio
 
-Now is the time work in a new or an existing file on the project. 
-You can work the way it is described in the \@how-to-work-in-git How to work with GitHub tutorial. Write or edit code, test it, **commit** regularly, add a useful commit message.
+Now is the time work in a new or edit an existing file on the project. 
+You can work the way it is described in the \@ref(how-to-work-in-git) How to work with GitHub tutorial. Write or edit code, test it, **commit** regularly, add a useful commit message.
 
-Once you are done with the task in this branch, test it and **push** it to your **origin (remote?) repository** on GitHub. This is the workflow, if you are working on your own.
+Once you are done with the task in this **branch**, test it and **push** it to your **fork** on GitHub. This is the workflow, if you are working on your own.
 
-If you are collaborating with others, you will want to send your code **upstream** to the original repo.
+If you are collaborating with others, you will want to send your code **upstream** to the original repo, which is described in the next section.
 
 
-### Make pull request on GitHub
+### Make a pull request on GitHub
 
 Once you have **pushed** your branch back to the **main branch** you can make a **pull request**.
-A **pull request** is a request to the maintainer of the **upstream** repository to pull your code.
+A **pull request** is a request to the maintainer of the **upstream** repository to pull your code into the original repository.
 
-Go to GitHub, to your forked repository (not the upstream repo).
-Click on the green box **Compare & pull request** which has appear at the top of the page. 
+Go to your fork on GitHub (not the upstream repo).
+Click on the green box **Compare & pull request** which has appear at the top of the page.
 <br/><br/>
 <br/><br/>
 ```{r pull-request-1}
@@ -177,12 +192,12 @@ knitr::include_graphics("Pics/fork_branch_tutorial/9_create_pull_request.png")
 ```
 <br/><br/>
 <br/><br/>
-Once you have created your **pull request**, github will check if there are any **merge conflict**.
+Once you have created your **pull request**, GitHub will check if there are any **merge conflict**.
 A **merge conflict** can occur when two people are changing the same line in one file differently.
-We will explain later how to deal with this.
+See \@ref(trouble-shooting) for how to deal with a **merge conflict**.
 
 If no **merge conflict** occurs GitHub will give green light for merging.
-If there is a merge conflict, it has to be resolved before the file can be merged (see below).
+If there is a merge conflict, it has to be resolved before the file can be merged (see \@ref(trouble-shooting) Trouble shooting).
 <br/><br/>
 <br/><br/>
 ```{r pull-request-3}
@@ -212,7 +227,7 @@ knitr::include_graphics("Pics/fork_branch_tutorial/12_comment.png")
 ```
 <br/><br/>
 <br/><br/>
-Eventually, the **maintainer** will **confrim the merge** and you will get a notification.
+Eventually, the **maintainer** will **confirm the merge** and you will get a notification.
 <br/><br/>
 <br/><br/>
 ```{r merge}
@@ -224,7 +239,7 @@ knitr::include_graphics("Pics/fork_branch_tutorial/13_confirm_merge.png")
 ### Update your fork in the Terminal
 
 Once your **pull request** has been accepted, you have to update your fork to get the latest changes from **upstream**. 
-Go to RStudio and the terminal tab.
+Go to RStudio and the **Terminal** tab.
 <br/><br/>
 <br/><br/>
 ```{r terminal-request}
@@ -242,11 +257,30 @@ git checkout main
 
 git merge upstream/main
 ```
-Fetch downloads all the changes from upstream. 
-Checkout main makes sure your main branch is active. 
-And the last line merges the changes on your local repository.
+**Fetch** downloads all the changes from **upstream**. 
+**Checkout main** makes sure your **main branch** is active. 
+And the last line **merges** the changes with your local repository.
 <br/><br/>
 <br/><br/>
+
+
+### Richards way (need ot disscuss if we want to show them git2r)
+
+library(git2r)
+#add remote - only needs doing once per fork
+remote_add(name = "audhalbritter", url = "https://github.com/audhalbritter/biostats.git")
+# run every update
+fetch(name = "audhalbritter")
+b <- branches(flags = "remote")
+b <- b[["audhalbritter/FixGitTutorial"]]
+sha <- branch_target(b)
+branch_create(commit = lookup(sha = sha), name = "audhalbritter-FixGitTutorial", force = TRUE)
+checkout(object = ".", branch = "audhalbritter-FixGitTutorial")
+#to view again after updates (probably is a  better solution)
+#return to master branch
+checkout(branch = "master")
+#delete pull request branch
+git2r::branch_delete(branch = "audhalbritter-FixGitTutorial")
 
 
 ### Delete branches
@@ -256,38 +290,56 @@ Once you have created a couple of **branches**, it will become difficult to trac
 To delete a **branch** locally type:
 
 ```
-git branch -D branch_name
+git branch -D community_analysis
 ```
 To delete the **branch** remotely, type:
 ```
-git push origin --delete branch_Tutorial_name
+git push origin --delete community_analysis
 ```
 <br/><br/>
 <br/><br/>
 
-### When things go wrong
 
+### Trouble shooting
 
-### Check configurations
+**Check configurations in the Terminal**
 
-To check the configurations of your repo type:
+You might want to check the configurations of your repository.
+In the **Terminal** you can check the **origin** of your repo, which is from where you **push** and **pull**.
+If you have forked a repo it will also show you the **upstream** repo (see \@ref(collaborating-with-forks-and-branches) Collaborating with forks and branches tutorial for more details).
+This will also show you if your **origin** is wrong or the **upstream** repo has not been set.
 
-```git remote -v```
-
-This command will show you the origin or your repo, basically from were you push and pull.
-If you have forked a repo it will also show you the upstream repo (see \@collaborating-with-forks-and-branches Collaborating with forks and branches tutorial for more details).
-
-
-The url points to a repository on GitHub.
+Go to the **Terminal** tab and type repo type:
 
 ```
-$ git remote add origin [url]
-$ git remote add origin https://github.com/git:kingsleyshacklebolt/dragon_study.git
+git remote -v
+```
+<br/><br/>
+
+**Add remote origin**
+
+To add the **remote origin** go to the **Terminal** and type:
+
+```
+git remote add origin [url]
 ```
 
-!!! Still needs to be added:
-- Need to explain that working on the master branch summons zombies. Maybe explain how to lock master branch (bit advanced - maybe a link is sufficient)
-- what is a merge conflict and how to handle it
+For Kingsley this would be:
+```
+git remote add origin https://github.com/git:kingsleyshacklebolt/dragon_study.git
+```
+<br/><br/>
+
+**Handle a merge conflict**
+
+A **merge conflict** can occur when two people are changing the same line in one file differently.
+!!! Add instructions for how to deal with this!!!
+
+<br/><br/>
+
+**Prevent from pushing to main**
+
+!!! Explain why and how to lock master branch.
 
 
 <br/><br/>
@@ -295,7 +347,11 @@ $ git remote add origin https://github.com/git:kingsleyshacklebolt/dragon_study.
 
 ### Further reading {.facta .toc-ignore}
 
-- https://happygitwithr.com/
+**Happy Git** provides instructions for how to getting started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong.
+https://happygitwithr.com/ 
+
+The **Git fligh rules** are an exaustive ressource for what to do whne things go wrong. https://github.com/k88hudson/git-flight-rules
+
 
 
 ### What's next {.facta .toc-ignore}
