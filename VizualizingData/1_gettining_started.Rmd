@@ -15,6 +15,7 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 library("learnr")
+library("tidyverse")
 library("ggplot2")
 
 # load penguine data set
@@ -27,15 +28,17 @@ theme_set(theme_biostats)
 
 # Before you start {.facta}
 
-You need to be 
-- familiar with different types of data (continous, categorical)
-- handle tibbles
+You need to be:
+
+- familiar with different types of data, such as continuous, categorical, dates.
+- handle tibbles and tidyverse
 - know how to install a package
 
 ## Getting started with ggplot
 
 ### Install the ggplot2 package
-Before using the package for the first time, run the `install.packages()` command:
+
+Before using the package for the first time, run this line in the **Console**:
  
 ```{r install, eval=FALSE, echo=TRUE}
 install.packages("ggplot2")
@@ -45,6 +48,7 @@ To activate the package, run this code:
 ```{r load, eval=TRUE, echo=TRUE}
 library(ggplot2)
 ```
+
 
 ## The basics
 
@@ -69,18 +73,18 @@ ggplot(data, aes(x, y, colour)) +
 ```
 
 
-The main function is `ggplot()` and is used to define the data and the aestetics.
+The main function is `ggplot()` and this is where the data and the aestetics are defined.
 The **data** is on object containing the variables to produce the figure.
-In the **aestetics**, the position usually x and y are defined, which describes the location on the plot.
-In the aestetics other options like colour, linetype or size can be added.
-Each other component of the plot is added with `+`.
+In the **aestetics**, the position usually x and y are defined, which describes the location of the data in the plot.
+In the **aestetics** other options like colour, linetype or size can be added.
+The other components of the plot are added with the `+` sign.
 You can think of it as different layers that are put on top of each other see \@ref(fig:ggplot-hierarchy).
 
 
 
-## The Palmer Penguin Example
+## The Palmer Penguin dataset
 
-We will mostly work with the Palmer Penguine data set [@Horst2020-jy].
+We will to a large extent work with the **Palmer Penguine** dataset [@Horst2020-jy].
 If you are unfamiliar with the dataset have a look at this webpage: https://github.com/allisonhorst/palmerpenguins
 
 To install the dataset run this code:
@@ -91,7 +95,7 @@ data(package = 'palmerpenguins')
 ```
 
 The datasets contains 344 data points from 3 different species of penguins, collected from 3 islands in the Palmer Archipelago, Antarctica.
-Further, it contains several traits like bill length, depth, flipper length, body mass, sex and year.
+Further, it contains several traits and variables like bill length, depth, flipper length, body mass, sex and year.
 ```{r first-look, eval=TRUE, echo=TRUE}
 penguins
 ```
@@ -103,18 +107,21 @@ penguins
 Now we will describe the different components a ggplot is made of.
 
 ### Data
-To make a figure we use the function `ggplot()`.
-The first element in this function is the **data object** containing all the variables that you need to make a figure
-Generally, it is advisable to have the data in a long format.
+We use the function `ggplot()` to make figures.
+The first element in this function is the **data object** containing all the variables you need to make the figure.
 
-For the penguine example this is how it will look like:
+Your might have learnt to organize your data with one observation per row, which is generally a good strategy.
+For making plots, it is however often useful to have your data in a long format (see XXX for more details).
+
+This is how to add the data object in the `ggplot()` function.
+For the Palmer Penguine dataset it will look like:
 
 ```{r data1, echo = TRUE, eval = TRUE, results='hide'}
 ggplot(data = penguins)
 
 ```
 
-The ggplot function will produce an empty plot, but not show any data.
+`ggplot()` with a data object will produce an empty plot, because you have not given any instruction for how and where to show the data.
 
 
 <br/><br/>
@@ -122,37 +129,44 @@ The ggplot function will produce an empty plot, but not show any data.
 ### Aestetics
 The second element in the `ggplot()` function is called the **aestetics**.
 The different elements from the aestetics are used to display the data.
-The most important element is the position which describes the location of the data on the plot, usually by x and y.
-Other important elements are shape, fill, size, colour, line type and line width, which describe how the data is presented on the plot.
+The most important element is the **position** which describes the location of the data on the plot, usually by x and y.
+Other important elements are **shape**, **fill**, **size**, **colour**, **line type** and **line width**, which describe how the data is displayed on the plot.
 
-In the penguine example, if we want to plot the bill length against the bill depth, we choose these two variabels as x and y.
-As a second aestetics we have chosen to define species as colour.
+We want to plot the bill length against the bill depth in the Palmer Penguine dataset.
+For this we define `x = bill_length_mm` and `y = bill_depth_mm`.
+We also want to display the different penguine species using different colours.
+For this, we type `colour = species`.
 
 ```{r aestetic, eval = TRUE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
 ```
 
-One thing that might be confusing about the argument colour is that it only allows to be a variable, for example `colour = species` or `colour = island`. 
-So for example `colour = "red"` does not work.
-If you want to choose a specific colour, this has to be done in geom or in scales (see below).
+Not much more has happened yet, but the plot has a x and y axis.
+The position for the data points are set.
+The next step is to define how to display the data, using **geoms**.
 
-Now the ggplot function has added the x and y axis to the plot.
+One thing that might be confusing about the argument colour is that it only allows to be a factor from the dataset, for example `colour = species` or `colour = island`. 
+For example `colour = "red"` does not work.
+If you want to choose specific colours, this has to be done in **geom** or **scale** (see below).
+
+
 <br/><br/>
 
 ### Geoms
-To plot the actual data, you need the **geom function**.
-There are many different geom functions that you can choose.
-See chapter *3. different plot types* for an overview.
+To plot the actual data, we need to add **geom**.
+There are many different **geom** you can choose from, to display the data as points, lines, distributions among others.
+See \@ref(different-types-of-data-vizualization) for an overview.
 
-Here, we will use `geom_point()`, which displays the data as points (scatterplot).
-Also, the legend is automatically plotted on the right side.
+Here, we want to make a scatterplot and display the data as points.
+For this we use `geom_point()`.
+Note that the legend is automatically plotted on the right side of the plot.
 
 ```{r add-geom, eval = TRUE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point()
 ```
 
-To come back to the previous point, if you want to make all the points red this can be done in the `geom_point()` function using `colour = "red".
+To illustrate the problem with colour in the previous section, you can use `colour = "red"` inside `geom_point()` and it will make all the points red.
 Note that this time we chose `shape = species`, another aestetics to use different symbols for the three species.
 
 ```{r red, eval = TRUE}
@@ -162,16 +176,18 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, shape = species)) +
 <br/><br/>
 
 
-### Scales
-**Sclaes** as the name says is for scaling, converting, inverting.
-With scales you can manipulate the labels, breaks, transformations and palettes.
-In other words you can manually change the axis text, labels, ticks, add breaks, make transformations, and manipulate aestetics like colour, shape, linetype.
+### Scale
+**Scales** controls the mapping of the **data** to the **aestetics**.
+With **scales** you can manipulate the labels, breaks, text, make transformations like scale, convert and invert and much more.
+The scales are produced automatically in ggplot, but you can manually change all of them, which gives you a lot of control of the plot.
 
-Here is just a small selection to show what is possible.
-We can log transform the y axis, change the axis titles, and manipulate the colours.
+Here, we present just a small selection to show what is possible.
+The next section \@ref(essential-ggplot-elements) will introduce you to more options.
+
+In the Palmer Penguin example, we log transform the y axis, change the axis titles of both axis, and manipulate the colours, all using different **scale** functions.
 
 ```{r scales, eval = TRUE}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, group = species)) +
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
   scale_y_log10(name = "Log bill length in mm") +
   scale_x_continuous(name = "Bill depth in mm") +
@@ -181,37 +197,33 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, gr
 
 ### Labs
 **Labs** is a useful function to modify the axis labels, titles and legend.
+But as seen in the previous example, the axis names can also be modified with a **scale** function.
 
-The axis titles can be renamed, and a title and tag can be added.
+In the Palmer Penguin example, we now rename the axis titles and add a title and a tag to the figure.
 
 ```{r labs, eval = TRUE}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, group = species)) +
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
-  labs(x = "Bill depth in mm", y = "Bill length in mm", title = "Bill length vs. depth in penguins", tag = "A")
+  scale_y_log10() +
+  scale_x_continuous() +
+  scale_color_viridis_d() +
+  labs(x = "Bill depth in mm", y = "Log bill length in mm", title = "Bill length vs. depth in penguins", tag = "A")
 ```
-
-
-### Stats
-**Stats** are statistical transformations to summarize objects in the data in different ways.
-You can add means or confidence intervals on top of your data.
-
-```{r stats, eval = TRUE}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, group = species)) +
-  geom_point() +
-  stat_summary(fun = "mean", colour = "red", size = 1)
-```
-<br/><br/>
 
 
 ### Facets
-**Facets** can be used to divide the data into different subplots, which can enhance readability of a figure.
+**Facets** can be used to divide the data into different subplots, which can be useful when vizualizing data from different groups.
 
-In the penguine example we can show 3 different panels for each island.
-This way of plotting makes it easy to see which penguine species occurs on each island.
+In the Palmer Penguin example we can additionally show a panels for each island.
+This is a good way to see which penguine species occurs on which island.
 
 ```{r facets, eval = TRUE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
+  scale_y_log10() +
+  scale_x_continuous() +
+  scale_color_viridis_d() +
+  labs(x = "Bill depth in mm", y = "Log bill length in mm", title = "Bill length vs. depth in penguins", tag = "A") +
   facet_wrap(~ island)
 ```
 <br/><br/>
@@ -219,13 +231,17 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 
 ### Themes
 **Themes** is a powerful element that controls the look of the plot.
-In themes you can change, remove and add the background, gridlines, ticks, text, text size and much more.
+In **themes** you can change, remove and add the background, gridlines, ticks, text, text size and much more.
 
-In our example, we will change the axis tile text size, the colour of the axis text and change the theme to `theme_minimal()`.
+In our example, we will increase the **text** of the **axis titles**, change the **colour** of the **axis text** and change the **theme** to **theme_minimal**.
 
 ```{r theme, eval = TRUE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
+  scale_y_log10() +
+  scale_x_continuous() +
+  scale_color_viridis_d() +
+  labs(x = "Bill depth in mm", y = "Log bill length in mm", title = "Bill length vs. depth in penguins", tag = "A") +
   facet_wrap(~ island) +
   theme_minimal() +
   theme(axis.title = element_text(size = 14),
@@ -236,31 +252,69 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 <br/><br/>
 
 
-### A ggplots are built with layers
+### stat_summary
+**stat_summary** is a powerful function to visualize a summary of your data, for example showing **mean** values.
+
+For this, we have to adapt the Palmer Penguin example.
+Here, we show bill depth for each species in different colours.
+Note that we are using the function `geom_jitter()`, which spreads the data on the x-axis, so that we can see all the data points.
+Finally, we add the **mean** bill_depth for each species as a red big point.
+
+```{r stat-summary, eval = TRUE}
+ggplot(penguins, aes(x = species, y = bill_depth_mm, colour = species)) +
+  geom_jitter() +
+  scale_y_log10() +
+  scale_color_viridis_d() +
+  labs(x = "Species", y = "Log bill length in mm", title = "Bill length in penguins", tag = "A") +
+  stat_summary(fun = "mean", colour = "red", size = 2)
+
+```
+
+<br/><br/>
+
+
+### ggplots are layers of components
 As you can see, there are almost no limits to what you can do in a ggplot.
-The trick is to know which element changes what and to remember all the names (i.e. what is axis.text and axis.ticks etc.).
+The trick is to know which function changes which element.
 
-The order in which you code the different components of a plot often does not matter  (although there are discussions around that topic, see here).
-You can imagen the different components (geom, scale, stats) of the plot as different layers that are plotted on top of each other.
-Usually, the order is not so important, unless something needs to be plotted on top of something else.
-But this is easy to spot once you see the plot.
+The different components (geom, scale, stats) of the plot are layers that are plotted on top of each other and they appear in the order they are coded.
+Often it does not matter in which order the different components are added (although there are discussions around that topic, see here).
+However, if you want to plot a mean on top of the data points, the summary has to be added after the points.
+But you will see very quickly if the summary is hidden behind the data points.
 
-For examle, you want to plot the data below and the mean values on top, and not the other way round.
-See below, the red points showing the means have disapeard. So, the things you want on top are plotted after.
+Let's have a look at the previous plot, where we added a red point for the mean bill length for each penguin species.
+If we had added the `stat_summary()` before the `geom_jitter()` the red point is hidden behind the data.
+This can be done intentional, but the means are less visible in this way.
 
 ```{r wrong-order, eval = TRUE}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+ggplot(penguins, aes(x = species, y = bill_depth_mm, colour = species)) +
   stat_summary(fun = "mean", colour = "red", size = 2) +
-  geom_boxplot()
+  geom_jitter() +
+  scale_y_log10() +
+  scale_color_viridis_d() +
+  labs(x = "Species", y = "Log bill length in mm", title = "Bill length in penguins", tag = "A")
 
 ```
 
 
-## The exercise {.tabset}
+## The exercise
+Now it is your turn to practice.
 
-### Position x and y
-Now it is your turn!
-Add the required R code to plot bill length `bill_length_mm` against bill depth `bill_depth_mm`.
+We are using the Palmer Penguin data set, which you should be somewhat familiar with.
+If you want to see how the data set looks like, type:
+
+```{r view, eval = FALSE, echo=TRUE}
+penguins %>% View()
+
+```
+
+### {.tabset}
+
+#### Position x and y
+
+We want to plot bill length againts bill depth.
+Add the required code to make this plot.
+The variables you need are called `bill_length_mm` and `bill_depth_mm`.
 
 ```{r position, exercise=TRUE}
 ggplot(penguins, aes(x = , y = , colour = species)) +
@@ -269,8 +323,8 @@ ggplot(penguins, aes(x = , y = , colour = species)) +
 
 ```
 
-### Colour
-Add the required R code to give each species in a different colour.
+#### Colour
+Now add the code to give each species in a different colour.
 
 ```{r colour, exercise=TRUE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = )) +
@@ -280,8 +334,8 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = )) +
 ```
 
 
-### Geom
-Add the required R code to plot the data as points.
+#### Geom
+Add the code to plot the data as points.
 
 ```{r geom, exercise=TRUE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
@@ -291,20 +345,21 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 
 ```
 
-## {.toc-ignore}
+### {.toc-ignore}
 <br><br>
 
 
 ## Common mistakes {.tabset}
 
-In the beginning you will make mistakes which will result in error messages, warnings or incomplete plots.
-These mistakes often occur when one of the layers is missing, because a `+` is forgotten at the end of a line, due to a typo, or the data or other elements are forgotten.
-Let us look at some common mistakes and how the ggplot is displayed or not.
+In the beginning you might make mistakes which will result in **error messages**, **warnings** or **incomplete plots**.
+These mistakes often occur when the data or another component has been forgotten, because a `+` is missing at the end of a line or because of a typo.
+
+Let us look at some **common mistakes**, the **error messages** and what will be displayed.
 <br><br>
 
 
 ### No data
-If you forget to specify the data ggplot will not be able to make a plot and you will get the following error message:
+If you forget to specify the **data**, ggplot will not be able to make a plot and you will get the following **error message**:
 
 ```{r no-data, echo=TRUE, error=TRUE}
 ggplot(aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
@@ -313,19 +368,30 @@ ggplot(aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 
 
 ### Missing aesthetics
-If you forget to define the aestetics `aes()` you will also get an error message and a empty image:
+If you **forget to define the aestetics** `aes()` you will also get an **error message** and a empty plot:
+
 ```{r no-aestetics, echo=TRUE, error=TRUE, eval=TRUE}
 ggplot(data = penguins) +
   geom_point()
 ```
 
 ### Missing geometry
-If the geometry is missing `geom_point()`, ggplot will draw a empty plot, with axis labels, but show not data, because you have not defined how to plot the data.
+If the **geometry is missing** `geom_point()`, ggplot will make a empty plot, with axis labels, but without data.
+In this case there will **not be any error message**.
 
 ```{r no-geom}
 ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
 ```
 
+
+### Missing `+`
+If the you miss  `+`, ggplot will make a empty plot, with axis labels, and again without data.
+The next line will show the following  **message**.
+
+```{r plus}
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
+  geom_point()
+```
 
 
 # What's next? {.facta}
