@@ -277,22 +277,63 @@ ggplot(penguins, aes(x = species, y = bill_depth_mm, colour = species)) +
 As you can see, there are almost no limits to what you can do in a ggplot.
 The trick is to know which function changes which element.
 
-The different components (geom, scale, stats) of the plot are layers that are plotted on top of each other and they appear in the order they are coded.
-Often it does not matter in which order the different components are added (although there are discussions around that topic, see here).
-However, if you want to plot a mean on top of the data points, the summary has to be added after the points.
-But you will see very quickly if the summary is hidden behind the data points.
+The different components (geom, scale, stats) of the plot are **layers** that are plotted on top of each other and they appear in the order they are coded.
+You can basically add as many **layers** of **geom**, **scale** etc. on top of each other as you want.
+But there is a **trade-off**, of how much data and elements you add to a plot and the **clarity** of the visualization.
 
-Let's have a look at the previous plot, where we added a red point for the mean bill length for each penguin species.
-If we had added the `stat_summary()` before the `geom_jitter()` the red point is hidden behind the data.
-This can be done intentional, but the means are less visible in this way.
+Here is another example of a plot with two different **geom** types.
+We already know `geom_point()`, and in this case `geom_smooth`, draws a regression line for each penguin species.
+
+```{r two-geoms, eval = TRUE}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y ~ x") +
+  scale_y_log10() +
+  scale_x_continuous() +
+  scale_color_viridis_d() +
+  labs(x = "Bill depth in mm", y = "Log bill length in mm", title = "Bill length vs. depth in penguins", tag = "A")
+```
+
+
+It is also possible to use different data sets to make one plot.
+We are using the Palmer Penguin data set to plot bill length agains bill depth.
+And now we also want to plot the mean bill length and bill depth for each penguin species on top of this plot.
+For this, we calculate these values and store them in a new object.
+Finally, we plot the means in the same plot using another `geom_point()`, and define the **data** and **aesthetics** again.
+Note also that the colour and the size of these points are defined.
+
+```{r two-type-data, eval = TRUE}
+means <- penguins %>% 
+  group_by(species) %>% 
+  summarise(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            mean_bill_depth = mean(bill_depth_mm, na.rm = TRUE))
+
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_point() +
+  geom_point(data = means, aes(x = mean_bill_length, y = mean_bill_depth), colour = "red", size = 8) +
+  scale_y_log10() +
+  scale_x_continuous() +
+  scale_color_viridis_d() +
+  labs(x = "Bill depth in mm", y = "Log bill length in mm", title = "Bill length vs. depth in penguins", tag = "A")
+```
+
+Often it does not matter in which order the different components are added (although there are discussions around that topic, see here).
+But in some cases the order is important, and you will quickly see if the order is wrong.
+
+Let's have a look at the previous plot, where we added a red point for the mean bill length and depth for each penguin species.
+The order we add the two `geom_point()` function matters.
+If we switch the order, the means are plotted below the data points.
+This can be intentional, but the means are less visible in this way.
 
 ```{r wrong-order, eval = TRUE}
-ggplot(penguins, aes(x = species, y = bill_depth_mm, colour = species)) +
-  stat_summary(fun = "mean", colour = "red", size = 2) +
-  geom_jitter() +
+
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_point(data = means, aes(x = mean_bill_length, y = mean_bill_depth), colour = "red", size = 8) +
+  geom_point() +
   scale_y_log10() +
+  scale_x_continuous() +
   scale_color_viridis_d() +
-  labs(x = "Species", y = "Log bill length in mm", title = "Bill length in penguins", tag = "A")
+  labs(x = "Bill depth in mm", y = "Log bill length in mm", title = "Bill length vs. depth in penguins", tag = "A")
 
 ```
 
