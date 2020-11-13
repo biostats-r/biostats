@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Essential ggplot elements"
 output:
   bookdown::html_document2:
     highlight: tango
@@ -8,15 +8,28 @@ output:
     css: ../css/style-chapters.css
 --- 
 
-```{r setup, include=FALSE, out.width = '100%'}
+```{r setup, include=FALSE, out.width = '100%', warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library("tidyverse")
 library("ggplot2")
+library("patchwork")
+
+# load penguine data set
+data(penguins, package = 'palmerpenguins')
+
+# set biostats theem
+source("../Templates/biostats_theme.R")
+theme_set(theme_biostats)
 ```
 
 # Essential ggplot Elements
 A plot is made of different components such as data, axis, title, legend... and has different elements such as colour, shape and linetype.
 Each of these components and elements can be changed and customized.
+
 Click on the figure below to get information on how to change each component.
+
+Note that most of the ggplot elements can take a large number of elements. Refers to ... in the help file. They are very powerful!
+There are often different ways to change a component or an element...
 
 
 ```{r clickable-plot, echo=FALSE}
@@ -24,17 +37,81 @@ knitr::include_graphics("Figures/SimplePlot1.png")
 ```
 
 
-## Titles, axis text/labels (labs)
-- add, remove and change axis labels, add units
-- add title, subtitles, tags
-- change size, colour, position
+## Modify axis labels and titles
+
+### Change axis labels and titles
+
+The variables in the data object often do not have "pretty" names.
+Because it is not advisable to use spaces in names, we often use "_" or "-" in the names, which does not look nice on a plot, e.g. `bill_length_mm`.
+It is also advisable to add units to a label, to make the plot more informative.
+
+We can use `labs()` to modify the **axis labels**.
+With this function we can also add a **title**, **subtitle**, **caption** and **tag**.
+
+```{r labs-1, eval = TRUE, echo = TRUE}
+p <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_point() +
+  scale_color_viridis_d()
+  
+p1 <- p + labs(title = "Bill depth vs. bill length in penguins", 
+               subtitle = "Palmer Penguin data set", 
+               x = "Bill length in mm",
+               y = "Bill depth in mm",
+               caption = "Bill depth plotted against bill length in three penguin species", 
+               tag = "A")
+```
 
 
-## Axis limits and ticks (scale_)
+```{r labs-2, eval = TRUE, echo = FALSE}
+p + p1 + plot_layout(height = unit(4, "cm"), widths = unit(4, "cm"))
+
+```
+
+
+### Delete axis labels
+
+Sometimes you do not want to have a axis label, because it is obvious.
+To remove the labels you can simply use `labs(x = NULL)`.
+
+
+### Change appearance of axis label and title
+
+change size, colour and position
+
+`theme()` can change the appearance of the text. Often good to make the size larger.
+
+```{r theme-text-1, eval = TRUE, echo = TRUE}
+# Normal plot
+p <- p
+
+# Change font size and colour of the title
+p2 <- p + theme(plot.title = element_text(size = 20, colour = "darkcyan"))
+
+# Change the font size and position of the axis labels
+p3 <- p + theme(axis.title = element_text(size = 16),
+                axis.title.x = element_text(vjust = -2),
+                axis.text = element_text(size = 16))
+
+# Remove ticks and tick mark labels
+p4 <- p + theme(axis.ticks = element_blank(),
+                axis.text = element_blank())
+```
+
+```{r theme-text-2, eval = TRUE, echo = FALSE}
+(p + p2) / (p3 + p4)
+
+```
+
+
+
+There is usually the option to change both together `axis.title` or only one specified like `axis.title.x`.
+
+
+## Modify axis limits and ticks (scale_)
 - Remove/add customize axis values
 - change axis ticks position, labels, ...
 - change size and colour
-- tansform, reverse
+- transform, reverse
 - add second axis
 
 
