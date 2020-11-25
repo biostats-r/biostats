@@ -1,0 +1,1318 @@
+---
+title: ""
+output:
+  bookdown::html_document2:
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: ../css/style-chapters.css
+---
+
+```{r setup, eval=TRUE, include=FALSE}
+
+# add all packages that need loading
+library(tidyverse)
+library(png)
+library(ggimage)
+library(knitr)
+library(readr)
+library(GGally)
+library(ggpubr)
+
+# source figure settings
+source("../StatisticsInR/Files/biostats_theme.R")
+
+# set warning to be off for all chunks
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+```
+
+# Binomial GLM
+
+```{r setup-data, include=FALSE, echo=FALSE}
+
+# load the sheep data
+sheep_data <- read_csv("../StatisticsInR/Files/SheepData.csv")
+
+sheep_data <- sheep_data[is.na(sheep_data$Age)==FALSE,]
+
+# create some example data
+set.seed(2020)
+example_data <- tibble(x = c(rnorm(50, 5, 3), rnorm(50, 10, 3)),
+                           y = (c(sample(0:1, 50, replace = TRUE, 
+                                      prob = c(0.8, 0.2)), 
+                                sample(0:1, 50, replace = TRUE,
+                                       prob = c(0.2, 0.8)))))
+
+```
+
+### Before you start {.facta .toc-ignore}
+
+Before reading this page, you should be comfortable with basic statistical 
+theory, using R, continuous and categorical data, and **linear models**.
+
+</br>
+
+## Introduction
+
+In this section, we will look at how we can use a Binomial Generalized Linear 
+Model (GLM) 
+to analyze data with a binary response and numeric explanatory variables.
+
+This model builds on from the standard linear models covered on these pages 
+[1](), [2](), [3](). GLMs are similar to the linear models conceptually and in 
+R, but are very much more flexible.
+
+Like the linear regression, the GLM also has two motivations. 
+**inference** and **prediction**. But as the name suggests, it is more general
+than the standard linear models (used for linear regression, ANOVA, and analyses
+with categorical and continuous variables). 
+
+In particular, GLMs are useful when the assumptions of the linear model are 
+violated. The most common violations that can be addressed with a GLM are:
+
+ * Residuals that are not normally distributed
+ * Non-linearity
+ * Unequal variance 
+ 
+While some of these violations could be addressed by transformation of the 
+response to try and improve linearity or equalize the variance - 
+this is not always possible or preferable. 
+The GLM makes it possible to account for violations of
+linearity and variance of residuals in a single model without changing the 
+response. This is especially useful when you know that the response data will
+not follow a normal distribution e.g. if they are binary results or derive from
+counting. In these cases, different distributions will better represent the data
+generation process than the normal distribution used in the linear model.
+
+GLMs for the major part of most biological analyses as a lot of biological data
+are non-normal. 
+
+A Binomial GLM still wants to:
+
+1) estimate a relationship between $X$ and $Y$
+
+2) predict change in $Y$ from change in $X$
+
+But unlike a linear model, the Binomial GLM does not do this with a straight
+line (on the scale of the data). The Binomial GLM fits a curved line bounded
+between 0 and 1 on the y-axis. This is because the Binomial GLM (also called a 
+logistic regression - more on why later), 
+the response data are always binary. The $Y$ values can only take either 0 or 1, 
+Yes or No, etc, anything with only two outcomes.  
+
+```{r make-figure1, include = TRUE, echo = FALSE}
+
+fig_1 <- ggplot(aes(x, y), data = example_data)+
+  geom_point(shape = 16)+
+  geom_smooth(method="glm", method.args = list(family="binomial"), 
+              se=TRUE)
+
+```
+```{r figure-1, include = TRUE, echo = FALSE, fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
+
+fig_1
+
+```
+
+</br>
+
+## <i class="far fa-question-circle"></i> Which questions? 
+
+Example questions that can be answered with the Binomial GLM:
+
+Inference
+
+ * How does body weight (kg) influence survival probability of sparrows?
+ * How does forest cover (type) affect the occurrence probability
+ of a plant species?
+
+Prediction
+
+ * What is the mortality of beetles exposed to different concentrations of 
+ carbon disulfide $CS_2$?
+
+
+</br>
+
+## <i class="fas fa-table"></i> Type of data {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+As mentioned above, in a Binomial GLM the response data are always binary. 
+The values of the response variable should have only two outcomes. Examples of 
+this type of data would be:
+
+ * Survived/died
+ * Present/absent
+ * Yes/no
+ * On/off
+
+Just as was stated for the linear models, 
+**always remember to check that the way your variables are classified in R 
+is the same as the format you expect.** 
+
+In this case, there are several options that will work. The response variable 
+$Y$ can be stored as a factor, an integer, or as a continuous numeric variable. 
+However, it is important that it only has two levels (if it is a factor) or 
+contains only 0s and 1s if it is numeric or integer. 
+
+### Worked example 
+
+For this worked example, we will try to find out if/how body weight (kg)
+influences the survival probability of Soay sheep. 
+
+Biologically, it is expected that smaller sheep would find it harder to survive
+harsh winters as they have fewer reserves than larger sheep. 
+
+#### Introduction to the data
+
+This example uses have data on some sheep. The data are from 1986 to 1996 for a
+population of Soay sheep from the St. Kilda islands in Scotland, UK.  
+They have been studied in a standardised way since 1985. Information on the project can be found [here](http://soaysheep.biology.ed.ac.uk/). These data are
+open source and can be found in the appendix of this [paper](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1600-0706.2012.00035.)CITE COULSON 2012.
+
+The data consists of five variables: Year (year of recording), Age (in years),
+Survival (0 = died, 1 = survived), Weight (kg) and 
+PopSize (number of females in the given year). 
+All measures are for female sheep only. 
+
+You can find the data [here]() if you want to follow along with the example. 
+It is a `.csv` file with column headings.
+
+First we should have a look at the data using a plot. 
+
+```{r make-sheep-data-plot, include = TRUE, echo = TRUE}
+
+fig_2 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
+ geom_point()+
+ ylab("Survival")+
+ xlab("Weight of sheep (kg)")+
+ theme_minimal()
+ 
+```
+
+```{r figure-2, include = TRUE, echo = FALSE, fig.cap = "Scatterplot of body weight (kg) and against survival of sheep"}
+
+fig_2
+
+```
+
+This gives us a fair idea of what our data looks like. The $Y$ values are all
+either 0 or 1. 
+
+You should note that four of our variables are integers: 
+Year, Age, Weight and PopSize and one of them is a factor/binary (Survival).
+
+The weight of the sheep is actually a numeric variable as sheep can have weights 
+that are between whole kilos. You can change this in R, 
+so that it will be treated as a numeric variable.
+
+```{r sheep-data-set-up, include = TRUE, echo = TRUE}
+
+sheep_data <- mutate(sheep_data, 
+                      Weight = as.numeric(Weight),
+                      Survival=as.numeric(Survival))
+
+```
+
+Since we are interested in answering:
+
+**Does body weight (kg) influence the survival of sheep?**
+
+we only need two of the five variables in the data: `Weight` and `Survival`. 
+We will not need `Year`, `PopSize` and `Age`. 
+
+The response variable then is `Survival`, 
+which is a binary variable (it has two outcomes 0/1). 
+The explanatory variable is `Weight`, which is numeric. 
+
+</br>
+
+## <i class="fas fa-project-diagram"></i> Model details {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+Every model that is created needs to be represented mathematically. 
+This representation describes how it was generated.
+
+As we discussed for the linear models, we make the assumption that there is a 
+linear relationship between our two variables. 
+Hence, we can capture the data generation process with a straight line and 
+some error. 
+The GLM can be written as an equation in terms of $Y$:
+
+$$
+Y_i = \color{orange}\alpha + \color{blue}{\beta_1} X_{1i} + \color{blue}{\beta_2} X_{2i} + \ldots + \color{blue}{\beta_n} X_{ni} + \color{red}\epsilon_i
+$$
+
+where $n$ is the number of explanatory variables in the model. 
+
+#### Components of a GLM
+
+There are three main parts of the GLM:
+
+##### The random part
+
+This is the data part of the model. It is assumed with a distribution, 
+and in our case a Binomial distribution. 
+Thus we choose the distribution based on the data we have. 
+The random part is how we deal with the errors $\color{red}\epsilon_i$. 
+In the Binomial GLM, the Binomial distribution is assumed for the random part. 
+Let us take some time to have a recap of the Binomial distribution.
+
+###### The Binomial Distribution
+
+The Binomial distribution gives the probability of success from two possible 
+outcomes. This probability is beounded between $0$ and $1$. 
+Examples of such data includes survival date, sex ratio data, land or sea. 
+
+**Parameters**
+The parameters of the Binomial distribution is the probability ($p$). 
+
+**Mean and Variance**
+The mean and variance of the Binomial distribution are:
+
+ * $Mean = np$;
+
+ * $Variance = np(1-p)$; 
+
+where $n$ is the number of successes.
+
+##### The systematic part
+
+This is the part of the model for each data point. 
+This is also known as the linear predictor. 
+An example is 
+$\color{orange}\alpha + \color{blue}\beta_1 X_{1i} + \color{blue}\beta_2 X_{2i} + \ldots + \color{blue}\beta_n X_{ni}$.
+
+**The Link function**
+
+The link function transforms the model (linear) onto the scale of data. 
+This connects the systematic part of the model to the random data. 
+It describes how the mean depends on the linear predictor. 
+Different distributions have different link functions.
+
+The default link function or canonical function is the logit function. 
+The logit function is defined as $log\bigg(\frac{\mu}{1-\mu}\bigg)$. 
+Other common link functions are the **probit** and **cloglog** functions.
+
+```{r make-logit-plot, echo = FALSE}
+
+x <- seq(-10,10, 0.01)
+
+y <- plogis(x)
+
+data = data.frame(x,y)
+
+fig_3 <- ggplot(data, aes(x=x,y=y))+
+  geom_line(col= "red")+
+  xlab("Probability")+
+  theme_minimal()
+
+```
+
+```{r figure-3, include = TRUE, echo = FALSE, fig.cap = "The Logit function"}
+
+fig_3
+
+```
+
+#### Assumptions
+
+There are several assumptions that should be met for the binomial GLM to be 
+valid.
+
+ * The relationship between X and Y is non-linear.
+
+ * There are no outliers.
+
+ * Each value of Y is independent.
+
+ * The dispersion parameter is constant
+
+ * The correct variance function is used.
+
+</br>
+
+#### Writing the model in <i class="fab fa-r-project"></i>
+
+To fit the model in $R$, we will use the `glm()` function. 
+`glm()` stands for Generalised linear models.
+
+`glm(y~x, data, family=binomial(link = logit))`
+
+The `glm()` function takes several arguments:
+
+ * formula in form: `y~x`
+
+ * data: your data object.
+
+ * family: specify the link function. In our case, the binomial family. 
+
+The function will fit regression model using **maximum likelihood estimation**
+and gives us the maximum likelihood estimates of $\color{orange}\alpha$ and $\color{blue}{\beta_i's}$ as an output. 
+
+To begin with, we will need to identify the formula argument, the `y~x` part. 
+The $y$ is the response variable (the variable we seek to explain) and 
+$X$ to be an explanatory variable (the thing we assume affects the response). 
+As such we need to identify which variable is your response and which is 
+explanatory.
+
+From our example question, we can note that `Survival` is the response variable 
+and `Weight`is the explanatory variable. 
+We then plug these variables into the `glm()`function as shown below, 
+using the column names in place of `y` and `x` 
+in the model described above and including our dataframe
+name as the data argument.  
+
+```{r example-glm, include = TRUE, echo = TRUE}
+
+ExampleModel <- glm(Survival~ Weight, 
+                    data = exampledata, 
+                    family = binomial(link = logit))
+
+```
+
+We can then view our results by using the function `coef()`. 
+This will take the output of the `glm()`, the model object, 
+as its argument and extracts the maximum likelihood estimates of 
+$\color{orange}\alpha$ and $\color{blue}{\beta}$.
+
+```{r coef-example, include = TRUE, echo = TRUE}
+
+coef(ExampleModel)
+
+```
+
+</br>
+
+### Worked example 
+
+</br>
+
+This worked example demonstrates how to fit a linear regression model in $R$ 
+using the `glm()` function for the sheep data example. 
+
+In this example, we are asking:
+**Does weight affect the survival of sheep?**
+
+This question has been posed to suggest that we assume weight of the sheep has 
+an effect on the survival of the sheep. 
+Therefore the survival of the sheep (0 or 1) is the response ($Y$) and 
+weight ($X$) is the explanatory variable. 
+
+We put these variables in the `glm` function in the below format.
+
+```{r sheep-model, include = TRUE, echo = TRUE}
+
+sheepModel <- glm(Survival~ Weight, data = sheepdata, family = "binomial")
+
+```
+
+We have run the model and have assigned it to an object name. 
+
+Let us take a look at the maximum likelihood estimates of our model parameters ($\color{orange}\alpha$, $\color{blue}{\beta_1}$ and $\color{blue}{\beta_2}$) 
+using the `coef()`.
+
+```{r coef-sheep-model, include = TRUE, echo = TRUE}
+
+coef(sheepModel)
+
+```
+
+
+## <i class="fas fa-laptop"></i> Parameters {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+We have introduced the model parameters of a Binomial GLM in section: 
+$\color{orange}\alpha =$ the intercept; $\color{blue}{\beta_i}'s = $ 
+the slope of the line (steepness/gradient).
+
+**But what do these parameters really mean?**
+
+To fully understand the parameters and what they mean, we have to note that 
+there is a non-linear relationship between the explanatory and response 
+variable. To interpret the parameters, 
+we have to recall the linear predictor and the link function.
+
+*Figure: Illustration of the logistic regression curve and the data.*
+
+The linear predictor is $\eta = \color{orange}\alpha + \color{blue}{\beta}X_i$. 
+The $\eta$ is the log odds of the probability. That is:
+
+$$
+log\bigg(\frac{p}{1-p}\bigg) = \eta = \color{orange}\alpha + \color{blue}{\beta}X_i.
+$$
+
+Then on the inverse logit scale, 
+
+$$
+p = \frac{1}{1 + e^{- \eta}} = \frac{1}{1 + e^{-(\color{orange}\alpha + \color{blue}{\beta}X_i)}}.
+$$
+
+Therefore, we can interpret the parameters on the original scale or on the 
+transformed scale. 
+
+Moreover, we will also need to describe the concept of odds to be able to 
+fully understand the interpretation of the parameters. 
+Let's discuss that now.
+
+**Odds Ratio**
+
+**$\color{orange}{\alpha} \color{orange}{, the intercept}$**
+
+THis is the parameter that gives the value of $Y$ when $X=0$. 
+
+For X (Weight) = 0, 
+
+$$
+p = \frac{1}{1+e^{-(-8.2109 )}} = 0.0002716
+$$
+
+```{r example-results-plot, include = TRUE, echo = FALSE}
+
+ggplot(exampledata, aes(x= Weight, y = as.numeric(Survival)-1))+
+  geom_point(colour = "grey70")+
+  geom_smooth(method="glm", method.args = list(family="binomial"), se=F, colour = "black")+
+  geom_point(aes(x=0, y= 0.002716), colour="orange")+
+  theme_minimal()+
+  ylab("Survival Probability")
+
+```
+
+**$\color{blue}{\beta} \color{orange}{, the slope}$**
+
+This gives the amount of change in the *log odds* of $Y$ as the value of $X$ 
+changes by a unit. 
+In our example data, $\color{blue}{\beta} = 0.3171$ means that for every 1 kg 
+increase in the weight of the sparrow, the *log odds* of survival goes up 
+0.3171 times. 
+
+*What would this look like on the original scale?*
+
+For X (Weight) = 24, 
+
+$$
+p = \frac{1}{1+e^{-(-8.2109 + 0.3171*24)}} = 0.35
+$$
+
+For X (Weight) = 25, 
+
+$$
+p = \frac{1}{1+e^{-(-8.2109 + 0.3171*55)}} = 0.43
+$$
+
+We can see that the survival probability increases as the weight of the species 
+increases. 
+However it should be noted that the change induced by $\color{blue}{\beta}$ 
+is not the same for ever $X$ (on the original scale). 
+It is only linear on the link scale. 
+
+```{r, include = TRUE, echo = FALSE}
+ggplot(exampledata, aes(x= Weight, y = as.numeric(Survival)))+
+  geom_point(colour = "grey70")+
+  geom_smooth(method="glm", method.args = list(family="binomial"), se=F)+
+  theme_minimal()+
+  ylab("Survival Probability")
+```
+**Figure 4: Plot of regression line and data.**
+
+It is worth noting that $\alpha$ and $\beta$ control the position of the 
+regression line. They are called the systematic part of the model and 
+is linked to the response $Y$ to the covariate $X$ by the link function. 
+These are used by `geom_smooth()` to plot the logistic regression. 
+
+</br>
+
+#### Interpreting the parameters
+
+Now we know what each of the parameters in a Binomial GLM
+mean, we can now think about interpreting them. 
+
+**Which of the three parameters do you think is most important for answering
+our research question "Does Weight influence Survival probability?"?**
+
+</br>
+
+<details><summary>I had a go, now show me the answer.</summary></span>
+
+**The slope ($\beta$).** This is because the gradient or slope of the regression
+line is what tells us how strong and in what direction the relationship between 
+$X$ and $Y$ is. 
+While we need to estimate the intercept of the line, 
+it does not directly tell us about the relationship of interest.
+
+To predict, we need all of the parameters. 
+
+</details>
+
+</br>
+
+### Worked example 
+
+In the previous section, we fit a binomial GLM using the `glm()` function and 
+looked at the estimates of some parameters using the `coef()` function. 
+In this section, we will use the model theory to interpret what those parameters 
+mean. 
+
+**$\color{orange}{The intercept and slope}$**
+
+We have already seen that the parameters of the intercept and slope control the 
+regression line. These estimates are obtained from the `coef()` function in R.
+
+For our sheep data model, the estimates are:
+
+```{r coef-sheep-model2, include = TRUE, echo = TRUE}
+
+coef(sheepModel)
+
+```
+
+We convert these estimates to the original scale as:
+
+```{r back-transform-sheep, include = TRUE, echo = TRUE}
+
+1/(1+exp(-coef(sheepModel)))
+
+```
+
+The intercept is -0.2392, and it means that the log odds of the survival of 
+sheep falls by 0.2392 when the weight of the sheep is $0$ kg and the population 
+size is $0$. 
+In other words, 
+the survival probability of a sheep is 0.107 when the weight is $0$ kg. 
+In this example, the intercept is not very interesting, 
+as it does not make a lot of biological sense to know the expected survival 
+probability of sheep when their weight is $0$ kg. 
+A sheep born at anytime will weigh more than $0$ kg. 
+
+The slope of `Weight` are interesting to us since they tell us the direction 
+and the strength between the weight of the sheep and the survival of the sheep. 
+
+In this case, our model estimates that the log odds of the survival of sheep 
+increases by $0.1817$ when the weight of the sheep increases by a 1 kg. 
+
+**Plotting the Results**
+As well as looking at the maximul likelihood estimates of the parameters from 
+the Binomial GLM, we can also plot the results.
+
+To do this, we use the `ggplot()` with `geom_line()`. 
+We will also use a new function called `predict()`.
+
+To make the first plot, we will only need to use two arguments:
+
+ * `object` = your model object
+ * `type` = "response", which means predict on the response scale.
+
+```{r sheep-predictions1, include = TRUE, echo = TRUE}
+
+newdata <- data.frame(Weight= sheepdata$Weight)
+
+SheepPredictions <- predict(sheepModel,newdata, type = "response")
+
+```
+
+Once we have created predictions $Y$ from the model object, 
+we can plot these using `geom_line()` as in the code below.
+
+```{r}
+ggplot(sheepdata, aes(x=Weight, y=Survival))+
+  geom_point(colour = "grey70")+
+  geom_line(aes(y=SheepPredictions))+
+  theme_minimal()+
+  ylab("Survival Probability")
+```
+**Figure 5: Plot of regression line and data.**
+
+In the next section, we will look at how to add uncertainty to these plots and 
+our interpretation. 
+
+</br>
+
+
+## <i class="fas fa-arrows-alt-h"></i> Quantify uncertainty {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+As was discussed under the simple linear model, 
+statistics does not give a single correct answer. 
+When we estimate the parameters in our statistical model, 
+we would always have many plausible parameters that could have produced our 
+observed data. In these cases, some of the parameters will be more likely
+than the others.
+
+The Binomial GLM is no exception. 
+We will have to consider and present the uncertainty in the parameters we 
+estimate.
+
+The `glm()`function uses maximum likelihood estimation for the parameter 
+estimation. Therefore, our consideration of uncertainty for these models are 
+discussed [here](link to ML page). 
+We will therefore quantify uncertainty using *standard errors*, 
+*confidence intervals* and *prediction intervals* 
+which should be familiar to you but head to the [uncertainty]() 
+pages if you need a recap.
+
+For any regression there are two different types of uncertainty we will look 
+at *uncertainty in our line of parameters $\alpha$ and $\beta$* and 
+*uncertainty in a prediction of $Y$*.
+
+</br>
+
+##### Uncertainty in the estimates of $\alpha$ and $\beta$
+
+Remember that *the standard error of a parameter is the standard deviation of 
+its sampling distribution. It gives a measure of the spread of its sampling 
+distribution i.e. our uncertainty.* 
+To find the standard errors for the estimates of $\alpha$ and $\beta$ 
+we can use `summary()` function. 
+This takes the model object from the `glm()` as its argument. 
+It outputs a big table with lots of information. 
+The first line gives the formula used for the model object. 
+The second line shows the summary of the residuals of the model and the 
+standard errors are shown in the second column of the third part, 
+`Coefficients:`.
+
+```{r}
+summary(ExampleModel)
+```
+</br>
+
+By taking the `summary()` of the ExampleModel, we can see the standard error of 
+the intercept ($\alpha$) is $3.2560$, and the standard error for the slope 
+($\beta$) is $0.1274$.
+
+We also observe that the standard error is smaller than the estimated effects.
+
+</br>
+
+##### Confidence intervals
+
+For interpretation of the uncertainty, it can be easier to use the standard 
+error to calculate confidence intervals. 
+Confidence intervals indicate the range of plausible values for a parameter. 
+**They represent an interval, that if you were to collect a sample and run the
+analysis, then
+repeat that many many times AND each time
+draw a confidence interval, on average 95% of the time, 
+the true population value of the parameter would be found in 
+within the confidence interval.** 
+
+</br>
+
+To calculate a confidence interval from a standard error you need to use the 
+formulas:
+
+$$
+\begin{aligned}
+UpperCI = estimate + (1.96 SE) \\
+LowerCI = estimate - (1.96 SE) \\
+\end{aligned}
+$$
+
+1.96 is used because in a standard normal distribution 95% of the distribution 
+lies within 1.96 standard deviations of the mean. 
+In this case the distribution is the sampling distribution, 
+which is normal for $\alpha$ and $\beta$ and the standard deviation is the 
+standard error. 
+
+After estimating the upper and lower limits of these parameters, 
+we have to remember to convert them to their original scale using the 
+`plogis()` function in $R$. 
+
+</br>
+
+Using the formulas above, we can get confidence intervals for the intercept and
+slope from the ExampleModel.
+
+```{r}
+confint(ExampleModel)
+```
+
+
+</br>
+
+##### Plotting Uncertainty
+
+We have seen how you can quantify uncertainty in our line parameters into 
+numbers. But often in science, it is clearer to show these things visually.
+
+We can add the confidence intervals to Figure showing our regression line.
+
+To do this, we need to generate new predictions with the `predict()` function. 
+This `interval` argument tells R to include predictions of $Y$ based on the 
+upper and lower confidence intervals of the estimates of $\alpha$ and $\beta$. 
+We can then add these to the plot using `geom_ribbon()`.
+
+```{r, echo = TRUE}
+newdata <- data.frame(Weight=exampledata$Weight)
+ExampleIntervals <- predict(ExampleModel, newdata= newdata, type="link", se=TRUE)
+
+Intervals <- data.frame(cbind(Weight = exampledata$Weight,
+  fit = plogis(ExampleIntervals$fit),
+                   lower = plogis(ExampleIntervals$fit - 1.96*ExampleIntervals$se.fit),
+                   upper= plogis(ExampleIntervals$fit + 1.96*ExampleIntervals$se.fit)))
+
+ggplot(data = Intervals, aes(x=Weight, y= fit))+
+  geom_line(color="blue")+
+  geom_point(data=exampledata, aes(x=Weight, y=Survival))+
+       geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.5)+
+  ylab("Survival Probability")+
+  theme_minimal()
+```
+*Figure 6: Plot of regression line and confidence interval around the Example data.*
+</br>
+
+##### Uncertainty in Predictions of $Y$
+
+So far, we have looked at uncertainty in parameter estimates using standard 
+errors and confidence intervals but Generalised linear regression analyses 
+can also be used for prediction. 
+
+</br>
+
+When we use a regression for prediction it has uncertainty. 
+Uncertainty in relationship is captured by confidence intervals.
+Prediction uncertainty captured by **prediction intervals**. 
+A prediction interval gives a range of values that can be considered likely to 
+contain a future observation. 
+
+</br>
+
+While confidence intervals are used to represent uncertainty in parameters
+and to relate them to an underlying population, prediction intervals are used 
+to represent uncertainty in predictions. 
+It gives a plausible range for the next observation of the response (i.e. 
+for the new value of Y). It is a type of confidence interval, 
+but in regression it will be wider than the confidence interval of the line 
+(which includes uncertainty in our parameters $\alpha$ and $\beta$). 
+**A 95% prediction interval tells you, 
+if you were to collect a sample and run the analysis, then
+go out an collect a new observation of the response variable ($Y$)
+with particular value of the explanatory variable ($X$) 
+many many times AND each time
+draw a prediction interval, 95% of the time, the new observation
+would fall in within the prediction interval.** 
+
+</br>
+
+To find the prediction interval for a prediction you need to change the 
+`interval` argument in the `predict()` function to `="prediction"`. 
+The below example predicts the Survival probability for a sparrow of $50$ kg.
+
+```{r, echo = TRUE, warning = FALSE}
+PredictionInterval <- predict(ExampleModel, newdata=data.frame(Weight=50), 
+        type="link", se=TRUE)
+cbind(fit = plogis(PredictionInterval$fit),
+      lower = plogis(PredictionInterval$fit - 1.96*PredictionInterval$se.fit),
+      upper = plogis(PredictionInterval$fit + 1.96*PredictionInterval$se.fit))
+```
+
+</br>
+
+The predicted survival probabilty is 0.99952 with the interval between 0.82 
+and 1. Which means that our model predicts a sparrow of weight $50$ kg to have 
+a 82% to 100% chance of surviving.
+
+</br>
+
+### Worked example 
+
+ At the end of the last section, we created of our sheepmodel and the estimated 
+ regression line. Now we will add uncertainty to that plot.
+ 
+ First, we should look at the confidence intervals of our parameter estimates.
+ 
+```{r}
+
+round(confint(sheepModel),2)
+
+```
+
+The confidence interval has been rounded to two decimal places to make them 
+easier to read. 
+
+To add these intervals to the plot, 
+we need to make new predictions including the interval
+
+```{r}
+SheepPredictions <- as_tibble(predict(sheepModel, type="response", interval="confidence"))
+```
+
+Once we have created predictions of $Y$ from the model object, 
+we can plot them using `geom_line()` as in the code below.
+
+```{r}
+
+newdata <- data.frame(Weight=sheepdata$Weight)
+SheepIntervals <- predict(sheepModel, newdata= newdata, type="link", se=TRUE)
+
+# Plot of Confidence Intervals
+
+Intervals <- data.frame(cbind(Weight = sheepdata$Weight,
+  fit = plogis(SheepIntervals$fit),
+                   lower = plogis(SheepIntervals$fit - 1.96*SheepIntervals$se.fit),
+                   upper= plogis(SheepIntervals$fit + 1.96*SheepIntervals$se.fit)))
+
+ggplot(data = Intervals, aes(x=Weight, y= fit))+
+  geom_line(color="blue")+
+  geom_point(data=sheepdata, aes(x=Weight, y=Survival))+
+       geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.5)+
+  ylab("Survival Probability")+
+  theme_minimal()
+
+```
+*Figure 7: Plot of regression line and confidence interval around the sheep data.*
+
+It can be observed from the figure above that the confidence intervals for the 
+predictions around $1$ are very narrower. 
+This means that as we get closer to the true classification (0 or 1), 
+we are able to estimate them with much certainty.
+
+</br>
+##### Predicting Survival Probability for a weight of 50 kg
+
+A researcher has found a new species of sheep. The sheep weighs 47kg. 
+Based on our regression model, what is the survival probability of the sheep.
+
+```{r}
+PredictionInterval <- predict(sheepModel, newdata=data.frame(Weight=47), 
+        type="link", se=TRUE)
+cbind(fit = plogis(PredictionInterval$fit),
+      lower = plogis(PredictionInterval$fit - 1.96*PredictionInterval$se.fit),
+      upper = plogis(PredictionInterval$fit + 1.96*PredictionInterval$se.fit))
+```
+
+The survival probability is 0.9983. This seems okay, 
+since a sheep of weight $47$ kg will be able to withstand lots of 
+environmental conditions.
+
+</br>
+
+
+## <i class="fas fa-tasks"></i> Model checking {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+Till this point, we have the model, parameter estimates and uncertainty 
+quantification for the binomial GLM.
+**We then discuss how to know if the model is good.**
+
+Under the linear models, 
+we used **Residuals vs fitted plots** for equal variance and linearity, 
+**the normal Q-Q plots** for normality of residuals and the **Cooks distance**
+for the outliers. 
+These are easier to interpret since we know what we are looking for. 
+However, this is not the case for GLMs since they have non-normal variance. 
+
+To handle this the non-constant variance, 
+we aim at producing plots that are roughly normal. 
+There are two ways of doing: **Pearson** and **Deviance** residuals. 
+These are not perfect in any way. 
+These measures scale the residuals by variance in some way. 
+Once we have scaled the residuals in this way to account for non-equal variance, 
+they should be approximately normal.
+
+**Pearson residuals**
+
+Thsís is defined as 
+$$
+Res_p = \frac{x - \mu_x}{\sigma_x}.
+$$
+
+where $\mu_x$ is the mean of the residuals and $\sigma_x$ 
+for the variance of the residuals. 
+
+In $R$, the Pearson residuals are obtained by:
+```{r}
+residualsP <- resid(ExampleModel, type = "pearson")
+
+```
+
+**Deviance Residuals**
+
+This is defined:
+$$
+Res_D = sgn(y_i - E(y_i))\sqrt{D_i}
+$$
+where $sgn(x)=1$ when $x>0$ and $-1$ when $x<0$. 
+
+The deviance residuals is the default in the `glm()`. 
+
+In $R$, the Deviance residuals are obtained by:
+```{r}
+residualsD <- resid(ExampleModel, type = "deviance")
+```
+
+</br>
+
+
+
+</br>
+
+
+#### 1. Residuals vs fitted plot
+
+This plot tests the assumptions of 
+**The relationship between X and Y is linear**, 
+**The residuals have a mean of 0**, and 
+**The variance of the residuals is equal for all fitted values 
+(homoscedasticity)**. Remember that we use the scaled residuals 
+(Pearson or Deviance) instead of the original residuals.
+
+
+</br>
+```{r}
+fitted <- fitted(ExampleModel) #extract fittedvalues
+
+par(mfrow=c(1,2))
+plot(fitted, residualsP, main = "Pearson")
+abline(h=0)
+
+plot(fitted, residualsD, main = "Deviance")
+abline(h=0)
+```
+*Figure 8: Residuals vs fitted plot for the Example model.*
+
+</br>
+
+The Pearson and Deviance residuals showed similar structure. 
+Around the point zero, the residuals decreased with increase in the 
+fitted values. The plot shows a linear trend, but we do expect the points to be 
+randomly scattered around the point $0$. 
+This suggests that our model has an issues with the linearity and equal 
+variance. 
+To solve this, we can try and add another covariate to explain some of the 
+variation and as such get the model better.
+
+
+</br>
+
+
+#### Normal QQ plot
+
+This plot tests the assumption of **the residuals are normally distributed**. 
+
+</br>
+ If our assumptions
+are met, we expect **The points lie along the line.** 
+The line represents a perfect theoretical
+normal distribution, the points come from our model.
+
+```{r}
+qqnorm(residualsD)
+qqline(residualsD)
+```
+*Figure 9: normal QQ plot for the example model.*
+
+</br>
+In our model, 
+it was observed that the points do not lie along the straight line. 
+Although we have had a tweak the residuals, 
+they are still not normally distributed. 
+This supports the assertion that other covariates should be added to model to 
+improve its prediction.
+
+We also observe that there are some outliers in our data, 
+which is quite normal to observe from a QQ-plot. 
+We find that some points lie extremely from the others. 
+These points would be known however from the next model checking. 
+
+</br>
+
+#### Cook's Distance
+
+This plot tests the assumption of **no outliers**. 
+It lets you identify influential points. 
+We look for significant values of the Cook's distance, about $0.02$.
+
+</br>
+
+```{r}
+plot(ExampleModel, which = 4)
+```
+*Figure 10: Cook's Distance plot for the Example model.*
+
+</br>
+
+<details><summary>Check your answer</summary>
+
+The point 132, 124 and 112 appears quite different to all others, 
+they have more influence.
+
+To decide if points 132, 124 and 112, 
+we would need to go back to the data and check
+for typos, mistakes, or anything that could be wrong with these points. 
+
+```{r}
+exampledata[c(112,124,132),]
+```
+
+The weights at these points are `23.2`, `22.8` and `22.6`. 
+However, a quick histogram of the weights (figure 11) do not suggest that 
+these points are very far from the others. 
+Hence we do not not discard these values. 
+
+```{r}
+hist(exampledata$Weight, main = "")
+```
+*Figure 11: Histogram of the weights of the sparrows.*
+
+</details>
+
+</br>
+
+
+</br>
+
+### Worked example 
+
+</br>
+
+Using the theory covered in the previous section, 
+we can now check our sheepModel 
+to ensure that it meets the assumptions of a Binomial GLM.
+
+</br>
+
+We will use one plot at a time to test specific assumptions.
+
+</br>
+
+#### Residuals vs fitted
+
+```{r, echo=T, message=F}
+resP <- residuals(sheepModel, type="pearson")
+resD <- residuals(sheepModel, type="deviance")
+
+fitted <- fitted(sheepModel) #extract fittedvalues
+
+par(mfrow=c(1,2))
+plot(fitted, resP, main = "Pearson")
+abline(h=0)
+
+plot(fitted, resD, main = "Deviance")
+abline(h=0)
+
+```
+*Figure 12: Residuals vs fitted plot for the sheep model.*
+
+ </br> 
+ 
+Figure 12 looks quite unusual. 
+There are a few assumptions we are checking with this plot:
+
+
+* **Do the residuals have a mean of 0?** 
+The mean of the residual deviance will be approximately $0$.
+* **Is the variance of the residuals is equal for all fitted values 
+(homoscedasticity)?** It is not the nice cloud of random points that we expect.
+**But is it a problem?** To answer this, we need to look at bit closer. 
+We observe that the points are not spread randomly around the mean of $0$. 
+Moreover, we can also see a linear trend of the upper and lover residuals 
+(linearly decaying with increase in fitted values).
+
+#### Normal QQ
+
+```{r, echo=T, message=F}
+plot(sheepModel, which = 2)
+```
+*Figure 13: Normal QQ plot for dive depth model.*
+
+</br> 
+
+The assumption we are checking with this plot is: 
+**are the residuals are normally distributed?**
+
+As expected, there is not a perfect match between the theoretical normal 
+distribution and the distribution of the residuals. 
+There is some deviation at the lower tail of the distribution. At upper half, 
+this seems ok. At lower values, points 47, 107 and 392
+deviate quite a lot. These points also stood out in Figure 6. 
+We will need to look into them more in Figure 9. 
+
+#### Cook's distance
+
+```{r, echo=T, message=F}
+plot(sheepModel, which = 4)
+```
+*Figure 14: Cook's distance plot for the dive depth model.*
+
+</br> 
+
+The assumption we are checking with this plot is: **Are there any outliers?**
+
+Figure 9 shows that some the Cook's distances of this model are very high 
+(max = 0.2). The values at $46$, $107$ and $392$ have been flagged. 
+Hence there is the need to investigate if these points have any 
+significant influence on the model. 
+We do this by extracting the data points at these places.
+
+</br>
+
+We can find points $46$, $107$ and $392$ by looking at the 46th, 
+107th and 392th row of our data frame. 
+It can be observed that the sheep with weight $23$ survived but those with 
+weight $30.6$ and $32.8$ did not survive. 
+From the histogram below (figure 15), 
+these values does not deviate from the others. 
+This possibly means that weight may be enough to explain the variation of the
+survival of the sheep. 
+**Therefore, we would not consider this an outlier and would not remove 
+from the data.** However, we can focus our attention on getting more covariates 
+that can help us explain more the variance and improve the model fit. 
+
+```{r, echo=T, message=F}
+sheepdata[c(47,107,392),]
+```
+
+```{r}
+hist(sheepdata$Weight, main="")
+```
+*Figure 15: Histogram of the weight of the sheep.*
+
+</br>
+
+#### Summary
+
+Overall, it seems that most of the model assumptions are not met well. 
+This suggests that `weight` may not be enough to explain the total variation 
+in the model. It would be better to fit the model by adding more covariates. 
+Therefore, we have to condiser another model.
+
+</br>
+
+In the next section we will interpret our results.
+
+</br> 
+
+</br>
+
+
+## <i class="far fa-lightbulb"></i> Draw conclusions {.tabset .tabset-fade}
+
+### Theory
+
+In the previous sections you learned how to run a Binomial Generalised linear 
+models, what the parameters of the model mean, 
+how to quantify uncertainty in the parameters, and 
+how to check the assumptions of the model. 
+Now, we can bring everything together to draw some conclusions. 
+
+</br>
+
+There are several components required in drawing a conclusion:
+
+ * statement of the maximum likelihood estimate of the parameters of 
+interest (including strength and direction).
+ * statement of the uncertainty in the estimate
+ * link the results to biology and the question asked
+ * Discussion of next directions
+
+</br>
+
+#### Example conclusion for example data
+
+The question we asked in this example was 
+**Does weight influence the survival of sparrows?**
+
+To answer this, we need an estimate of the strength of the relationship between 
+survival and weight. We find this from the slope of our model. 
+The maximum likelihood estimate of the slope is 0.3171. 
+This corresponds to a postive relationship between weight and survival 
+of sparrows where log odds of survival goes up by 0.3171 times for every 
+1kg the sparrow puts on. 
+
+</br> 
+
+However, there is some uncertainty around this estimate. 
+The 95% confidence intervals of the relationship are 0.0760 to 0.5785. 
+The confidence intervals show that the estimate of the intercept has high 
+uncertainty relative to the estimate size. 
+The confidence interval does not span 0. 
+In other words, 0 does not sit between the upper and lower interval because 
+they are same signs (both are positive). 
+This means that 0 cannot be included in the plausible range of parameter values 
+for the relationship (a slope of 0 = no relationship). 
+**As a result, we can conclude that there seems to be a significant effect of 
+weight on the survival of sparrows at the population level.**
+
+</br> 
+
+Despite having a significant result, our model did not meet the assumptions of
+a Binomial GLM reasonably well. However, the sample size was a bit higher (>30),
+so having more than can be excused. 
+However, collecting more covariates to explain away some of the model variation
+would rather improve the model fit.  
+
+</br>
+
+Overall, it seems that weight does have much effect on the survival of sparrows 
+based on the data we analysed. 
+The postive effect we estimated is strong and when we consider uncertainty, 
+the direction of the effect is also clear. 
+However, the model failed to meet all the assumptions of the Binomial GLM. 
+All of this suggests that there are other drivers that are influencing the 
+survival of sparrows that we did not measure here.
+
+
+</br>
+
+For next steps, 
+we might want to collect new data looking at other explanatory variables that 
+we think might be more important.
+</br>
+
+
+### Worked example 
+
+This is the final section of our analysis of the data on survival of sheep. 
+We will now bring together all of the results we have obtained and draw a 
+conclusion following the same format as the sparrow example.
+
+A reminder, we were asking: **Does weight influence survival of sheep?**
+
+</br>
+
+The maximum likelihood estimate of the relationship between weight and survival 
+probability is 0.1817. In other words, for every 1 kg increase in body weight,
+the log odds of the survival of the sheep increases by 0.1817 times. 
+
+</br>
+
+When we look at the uncertainty in this estimate, we see the 95% confidence 
+interval is 0.15 to 0.21. The confidence interval limits are same signs, 
+meaning that 0 is not included as a plausible value for the strength of 
+the relationship. Therefore, we can conclude that weight has any impact 
+on survival of sheep.  
+
+</br>
+
+In model checking, all the assumptions of the Binomial GLMs were not met. 
+With the significant relationship of the weight and the survival of the sheep, 
+it suggests that the model's total variation cannot be explained only by the 
+covariate `weight`. 
+Attention should then be focused on collecting more relevant covariates to 
+explain some of the variance, 
+as we do not have problem with our sample size at the moment. 
+
+</br>
+
+# What's next? {.facta}
+
+* **Poisson Generalized linear models** for analyses when your response 
+variable is not normally distributed.
+
+
+
