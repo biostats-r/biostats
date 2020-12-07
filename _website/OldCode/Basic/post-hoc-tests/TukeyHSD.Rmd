@@ -1,0 +1,64 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: TukeyHSD
+# author: jonathan
+# revised: 11/4/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/post-hoc tests/tukeyHSD.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/post-hoc tests/tukeyHSD.Rmd")
+library(multcomp)
+```
+
+**Tukey's Honest Significant Difference (HSD)** test is a *post hoc* test commonly used to assess the significance of differences between pairs of group means. Tukey HSD is often a follow up to [one-way ANOVA](https://biostats.w.uib.no/one-way-anova/){target="_blank"}, when the F-test has revealed the existence of a significant difference between some of the tested groups. Running the test in R involves using the function `TukeyHSD()` which does not require any additional package installation.
+
+The null hypothesis `H0` for the test states that the means of the tested groups are equal. 
+
+We will reuse the example introduced [here (one-way ANOVA)](https://biostats.w.uib.no/one-way-anova/){target="_blank"}.
+To create the corresponding dataframe, use the following code:
+```{r dataframe}
+# response variable
+size <- c(25,22,28,24,26,24,22,21,23,25,26,30,25,24,21,27,28,23,25,24,20,22,24,23,22,24,20,19,21,22)
+
+# predictor variable
+location <- as.factor(c(rep("ForestA",10), rep("ForestB",10), rep("ForestC",10)))
+
+# dataframe
+my.dataframe <- data.frame(size,location)
+```
+<br/><br/>
+
+### Assumptions
+
+The assumptions are:
+
++ the observations are **independent**,
++ **normality** of distribution,
++ **homogeneity of variance**.
+
+NB: these are indeed the same assumptions as for one-way ANOVA; in other words, if you were allowed (or if you allowed yourself) to conduct an ANOVA test, then it is ok to run Tukey's test.
+
+<br/><br/>
+
+### Running the test with `TukeyHSD()`
+
+The syntax is `TukeyHSD(aov(response ~ predictor), conf.level)` where `response` is the response variable, `predictor` is the predictor variable, and `conf.level` is the confidence level that you want to define (usually fixed at 0.95).
+Let's apply it to our example:
+```{r TukeyHSD}
+TukeyHSD(aov(size ~ location), conf.level=0.95)
+```
+
+The output displays the results of all pairwise comparisons among the tested groups (here three groups: `ForestA`, `ForestB` and `ForestC`, thus 3 comparisons).  You'll find the actual difference between the means under `diff` and the adjusted p-value (`p adj`) for each pairwise comparison. Looking at the last column, the only significant difference to be reported in the present test is between the means of the groups `ForestB` and `ForestC`.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

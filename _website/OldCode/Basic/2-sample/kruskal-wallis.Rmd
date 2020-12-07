@@ -1,0 +1,50 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: comparing two means - Kruskal-Wallis test
+# author: jonathan
+# revised: 13/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/2-sample/kruskal-wallis.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/2-sample/kruskal-wallis.Rmd")
+library(ggplot2)
+Location_A <- c(6.3, 6.3, 8.1, 8.9, 11.6, 10.4, 6.8)
+Location_B <- c(6.9, 7.7, 7.9, 9.1, 11.3,  11.8, 14.2)
+temperature <- c(Location_A, Location_B)
+location <- rep(c("Location_A", "Location_B"), each =7)
+df <- data.frame(location, temperature)
+```
+The Kruskal-Wallis test (also known as One-way ANOVA on ranks) can be used for comparison of two (or more) independent samples. It is a non-parametric test which does not require normality of distribution, and thus replaces [Student’s t-test](http://biostats.w.uib.no/comparing-two-means-t-test/){target="_blank"} or the [One-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"}.
+
+The function in R is `kruskal.test(x, y)` where `x` and `y` are two vectors containing two samples. Let’s take the same example as we have used for [Student’s t-test](http://biostats.w.uib.no/comparing-two-means-t-test/){target="_blank"}:
+```{r kruskal-wallis}
+kruskal.test(Location_A, Location_B)
+```
+Here, the test results in a p-value *greater* than 0.05, thus indicating that the null hypothesis is to be accepted. The means are not significantly different.
+<br/><br/>
+
+#### More than 2 groups?
+
+As mentioned further above, the Kruskal-Wallis test may be used to compare the means of more than 2 groups, and is thus a good alternative to the [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"} (parametric test) when normality of the sample is a problem. Often when working with ANOVAs, data are stored in [dataframes](https://biostats.w.uib.no/topics/r/r-4-dataframes/){target="_blank"}. Here is an example taken from the section [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"} that illustrates how to use the Kruskal-Wallis test with a dataframe `df`:
+```{r kruskal-wallis-df}
+size <- c(25,22,28,24,26,24,22,21,23,25,26,30,25,24,21,27,28,23,25,24,20,22,24,23,22,24,20,19,21,22)
+location <- rep(c("ForestA", "ForestB", "ForestC"), each = 10)
+df <- data.frame(size,location)
+kruskal.test(size~location, data=df)
+```
+The p-value is *less* than 0.05, the null hypothesis is to be rejected. The group means are significantly different. However the test does not tell you which groups are different from the others… you’ll need a [post-hoc test](https://biostats.w.uib.no/topics/basic-stats-in-r/post-hoc-tests/){target="_blank"} and pairwise comparisons to go further in the analysis.
+
+
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

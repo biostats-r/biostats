@@ -1,11 +1,11 @@
 ---
 title: "First steps in R"
 output:
-  bookdown::html_document2:
-highlight: tango
-toc: true
-toc_float: true
-css: ../css/style-chapters.css
+  bookdown::html_document2: 
+    highlight: tango
+    toc: yes
+    toc_float: yes
+    css: ../css/style-chapters.css
 ---
 
 ``` {r setup, include=FALSE}
@@ -26,11 +26,13 @@ You must know how to install and activate a package.
 
 # Basic operations in R
 
-## Simple arithmetic operations
+## Arithmetic operations
 
-Performing simple arithmetic operations is no big deal in R. 
+Performing arithmetic operations is no big deal in R. 
 Simply write any operation using the usual arithmetic operators `+`, `-`, `*` and `/` and run your code. 
-No need to write `=`. Also, raising a number to the power of another one requires the use of `^` or `**`. 
+No need to type `=`. 
+R allows you to add parentheses `(` `)` when you need to impose the order of operations.
+When it comes to raising a number to the power of another one, use the symbol `^` or `**`. 
 
 Try this here in the following app with the example `4+9`, or any other operation of your choice. 
 Try to use `(` `)`, try to combine several of the above-mentioned operators, be creative! 
@@ -43,12 +45,11 @@ Try to use `(` `)`, try to combine several of the above-mentioned operators, be 
 <!--------->
 
 
-
 ## Operations with functions
 
 More complex operations such as square root, logarithms and exponentiation shall be run using specific functions. 
-These functions are `sqrt()`, `exp()`, `log()`, `ln()`, etc. 
-Of course, you can use them in combination with each other, and in combination with arithmetic operations.
+These functions are `sqrt()`, `log()`, `ln()`, `exp()`,  etc. 
+
 
 <!---app2-->
 
@@ -73,54 +74,84 @@ When comparing two elements, R returns either `TRUE` or `FALSE`.
 9^2 != 9*(3+6)
 ```
 
+# Storing data in objects
 
-# Data types and objects
-
-R uses objects to store data in many different forms. 
-Data may be a single value, a list of values or words, a table with numerical entries, a matrix, a full data set with variables and observations, etc. 
-
-When you assign data to an object and give it a name, R stores that object in memory and allows you to manipulate its content simply by referring to its name. 
-
-Here we will first see how to create and name a simple object, then see what kind of data you can store in an object, and finally we will review several of the main object types which will be useful in your research.
+R uses objects to store data in memory. 
+Storing data in an object is referred to as "assigning data".
+There are different types of data and objects; we will talk much more about them further below.
+For now, let's see how to assign simple data elements to an object.
 
 ## Assigning data to an object
 
 To assign data to an object, type first the name you want to give it followed by the operator `<-` and the data to store. 
-Here, we store the number 42 in the object named `fortytwo`:
+For example, the result of an arithmetic operation may be conveniently stored in memory for later reuse. 
+In the following example, we will assign the result of the operation `sqrt(42)` in memory to the object named `result`: 
 
-```{r assign}
-fortytwo <- 42
+```{r result, echo=TRUE}
+result <- sqrt(42)
 ```
 
-At first, when running the code, nothing seems to happen. 
-But in fact, R has created the object `fortytwo` and you may find it in the tab `Environment` along with its content.
+At once, the object `result` and its associated value show up in the Environment tab in RStudio. 
 
-```{r 42, echo = FALSE, out.width="100%"}
-knitr::include_graphics("Pics/42.png")
+```{r stored_result, echo = FALSE, out.width="100%"}
+knitr::include_graphics("Pics/result.png")
 ```
 
-To display the content of any object, simply write its name and run the code:
-
-```{r running}
-fortytwo
+From now on, you can display the content of `result` simply by typing its name:
+```{r display_result, echo=TRUE}
+result
 ```
 
-From now on, you will be able to use, reuse and manipulate the object `fortytwo` as much as you want. 
-For example, you can include it in arithmetic operations:
-
-```{r manip, echo = TRUE}
-fortytwo*2
-sqrt(fortytwo)
-2*log(fortytwo)
+You can also use it in more or less complex operations:
+```{r operations_result, echo=TRUE}
+result*3
+result*result
 ```
 
-If you want to store more than one data element in an object, use the function `c()` which concatenates the elements given between parentheses.
+## Modifying object content
+
+To modify the content of an object, you simply have to assign new data to it. 
+Here we modify the object `result`:
+```{r modify_result, echo=TRUE}
+result <- exp(42)
+```
+
+The content of `result` is automatically modify, as shown in the Environment tab.
+
+```{r updated_result, echo = FALSE, out.width="100%"}
+knitr::include_graphics("Pics/new_result.png")
+```
+
+Note that the previous content of `result` is lost as soon as the new data is assigned. 
+To restore the original value, you will have to go back to your script and rerun the original command that assigned the square root of 42 to `result`.
+This is one of the many reasons why you should always work with a script and annotate it: it is your life line in case you make a mistake, lose objects, modify data elements, etc.
+
+
+## Concatenating data
+
+If you want to assign more than one data element to an object, use the function `c()` which concatenates the elements given between parentheses. 
+The data elements to concatenate must be separated with a comma `,`.
 
 ```{r concatenate}
-one.two.three <- c("one", "two", "three")
-one.two.three
+results <- c(42, sqrt(42), 42^2)
+results
 ```
 
+This may be applied not only to numerical values, but also to characters and strings. 
+When storing characters, you must use quotation marks `"` `"` around the elements.
+
+```{r concatenate2}
+one_two_three <- c("one", "two", "three")
+one_two_three
+```
+
+Note that you may concatenate data elements of various natures. 
+Here we concatenate and store both numbers and strings: 
+
+```{r concatenate3}
+one_2_three_4 <- c("one", 2, "three", 4)
+one_2_three_4
+```
 
 ## Naming objects
 
@@ -132,283 +163,44 @@ Naming an object sounds quite easy if you are creative, but there is a set of ru
 
 Beside these rules, you may find the following recommendations useful: 
 
-+ give your object a meaningful name such as `norwegian.seabirds`, `Alpine_Species_Vestland`, etc
++ be consistent and use a word convention when writing names, such as `snake_case` where words are written in lowercase and separated using an underscore symbol `_`
++ give your object a meaningful name such as `norwegian_seabirds`, `alpine_species_vestland`, etc
++ avoid names which meaning may change with time, such as `new_dataset`, `modified_dataset`, `last_year_data`, etc
 + avoid very long names
 + have a look at the [tidyverse style guide](https://style.tidyverse.org/syntax.html#object-names)
 
-Sounds easy? Try this [app](https://bioceed.shinyapps.io/naming_objects/) and you will realize that naming objects may be tricky.
+Sounds easy? 
+Try this [app](https://bioceed.shinyapps.io/naming_objects/){target="_blank"} and you will realize that this may be tricky. 
+In the app, you will find a series of short exercises which help you understand what you may or may not do when naming an object in R. 
+You will learn more about legal and reserved names, case sensitivity, etc.
 
-## Modifying objects
 
-When you have stored data into an object, its content is stable until you assign a new set of data to the same object name. 
-Note that there will be no warning, exclamation mark or question like "do you really want to overwrite the data in the object?". 
-In most cases, once the new data is assigned, the old data is lost. Let's see that with `fortytwo`:
+## Viewing object content
 
-```{r modify}
-fortytwo
-fortytwo <- 44
-fortytwo
-```
-The only chance that you have to return to the original state of the object is to reassign its original content. 
+As you keep working on your project, the list of objects stored in memory grows. 
+After a while you will certainly lose track of these objects or their content. 
+In Rstudio, there are two ways to quickly visualize object content:
 
-```{r modify2}
-fortytwo
-fortytwo <- 42
-fortytwo
-```
-
-This sounds simple in the present case since `fortytwo` only has one value, but sooner or later you will work with hundreds or thousands of entries. 
-If you do not have a copy of the original data set, you will find yourself in trouble.
-
-## Deleting objects
-
-When you are done with an object or do not have a use for it, it may be relevant to get rid of it. 
-In such a situation, use the function `rm()` to delete a specific object or a list of objects.
-
-Here we will delete the object `fortytwo` from the current environment.
-```{r delete1}
-rm(fortytwo)
-```
-
-To delete several objects, use the same function as above and provide the names of all the objects to remove. 
-Here below, we delete both `fortytwo` and `int`
-
-```{r delete2}
-rm(fortytwo, int)
-```
-
-Again, once it is done, there is no way back.
-
-
-## Data Types
-
-R lets you manipulate all sorts of data types: numeric, integer, character, logical (also called boolean) and complex. 
-Not sure about what the data types actually are? 
-No worries, we will define them below. 
-
-In the following sections, we will use the function `class()` to reveal or confirm the nature of the data stored in objects.
-
-### numeric
-
-Any number with a decimal value, whether positive or negative, is numeric. 
-The object `num` created below contains a single decimal value and is thus numeric.
-
-```{r numeric, echo = TRUE}
-num <- -35.2
-class(num)
-```
-
-### integer
-
-Integers are numbers that do not contain a decimal value. 
-Integers may be positive or negative. 
-The object `int` below contains a single integer and is thus defined as integer.
-
-```{r integer, echo = TRUE}
-int <- 35L
-class(int)
-```
-
-Note that `int` was assigned the number 35L. 
-The L that follows the number forces the object to become an integer. 
-If we write 35 instead of 35L, the object is just numeric as shown below.
-
-```{r numeric2, echo = TRUE}
-int <- 35
-class(int)
-```
-
-### character
-
-An object containing a string of letters combined (or not) with numbers, or even a single letter, is defined as a character. 
-The letters may be upper and/or lower case. 
-The object `char` below contains a single word and is thus defined as character.
-
-```{r character, echo = TRUE}
-char <- "Letters"
-class(char)
-```
-
-Note that the strings of characters must be stored in objects using `"` `"`.
-
-### logical
-
-Logical (or boolean) defines binary objects which contains `TRUE` or `FALSE`. 
-This is the case of the object `logic` described below.
-
-```{r boolean, echo = TRUE}
-logic <- TRUE
-class(logic)
-```
-
-### complex
-
-Complex numbers (numbers of the form a + bi) can also be stored in objects in R. 
-The object `comp` described below is an example.
-
-```{r complex, echo = TRUE}
-comp <- 5 + 4i
-class(comp)
-```
-
-
-
-## Objects
-
-R can handle a multitude of object types, but you will certainly need to know only about the following ones: vector, factor, list, matrix, data frame and tibble.
-
-### Vectors
-
-A vector is an object that contains one or several values of the **same** data type. 
-For example, the object `vec.char` described below is a vector that contains 3 data elements of the type character. 
-
-```{r vector, echo=TRUE}
-vec.char <- c("one", "two", "three")
-vec.char
-```
-
-A vector is possibly the simplest object to store many entries for a *single* variable such as, for example, the temperature for a specific location registered over a period of 24 hours. 
-In this case, the 24 data points are stored in a sequence that will be maintained, meaning that 8.7 will remain at the first position, 9.2 at the second position, etc.
-
-```{r temperature, echo=TRUE}
-temperature <- c(8.7,9.2,9.4,9.5,9.7,10.1,10.3,10.6,10.7,10.8,11.3,11.9,12.2,12.3,11.7,10.2,10.3,10.3,10.4,10.3,10.1,9.7,9.5,9.4)
-temperature
-``` 
-
-Note that the data type of the whole vector is the same as the elements in the vector, as shown by `class()`.
-
-```{r temperature-class, echo=TRUE}
-class(temperature)
-```
-
-Read more about vectors [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/vector).
-
-### Factors
-
-A factor is a vector which elements may be organized in levels (i.e. category labels), which comes handy when running a statistical analysis that includes categorical variables.
-Data elements stored in a factor are usually numeric and/or character, and vectors containing numeric and/or character data may easily be converted to factors using `as.factor()`.
-
-```{r factor, echo=TRUE}
-factor.num <- as.factor(1:10)
-factor.num
-```
-
-As you can see in the example above, the content of `factor.num` is conveniently displayed along with a list of levels. 
-When working with a data set that includes repeated elements, the list of levels is restricted to one occurrence per level, thus giving a better overview of the content.
-
-```{r factor_rep, echo=TRUE}
-factor.rep <- as.factor(c(1:10, 5:15))
-factor.rep
-```
-
-Read more about factors [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/factor).
-
-
-### Matrices
-
-A matrix is a two-dimensional object that displays data of the **same** type (numeric, character, etc) in the form of a table. 
-The object `neo` is a matrix made of 4 rows and 5 columns filled with numeric values ranging from 1 to 20.
-
-```{r matrix, echo=TRUE}
-neo <- matrix(1:20, nrow=4, ncol=5)
-neo 
-```
-
-Read more about matrices [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/matrix).
-
-### Data frames
-
-A data frame is a two-dimensional object that stores data of **various** types in the form of a table. 
-Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
-
-It is fairly easy to create a data frame by using the function `data.frame()` to put vectors or factors side-by-side, vertically, and in a given sequence. 
-However you must make sure that these vectors have the same length (i.e. the same number of elements) since a data frame cannot have empty cells. 
-As a result of using `data.frame()`, the column names will match the name of the vectors. 
-You can also specify a name for a column using `=`.
-
-```{r df, echo=TRUE}
-df <- data.frame(1:12, month.abb, "Month" = month.name)
-df 
-```
-
-When printing a data frame (like in the example above) to visually evaluate it, the whole object is displayed, including row numbers/names and column names. 
-This means that several hundred lines or observations may suddenly invade your screen as soon as you run the name of the object in R.
-You will find some useful functions to shortly describe a huge data frame further below in Chapter \@ref(describing-an-object).
-
-Read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame).
-
-### Tibbles
-
-A tibble is an evolution of the data frame described above. 
-It is not part of the R base package (a.k.a. base R), but comes with the package `tidyverse`, which you have to install/load ahead of time.
-
-```{r load tydiverse, echo=TRUE}
-library(tidyverse)
-```
-
-The tibble, like the data frame, is still a table that stores data of **various** types. 
-However, it drops some of the inconvenient features of the data frame that used to make your work frustrating or less efficient. 
-For example, instead of displaying the whole data set at once, it shows only the first 10 to 20 observations (depending on the actual length of the data set) and only the columns that the width of the screen or window allows. 
-Along with that table comes also a quick description of the structure of the tibble as well as the data type for each column (`<int>` for integer, `<chr>` for character, ...).
-
-```{r tibble, echo=TRUE}
-tb <- tibble(1:21, rep(month.abb,3, length=21), "Month" = rep(month.name,3, length=21))
-tb 
-```
-
-You may convert data frames into tibbles by using `as_tibble()`.
-
-```{r df-tibble, echo=TRUE}
-df.tibble <- as_tibble(df)
-df.tibble 
-```
-
-Here is a tibble called `penguins` which is part of the package `palmerpenguins`. 
-You will certainly meet this tibble again and again on this website as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
-
-```{r penguins-tibble, echo=TRUE}
-penguins
-```
-
-### Lists
-
-A list is an object that contains values of **various** data types. 
-The object `my.list` described below is a list that contains 6 data elements: some are logical, others are numerical or character.
-Note that a list is created using the function `list()` that concatenates the elements while preserving the data type.
-
-Read more about lists [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list).
-
-```{r list, echo=TRUE}
-my.list <- list("one", 2, "three", TRUE, FALSE, -42)
-my.list 
-```
-
-Note that a list can be very complex as it may be used to store other objects such as matrices, data frames, vectors, etc. 
-The list `big.list` below stores three objects that have been created previously in this page.
-
-```{r biglist, echo=TRUE}
-big.list <- list(neo, vec.char, df)
-big.list 
-```
-
-## Describing an object
-
-Further below you will find a handful of functions that help you analyze objects. 
-Some of these functions will tell you how the data stored inside the object look like, others will give you an idea of its structure, the data type(s) or simply a quick overview of the data set.
-When working with tibbles, most of these functions are not of much interest or use since R always describes the structure of the tibble when printing it. 
-However when working with data frames, these functions will give you a better overview.
++ the Environment tab
++ the function `View()`
 
 
 ### The Environment tab
 
-Working in RStudio, you will find a quick but useful overview of the objects stored in memory by looking at the ´Environment´ tab which is usually located in the upper right fraction of the main window, as shown in Figure \@ref(fig:env).
+The ´Environment´ tab lists all the objects currently stored in memory in the current project along with a quick summary of their content. 
+Right now, based on what has been done since the beginning of this chapter, the tab should only contain the 4 objects `one_2_three_4`, `one_two_three`, `result` and `results` as shown in Figure \@ref(fig:envnow).
 
-```{r env, echo = FALSE, eval = TRUE, fig.cap="_Screenshot of the_ Environment _tab in RStudio._", out.width="100%"}
-knitr::include_graphics("Pics/Env.png")
+```{r envnow, echo = FALSE, eval = TRUE, fig.cap="_Screenshot of the_ Environment _tab in RStudio._", out.width="100%"}
+knitr::include_graphics("Pics/env_now.png")
 ```
 
-This tab lists all the objects currently stored in memory (in the RStudio project currently in use) along with a quick summary of their content. 
-The top part of the tab shows complex objects such as lists, matrices, data frames and tibbles whereas the bottom part shows simpler objects such as vectors and factors. 
+But sooner or later, the tab will look more like Figure \@ref(fig:env).
+
+```{r env, echo = FALSE, eval = TRUE, fig.cap="_Another screenshot of the_ Environment _tab in RStudio._", out.width="100%"}
+knitr::include_graphics("Pics/env.png")
+```
+
+The top part of the tab shows complex objects such as lists, matrices, data frames and tibbles whereas the bottom part shows simpler objects such as vectors and factors (we will review these objects later on in Section \@ref(data-types-classes-and-objects)). 
 Note that some of the complex objects appear next to a blue, round icon with a white arrowhead. 
 Click on it to expand the summary as shown in Figure \@ref(fig:exp).
 
@@ -422,13 +214,15 @@ Figure \@ref(fig:click) shows a screenshot of the tab that pops up after clickin
 ```{r click, echo = FALSE, eval = TRUE, fig.cap="_Clicking on the object line opens a tab with the content of the object._", out.width="100%"}
 knitr::include_graphics("Pics/view.png")
 ```
+The table that was contained in `tb` is now fully presented in its own tab, with columns names and row numbers.
 
-### View()
+
+### The function View()
 
 The function `View()` leads to the same result as clicking on the line of the object in the `Environment` tab: it opens a new tab which displays the whole object.
 Figure \@ref(fig:view) shows a screenshot of the tab that appears after running the following line of code.
 
-```{r View, echo=TRUE}
+```{r View, echo=TRUE, eval=FALSE}
 View(tb)
 ```
 
@@ -437,57 +231,71 @@ knitr::include_graphics("Pics/view.png")
 ```
 
 
+## Deleting objects
 
-### str()
-
-The function `str()` returns several lines of information about the type, structure and size of the object and/or the type and content of the variables, factors or vectors that build the object. 
-Here is a simple example with the vector `fortytwo` and a less simple example with the tibble `penguins`.
-
-```{r prestr, echo=FALSE}
-fortytwo <- 42
+When you are done with an object and do not have a use for it any longer, it may be relevant to get rid of it. 
+This is done by using the function `rm()`.
+Here we will delete `result` from the current environment.
+```{r delete1}
+rm(result)
 ```
 
-```{r str, echo=TRUE}
-str(fortytwo)
-str(penguins)
+To delete several objects at the same time, use `rm()` and type their name separated with commas `,`. 
+
+```{r delete2}
+rm(result, results)
 ```
 
-### class()
+Again, once it is done, there is only one way back: go to your script and rerun the commands that originally created `result` and `results`.
 
-The function `class()` returns the type of the given data or object. 
 
-```{r class, echo=TRUE}
-class(fortytwo)
-class(df)
+# Creating sequences and series
+
+Throughout this website, we will use examples that include random series of numbers, sequences of characters or numbers, etc. 
+These sequences and series are often created by a bunch of functions or expressions, some of which are described below. 
+
+
+## Repetitions
+
+The function `rep()` comes handy when you wish to repeat data elements `n` times in a row, or to repeat a sequence of elements `n` times. 
+Using various arguments, you can decide how many times and/or in which manner the elements or sequences have to be repeated.
+
+The simplest form of usage of `rep()` is `rep(x, n)` where `x` is what you want to repeat (string, number(s), etc) and `n` the number of iterations.
+
+```{r rep, echo=TRUE}
+rep(c(1, 2, 3), 3)
+rep(c("One", "Two", "Three"), 3)
 ```
 
-### head() and tail()
+Adding the argument `each= n` allows for repeating `n` times each element at a time. 
 
-When applied to a tibble or a data frame, the functions `head()` and `tail()` return the first 6 and last 6 observations in the object, respectively. 
-Here is an example with the data frame `df`.
-
-```{r headtail, echo=TRUE}
-head(df)
-tail(df)
+```{r rep2, echo=TRUE}
+rep(c(1, 2, 3), each= 3)
+rep(c("One", "Two", "Three"), each= 3)
 ```
 
-# Creating data series
+Adding the argument `length= n` limits the length of the resulting series to `n` elements.
 
-Throughout this website, we will use examples based on random series of numbers or numerical sequences. 
-These series are created by a bunch of functions, some of which are described below. 
-Also, when training at coding in R, you might find useful to employ such series to create your own objects with a specific number of (random) entries. 
+```{r rep3, echo=TRUE} 
+rep(c(1, 2, 3), 3, length= 7)
+```
 
-## Numerical sequences
 
-The following section provides you with expressions or functions that build sequential series of numerical values.
+## Sequences
+
+The following section provides you with expressions or functions that build sequences of numerical or text values.
 
 ### a:b
 
 `a:b` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
-Note that `b` is not necessarily the last element of the series.
+
 
 ```{r series, echo=TRUE}
 14:24
+```
+
+Note that `b` is not necessarily the last element of the series.
+```{r series2, echo=TRUE}
 14:24.5
 14.5:24
 ```
@@ -495,25 +303,27 @@ Note that `b` is not necessarily the last element of the series.
 ### seq()
 
 Similar to `a:b`, `seq(a, b)` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
-Note that `b` is not necessarily the last element of the series.
-
 ```{r seq, echo=TRUE}
 seq(14, 24)
+```
+
+Again, `b` is not necessarily the last element of the series.
+```{r seq2, echo=TRUE}
 seq(14, 24.5)
 seq(14.5, 24)
 ```
 
 You can use a set of additional arguments in `seq()` to adjust the output. 
-Adding `by=` allows to tune the incrementation while `length.out=` (or simple `length=` adjusts the incrementation to provide the desired number of elements ranging precisely from `a` to `b`.
+Adding `by=` allows to tune the incrementation to any value you want (including decimal values). `length.out=` (or `length=`) adjusts the incrementation to provide the desired number of elements ranging precisely from `a` to `b`.
 
-```{r seq2, echo=TRUE}
-seq(14, 24, by=2)
+```{r seq3, echo=TRUE}
+seq(14, 24, by=2.5)
 seq(14, 24, length.out=7)
 ```
 
-## random series
+## Random series
 
-The following section provides you with functions that build  series of random, numerical values.
+The following section provides you with functions that build series of random, numerical values.
 
 ### runif()
 
@@ -529,6 +339,20 @@ runif(7)
 runif(7, min=10, max=100)
 ```
 
+
+### rnorm()
+
+`rnorm(n)` creates a series of `n` numbers taken from a normal distribution. 
+
+```{r rnorm, echo=TRUE}
+rnorm(10)
+```
+
+By default, the normally distributed population is set up with a mean of 0 and a standard deviation of 1, but this may be adjusted manually with `mean= ` and `sd= `.
+```{r rnorm2, echo=TRUE}
+rnorm(10, mean=50, sd=3)
+```
+
 ### sample()
 
 `sample(x, n, replace=TRUE/FALSE)` returns a sample of `n` integers taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
@@ -540,65 +364,495 @@ sample(20:30, 7, replace=TRUE)
 ```
 
 An interesting property of the function `sample()` is that it can be used to shuffle a vector, something which is useful for randomization of data elements. 
-In the following example, `sample()` shuffles and returns all values in the vector `one.to.ten`:
+In the following example, `sample()` shuffles and returns all values in the vector `one_to_ten`:
 ```{r sample2, echo=TRUE}
-one.to.ten <- 1:10
-one.to.ten
-sample(one.to.ten)
-```
-
-### rnorm()
-
-`rnorm(n)` creates a series of n numbers taken from a normal distribution. 
-
-```{r rnorm, echo=TRUE}
-rnorm(10)
-```
-
-By default, the normally distributed population has a mean of 0 and a standard deviation of 1, but this may be adjusted manually.
-```{r rnorm2, echo=TRUE}
-rnorm(10, mean=50, sd=3)
-```
-
-## Series with repetitions
-
-The function `rep()` comes handy when you need to repeat elements in a series of number or strings. 
-Using various arguments, you can decide how many times the elements or sequences of elements have to be repeated.
-
-The simplest form is `rep(x, n)` where `x` is what you want to repeat (object, series, vector, etc) and `n` the number of iterations.
-
-```{r rep, echo=TRUE}
-rep(1:5, 3)
-rep(c("One", "Two", "Three"), 3)
-```
-
-The argument `each=` allows for repeating `n` times each element at a time. 
-
-```{r rep2, echo=TRUE}
-rep(1:5, each = 3)
-```
-
-The argument `length=` limits the length of the resulting series to the specified number.
-
-```{r rep3, echo=TRUE}
-rep(1:10, 3, length=12)
+one_to_ten <- 1:10
+one_to_ten
+sample(one_to_ten)
 ```
 
 
-# Practical examples
+# Data types and objects
 
-## Building a data frame from vectors
+Objects may contain anything from a single numerical value to a fully developed data set with dozens of variables and observations. 
+When working in R, it is important to understand what kind of data you manipulate and what kind of object you build from it. 
 
-NB: always remember that data frames do not like empty cells. 
-Thus all vectors MUST be of equal length.
+Here we will first review the primitive data types, then see a few useful data classes, and finally the object types that will be important in your studies. 
 
-## Building a data frame with factors
+
+## Primitive data types
+
+R lets you manipulate 6 primitive data types: numeric, integer, character, logical (also called boolean), complex and raw. 
+Only the first four types are relevant in the scope of this website.
+
+NB: in the following sections, we will use the function `class()` to identify the nature of the data stored in objects.
+
+### numeric
+
+Any number with a decimal value, whether positive or negative, is of type numeric. 
+The object `num` created below contains a single decimal value and is thus also numeric.
+
+```{r numeric, echo = TRUE}
+num <- -35.2
+class(num)
+```
+
+### integer
+
+Integers are positive or negative numbers that do not contain a decimal value. 
+The object `int` below contains a single integer and is thus of type integer.
+
+```{r integer, echo = TRUE}
+int <- 35L
+class(int)
+```
+
+Note that `int` was assigned the number 35L. 
+The "L" that follows the number forces the object to store it as an integer. 
+If we write 35 instead of 35L, the object is just numeric as shown below.
+
+```{r numeric2, echo = TRUE}
+int <- 35
+class(int)
+```
+
+### character
+
+An object containing a string of letters combined (or not) with numbers, or even a single letter, is of type character. 
+The letters may be upper and/or lower case. 
+The object `char` below contains a single word and is thus defined as character.
+
+```{r character, echo = TRUE}
+char <- "Letters"
+class(char)
+```
+
+Note that the strings of characters must be stored in objects using `"` `"`.
+
+### logical
+
+Logical (or boolean) defines binary objects which contain `TRUE` or `FALSE`. 
+This is the case of the object `logic` below.
+
+```{r boolean, echo = TRUE}
+logic <- TRUE
+class(logic)
+```
+
+Note that `TRUE` and `FALSE` are sometimes replaced with "T" or "F". Be warned that this is bad coding practice, which may result in (or be the origin of) errors that may compromise your work and the validity of its output.
+
+### Modifying data types
+
+It is possible to modify the type of an existing object with a series of simple functions like `as.numeric()`, `as.integer()`, `as.character()`, etc. 
+
+Let's consider the object `integ` created below. 
+
+```{r integ, echo = TRUE}
+integ <- 35L
+integ
+```
+
+`integ` contains a single data element (`35L`) which is defined as an integer:
+
+```{r integ-class, echo = TRUE}
+class(integ)
+```
+
+`integ` may be transformed into a simple numerical value by using the function `as.numeric()`:
+```{r int-num, echo = TRUE}
+integ_num <- as.numeric(integ)
+class(integ_num)
+```
+
+And it is possible to reverse this action with `as.integer()`:
+```{r num-int, echo = TRUE}
+integ_int <- as.integer(integ_num)
+class(integ_int)
+```
+
+It is also possible to transform it into a string of characters with `as.character()`:
+```{r int-char, echo = TRUE}
+integ_char <- as.character(integ)
+class(integ_char)
+```
+
+
+## Advanced data classes
+
+R allows to transform the format of an object from something simple like a number or a string of characters to something more advanced like a date or a factor. 
+Date and factor are not data types *per se*, but data classes.
+
+### Dates
+
+The data element `1980-02-08` stored in the object `birthdate` below is nothing more than a string of characters.
+```{r birthdate, echo = TRUE}
+birthday <- "1980-02-08"
+birthday
+class(birthday)
+```
+
+To make it a date object, one must use the function `as.Date()`:
+```{r birthdate2, echo = TRUE}
+birthdate <- as.Date(birthday)
+birthdate
+class(birthdate)
+```
+
+Even though this does not seem to affect the way the data element is displayed, such a conversion is determining with regard to how th element is going to be handled in calculations. 
+The calculation below displays the date that occurs 10 days before `birthdate`:
+
+```{r birthdate3, echo = TRUE}
+ten_days_before_my_birthdate <- birthdate - 10
+ten_days_before_my_birthdate
+```
+
+Such a calculation would not have been possible without the conversion from character to date, as demonstrated by this error message:
+
+```{r birthdate4, echo = TRUE, error = TRUE, warning=TRUE}
+ten_days_before_my_birthday <- birthday - 10
+```
+
+### Factors
+
+A factor is an object that only contains predefined values. 
+These predefined values are called the *levels* of the factor. 
+Factors are especially useful in the context of statistical analysis where categorical data are involved (like ANOVA, etc). 
+Categories often appear as "text labels", and may thus look like simple strings of characters. 
+
+In the following example, the object `scandinavian_countries` is a factor that contains 7 elements and three levels: `Norway`, `Sweden` and `Denmark`.
+
+```{r scandia1, echo = FALSE}
+scandinavian_countries <- factor(c("Norway", "Denmark", "Sweden", "Denmark", "Sweden", "Norway", "Denmark"), levels= c("Norway", "Denmark", "Sweden"))
+```
+
+```{r scandia2, echo = TRUE}
+scandinavian_countries 
+class(scandinavian_countries)
+```
+
+
+One way to build such a factor consists in converting a character object such as `scandinavia` with the function `factor()`.
+However, one must not forget to set the levels correctly with the argument `levels=`.
+```{r scandia3, echo = TRUE}
+scandinavia <- c("Norway", "Denmark", "Sweden", "Denmark", "Sweden", "Norway", "Denmark")
+scandinavian_kingdoms <- factor(scandinavia, levels=c("Norway", "Denmark", "Sweden"))
+scandinavian_kingdoms
+```
+
+
+## Objects
+
+Data in R may be stored in a multitude of object types, but you only need to know a few of them to continue on this website: vector, matrix, list, data frame and tibble.
+
+### Vectors
+
+A vector is an object that contains one or several values of the *same* data type. 
+For example, the object `vec.char` described below is a vector that contains 3 data elements of the type character. 
+
+```{r vector, echo=TRUE}
+vec.char <- c("one", "two", "three")
+vec.char
+```
+
+When conducting a statistical analysis, a vector is possibly the simplest object in which you may store entries for a single variable. 
+In the following example, 24 data points corresponding to the temperature for a specific location registered over a period of 24 hours have been stored in the vector `temperature`: 
+
+```{r temperature, echo=FALSE}
+temperature <- c(8.7,9.2,9.4,9.5,9.7,10.1,10.3,10.6,10.7,10.8,11.3,11.9,12.2,12.3,11.7,10.2,10.3,10.3,10.4,10.3,10.1,9.7,9.5,9.4)
+``` 
+
+```{r temperature2, echo=TRUE}
+temperature
+``` 
+
+Note that the data type of the whole vector is determined by the type of the elements it contains, as shown here:
+
+```{r temperature-class, echo=TRUE}
+class(temperature)
+```
+
+#### Coercion
+
+If one tries to store data elements of different types in a single vector, all the elements in this vector will be coerced into the type that is the most informative.  
+The ranking is as follows: logical < integer < numeric < character.  
+Let's take the following example where we store a numeric, a character and an integer together:
+
+```{r coercion, echo=TRUE}
+coercion <- c(15, "fifteen", 15L)
+class(coercion)
+```
+
+As you see here the type of `coercion` is character, in other words the type of the most informative data element.
+
+#### Accessing data elements
+
+It is possible to extract specific data elements from a vector based on their position.
+To do so, we use brackets `[` `]`. 
+Indicate first the vector name and then the element position(s) between the brackets:
+
+```{r vector-ret, echo=TRUE}
+temperature[c(2, 6)] 
+```
+
+### Matrices
+
+A matrix is a two-dimensional object that displays data of the *same* type (numeric, character, etc) in the form of a table. 
+It is built up with the function `matrix()` in which the data is imported either in the form of concatenated data elements (ex: `c(12, 54 987, 5, ...)`), a series or sequence of data elements (ex: `1:25`), or a vector (ex: `temperature`). 
+In addition, one must define the number of rows and columns with `nrow=` and `ncol=`.   
+
+In the following example, the object `neo` is a matrix made of 4 rows and 6 columns filled with the numeric values stored in the vector `temperature` that we have previously created.
+
+```{r matrix, echo=TRUE}
+neo <- matrix(temperature, nrow=4, ncol=6)
+neo 
+```
+
+
+
+
+#### Accessing data elements
+
+In a matrix, each row is numbered `[x, ]` and each column is numbered `[ ,y]`.
+Any of the data elements may be retrieved by using its coordinates `[x, y]` preceded by the name of the matrix:
+
+```{r matrix2, echo=TRUE}
+neo[2,3]
+```
+
+A full row or column may be retrieved with the same expression, but we leave empty the coordinate that is not needed:
+
+```{r matrix3, echo=TRUE}
+neo[2,  ]
+
+neo[ , 3]
+```
+
+#### About the use of matrices
+
+The use of matrices on this website is very limited.
+However, it is not unlikely that you meet matrices in other projects, so it is best to know about their existence.
+You can read more about matrices [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/matrix).
+
+### Lists
+
+A list is an object that contains values of one or several data types. 
+It may not only contain data elements, but also other objects such as vectors, matrices, etc.  
+
+Lists are created using the function `list()` that concatenates data elements and objects.
+The object `my_list` described below is a list that contains 6 elements.
+Some of them are objects that we have created previously on this page, others are new data elements of various types.
+
+```{r list, echo=TRUE}
+my_list <- list("one", 2, temperature, TRUE, vec.char, neo)
+my_list 
+```
+
+#### Naming list elements
+
+The function `list()` allows for naming the elements and objects it contains by the mean of the symbol `=`.
+Simply write `name =` followed by the element. 
+Note that these names must be *unique*.
+
+In this example, we will name the elements `a`, `b`, `c`, `d`, `e` and `f`.
+
+```{r list2, echo=TRUE}
+my_new_list <- list(a = "one", 
+                    b = 2, 
+                    c = temperature, 
+                    d = TRUE, 
+                    e = vec.char, 
+                    f = neo)
+my_new_list 
+```
+
+#### Retrieving list elements
+
+Naming elements is quite convenient as it allows you to retrieve them rapidly by the mean of the symbol `$`. 
+The syntax is as follows: `<list_name>$<element_name>`. 
+Here we retrieve the element `f` in the list `my_list`:
+
+```{r listdollar, echo=TRUE} 
+my_new_list$f
+```
+
+You may read more about lists [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list).
+
+### Data frames
+
+A data frame is a two-dimensional object that stores data of **various** types in the form of a table. 
+Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
+
+Until recently, data frames were the main storage objects for research data. 
+Nowadays, tibbles (described in section \@ref(tibbles)) tend to take over as they are viewed as more practical to handle data sets.
+It is however likely that you will meet data frames often in the course of your studies. 
+
+Building a data frame from scratch is not a very common thing to do.
+One usually imports data from an external file (.csv, .xls, .xlsx, ...) via a function (`read.csv()`, `read.xls()`, etc) that reads the file and creates a data frame with its content. 
+Nonetheless, it is fairly easy to create a data frame by using the function `data.frame()`.
+This function puts vectors or factors side-by-side, vertically, and in a given sequence. 
+Here is an example:
+
+```{r df0, echo=FALSE}
+precipitations <- c(33.8, 62.6, 111.2, 12.8, 46.0, 125.4, 95.2, 180.8, 148.6, 132.0, 21.6, 224.4)
+```
+
+```{r df1, echo=TRUE}
+df <- data.frame(1:12, month.abb, precipitations)
+df 
+```
+
+Note that you must make sure that these vectors have the same length (i.e. the same number of elements) since a data frame cannot have empty cells. 
+
+#### Naming columns
+
+By default `data.frame()` gives columns the name of the vector they contain. 
+It is strongly recommended to specify/replace these names by using `=` preceded by a better label.
+
+```{r df2, echo=TRUE}
+df2 <- data.frame("Observation"= 1:12, 
+                  "Month"= month.abb, 
+                  "Precipitations"= precipitations)
+df2 
+```
+
+#### Retrieving data elements
+
+Similarly to vectors, matrices and lists, one can extract single elements from data frames.
+Here, we use brackets `[` `]` to do so:
+```{r df3, echo=TRUE}
+df2[3, "Precipitations"]
+```
+One can also retrieve rows or columns:
+
+```{r df4, echo=TRUE}
+df2[3, ]
+df2[ , "Precipitations"]
+```
+
+
+#### Visualizing data frames
+
+When printing a data frame to visualize it (like in the examples above), the whole object is displayed, including row numbers and column names. 
+This means that several hundred lines or observations may suddenly invade your screen as soon as you run the name of the object.
+
+Here are three functions that help you get a quick overview of the data frame. 
+
+##### The function View()
+
+As introduced in section \@ref(the-function-view), the function `View()` opens any object in a separate tab and displays it in a convenient table. 
+This can be applied to data frames too:
+
+```{r view-dfl, echo=TRUE}
+View(df2)
+```
+
+
+##### The functions head() and tail()
+
+The functions `head()` and `tail()` return the first and last 6 rows of the data frame, respectively.
+
+```{r headtail, echo=TRUE}
+head(df2)
+tail(df2)
+```
+
+
+  
+You may read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame).
+
+
+### Tibbles
+
+A tibble is an evolution of the data frame described above. 
+It is not part of the R base package (a.k.a. base R), but comes with the package `tidyverse`. 
+Tibbles are in fact the standard in the tidyverse and you must make sure that the package is installed and active before using these objects. 
+So make sure to run this command first:
+
+```{r load tydiverse, echo=TRUE}
+library(tidyverse)
+```
+
+
+
+The tibble, like the data frame, is a table that stores data of **various** types. 
+However, it drops some of the inconvenient features of the data frame that used to make your work frustrating or less efficient. 
+For example, it _prints_ better! 
+Instead of displaying the whole data set at once like data frames do, tibbles show only the first 10 to 20 observations (depending on the actual length of the data set) and only the columns that the width of the screen has place for. 
+
+Here is an example in the form of a tibble named `temperature_lygra` with 3 columns and 36 rows:
+
+
+```{r tibble-scratch, echo=FALSE}
+temperature_lygra <- tibble(Year = rep(2017:2019, each = 12), 
+                            Month = rep(month.name, 3), 
+                            Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
+ 
+```
+
+```{r tibble-scratch2, echo=TRUE}
+temperature_lygra
+```
+
+Besides printing better, tibbles also have the advantage of showing the nature (or type) of the data in the columns.
+Indeed, under the column name comes a quick description of the data type (`<int>` for integer, `<chr>` for character, <dbl> for double, etc).
+In addition, the dimensions of the table (`# A tibble: 36 x 3`) and the number of rows not displayed in the present window (`# ... with 26 more rows`) are also clearly indicated.
+
+
+#### Creating a tibble from scratch
+
+As for data frames, one usually creates a tibble by importing data from an external file.
+We will see how later.
+But it is possible to create tibbles from scratch with the function `tibble()`; and as for data frames, you may give columns a name with the symbol `=`.
+For instance, the tibble printed in the previous section was created with the following code:
+
+```{r tibble3, echo=TRUE}
+temperature_lygra <- tibble(Year = rep(2017:2019, each = 12), 
+                            Month = rep(month.name, 3), 
+                            Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
+temperature_lygra 
+```
+
+
+#### Transforming a data frame into a tibble
+
+If you have been previously working with data frames (or have imported data using functions that create data frames), you may convert these objects into tibbles by using `as_tibble()`.
+Here we convert the data frame `df2` into a tibble:
+
+```{r df-tibble, echo=TRUE}
+df2_tibble <- as_tibble(df2)
+df2_tibble 
+```
+
+#### Penguins as a recurrent example
+
+Here is a tibble called `penguins` which is part of the package `palmerpenguins`. 
+You will certainly meet this tibble again and again on this website as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
+
+```{r penguins-tibble, echo=TRUE}
+penguins
+```
+
+
+
+
+You may read more about tibbles [here](https://tibble.tidyverse.org/).
+
 
 
 
 
 ### What's next {- .facta .toc-ignore}
 
-Now that you know the basics of R and that you have all the tools to create "manually" data frames or tibbles, you will learn how to import a data set from an external source. 
-R can indeed read and fetch data from various file types such as .txt, .csv, .xls, .xlsx, and directly store it in data frames or tibbles.
+Now that you know the basics of R and that you have all the tools to "manually" create R objects, you will learn how to import a data set from an external source. 
+We will see how to read and fetch data from various file types such as .txt, .csv, .xls, .xlsx, and directly store it in tibbles.
 
+### Further Reading {- .literature .toc-ignore}
+
+R for data science: [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
+The tidyverse: [https://www.tidyverse.org/](https://www.tidyverse.org/)
+
+### Contributors {- .contributors .toc-ignore}
+
++ Jonathan Soulé
++ Aud Halbritter
++ Richard Telford
