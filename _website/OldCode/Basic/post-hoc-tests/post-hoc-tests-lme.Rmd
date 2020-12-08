@@ -1,0 +1,101 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: Post Hoc Tests - multiple comparisons in linear mixed effect models
+# author: jonathan
+# revised: 13/4/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/post-hoc tests/post-hoc-tests-lme.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/post-hoc tests/post-hoc-tests-lme.Rmd")
+library(multcomp)
+library(ggplot2)
+library(nlme)
+library(emmeans)
+```
+
+You have been running a [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"} with `lme()` and `anova()`, and the F-test has revealed the existence of a significant difference between some of the tested groups. But which groups? To answer that question, you will need to run the appropriate *post-hoc* tests to assess the significance of differences between pairs of group means. The functions `emmeans()` and `glht()` will help you do this.
+
+We will reuse the example introduced [here (repeated measures ANOVA)](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"}.
+To create the corresponding dataframe, use the following code:
+```{r dataframe}
+# response variable
+rat.weight <- c(164,164,158,159,155,220,230,226,227,222,261,275,264,280,272,306,326,320,330,312)
+
+# predictor variable
+time.point <- as.factor(c(rep("week08",5), rep("week12",5), rep("week16",5), rep("week20",5)))
+
+# individual ID
+rat.ID <- as.factor(rep(c("rat1","rat2","rat3", "rat4", "rat5"),4))
+
+# dataframe
+my.dataframe <- data.frame(rat.ID,time.point,rat.weight)
+```
+<br/><br/>
+
+For recall, here is the corresponding plot:
+```{r plot, echo=FALSE}
+ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, color = rat.ID)) +
+  geom_line(size = 1.25) +
+  geom_point(size = 2) +
+  scale_color_viridis_d()
+```
+<br/><br/>
+
+and the model that was fitted with `lme()`:
+```{r model}
+# linear mixed effect model stored in the object 'model'
+model <- lme(rat.weight ~ time.point, random=~1|rat.ID, data=my.dataframe)
+```
+<br/><br/>
+
+### Alternative 1: running the test with `emmeans()`
+
+`emmeans()` is part of the package `emmeans`, which we first need to activate:
+```{r package, eval=FALSE}
+library(emmeans)
+```
+<br/>
+
+The next step consists in "feeding" the linear mixed effect model to `emmeans()`. The syntax is `emmeans(model, pairwise ~ predictor)` where `predictor` is the predictor variable which levels have to be compared pairwise:
+```{r emmeans}
+# running emmeans()
+emmeans(model, pairwise ~ time.point)
+```
+The output shows first some statistics for each group in the upper part, while the lower part displays the six pairwise comparisons and p-values. Here, all comparisons are associated with a p-value under 0.05.
+<br/><br/>
+
+### Alternative 2: running the test with `glht()`
+
+`glht()` is part of the package `multcomp` which we first need to activate:
+```{r package2, eval=FALSE}
+library(multcomp)
+```
+<br/>
+
+Running the test with `glht()` involves two steps:
+
++ feeding the linear mixed effect model to `glht` for which the syntax is `glht(model, linfct = mcp(predictor = 'Tukey'))` where `predictor` is the predictor variable which levels have to be compared pairwise,
++ computing the result table with `summary()`.
+
+Let's apply this to our example:
+```{r glht}
+# running glht()
+post.hoc <- glht(model, linfct = mcp(time.point = 'Tukey'))
+
+# displaying the result table with summary()
+summary(post.hoc)
+```
+The output shows all six pairwise comparisons, p-values and corresponding stars, and all pairwise comparisons are accompanied by a p-value less than 0.05. 
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

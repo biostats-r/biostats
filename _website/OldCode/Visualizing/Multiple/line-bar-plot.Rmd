@@ -1,0 +1,111 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Overlaying a line plot and a bar plot
+# author: jonathan
+# revised: 28/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Multiple/line-bar-plot.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Multiple/line-bar-plot.Rmd")
+library(ggplot2)
+library(gridExtra)
+ID <- as.factor(1:12)
+series1 <- runif(12, min=25, max=50)
+series2 <- runif(12, min=4, max=15)
+```
+
+A combination that is frequently seen is the overlay of a bar/column chart and a line chart. A typical example of this is the graph displaying temperatures and precipitations in your favorite newspapers or weather forecast website, as illustrated in the picture below.
+<center>
+![](https://biostats.w.uib.no/files/2019/02/Screenshot-2019-05-13-15.41.22.png "Source: Yr.no") 
+</center>
+<br/><br/>
+
+We will use `ggplot()` to draw such a combined chart. Before going any further, if you are not so familiar with line plots and vertical bar plots, have a quick look at these pages:
+
++ [Creating a vertical bar plot](https://biostats.w.uib.no/creating-a-bar-plot/){target="_blank"},
++ [Creating a line plot](https://biostats.w.uib.no/creating-a-line-plot/){target="_blank"}.
+
+The dataframe for this tutorial is as follows:
+```{r dataframe}
+# dataframe
+df <- data.frame(ID, series1, series2)
+# structure of the dataframe
+str(df)
+```
+<br/><br/>
+
+The following codes draw a bar plot based on `series1` and a line plot based on `series2`:
+
+```{r plots1, eval=FALSE}
+ggplot(df, aes(x = ID, y = series1)) +                            # bar plot
+  geom_col(size = 1, color = "darkblue", fill = "white") 
+
+ggplot(df, aes(x = ID, y = series2)) +                            # line plot
+  geom_line(size = 1.5, color="red", group = 1)
+```
+```{r plots2, fig.width=10, fig.height=4, echo=FALSE}
+grid.arrange(
+  ggplot(df, aes(ID, series1)) +                            # bar plot
+    geom_col(size = 1, color = "darkblue", fill = "white"),
+ggplot(df, aes(ID, series2)) +                            # line plot
+  geom_line(size = 1.5, color="red", group = 1),
+ncol=2
+)
+```
+<br/><br/>
+
+Now, we “just” have to merge these two plots into one figure. But we have to be careful when mapping the data for each plot. Both plots use `ID` for the X-axis; however, the line plot uses `series2` for its Y-axis, while the column plot uses `series`1. This means that we must create a mapping for each of the plot by using `aes()` twice, one for each `geom`:
+```{r combined}
+ggplot(df) + 
+  geom_col(aes(x = ID, y = series1), size = 1, color = "darkblue", fill = "white") +
+  geom_line(aes(x = ID, y = series2), size = 1.5, color="red", group = 1)
+```
+<br/><br/>
+
+Alternatively, since `ID` is the predictor variable for both the line plot and the bar plot, we can place `aes(ID)` in `ggplot()`, but we still have to use `aes()` to map the response variable in each geometry:
+```{r combined2, eval=FALSE}
+ggplot(df, aes(x = ID)) + 
+  geom_col(aes(y = series1), size = 1, color = "darkblue", fill = "white") +
+  geom_line(aes(y = series2), size = 1.5, color="red", group = 1)
+```
+The result (now shown here) is identical to the plot above.
+<br/><br/>
+
+As you may see here, the two plot types appear correctly in the same graph, as expected. However, both use the same Y-axis and its corresponding scale. Since the range of the line plot is much lower than the column plot, the use of a secondary Y-axis with a more adapted scale is recommended. Click [HERE](https://biostats.w.uib.no/secondary-y-axis/){target="_blank"} if you want to know more about setting up a secondary Y-axis in ggplot2.
+
+Here is the code to set up the secondary Y-axis that fits our example:
+```{r secondary-axis}
+ggplot(df) + 
+  geom_col(aes(x = ID, y = series1), size = 1, color = "darkblue", fill = "white") +
+  geom_line(aes(x = ID, y = 3*series2), size = 1.5, color="red", group = 1) + 
+  scale_y_continuous(sec.axis = sec_axis(~./3, name = "series2"))
+```
+<br/><br/>
+
+### Adding plot title, axis titles, ticks, labels and other essential elements
+
+In [this section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}, you will learn how to set/modify all the necessary elements that make a plot complete and comprehensible. Such elements are:
+
++ [plot title](https://biostats.w.uib.no/title/){target="_blank"}, 
++ [axis title](https://biostats.w.uib.no/axis-titles/){target="_blank"},
++ [axis scale](https://biostats.w.uib.no/axis-scale/){target="_blank"},
++ [axis ticks](https://biostats.w.uib.no/axis-ticks/){target="_blank"},
++ [category labels](https://biostats.w.uib.no/category-labels/){target="_blank"},
++ [legend](https://biostats.w.uib.no/legend/){target="_blank"},
++ [secondary Y-axis](https://biostats.w.uib.no/secondary-y-axis/){target="_blank"},
++ [colors](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"},
++ [etc](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}.
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

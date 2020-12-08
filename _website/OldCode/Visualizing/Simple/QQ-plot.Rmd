@@ -1,0 +1,72 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a Q-Q plot
+# author: jonathan
+# revised: 18/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Simple/QQ-plot.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Simple/QQ-plot.Rmd")
+library(ggplot2)
+# ID
+ID <- 1:300
+# sample
+values <- rnorm(300, mean=50, sd=5)
+```
+A Q-Q plot (or Quantile-Quantile plot) is used to compare quantile distribution of a sample to a theoretical quantile distribution. Often, this is used to visually estimate whether a sample distribution is (close to) normal, in which case the quantiles are nicely aligned in the plot. Note that this type of visual estimation does not replace a proper statistical [test for normality](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"}.
+
+We will see how to use `ggplot()` to code for a Q-Q plot representing a sample which is normally distributed. Here is the dataframe:
+```{r dataframe}
+# dataframe
+df <- data.frame(ID, values)
+```
+<br/><br/>
+
+In ggplot2, Q-Q plots are drawn by the functions `stat_qq()` and `geom_qq()`. Here we use `stat_qq()`:
+```{r plot}
+ggplot(df, aes(sample=values)) +
+  stat_qq() 
+```
+<br/><br/>
+
+It is of course possible to tune the look of the plot with, for example, `size=` and `color=`:
+```{r tune}
+ggplot(df, aes(sample=values)) +
+  stat_qq(size = 2, color = "blue")   
+```
+<br/><br/>
+To better verify the alignment of the dots, one can add a *quantile-quantile line* by the mean of `stat_qq_line()`. This line can also be tuned with similar arguments:
+```{r line}
+ggplot(df, aes(sample=values)) +
+  stat_qq(size = 2, color = "blue") + 
+  stat_qq_line(size=1.25, color="red")  
+```
+
+<br/><br/>
+
+### Adding plot title, axis titles, ticks, labels and other essential elements
+
+In [this section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}, you will learn how to set/modify all the necessary elements that make a plot complete and comprehensible. Such elements are:
+
++ [plot title](https://biostats.w.uib.no/title/){target="_blank"}, 
++ [axis title](https://biostats.w.uib.no/axis-titles/){target="_blank"},
++ [axis scale](https://biostats.w.uib.no/axis-scale/){target="_blank"},
++ [axis ticks](https://biostats.w.uib.no/axis-ticks/){target="_blank"},
++ [category labels](https://biostats.w.uib.no/category-labels/){target="_blank"},
++ [legend](https://biostats.w.uib.no/legend/){target="_blank"},
++ [secondary Y-axis](https://biostats.w.uib.no/secondary-y-axis/){target="_blank"},
++ [colors](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"},
++ [etc](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
