@@ -169,10 +169,25 @@ Beside these rules, you may find the following recommendations useful:
 + avoid very long names
 + have a look at the [tidyverse style guide](https://style.tidyverse.org/syntax.html#object-names)
 
-Sounds easy? 
-Try this [app](https://bioceed.shinyapps.io/naming_objects/){target="_blank"} and you will realize that this may be tricky. 
-In the app, you will find a series of short exercises which help you understand what you may or may not do when naming an object in R. 
-You will learn more about legal and reserved names, case sensitivity, etc.
+Sounds easy? Let's check that!
+We have prepare an exercise that evaluates your capacity to properly name R objects. 
+This test is available in the form of an app that opens in your net browser, or a tutorial that loads directly in RStudio.
+
+The app is accessible [here](https://bioceed.shinyapps.io/naming_objects/){target="_blank"}.
+The tutorial is available after installing the package `biostats.tutorials` via the console. 
+To do so, use the following line of code:
+```{r install-the-tutorial, echo=TRUE, eval=FALSE}
+remotes::install_github("biostats-r/biostats.tutorials")
+```
+
+Then run the tutorial:
+```{r run-the-tutorial, echo=TRUE, eval=FALSE}
+learnr::run_tutorial("naming-objects", package = "biostats.tutorials")
+```
+
+Alternatively, go to the tab `Tutorial` in the top right quadrant of RStudio.
+The tutorial is called `Naming objects`. 
+Simply click on the button `Start Tutorial?` to the right to start it.
 
 
 ## Viewing object content
@@ -200,7 +215,7 @@ But sooner or later, the tab will look more like Figure \@ref(fig:env).
 knitr::include_graphics("Pics/env.png")
 ```
 
-The top part of the tab shows complex objects such as lists, matrices, data frames and tibbles whereas the bottom part shows simpler objects such as vectors and factors (we will review these objects later on in Section \@ref(data-types-classes-and-objects)). 
+The top part of the tab shows complex objects such as lists, matrices, data frames and tibbles whereas the bottom part shows simpler objects such as vectors and factors (we will review these objects later on in Section \@ref(data-types-and-objects)). 
 Note that some of the complex objects appear next to a blue, round icon with a white arrowhead. 
 Click on it to expand the summary as shown in Figure \@ref(fig:exp).
 
@@ -241,6 +256,10 @@ rm(result)
 ```
 
 To delete several objects at the same time, use `rm()` and type their name separated with commas `,`. 
+
+```{r result-reborn}
+result <- exp(42)
+```
 
 ```{r delete2}
 rm(result, results)
@@ -285,7 +304,7 @@ rep(c(1, 2, 3), 3, length= 7)
 
 The following section provides you with expressions or functions that build sequences of numerical or text values.
 
-### a:b
+### Using the coon operator
 
 `a:b` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
 
@@ -300,7 +319,7 @@ Note that `b` is not necessarily the last element of the series.
 14.5:24
 ```
 
-### seq()
+### The function seq()
 
 Similar to `a:b`, `seq(a, b)` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
 ```{r seq, echo=TRUE}
@@ -325,7 +344,7 @@ seq(14, 24, length.out=7)
 
 The following section provides you with functions that build series of random, numerical values.
 
-### runif()
+### The function runif()
 
 `runif(n)` returns a series of `n` random numbers between 0 and 1.
 
@@ -340,7 +359,7 @@ runif(7, min=10, max=100)
 ```
 
 
-### rnorm()
+### The function rnorm()
 
 `rnorm(n)` creates a series of `n` numbers taken from a normal distribution. 
 
@@ -353,7 +372,7 @@ By default, the normally distributed population is set up with a mean of 0 and a
 rnorm(10, mean=50, sd=3)
 ```
 
-### sample()
+### The function sample()
 
 `sample(x, n, replace=TRUE/FALSE)` returns a sample of `n` integers taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
 `replace=` followed by either TRUE or FALSE defines whether or not a data element can appear repeatedly in the sample.
@@ -643,7 +662,12 @@ The object `my_list` described below is a list that contains 6 elements.
 Some of them are objects that we have created previously on this page, others are new data elements of various types.
 
 ```{r list, echo=TRUE}
-my_list <- list("one", 2, temperature, TRUE, vec.char, neo)
+my_list <- list("one",
+                2,
+                temperature,
+                TRUE,
+                vec.char,
+                neo)
 my_list 
 ```
 
@@ -668,159 +692,148 @@ my_new_list
 #### Retrieving list elements
 
 Naming elements is quite convenient as it allows you to retrieve them rapidly by the mean of the symbol `$`. 
-The syntax is as follows: `<list_name>$<element_name>`. 
-Here we retrieve the element `f` in the list `my_list`:
+The syntax is as follows: `<list_name>$<element_name>`.  
+Here we retrieve the element `f` in the list `my_new_list`:
 
 ```{r listdollar, echo=TRUE} 
 my_new_list$f
 ```
 
-You may read more about lists [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list).
+#### Retrieving single data elements
 
-### Data frames
+Even better, you can retrieve a single data element contained in a list element. 
+Here you will have to write an expression that makes use of both the symbol `$` and the brackets `[``]`in the proper order. 
+The syntax is as follows: `<list_name>$<element_name>[data]`.  
+In this first example, we retrieve the data element located at the third position of the object named `e` in the list `my_new_list`:
+
+```{r list-element-data, echo=TRUE} 
+my_new_list$e[3]
+```
+
+In the second example, we retrieve the data element located at the second row and third column of the matrix named `f` in the list `my_new_list`:
+
+```{r list-element-data2, echo=TRUE} 
+my_new_list$f[2,3]
+```
+
+
+
+You may read more information about lists [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list).
+
+### Data frames and tibbles
 
 A data frame is a two-dimensional object that stores data of **various** types in the form of a table. 
 Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
 
 Until recently, data frames were the main storage objects for research data. 
-Nowadays, tibbles (described in section \@ref(tibbles)) tend to take over as they are viewed as more practical to handle data sets.
-It is however likely that you will meet data frames often in the course of your studies. 
+Nowadays, tibbles (an evolution of the data frame that appeared in the tidyverse) replace data frames as they are viewed as more practical to handle data sets (you will understand why further below).
+Because of this trend, we will focus mainly on tibbles here in this section and further on this website.
+It is however likely that you will meet data frames in the course of your studies. 
+Do not worry as we will see how to transform data frames into tibbles.
 
-Building a data frame from scratch is not a very common thing to do.
-One usually imports data from an external file (.csv, .xls, .xlsx, ...) via a function (`read.csv()`, `read.xls()`, etc) that reads the file and creates a data frame with its content. 
-Nonetheless, it is fairly easy to create a data frame by using the function `data.frame()`.
-This function puts vectors or factors side-by-side, vertically, and in a given sequence. 
-Here is an example:
-
-```{r df0, echo=FALSE}
-precipitations <- c(33.8, 62.6, 111.2, 12.8, 46.0, 125.4, 95.2, 180.8, 148.6, 132.0, 21.6, 224.4)
-```
-
-```{r df1, echo=TRUE}
-df <- data.frame(1:12, month.abb, precipitations)
-df 
-```
-
-Note that you must make sure that these vectors have the same length (i.e. the same number of elements) since a data frame cannot have empty cells. 
-
-#### Naming columns
-
-By default `data.frame()` gives columns the name of the vector they contain. 
-It is strongly recommended to specify/replace these names by using `=` preceded by a better label.
-
-```{r df2, echo=TRUE}
-df2 <- data.frame("Observation"= 1:12, 
-                  "Month"= month.abb, 
-                  "Precipitations"= precipitations)
-df2 
-```
-
-#### Retrieving data elements
-
-Similarly to vectors, matrices and lists, one can extract single elements from data frames.
-Here, we use brackets `[` `]` to do so:
-```{r df3, echo=TRUE}
-df2[3, "Precipitations"]
-```
-One can also retrieve rows or columns:
-
-```{r df4, echo=TRUE}
-df2[3, ]
-df2[ , "Precipitations"]
-```
-
-
-#### Visualizing data frames
-
-When printing a data frame to visualize it (like in the examples above), the whole object is displayed, including row numbers and column names. 
-This means that several hundred lines or observations may suddenly invade your screen as soon as you run the name of the object.
-
-Here are three functions that help you get a quick overview of the data frame. 
-
-##### The function View()
-
-As introduced in section \@ref(the-function-view), the function `View()` opens any object in a separate tab and displays it in a convenient table. 
-This can be applied to data frames too:
-
-```{r view-dfl, echo=TRUE}
-View(df2)
-```
-
-
-##### The functions head() and tail()
-
-The functions `head()` and `tail()` return the first and last 6 rows of the data frame, respectively.
-
-```{r headtail, echo=TRUE}
-head(df2)
-tail(df2)
-```
-
-
-  
-You may read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame).
-
-
-### Tibbles
-
-A tibble is an evolution of the data frame described above. 
-It is not part of the R base package (a.k.a. base R), but comes with the package `tidyverse`. 
-Tibbles are in fact the standard in the tidyverse and you must make sure that the package is installed and active before using these objects. 
+Tibbles are a standard introduced in the tidyverse, you must make sure that the package is installed and active before using these objects. 
 So make sure to run this command first:
 
 ```{r load tydiverse, echo=TRUE}
 library(tidyverse)
 ```
 
+#### Data frames vs. tibbles
+
+The object `df` printed below is a data frame that stores the average temperature recorded monthly in 2017, 2018 and 2019 at Lygra (Vestland, Norway).
 
 
-The tibble, like the data frame, is a table that stores data of **various** types. 
-However, it drops some of the inconvenient features of the data frame that used to make your work frustrating or less efficient. 
-For example, it _prints_ better! 
-Instead of displaying the whole data set at once like data frames do, tibbles show only the first 10 to 20 observations (depending on the actual length of the data set) and only the columns that the width of the screen has place for. 
+```{r dftbl, echo=FALSE, eval=TRUE}
+df <- data.frame(Year = rep(2017:2019, each = 12), 
+                 Month = rep(month.name, 3), 
+                 Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
 
-Here is an example in the form of a tibble named `temperature_lygra` with 3 columns and 36 rows:
-
-
-```{r tibble-scratch, echo=FALSE}
-temperature_lygra <- tibble(Year = rep(2017:2019, each = 12), 
-                            Month = rep(month.name, 3), 
-                            Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
- 
+tbl <- tibble(Year = rep(2017:2019, each = 12), 
+             Month = rep(month.name, 3), 
+             Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
 ```
 
-```{r tibble-scratch2, echo=TRUE}
-temperature_lygra
+`df` prints like this:
+```{r df, echo=TRUE}
+df
+```
+As you may see, you get at once the _whole_ data set with all 36 rows, the 3 variables, the header with column names and the first column that gives a number to each row.  
+
+The object `tbl` is a tibble that contains exactly the same observations and variables as `df`.
+Now let's see how `tb` prints:
+```{r tbl, echo=TRUE}
+tbl
 ```
 
-Besides printing better, tibbles also have the advantage of showing the nature (or type) of the data in the columns.
-Indeed, under the column name comes a quick description of the data type (`<int>` for integer, `<chr>` for character, <dbl> for double, etc).
-In addition, the dimensions of the table (`# A tibble: 36 x 3`) and the number of rows not displayed in the present window (`# ... with 26 more rows`) are also clearly indicated.
+Here, you get a more convenient display of the same data:
+
++ only the first 10 rows and the header are displayed
++ the number of rows _not_ printed is displayed in the present window (`# ... with 26 more rows`)
++ the dimensions of the tibble appear clearly in the header (`# A tibble: 36 x 3`)
++ the column names come along with a quick description of the data type (`<int>` for integer, `<chr>` for character, `<dbl>` for double, etc)
+
+You may thus understand why tibbles are a much better choice than data frame, especially when handling large data sets, with hundreds of rows and columns.
+Tibbles _print_ much better than data frames do!
+
+
+#### Retrieving data elements
+
+Similarly to vectors, matrices and lists, one can extract single elements from data frames and tibbles.
+Here, we use brackets `[` `]` to do so:
+```{r dftbl2, echo=TRUE}
+df[3, "Avg_temperature"]
+tbl[3, "Avg_temperature"]
+```
+
+One can also retrieve rows or columns:
+
+```{r dftbl3, echo=TRUE}
+df[3, ]
+tbl[3, ]
+df[ , "Avg_temperature"]
+tbl[ , "Avg_temperature"]
+```
+
+
+#### Visualizing data with View()
+
+As introduced in section \@ref(the-function-view), the function `View()` opens any object in a separate tab and displays it in a convenient table. 
+This can be applied to data frames and tibbles too:
+
+```{r view-dftbl, echo=TRUE, eval=FALSE}
+View(df)
+View(tbl)
+```
+
+
+
 
 
 #### Creating a tibble from scratch
 
-As for data frames, one usually creates a tibble by importing data from an external file.
-We will see how later.
-But it is possible to create tibbles from scratch with the function `tibble()`; and as for data frames, you may give columns a name with the symbol `=`.
-For instance, the tibble printed in the previous section was created with the following code:
+One usually creates a tibble by importing data from an external file.
+We will see how in the next chapter.
+It is however possible to create tibbles from scratch with the function `tibble()`.  
 
-```{r tibble3, echo=TRUE}
-temperature_lygra <- tibble(Year = rep(2017:2019, each = 12), 
-                            Month = rep(month.name, 3), 
-                            Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
-temperature_lygra 
+`tibble()` puts vertically side-by-side the vectors or expression that you give it.
+In addition, you can give columns a name with the symbol `=`. 
+For instance, the tibble `tbl` that we used in the previous section was created with the following code:
+
+```{r tibble3, echo=TRUE, eval=FALSE}
+tbl <- tibble(Year = rep(2017:2019, each = 12), 
+             Month = rep(month.name, 3), 
+             Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
 ```
 
 
 #### Transforming a data frame into a tibble
 
-If you have been previously working with data frames (or have imported data using functions that create data frames), you may convert these objects into tibbles by using `as_tibble()`.
-Here we convert the data frame `df2` into a tibble:
+If you have been previously working with data frames, have been given a data frame to work with, or have imported data using functions that create data frames, you may convert these objects into tibbles by using `as_tibble()`. 
+Here we convert the data frame `df` into a tibble:
 
 ```{r df-tibble, echo=TRUE}
-df2_tibble <- as_tibble(df2)
-df2_tibble 
+df_as_tibble <- as_tibble(df)
+df_as_tibble 
 ```
 
 #### Penguins as a recurrent example
@@ -835,8 +848,8 @@ penguins
 
 
 
-You may read more about tibbles [here](https://tibble.tidyverse.org/).
-
+You may read more about tibbles [here](https://tibble.tidyverse.org/).  
+You may read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame).
 
 
 
@@ -848,8 +861,8 @@ We will see how to read and fetch data from various file types such as .txt, .cs
 
 ### Further Reading {- .literature .toc-ignore}
 
-R for data science: [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
-The tidyverse: [https://www.tidyverse.org/](https://www.tidyverse.org/)
++ R for data science: [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
++ The tidyverse: [https://www.tidyverse.org/](https://www.tidyverse.org/)
 
 ### Contributors {- .contributors .toc-ignore}
 
