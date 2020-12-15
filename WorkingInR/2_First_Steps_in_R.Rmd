@@ -30,7 +30,8 @@ You must know how to install and activate a package.
 
 Performing arithmetic operations is no big deal in R. 
 Simply write any operation using the usual arithmetic operators `+`, `-`, `*` and `/` and run your code. 
-No need to type `=`. 
+No need to type `=`.  
+
 R allows you to add parentheses `(` `)` when you need to impose the order of operations.
 When it comes to raising a number to the power of another one, use the symbol `^` or `**`. 
 
@@ -79,19 +80,93 @@ When comparing two elements, R returns either `TRUE` or `FALSE`.
 R uses objects to store data in memory. 
 Storing data in an object is referred to as "assigning data".
 There are different types of data and objects; we will talk much more about them further below.
-For now, let's see how to assign simple data elements to an object.
+For now, let's see why one should assign data to objects, and how to do it.
+
+## Why assigning data?
+
+Putting data into named objects allows you to:
+
++ store *massive* amounts of data and/or code for later reuse in calculations, analysis, plots and figures,
++ *divide* your code into separate steps, each of which is clearly identifiable by name and thus reusable,
++ *simplify* your code by referring to previous calculations or plots.
+
+```{r palmercode, echo=FALSE}
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+# Jitter plot example
+plot3 <- ggplot(data = penguins, aes(x = species, y = body_mass_g)) +
+           geom_jitter(aes(color = species),
+              width = 0.1,
+              alpha = 0.7,
+              show.legend = FALSE) +
+         scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+
+# Histogram example
+plot2 <- ggplot(data = penguins, aes(x = flipper_length_mm)) +
+  geom_histogram(aes(fill = species), alpha = 0.5, position = "identity", bins = 30) +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4"))
+
+# Count penguins for each species / sex
+plot1 <- ggplot(penguins, aes(x = sex, fill = species)) +
+  geom_bar(alpha = 0.8) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4"),
+                    guide = FALSE) +
+  theme_minimal() +
+  facet_wrap(~species, ncol = 1) +
+  coord_flip()
+```
+
+
+Let's take a look at the following figure. It is made of 3 plots, each of them based on different variables taken from a single data set: 
+
+```{r palmer-figure, echo = FALSE}
+plot1 / (plot2 + plot3)
+```
+
+Believe it or not, but the code that builds this figure is as simple as this: 
+
+```{r finalcode, eval=FALSE}
+plot1 / (plot2 + plot3)
+```
+
+In fact, everything that R needed in order to make the figure had been previously stored in the objects `plot1`, `plot2` and `plot3`. 
+For example, `plot1` was assigned the following chunk of code:
+
+```{r plot1, eval=FALSE}
+plot1 <- ggplot(penguins, aes(x = sex, fill = species)) +
+  geom_bar(alpha = 0.8) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4"),
+                    guide = FALSE) +
+  theme_minimal() +
+  facet_wrap(~species, ncol = 1) +
+  coord_flip()
+```
+
+And within that code lays a large data set stored in the object `penguins`.
+
+The clear benefit of assigning data into the above-mentioned objects is that it simplified a lot the code for the figure.
+It takes virtually no effort to manipulate the data that the objects contain. 
+And it does not take more than 5 seconds to design another figure with a different layout:
+
+```{r palmer-figure2, echo = TRUE}
+(plot3 + plot2) / plot1
+```
+
+
+
 
 ## Assigning data to an object
 
 To assign data to an object, type first the name you want to give it followed by the operator `<-` and the data to store. 
-For example, the result of an arithmetic operation may be conveniently stored in memory for later reuse. 
 In the following example, we will assign the result of the operation `sqrt(42)` in memory to the object named `result`: 
 
 ```{r result, echo=TRUE}
 result <- sqrt(42)
 ```
 
-At once, the object `result` and its associated value show up in the Environment tab in RStudio. 
+At once, the object `result` and its associated value show up in the `Environment` tab of RStudio. 
 
 ```{r stored_result, echo = FALSE, out.width="100%"}
 knitr::include_graphics("Pics/result.png")
@@ -102,7 +177,7 @@ From now on, you can display the content of `result` simply by typing its name:
 result
 ```
 
-You can also use it in more or less complex operations:
+You can also reuse the object for other operations:
 ```{r operations_result, echo=TRUE}
 result*3
 result*result
@@ -130,6 +205,8 @@ This is one of the many reasons why you should always work with a script and ann
 ## Concatenating data
 
 If you want to assign more than one data element to an object, use the function `c()` which concatenates the elements given between parentheses. 
+By concatenating data elements and assigning them to an object, you create a *vector*, one of the simplest objects in R. 
+We will look further at vectors in section \@ref(vectors).  
 The data elements to concatenate must be separated with a comma `,`.
 
 ```{r concatenate}
@@ -153,11 +230,14 @@ one_2_three_4 <- c("one", 2, "three", 4)
 one_2_three_4
 ```
 
+
+
+
 ## Naming objects
 
 Naming an object sounds quite easy if you are creative, but there is a set of rules to respect:
 
-+ names must start with a letter (lower or upper case) or a dot, nothing else!
++ names must start with a letter (lower or upper case) or a dot `.`, nothing else!
 + names may include letters (lower and/or upper case), numbers, underscores `_` and dots `.`
 + you cannot use *reserved* names, i.e. names of existing functions or words already used in R (`TRUE`, `FALSE`, `break`, `function`, `if`, `for`, `NA`, `function`, see the complete list by running `?Reserved` in the console)
 
@@ -169,12 +249,14 @@ Beside these rules, you may find the following recommendations useful:
 + avoid very long names
 + have a look at the [tidyverse style guide](https://style.tidyverse.org/syntax.html#object-names)
 
-Sounds easy? Let's check that!
-We have prepare an exercise that evaluates your capacity to properly name R objects. 
-This test is available in the form of an app that opens in your net browser, or a tutorial that loads directly in RStudio.
 
-The app is accessible [here](https://bioceed.shinyapps.io/naming_objects/){target="_blank"}.
-The tutorial is available after installing the package `biostats.tutorials` via the console. 
+We have prepared a tutorial that further describes the rules for naming objects, and gives you a chance to test how well you have understood. 
+This tutorial is available both in the form of a web app and a _learnr_-tutorial.  
+
+You can open the web app directly in your favorite net browser by clicking  [HERE](https://bioceed.shinyapps.io/naming_objects/){target="_blank"}.
+
+The _learnr_-tutorial runs directly in RStudio. 
+It is available after installing the package `biostats.tutorials` via the console. 
 To do so, use the following line of code:
 ```{r install-the-tutorial, echo=TRUE, eval=FALSE}
 remotes::install_github("biostats-r/biostats.tutorials")
@@ -192,50 +274,11 @@ Simply click on the button `Start Tutorial?` to the right to start it.
 
 ## Viewing object content
 
-As you keep working on your project, the list of objects stored in memory grows. 
-After a while you will certainly lose track of these objects or their content. 
-In Rstudio, there are two ways to quickly visualize object content:
+As introduced in [Getting Started with R](LINK){target="_blank"}, the `Environment` tab of RStudio lists all the objects stored in memory in a given project.
+This list comes with a quick summary of both the structure and the content of the objects.  
 
-+ the Environment tab
-+ the function `View()`
-
-
-### The Environment tab
-
-The ´Environment´ tab lists all the objects currently stored in memory in the current project along with a quick summary of their content. 
-Right now, based on what has been done since the beginning of this chapter, the tab should only contain the 4 objects `one_2_three_4`, `one_two_three`, `result` and `results` as shown in Figure \@ref(fig:envnow).
-
-```{r envnow, echo = FALSE, eval = TRUE, fig.cap="_Screenshot of the_ Environment _tab in RStudio._", out.width="100%"}
-knitr::include_graphics("Pics/env_now.png")
-```
-
-But sooner or later, the tab will look more like Figure \@ref(fig:env).
-
-```{r env, echo = FALSE, eval = TRUE, fig.cap="_Another screenshot of the_ Environment _tab in RStudio._", out.width="100%"}
-knitr::include_graphics("Pics/env.png")
-```
-
-The top part of the tab shows complex objects such as lists, matrices, data frames and tibbles whereas the bottom part shows simpler objects such as vectors and factors (we will review these objects later on in Section \@ref(data-types-and-objects)). 
-Note that some of the complex objects appear next to a blue, round icon with a white arrowhead. 
-Click on it to expand the summary as shown in Figure \@ref(fig:exp).
-
-```{r exp, echo = FALSE, eval = TRUE, fig.cap="_Clicking on the icon provides more info about the structure of the object._", out.width="100%"}
-knitr::include_graphics("Pics/expand.png")
-```
-
-If you click directly on the line that describes the object in the ´Environment´ tab, a new tab appears in the top left section of Rstudio which displays the object itself. 
-Figure \@ref(fig:click) shows a screenshot of the tab that pops up after clicking on the line with `tb`.
-
-```{r click, echo = FALSE, eval = TRUE, fig.cap="_Clicking on the object line opens a tab with the content of the object._", out.width="100%"}
-knitr::include_graphics("Pics/view.png")
-```
-The table that was contained in `tb` is now fully presented in its own tab, with columns names and row numbers.
-
-
-### The function View()
-
-The function `View()` leads to the same result as clicking on the line of the object in the `Environment` tab: it opens a new tab which displays the whole object.
-Figure \@ref(fig:view) shows a screenshot of the tab that appears after running the following line of code.
+The function `View()` applied to any object opens a new tab which displays the whole object in the form of a table. 
+Figure \@ref(fig:view) shows a screenshot of the tab that appears after running `View()` on a large object called `tb`.
 
 ```{r View, echo=TRUE, eval=FALSE}
 View(tb)
@@ -245,10 +288,11 @@ View(tb)
 knitr::include_graphics("Pics/view.png")
 ```
 
+`View()` is particularly useful when you want to quickly check entries directly in the data set as it spares you from finding and opening the original data file on your disk via the explorer.
 
 ## Deleting objects
 
-When you are done with an object and do not have a use for it any longer, it may be relevant to get rid of it. 
+When you are done with a particularly large object that takes a lot of memory and you do not have a use for it any longer, it may be relevant to get rid of it. 
 This is done by using the function `rm()`.
 Here we will delete `result` from the current environment.
 ```{r delete1}
@@ -279,35 +323,27 @@ These sequences and series are often created by a bunch of functions or expressi
 The function `rep()` comes handy when you wish to repeat data elements `n` times in a row, or to repeat a sequence of elements `n` times. 
 Using various arguments, you can decide how many times and/or in which manner the elements or sequences have to be repeated.
 
-The simplest form of usage of `rep()` is `rep(x, n)` where `x` is what you want to repeat (string, number(s), etc) and `n` the number of iterations.
+The simplest form of usage of `rep()` is `rep(x, times= n)` where `x` is what you want to repeat (string, number(s), etc) and `n` the number of iterations.
 
 ```{r rep, echo=TRUE}
-rep(c(1, 2, 3), 3)
-rep(c("One", "Two", "Three"), 3)
+rep(c(1, 2, 3), times= 3)
+rep(c("One", "Two", "Three"), times= 3)
 ```
 
-Adding the argument `each= n` allows for repeating `n` times each element at a time. 
+The argument `each= n` allows for repeating `n` times each element at a time. 
 
 ```{r rep2, echo=TRUE}
 rep(c(1, 2, 3), each= 3)
 rep(c("One", "Two", "Three"), each= 3)
 ```
 
-Adding the argument `length= n` limits the length of the resulting series to `n` elements.
-
-```{r rep3, echo=TRUE} 
-rep(c(1, 2, 3), 3, length= 7)
-```
-
-
 ## Sequences
 
 The following section provides you with expressions or functions that build sequences of numerical or text values.
 
-### Using the coon operator
+### Using the colon operator
 
-`a:b` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
-
+The colon separator `:` used in the expression `a:b` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
 
 ```{r series, echo=TRUE}
 14:24
@@ -382,18 +418,16 @@ sample(1:100, 10, replace=FALSE)
 sample(20:30, 7, replace=TRUE)
 ```
 
-An interesting property of the function `sample()` is that it can be used to shuffle a vector, something which is useful for randomization of data elements. 
-In the following example, `sample()` shuffles and returns all values in the vector `one_to_ten`:
+An interesting property of the function `sample()` is that it can be used to shuffle the result of an expression or the content of a vector, something which is useful for randomization of data elements. 
+In the following example, `sample()` shuffles and returns all the values in `1:10`:
 ```{r sample2, echo=TRUE}
-one_to_ten <- 1:10
-one_to_ten
-sample(one_to_ten)
+sample(1:10)
 ```
 
 
 # Data types and objects
 
-Objects may contain anything from a single numerical value to a fully developed data set with dozens of variables and observations. 
+Objects may contain anything from a single numerical value to a fully developed data set with dozens of variables and thousands of observations. 
 When working in R, it is important to understand what kind of data you manipulate and what kind of object you build from it. 
 
 Here we will first review the primitive data types, then see a few useful data classes, and finally the object types that will be important in your studies. 
@@ -561,7 +595,7 @@ scandinavian_kingdoms
 
 ## Objects
 
-Data in R may be stored in a multitude of object types, but you only need to know a few of them to continue on this website: vector, matrix, list, data frame and tibble.
+Data in R may be stored in a multitude of object types, but the most important ones are vector, matrix, list, data frame and tibble.
 
 ### Vectors
 
@@ -616,7 +650,7 @@ temperature[c(2, 6)]
 ### Matrices
 
 A matrix is a two-dimensional object that displays data of the *same* type (numeric, character, etc) in the form of a table. 
-It is built up with the function `matrix()` in which the data is imported either in the form of concatenated data elements (ex: `c(12, 54 987, 5, ...)`), a series or sequence of data elements (ex: `1:25`), or a vector (ex: `temperature`). 
+It is built up with the function `matrix()` in which the data is imported either in the form of concatenated data elements (ex: `c(12, 54, 987, 5, ...)`), a series or sequence of data elements (ex: `1:25`), or a vector (ex: `temperature`). 
 In addition, one must define the number of rows and columns with `nrow=` and `ncol=`.   
 
 In the following example, the object `neo` is a matrix made of 4 rows and 6 columns filled with the numeric values stored in the vector `temperature` that we have previously created.
@@ -654,66 +688,50 @@ You can read more about matrices [here](https://www.rdocumentation.org/packages/
 
 ### Lists
 
-A list is an object that contains values of one or several data types. 
-It may not only contain data elements, but also other objects such as vectors, matrices, etc.  
+A list is an object that contains values of *one or several* data types. 
+It can not only contain single data elements, but also other objects such as vectors, matrices, etc.  
 
-Lists are created using the function `list()` that concatenates data elements and objects.
-The object `my_list` described below is a list that contains 6 elements.
-Some of them are objects that we have created previously on this page, others are new data elements of various types.
+Lists are created by the mean of the function `list()` that concatenates data elements and objects.
+`list()` conveniently allows for naming the elements by the mean of the symbol `=`.  
 
-```{r list, echo=TRUE}
-my_list <- list("one",
-                2,
-                temperature,
-                TRUE,
-                vec.char,
-                neo)
-my_list 
-```
-
-#### Naming list elements
-
-The function `list()` allows for naming the elements and objects it contains by the mean of the symbol `=`.
-Simply write `name =` followed by the element. 
-Note that these names must be *unique*.
-
-In this example, we will name the elements `a`, `b`, `c`, `d`, `e` and `f`.
+In the example below, we will store 6 elements and name them `string`, `number`, `temp`, `boolean`, `words` and `matrix`. 
+Among these elements to be stored are `vec.char`, `temperature` and `neo`, 3 objects that we have created further above on this page. 
 
 ```{r list2, echo=TRUE}
-my_new_list <- list(a = "one", 
-                    b = 2, 
-                    c = temperature, 
-                    d = TRUE, 
-                    e = vec.char, 
-                    f = neo)
-my_new_list 
+my_list <- list(string = "one", 
+                number = 2, 
+                temp = temperature, 
+                boolean = TRUE, 
+                words = vec.char, 
+                matrix = neo)
+my_list 
 ```
 
 #### Retrieving list elements
 
 Naming elements is quite convenient as it allows you to retrieve them rapidly by the mean of the symbol `$`. 
-The syntax is as follows: `<list_name>$<element_name>`.  
-Here we retrieve the element `f` in the list `my_new_list`:
+The syntax is as follows: `list_name$element_name`.  
+Here we retrieve the element `matrix` in the list `my_list`:
 
 ```{r listdollar, echo=TRUE} 
-my_new_list$f
+my_list$matrix
 ```
 
 #### Retrieving single data elements
 
 Even better, you can retrieve a single data element contained in a list element. 
-Here you will have to write an expression that makes use of both the symbol `$` and the brackets `[``]`in the proper order. 
-The syntax is as follows: `<list_name>$<element_name>[data]`.  
-In this first example, we retrieve the data element located at the third position of the object named `e` in the list `my_new_list`:
+Here you will have to write an expression that makes use of both the symbol `$` and the brackets `[` `]`in the proper order. 
+The syntax is as follows: `list_name$element_name[data]`.  
+In this first example, we retrieve the data element located at the third position of the object named `words` in the list `my_list`:
 
 ```{r list-element-data, echo=TRUE} 
-my_new_list$e[3]
+my_list$words[3]
 ```
 
-In the second example, we retrieve the data element located at the second row and third column of the matrix named `f` in the list `my_new_list`:
+In the second example, we retrieve the data element located at the second row and third column of the matrix named `matrix` in the list `my_list`:
 
 ```{r list-element-data2, echo=TRUE} 
-my_new_list$f[2,3]
+my_list$matrix[2,3]
 ```
 
 
@@ -722,7 +740,7 @@ You may read more information about lists [here](https://www.rdocumentation.org/
 
 ### Data frames and tibbles
 
-A data frame is a two-dimensional object that stores data of **various** types in the form of a table. 
+A data frame is a two-dimensional object that stores data of *various* types in the form of a table. 
 Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
 
 Until recently, data frames were the main storage objects for research data. 
@@ -731,49 +749,44 @@ Because of this trend, we will focus mainly on tibbles here in this section and 
 It is however likely that you will meet data frames in the course of your studies. 
 Do not worry as we will see how to transform data frames into tibbles.
 
-Tibbles are a standard introduced in the tidyverse, you must make sure that the package is installed and active before using these objects. 
-So make sure to run this command first:
+Tibbles being a standard introduced in `tidyverse`, you must make sure that the package is active before using these objects. 
+Simply run this command first:
 
 ```{r load tydiverse, echo=TRUE}
 library(tidyverse)
 ```
 
+NB: if you have not installed the package yet, have a look at the section [Installing the tidyverse](LINK) in the chapter [Getting Started with R](LINK).
+
 #### Data frames vs. tibbles
 
-The object `df` printed below is a data frame that stores the average temperature recorded monthly in 2017, 2018 and 2019 at Lygra (Vestland, Norway).
+The object `df` printed below is a data frame that stores the average temperature recorded monthly in 2017, 2018 and 2019 at Lygra (Vestland, Norway). It is created with the function `data.frame()`.
 
-
-```{r dftbl, echo=FALSE, eval=TRUE}
+```{r df, echo=TRUE}
 df <- data.frame(Year = rep(2017:2019, each = 12), 
                  Month = rep(month.name, 3), 
                  Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
-
-tbl <- tibble(Year = rep(2017:2019, each = 12), 
-             Month = rep(month.name, 3), 
-             Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
-```
-
-`df` prints like this:
-```{r df, echo=TRUE}
 df
 ```
 As you may see, you get at once the _whole_ data set with all 36 rows, the 3 variables, the header with column names and the first column that gives a number to each row.  
 
-The object `tbl` is a tibble that contains exactly the same observations and variables as `df`.
-Now let's see how `tb` prints:
+The object `tbl` below is a tibble that contains exactly the same observations and variables as `df`. It is built up by the function `tibble()`.  
+
 ```{r tbl, echo=TRUE}
+tbl <- tibble(Year = rep(2017:2019, each = 12), 
+             Month = rep(month.name, 3), 
+             Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
 tbl
 ```
 
 Here, you get a more convenient display of the same data:
 
-+ only the first 10 rows and the header are displayed
-+ the number of rows _not_ printed is displayed in the present window (`# ... with 26 more rows`)
-+ the dimensions of the tibble appear clearly in the header (`# A tibble: 36 x 3`)
-+ the column names come along with a quick description of the data type (`<int>` for integer, `<chr>` for character, `<dbl>` for double, etc)
++ only the first 10 rows and the header are displayed,
++ the number of rows _not_ printed is displayed in the present window (`# ... with 26 more rows`),
++ the dimensions of the tibble appear clearly in the header (`# A tibble: 36 x 3`),
++ the column names come along with a quick description of the data type (`<int>` for integer, `<chr>` for character, `<dbl>` for double, etc).
 
-You may thus understand why tibbles are a much better choice than data frame, especially when handling large data sets, with hundreds of rows and columns.
-Tibbles _print_ much better than data frames do!
+All in all, tibbles _print_ much better and give more information than data frames do! 
 
 
 #### Retrieving data elements
@@ -794,41 +807,17 @@ df[ , "Avg_temperature"]
 tbl[ , "Avg_temperature"]
 ```
 
+It is also possible to use the symbol `$` to retrieve the content of specific variables:
 
-#### Visualizing data with View()
-
-As introduced in section \@ref(the-function-view), the function `View()` opens any object in a separate tab and displays it in a convenient table. 
-This can be applied to data frames and tibbles too:
-
-```{r view-dftbl, echo=TRUE, eval=FALSE}
-View(df)
-View(tbl)
-```
-
-
-
-
-
-#### Creating a tibble from scratch
-
-One usually creates a tibble by importing data from an external file.
-We will see how in the next chapter.
-It is however possible to create tibbles from scratch with the function `tibble()`.  
-
-`tibble()` puts vertically side-by-side the vectors or expression that you give it.
-In addition, you can give columns a name with the symbol `=`. 
-For instance, the tibble `tbl` that we used in the previous section was created with the following code:
-
-```{r tibble3, echo=TRUE, eval=FALSE}
-tbl <- tibble(Year = rep(2017:2019, each = 12), 
-             Month = rep(month.name, 3), 
-             Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
+```{r dftbl3bis, echo=TRUE}
+df$Avg_temperature
+tbl$Avg_temperature
 ```
 
 
 #### Transforming a data frame into a tibble
 
-If you have been previously working with data frames, have been given a data frame to work with, or have imported data using functions that create data frames, you may convert these objects into tibbles by using `as_tibble()`. 
+If you have been previously working with data frames, have been given a data frame to work with, or have imported data using functions that create data frames, you may convert them into tibbles by using `as_tibble()`. 
 Here we convert the data frame `df` into a tibble:
 
 ```{r df-tibble, echo=TRUE}
@@ -838,20 +827,26 @@ df_as_tibble
 
 #### Penguins as a recurrent example
 
-Here is a tibble called `penguins` which is part of the package `palmerpenguins`. 
+Here is the tibble called `penguins` which is part of the package `palmerpenguins`, and which was used previously in section  \@ref(why-assigning-data). 
 You will certainly meet this tibble again and again on this website as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
 
 ```{r penguins-tibble, echo=TRUE}
 penguins
 ```
 
-
-
+Here is the citation for the corresponding package:
+```{r penguins-citation, echo=TRUE}
+citation("palmerpenguins")
+```
 
 You may read more about tibbles [here](https://tibble.tidyverse.org/).  
 You may read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame).
 
 
+### Further Reading {- .literature .toc-ignore}
+
++ R for data science: [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
++ The tidyverse: [https://www.tidyverse.org/](https://www.tidyverse.org/)
 
 
 ### What's next {- .facta .toc-ignore}
@@ -859,10 +854,7 @@ You may read more about data frames [here](https://www.rdocumentation.org/packag
 Now that you know the basics of R and that you have all the tools to "manually" create R objects, you will learn how to import a data set from an external source. 
 We will see how to read and fetch data from various file types such as .txt, .csv, .xls, .xlsx, and directly store it in tibbles.
 
-### Further Reading {- .literature .toc-ignore}
 
-+ R for data science: [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
-+ The tidyverse: [https://www.tidyverse.org/](https://www.tidyverse.org/)
 
 ### Contributors {- .contributors .toc-ignore}
 
