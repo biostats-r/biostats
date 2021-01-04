@@ -1,0 +1,108 @@
+---
+title: "Legg til titel her"
+author: "Legg til navn på alle forfattere her"
+date: "Legg til dato hvis du ønsker"
+output: pdf_document
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library("tidyverse")
+library("ggplot2")
+library("broom")
+
+# read in data sets
+antall <- read_delim(file = "data/Antall_bakterier.csv", delim = ",")
+vekst <- read_delim(file = "data/Vekst.csv", delim = ",")
+
+```
+
+## Introduksjon
+
+Add a paragraph or two on the introduction of this topic.
+Hva er hovedspørsmål til denne studien og hva er forventningene?
+
+## Metode
+
+Beskriv hvordan dataene ble sammlet og analysert.
+
+
+
+## Resultat
+
+Oppsumer resultatene i en tabell som viser gjennomsnitt og standardfeil til de to forsjkellige baketerie typene i alle 3 vann.
+
+```{r tabel, eval=TRUE, echo=FALSE}
+
+antall %>% 
+  group_by(vann, bakterie) %>% 
+  summarise(gjennomsnitt = mean(antall_per_ml),
+            standardfeil = sd(antall_per_ml) / sqrt(n())) %>% 
+  mutate(gjennomsnitt = round(gjennomsnitt, 2),
+         standardfeil = round(standardfeil, 2)) %>% 
+  knitr::kable()
+
+```
+
+
+Lag en boksplot som viser antall bakterier per vann og bakterie type.
+Og beskrive i argmuentet ```fig.cap``` hva dette plottet viser.
+
+```{r boksplot, eval=TRUE, echo=FALSE, fig.cap="..."}
+
+ggplot(antall, aes(x = vann, y = antall_per_ml)) +
+  geom_boxplot() +
+  labs(x = NULL, y = "Antall bakterier per ml") +
+  facet_wrap(~ bakterie, scales = "free_y")
+
+```
+
+
+Nå skal vi teste om antall bakterier er forksjellige mellom de 3 vann.
+
+
+```{r, test, eval=TRUE, echo=FALSE}
+
+resultat <- antall %>% 
+  nest(data = -bakterie) %>% 
+  mutate(model = map(data, ~lm(antall_per_ml ~ vann, data = .)),
+         result = map(model, tidy)) %>% 
+  unnest(result) %>% 
+  select(bakterie, estimate:p.value) %>% 
+  mutate(estimate = round(estimate, 2),
+         std.error = round(std.error, 2),
+         statistic = round(statistic, 2),
+         p.value = round(p.value, 3))
+
+
+```
+
+
+```{r, resultat, eval=TRUE, echo=FALSE}
+
+resultat  %>% 
+  knitr::kable()
+
+
+```
+
+
+Til slutt lag en vekstkurve med standardfeil for hver observasjon.
+Beskrive også her i argmuentet ```fig.cap``` hva dette plottet viser.
+
+```{r vekstkurve, eval=TRUE, echo=FALSE, fig.cap="..."}
+
+ggplot(vekst, aes(x = tid, y = celletall, ymin = celletall - standardfeil, ymax = celletall + standardfeil)) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar() + 
+  labs(x = "Tid i dager", y = "Celletall")
+
+```
+
+## Diskusjon
+
+Til slutt diskuter resultatene.
+
