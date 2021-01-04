@@ -17,9 +17,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 library("learnr")
 library("tidyverse")
 library("ggplot2")
-
-# load penguine data set
-data(penguins, package = 'palmerpenguins')
+library("broom")
 
 ```
 
@@ -41,9 +39,15 @@ data(penguins, package = 'palmerpenguins')
 - For å kunne gjøre dette må vi først lese data in i R.
 - For dette bruker vi funksjonen ```read_delim()```
 
-```{r read_in_data, eval=FALSE}
+```{r read_in_data, eval=FALSE, echo=TRUE}
 
-read_delim(file = "data/filename.csv")
+read_delim(file = "data/filename.csv", delim = ",")
+```
+
+Nå prøver vi med et riktig dataset:
+
+```{r read_in_data2, eval=TRUE, echo=TRUE}
+antall <- read_delim(file = "data/Antall_bakterier.csv", delim = ",")
 
 ```
 
@@ -70,37 +74,71 @@ Hvis du vil vite mer om variabilitet, standardfeil og avvik kan du se denne vide
 - Link til video
 
 
-## Hvordan lager jeg et histogramm?
+La oss prøve nå:
+hva betyr group_by og summarise
+bruk round() for å ...
+kable: lage fin tabell.
 
-- Et histogramm er, hva det viser på x og y akse
+```{r tabel, eval=TRUE, echo=TRUE}
+
+antall %>% 
+  group_by(vann, bakterie) %>% 
+  summarise(gjennomsnitt = mean(antall_per_ml),
+            standardfeil = sd(antall_per_ml) / sqrt(n())) %>% 
+  knitr::kable()
+
+```
+
+
+## Hvordan lager jeg en boksplot?
+
+- Hva er en boksplot, hva er på x og y akse
 - Vi bruker ggplot for å lage figurer
-- Første argumente er data, x er variablen vi vil plotte og så må vi definere hva slags plot vi skal lage: ```geom_histogram()```
+- Første argumente er data, y er response, x er den forklarende variablen vi vil plotte og så må vi definere hva slags plot vi skal lage: ```geom_boxplot()```
 
-```{r histogram_1, eval=FALSE, echo=TRUE}
-ggplot(data, aes(x = variable)) +
-  geom_histogram()
+
+```{r boxplot_1, eval=FALSE, echo=TRUE}
+ggplot(data, aes(x = variable, y = response)) +
+  geom_boxplot()
 
 ```
 
 
 La oss prøve med et riktig eksempel:
 
-```{r histogram_2, eval=TRUE, echo=TRUE}
-ggplot(penguins, aes(x = bill_depth_mm)) +
-  geom_histogram()
+```{r boxplot_2, eval=TRUE, echo=TRUE}
+ggplot(antall, aes(x = vann, y = antall_per_ml)) +
+  geom_boxplot()
 
 ```
 
+La oss legge til noen ting for å lage plottet litt penere:
 
+For å forandre tekste på aksen kan vi bruke ```labs()```
+
+```facet_wrap()``` fordi vi har 2 bakterie typer. scales = ...
+
+```theme_xxx()``` 
+
+
+
+```{r boxplot_3, eval=TRUE, echo=TRUE}
+ggplot(antall, aes(x = vann, y = antall_per_ml)) +
+  geom_boxplot() +
+  labs(x = NULL, y = "Antall bakterier per ml") +
+  facet_wrap(~ bakterie, scales = "free_y") +
+  theme_bw()
+
+```
 
 ### Øvelse
 
 Nå er de din tur!
-Lag et histogram for ...
+Lag en boksplot
 
-```{r histogram_excercise, exercise=TRUE}
-ggplot(penguins, aes(x = )) +
-  geom_histogram()
+```{r boxplot_excercise, exercise=TRUE}
+ggplot(..., aes(x = , y = )) +
+  geom_boxplot()
 
 ```
 
@@ -141,7 +179,9 @@ La oss prøve med et riktig eksempel:
 ```{r vekstkurve_2, eval=TRUE, echo=TRUE}
 ggplot(vekst, aes(x = tid, y = celletall)) +
   geom_point() +
-  geom_line()
+  geom_line() +
+  labs(x = "Tid i dager", y = "Celletall") + 
+  theme_bw()
 
 ```
 
@@ -151,7 +191,9 @@ Nå skal vi også legge til standardfeil for hver observasjon.
 ggplot(vekst, aes(x = tid, y = celletall, ymin = celletall - standardfeil, ymax = celletall + standardfeil)) +
   geom_point() +
   geom_line() +
-  geom_errorbar()
+  geom_errorbar() + 
+  labs(x = "Tid i dager", y = "Celletall") + 
+  theme_bw()
 
 ```
 
@@ -176,9 +218,13 @@ Hvordan tester man dette:
 Forklar veldig enkelt hva en ANOVA er
 
 ```{r}
-fit <- lm(bill_length_mm ~ species, data = penguins)
 
-summary(fit)
+antall %>% 
+  nest(data = -bakterie) %>% 
+  mutate(model = map(data, ~lm(antall_per_ml ~ vann, data = .)),
+         result = map(model, tidy)) %>% 
+  unnest(result)
+
 
 ```
 
