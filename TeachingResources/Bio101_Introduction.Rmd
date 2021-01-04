@@ -1,0 +1,191 @@
+---
+title: "Bio101_Introduksjon"
+output: learnr::tutorial
+runtime: shiny_prerendered
+
+# output:
+#   bookdown::html_document2:
+#     highlight: tango
+#     toc: true
+#     toc_float: true
+#     css: ../css/style-chapters.css
+--- 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library("learnr")
+library("tidyverse")
+library("ggplot2")
+
+# load penguine data set
+data(penguins, package = 'palmerpenguins')
+
+```
+
+## Organisajon av en data fil
+
+- Data er organisert i tabeller.
+- Bra strategi å bruke csv eller txt format, fordi alle kan åpne disse filene uten å ha noe spesifik programvare (open source).
+
+- en tabell er organisert i kolloner og rad
+- Toppen av en kollone viser navn til variablene
+- radene viser en observasjon, for eksempel målingene på et individ av en bakterie, et tre, en bille.
+
+
+
+
+## Hvordan laster jeg et dataset inn i R?
+
+- Vi bruker programvaren R til å se på data, visualisere og analysere data i dette kurset.
+- For å kunne gjøre dette må vi først lese data in i R.
+- For dette bruker vi funksjonen ```read_delim()```
+
+```{r read_in_data, eval=FALSE}
+
+read_delim(file = "data/filename.csv")
+
+```
+
+
+## Beskrive og oppsumere data?
+
+- Et første steg i data analyse er ofte å beskrive data.
+- For dette bruker vi gjennomsnitt og et mål av variabilitet
+
+
+### Hva er gjennomsnitt?
+
+- Gjennomsnitt er ...
+
+Hvis du vil vite mer om gjennomsnitt kan du se denne video:
+- link til video
+
+### Standard avvik og standard feil
+
+- Variabilitet er...
+- Forskjell mellom standard avvik og standard feil.
+
+Hvis du vil vite mer om variabilitet, standardfeil og avvik kan du se denne video:
+- Link til video
+
+
+## Hvordan lager jeg et histogramm?
+
+- Et histogramm er, hva det viser på x og y akse
+- Vi bruker ggplot for å lage figurer
+- Første argumente er data, x er variablen vi vil plotte og så må vi definere hva slags plot vi skal lage: ```geom_histogram()```
+
+```{r histogram_1, eval=FALSE, echo=TRUE}
+ggplot(data, aes(x = variable)) +
+  geom_histogram()
+
+```
+
+
+La oss prøve med et riktig eksempel:
+
+```{r histogram_2, eval=TRUE, echo=TRUE}
+ggplot(penguins, aes(x = bill_depth_mm)) +
+  geom_histogram()
+
+```
+
+
+
+### Øvelse
+
+Nå er de din tur!
+Lag et histogram for ...
+
+```{r histogram_excercise, exercise=TRUE}
+ggplot(penguins, aes(x = )) +
+  geom_histogram()
+
+```
+
+## Hva er en vekstkurve?
+
+- Hva er en vekstkurve, y og x akse
+
+
+```{r vekstkurve_data, eval=TRUE, echo=FALSE}
+vekst <- tibble(tid = c(0, 1, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10,  12, 16, 20, 24),
+                celletall = c(1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 21, 21),
+                standardfeil = c(0.1, 0.15, 0.4, 0.2, 1, 0.8, 2, 1, 0.5, 2, 2,  1.2, 2.7, 2.5, 1.5))
+
+```
+
+Hva slags data bruker vi?
+Tid, en variable, som her er celletall og standard feil
+
+```{r vekstkurve_data2, eval=TRUE, echo=TRUE}
+vekst
+
+```
+
+Hvordan lager man en vekstkurve
+
+```{r vekstkurve_1, eval=FALSE, echo=TRUE}
+ggplot(data, aes(x = tid, y = variable)) +
+  geom_point() +
+  geom_line()
+
+```
+
+
+
+
+La oss prøve med et riktig eksempel:
+
+```{r vekstkurve_2, eval=TRUE, echo=TRUE}
+ggplot(vekst, aes(x = tid, y = celletall)) +
+  geom_point() +
+  geom_line()
+
+```
+
+
+Nå skal vi også legge til standardfeil for hver observasjon.
+```{r vekstkurve_2_med_se, eval=TRUE, echo=TRUE}
+ggplot(vekst, aes(x = tid, y = celletall, ymin = celletall - standardfeil, ymax = celletall + standardfeil)) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar()
+
+```
+
+
+### Øvelse
+
+Nå er de din tur!
+Lag en vekstkurve med 
+
+```{r vekstkurve_excercise, exercise=TRUE}
+ggplot(, aes(x = , y = )) +
+  
+
+```
+
+## Hvordan tester jeg forskjell mellom grupper?
+
+Et ofte stillt spørsmål i økologi er om det er en forskjell mellom grupper.
+For eksempel er biller fra kog A større en biller fra skog B.
+
+Hvordan tester man dette:
+Forklar veldig enkelt hva en ANOVA er
+
+```{r}
+fit <- lm(bill_length_mm ~ species, data = penguins)
+
+summary(fit)
+
+```
+
+Interpretasjon av resultatene...
+
+
+## Noen ord om å lage en rapport
+
+Rmarkdown er en praktisk metode å skrive en rapport.
+Some explanations how it works.
