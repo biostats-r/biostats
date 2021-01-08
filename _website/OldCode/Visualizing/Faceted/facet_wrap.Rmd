@@ -1,0 +1,126 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: facet_wrap
+# author: jonathan
+# revised: 14/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Faceted/facet_wrap.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Faceted/facet_wrap.Rmd")
+library(ggplot2)
+library(gridExtra)
+```
+`facet_wrap()` allows for creating a multi-faceted plot. In this plot, each of the panels displays the data for one given level of a categorical predictor variable. This results often in a more readable figure than a larger, unique figure where all the data points overlap.
+
+Let's illustrate this with the following histogram of distribution. The dataframe for drawing this histogram is described below. It contains 3000 entries sorted into 6 groups (`A`, `B`, `C`, `D`, `E` and `F`) via the categorical variable `groups`: 
+
+```{r variables and dataframe}
+# predictor variable
+groups <- c(rep("A", 500), rep("B", 500), rep("C", 500), rep("D", 500), rep("E", 500), rep("F", 500))
+# response variable
+values <- c(rnorm(500, mean=50, sd=10), rnorm(500, mean=30, sd=5), rnorm(500, mean=40, sd=10), rnorm(500, mean=60, sd=20), rnorm(500, mean=70, sd=10), rnorm(500, mean=55, sd=15))
+# dataframe
+df <- data.frame(groups, values)
+```
+<br/><br/>
+
+Here is the color-coded histogram of distribution, with one color for each level of `groups`:
+```{r histcolors}
+ggplot(df, aes(values, fill=groups)) +
+  geom_histogram(bins=50) +
+  scale_fill_viridis_d()
+```
+Displaying the groups with colors is helpful to some extent. But here there is substantial overlap. Things would be clearer if we could isolate the groups from each other. And this is exactly what `facet_wrap()` allows us to do. The only thing that you must supply is the name of the variable that contains the groups (in our dataframe, it is `groups`) and put a `~` in front of it:
+
+```{r wrap}
+ggplot(df, aes(values, fill=groups)) +
+  geom_histogram(bins=50) +
+  scale_fill_viridis_d() +
+  facet_wrap(~groups)
+```
+It is now much easier to assess the contribution of each of the levels of `groups` now that each of them is displayed separately.
+<br/><br/>
+
+From here, you can define whether you want these "mini-plots" to be separated in a grid with n columns (use `ncol= n`) or with n rows (use `nrow= n`). Here are two examples, one with 2 columns and one with only 1 column:
+
+```{r colrow, eval=FALSE}
+ggplot(df, aes(values, fill=groups)) +    # left plot, 2 columns
+  geom_histogram(bins=50) +
+  scale_fill_viridis_d() +
+  facet_wrap(~groups, ncol=2)
+
+ggplot(df, aes(values, fill=groups)) +    # right plot, 1 column
+  geom_histogram(bins=50) +
+  scale_fill_viridis_d() +
+  facet_wrap(~groups, nrow=1)
+```
+```{r colrow2, echo=FALSE, fig.width=10, fig.height=4}
+grid.arrange(
+  ggplot(df, aes(values, fill=groups)) +    # left plot, 2 columns
+    geom_histogram(bins=50) +
+    scale_fill_viridis_d() +
+    facet_wrap(~groups, ncol=2),
+  ggplot(df, aes(values, fill=groups)) +    # right plot, 1 column
+    geom_histogram(bins=50) +
+    scale_fill_viridis_d() +
+    facet_wrap(~groups, ncol=1),
+  ncol=2)
+```
+<br/><br/>
+
+Another useful option is `dir =` which allow to reorder the display of the categories or groups. On the left example above, group `A` is displayed first in the top left corner of the grid, then comes group `B` directly to the right, and so on until the row is complete (then starts a new row.). Use `dir = v` so that the groups will be dispatched *vertically* first. In the example below, group `B` comes under group `A`:
+
+```{r dir}
+ggplot(df, aes(values, fill=groups)) +
+  geom_histogram(bins=50) +
+  scale_fill_viridis_d() +
+  facet_wrap(~groups,  dir = "v")
+```
+<br/><br/>
+
+By default in `facet_wrap()`, the scales of the X- and Y-axes are *fixed*. This means that all the mini-plots will have the *same scales*, making them easy to compare. You may override that setting with `scales =`. This argument has 4 options: 
+
++ `"free"`: all the plots will have different scales on both axes based on the data content of the individual plots,
++ `"free_x"`: only the scale of the Y-axis will be fixed and common to all plots,
++ `"free_y"`: only the scale of the X-axis will be fixed and common to all plots,
++ `"fixed"`: both the X- and Y-axis are common to all plots (*default*).
+
+Here are two examples, with `free_y` to the left and `free` to the right:
+```{r free, eval=FALSE}
+ggplot(df, aes(values, fill = groups)) +    # left plot, free_y
+  geom_histogram(bins=50) +
+  scale_fill_viridis_d() +
+  facet_wrap(~groups, scales = "free_y")
+
+ggplot(df, aes(values, fill = groups)) +    # right plot, free
+  geom_histogram(bins=50) +
+  scale_fill_viridis_d() +
+  facet_wrap(~groups, scales = "free")
+```
+```{r free2, echo=FALSE, fig.width=10, fig.height=4}
+grid.arrange(
+  ggplot(df, aes(values, fill = groups)) +    # left plot, free_y
+    geom_histogram(bins=50) +
+    scale_fill_viridis_d() +
+    facet_wrap(~groups, scales = "free_y"),
+  ggplot(df, aes(values, fill = groups)) +    # right plot, free
+    geom_histogram(bins=50) +
+    scale_fill_viridis_d() +
+    facet_wrap(~groups, scales =  "free"),
+  ncol=2)
+```
+
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

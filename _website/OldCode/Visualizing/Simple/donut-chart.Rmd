@@ -1,0 +1,95 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating an donut chart
+# author: jonathan
+# revised: 17/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Simple/donut-chart.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Simple/donut-chart.Rmd")
+library(ggplot2)
+```
+A donut chart (a.k.a. ring chart) is nothing more than a pie chart with a hole inside. This seems pretty obvious. and the code in ggplot2 that draws a donut chart reflects well the simplicity of the problem. If you remember that a pie chart is just a stacked bar plot in polar coordinate system ([as described here](https://biostats.w.uib.no/creating-a-pie-chart/){target="_blank"}), then adding a hole to a pie chart requires only that we add a bit of space to the left side of the stacked bar before applying the polar coordinate system!
+
+Let's see that with the example previously used [here](){target="_blank"} for drawing the pie chart. The corresponding variables and dataframe are described here:
+```{r dataframe}
+# variable 1
+type <- c("O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-")
+# variable 2
+proportion <- c(33.2,	41.6,	6.8,	3.4,	5.8,	7.4,	1.2,	0.6)
+# dataframe
+df <- data.frame(type, proportion)
+```
+<br/><br/>
+
+In this example, we will decompose the procedure into four steps:
+
++ Building the stacked bar chart
++ Adding some space to the left side of the bar
++ Applying the coordinate system
++ Getting rid of the useless axis.
+
+<br/><br/>
+
+### 1. Building the stacked bar chart
+
+We use `geom_col()` to draw the bar plot and we map the variable with `aes()`. Here, `x=` is set but not named by the mean of `""`, while `y =` is set to `proportion`. We use `fill=` to attribute a specific color to each blood type, and apply the color palette viridis to use a better set of colors than those provided automatically by `ggplot()`:
+```{r plot}
+ggplot(df, aes(x="", y=proportion, fill=type))+
+  geom_col() +
+  scale_fill_viridis_d()
+```
+<br/><br/>
+
+### 2. Adding some space to the left side of the bar.
+
+Now we need to add some space next to the stacked bar. First we set up both position and width for the bar. For example, we set the position of the bar to 2 on the X-axis by writing `aes(x=2)`. Then we set the bar width to 1 with `width=1`, meaning that the limits of the bar relative to the X-axis are 1.5 and 2.5. If we now restrict the display of the X-axis to the range 0.5-2.5 with `xlim(0.5,2.5)`, we end up with an empty space and the stacked bar both of a width of 1 next to each other:
+
+```{r empty}
+ggplot(df, aes(x=2, y=proportion, fill=type))+
+  geom_col(width=1) +
+  xlim(0.5, 2.5) +
+  scale_fill_viridis_d()
+```
+<br/><br/>
+
+
+### 3. Applying the coordinate system
+
+Now we need to exchange the cartesian coordinate system in a polar coordinate system. In this way, the stacked bar will be stretched around a central point of focus. For that we add `coord_polar("y")` to the code:
+
+
+```{r polar}
+ggplot(df, aes(x=2, y=proportion, fill=type))+
+  geom_col(width=1) +
+  xlim(0.5, 2.5) +
+  scale_fill_viridis_d() +
+  coord_polar("y") 
+```
+As you see here, the empty space to the left of the bar becomes the empty space at the center of the pie chart, thus creating the donut chart.
+<br/><br/>
+
+### 4. Getting rid of the useless axis
+
+The circular axis around the chart has very little meaning; it may thus be taken away. One way to do it is to remove the whole *theme*, which means that the grey background disappears as well. To do so, we just add `theme_void`:
+```{r theme}
+ggplot(df, aes(x=2, y=proportion, fill=type))+
+  geom_col(width=1) +
+  xlim(0.5, 2.5) +
+  scale_fill_viridis_d() +
+  coord_polar("y") +
+  theme_void()
+```
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

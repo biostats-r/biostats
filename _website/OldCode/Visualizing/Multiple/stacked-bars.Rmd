@@ -1,0 +1,126 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Stacking data series in bars (stacked bar plot)
+# author: jonathan
+# revised: 28/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Multiple/stacked-bars.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Multiple/stacked-bars.Rmd")
+library(ggplot2)
+location <- c(rep("Lygra", 12), rep("Østerbø", 12))
+month <- factor(rep(month.abb, 2), levels = rev(month.abb))
+precipitations <- c(109.8, 52.8, 37.7, 69.8, 50.8, 47.3, 30.7, 186.3, 294.6, 245.9, 57.6, 46.4, 48.0, 11.2, 5.6, 24.2, 17.2, 31.6, 43.4, 75.3, 144.0, 103.0, 12.4, 36.6)
+```
+
+A stacked bar plot is useful to describe and compare the cumulative effect of several elements split in categories. Both the elements stacked on top of each other AND their sum are clearly visible and “measurable”. 
+
+Before going any further, if you are not so familiar with bar plots, have a quick look at this page:
+
++ [Creating a vertical bar plot](https://biostats.w.uib.no/creating-a-bar-plot/){target="_blank"}.
+
+Here we will take the example of the precipitations (response variable `precipitations`) measured *monthly* in 2018 (first categorical variable `month`) at two different field stations near Bergen, namely Lygra and Østerbø (second categorical variable `location`). Making a stacked bar plot will allow to visualize the cumulative precipitations month after month, and for the whole year 2018.
+
+The dataframe for this tutorial is as follows:
+```{r dataframe}
+# dataframe
+df <- data.frame(location, month, precipitations)
+# structure of the dataframe
+str(df)
+```
+<br/><br/>
+
+As for any simple bar plot, the function to use for drawing the bars is `geom_col()`. Since we have two categorical variables and the measurement variable to map, the function `aes()` will look more or less like this: `aes(location, month, precipitations)`. However, we have to order properly the variables and ask ggplot to group and color the bars according to one of categories. We will use `fill=` to do so. Our plan is to:
+
++ plot the predictor variable `location` on the X-axis, 
++ plot the response variable `precipitations` on the Y-axis,
++ group and color the bars with `fill=` based on the predictor variable `month`,
++ draw the bar with `geom_col()`.
+
+The code for the plot is as follows:
+
+```{r plot}
+ggplot(df, aes(x = location, y = precipitations, fill = month)) +
+  geom_col()
+```
+<br/><br/>
+
+Alternatively we may replace `fill=` with `color=`. While `fill=` colors the entire boxes, `color=` changes the color of the box frames only:
+```{r plot2}
+ggplot(df, aes(x = location, y = precipitations, color = month)) +
+  geom_col()
+```
+The result is however not that interesting in the present example.
+<br/><br/>
+
+Stacked bar plots are usually more readable when appropriate color palettes are chosen. This is especially important when working with more than a handful of levels. You may read more about color palettes [HERE](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"}.
+
+Here is an example with the color palette viridis:
+```{r viridis}
+ggplot(df, aes(x = location, y = precipitations, fill = month)) +
+  geom_col() +
+  scale_fill_viridis_d()
+```
+<br/><br/>
+
+If you wish to adjust the width of the bars, you may use `width=` in `geom_col()`:
+```{r width}
+ggplot(df, aes(x = location, y = precipitations, fill = month)) +
+  geom_col(width = .5) +
+  scale_fill_viridis_d() 
+```
+<br/><br/>
+
+### Horizontal clustered bar plot
+
+To draw a horizontal stacked bar plot, we simply add `coord_flip()` to the code:
+
+```{r horizontal}
+ggplot(df, aes(x = location, y = precipitations, fill = month)) +
+  geom_col() +
+  scale_fill_viridis_d() +
+  coord_flip()
+```
+<br/><br/>
+
+
+### Adding labels
+
+Setting labels on the elements composing the bars may be useful in many cases. To add these labels, we may add a text layer created with `geom_text()` where the argument `labels=` takes care of fetching the values straight from the variable that has been plotted (in our case, `precipitations`):
+
+```{r labels}
+ggplot(df, aes(x = location, y = precipitations, fill = month)) +
+  geom_col() + 
+  geom_text(aes(label = precipitations), position = position_stack(vjust = .5), color="red", size=3.5) +
+  scale_fill_viridis_d()
+```
+As you may see in the code, a few arguments were added to adjust the position, color and size of the labels. Note `position = position_stack(vjust = .5)` which was used to place the labels in the middle of their respective box in the stack. You see however in the right stacked bar that the small height of the boxes creates an unexpected overlap of the labels.
+<br/><br/>
+
+### Adding plot title, axis titles, ticks, labels and other essential elements
+
+In [this section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}, you will learn how to set/modify all the necessary elements that make a plot complete and comprehensible. Such elements are:
+
++ [plot title](https://biostats.w.uib.no/title/){target="_blank"}, 
++ [axis title](https://biostats.w.uib.no/axis-titles/){target="_blank"},
++ [axis scale](https://biostats.w.uib.no/axis-scale/){target="_blank"},
++ [axis ticks](https://biostats.w.uib.no/axis-ticks/){target="_blank"},
++ [category labels](https://biostats.w.uib.no/category-labels/){target="_blank"},
++ [legend](https://biostats.w.uib.no/legend/){target="_blank"},
++ [secondary Y-axis](https://biostats.w.uib.no/secondary-y-axis/){target="_blank"},
++ [colors](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"},
++ [etc](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}.
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

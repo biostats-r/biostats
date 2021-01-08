@@ -1,0 +1,122 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Modifying labels in faceted plots
+# author: jonathan
+# revised: 14/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Faceted/modifying-labels.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Faceted/modifying-labels.Rmd")
+library(ggplot2)
+library(gridExtra)
+# predictor variables
+group <- rep(c("B","C","A","D"), each=100)
+category <- rep(c("1","2","3","4","2","3","4","1"), 50)
+class <- c(rep(c("first class", "second class"), 100), rep(c("second class", "first class"), 100))
+# response variable
+values <- c(rnorm(200, mean=25, sd=5), rnorm(200, mean=35, sd=8))
+# dataframe
+df <- data.frame(group, category, class, values)
+# baseplot
+baseplot <- ggplot(df, aes(group, values)) +
+  geom_boxplot() +
+  facet_grid(class ~ category) 
+```
+`facet_grid()` and `facet_wrap()` both produce faceted plots where the labels of the categorical variables are displayed on top and/or to the right by default. The axes and their title are at the bottom and to the left, as usual. This is illustrated with the plot below (which code is stored in the object `baseplot` for later use):
+
+```{r boxplot, echo=FALSE}
+baseplot 
+```
+<br/><br/>
+
+While axis titles, ticks, scales, etc are editable in the same way as a normal plot ([see here](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}), the labels may be edited via a series of specific arguments in the function `theme()`. These arguments and options are described below.
+<br/><br/>
+
+### Background color
+
+Use `theme(strip.background = element_rect())` to edit the box of the labels. This includes background color and frame:
+
+```{r box}
+baseplot +
+  theme(strip.background = element_rect(fill="lightblue", size=1, color="darkblue"))
+```
+
+Have a look at [this page](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf){target="_blank"} or [this tool](https://htmlcolorcodes.com/){target="_blank"} to find the code/name for the colors you want to use with `fill=` or `color=`.
+<br/><br/>
+
+### Label text
+
+Use `theme(strip.text = element_text())` to change the *look* of the text in ALL the labels. Alternatively use `strip.text.x =` or `strip.text.y =` to affect specifically the horizontal or the vertical labels:
+
+```{r text, eval=FALSE}
+baseplot +    # left plot, ALL labels are treated the same way
+  theme(strip.text = element_text(size=12, face="bold", color="darkblue"))
+
+baseplot +    # right plot, Horizontal or vertical labels are treated independently
+  theme(strip.text.x = element_text(size=12, face="italic", color="darkblue")) +
+  theme(strip.text.y = element_text(size=13, face="bold", color="red")))
+```
+```{r text2, echo=FALSE, fig.width=10, fig.height=4}
+grid.arrange(
+  baseplot +    # left plot, ALL labels are treated the same way
+    theme(strip.text = element_text(size=12, face="bold", color="darkblue")),
+  baseplot +    # right plot, Horizontal or vertical labels are treated independently
+    theme(strip.text.x = element_text(size=12, face="italic", color="darkblue")) +
+    theme(strip.text.y = element_text(size=13, face="bold", color="red")),
+  ncol=2)
+```
+<br/><br/>
+
+Note that the names of the labels are directly taken from the variables in the dataframe and displayed without further modification in the plot. If you wish to modify these names without changing the dataframe itself, here is a quick procedure:
+
+(@) build a vector (called for example `new_labels`) to link the old names to the new names with `=`. In the example below, we wish to replace the labels of the variable `category` used to create the columns of the matrix. The old names “1”, “2”, “3” and "4" will be replaced by "cat.1", "cat.2", "cat.3" and "cat.4":  
+
+```{r new_labels}
+new_labels <- c("1" = "cat.1", "2" = "cat.2", "3" = "cat.3", "4" = "cat.4")
+```
+
+(@) use the function `labeller = labeller()` with the variable to modify (here `category=`) followed by the vector: 
+
+```{r labeller}
+ggplot(df, aes(group, values)) +
+  geom_boxplot() +
+  facet_grid(class ~ category, labeller = labeller(category = new_labels))
+```
+NB: this works only for the variables which are used to create the matrix with `facet_grid()` or `facet_wrap()`, not the variable used on the X-axis.
+
+<br/><br/>
+
+### Panel margins
+
+Use `theme(panel.spacing = unit())` to change the spacing between ALL the labels (and the corresponding panels) to 1 centimeter. Alternatively use `panel.spacing.x =` or `panel.spacing.y =` to only affect spacing between the horizontal or the vertical labels (and corresponding panels):
+
+```{r margins, eval=FALSE}
+baseplot +    # left plot, ALL margins are set to 1 centimeter
+  theme(panel.spacing = unit(1, "cm"))
+
+baseplot +    # right plot, X and Y margins are treated independently
+  theme(panel.spacing.x = unit(.25, "cm")) +
+  theme(panel.spacing.y = unit(.5, "cm"))
+```
+```{r margins2, echo=FALSE, fig.width=10, fig.height=4}
+grid.arrange(
+  baseplot +    # left plot, ALL margins are set to 1 centimeter
+    theme(panel.spacing = unit(1, "cm")),
+  baseplot +    # right plot, X and Y margins are treated independently
+    theme(panel.spacing.x = unit(.25, "cm")) +
+    theme(panel.spacing.y = unit(.5, "cm")),
+  ncol=2)
+```
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->
