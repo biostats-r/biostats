@@ -16,13 +16,7 @@ library("lubridate")
 library("conflicted")
 conflict_prefer(name = "filter", winner = "dplyr")
 
-temperature <- read_csv("Florida_2020-04-20_2020-04-23_1589018968.csv")
-
-temperature2 <- temperature %>% 
-  mutate(
-    date_time = paste(Dato, Tid), #combine
-    date_time = ymd_hms(date_time)#convert
-    ) 
+temperature <- read_delim("Florida_2020-04-20_2020-04-23_1589018968.csv", delim = ",")
 
 source("../Templates/biostats_theme.R")
 ```
@@ -57,6 +51,10 @@ With or without times
 - Saturday 5th December 2020 2:23 PM
 - 12-5-2020 14:23:01
 
+Or just times
+
+- 14:32
+
 And in a variety of languages
 
 - januar
@@ -82,9 +80,9 @@ Internally, this is the number of seconds since 1970-01-01.
 
 Sometimes it is useful to have a time-only format, this is provided by the `hms` package.
 
-## Converting dates and times
+## Converting text to dates and times
 
-This can be done using base R.
+Text can be converted to dates and times with base R.
 
 ```{r base-R-convert}
 dat <- "26 October 2016 14:39:10 CEST" #date with time-zone
@@ -162,7 +160,7 @@ mdy_hm("July 1 2001 2:14", tz = "Europe/Oslo")
 ```
 
 The function `OlsonNames()` returns a vector of valid time zones.
-See the help file for details.
+Here are the first ten time zone names.
 
 ```{r}
 OlsonNames()[1:10]
@@ -235,7 +233,7 @@ This section shows how to use `lubridate` together with `dplyr`.
 The dataset `temperature` includes a few days of air temperature from the [GFI weather station](https://veret.gfi.uib.no/), Bergen.
 
 The dataset has three columns, `Dato`, `Tid` and `Lufttemperatur`. 
-I have imported the data with `readr::read_csv` so the first two columns have automatically been converted to date and time formats. 
+I have imported the data with `readr::read_delim` so the first two columns have automatically been converted to date and time formats. 
 You can tell this because the class of each column is given below the column name.
 
 ```{r print-temperature}
@@ -245,7 +243,7 @@ temperature
 ### Using `mutate` to make a new column
 
 I want to make a single date-time column. 
-To do this I need to combine the data and time columns with `paste`, and then use a `lubridate` function for the conversion. 
+To do this I need to combine the data and time columns with `paste`, and then use `ymd_hms` for the conversion. 
 
 ```{r date-time-temperature}
 temperature2 <- temperature %>% 
@@ -297,7 +295,7 @@ temperature2 %>%
 
 ## Plotting dates
 
-We can plot the temperature data with `ggplot`.
+We can plot the temperature against date-time with `ggplot`.
 
 ```{r}
 ggplot(temperature2, aes(x = date_time, y = Lufttemperatur)) + 
@@ -316,7 +314,7 @@ ggplot(temperature2, aes(x = date_time, y = Lufttemperatur)) +
 ```
 
 
-We can also plot times. 
+We can also plot the temperature against time, which has class `hms` . 
 
 ```{r}
 ggplot(temperature2, aes(x = Tid, y = Lufttemperatur, group = Dato)) + 
@@ -325,7 +323,9 @@ ggplot(temperature2, aes(x = Tid, y = Lufttemperatur, group = Dato)) +
 
 Here the aesthetic `group = Dato` make `ggplot` draw a different line for each day.
 
-I don't think the breaks in this plot were chosen very well so I can use `scale_x_time` to set the breaks (in seconds) and the format for the times.
+I don't think the breaks in this plot were chosen very well so I can use `scale_x_time` to set the breaks and the format for the times.
+Breaks need to be specified as the number of seconds since midnight.
+The easy way to do this is to choose the hours and then multiple by 3600.
 
 ```{r}
 ggplot(temperature2, aes(x = Tid, y = Lufttemperatur, group = Dato)) + 
