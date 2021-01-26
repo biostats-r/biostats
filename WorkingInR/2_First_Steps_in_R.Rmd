@@ -15,7 +15,6 @@ library("tidyverse")
 data(penguins, package = 'palmerpenguins')
 
 source("../Templates/biostats_theme.R")
-theme_set(theme_biostats)
 ```
 
 ### Before we start {- .facta .toc-ignore}
@@ -72,7 +71,7 @@ You can compare 2 elements using the following operators:
 When comparing two elements, R returns either `TRUE` or `FALSE`.
 
 ```{r comp, echo = TRUE}
-9^2 != 9*(3+6)
+9^2 != 9 * (3 + 6)
 ```
 
 # Storing data in objects
@@ -101,17 +100,17 @@ plot3 <- ggplot(data = penguins, aes(x = species, y = body_mass_g)) +
               width = 0.1,
               alpha = 0.7,
               show.legend = FALSE) +
-         scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+         scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
 
 # Histogram example
 plot2 <- ggplot(data = penguins, aes(x = flipper_length_mm)) +
   geom_histogram(aes(fill = species), alpha = 0.5, position = "identity", bins = 30) +
-  scale_fill_manual(values = c("darkorange","darkorchid","cyan4"))
+  scale_fill_manual(values = c("darkorange", "darkorchid", "cyan4"))
 
 # Count penguins for each species / sex
 plot1 <- ggplot(penguins, aes(x = sex, fill = species)) +
   geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4"),
                     guide = FALSE) +
   theme_minimal() +
   facet_wrap(~species, ncol = 1) +
@@ -158,8 +157,8 @@ result
 
 You can also reuse the object for other operations:
 ```{r operations_result, echo=TRUE}
-result*3
-result*result
+result * 3
+result * result
 ```
 
 ## Modifying object content
@@ -389,12 +388,12 @@ rnorm(10, mean=50, sd=3)
 
 ### The function sample()
 
-`sample(x, n, replace=TRUE/FALSE)` returns a sample of `n` integers randomly taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
+`sample(x, n, replace = TRUE/FALSE)` returns a sample of `n` integers randomly taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
 `replace=` followed by either TRUE or FALSE defines whether or not a data element can appear repeatedly in the sample.
 
 ```{r sample, echo=TRUE}
-sample(1:100, 10, replace=FALSE)
-sample(20:30, 7, replace=TRUE)
+sample(1:100, 10, replace = FALSE)
+sample(20:30, 7, replace = TRUE)
 ```
 
 An interesting property of the function `sample()` is that it can be used to shuffle the result of an expression or the content of a vector, something which is useful for randomization of data elements. 
@@ -567,7 +566,7 @@ One way to build such a factor consists in converting a character object such as
 However, one must not forget to set the levels correctly with the argument `levels=`.
 ```{r scandia3, echo = TRUE}
 scandinavia <- c("Norway", "Denmark", "Sweden", "Denmark", "Sweden", "Norway", "Denmark")
-scandinavian_kingdoms <- factor(scandinavia, levels=c("Norway", "Denmark", "Sweden"))
+scandinavian_kingdoms <- factor(scandinavia, levels = c("Norway", "Denmark", "Sweden"))
 scandinavian_kingdoms
 ```
 
@@ -590,7 +589,7 @@ When conducting a statistical analysis, a vector is possibly the simplest object
 In the following example, 24 data points corresponding to the temperature for a specific location registered over a period of 24 hours have been stored in the vector `temperature`: 
 
 ```{r temperature, echo=FALSE}
-temperature <- c(8.7,9.2,9.4,9.5,9.7,10.1,10.3,10.6,10.7,10.8,11.3,11.9,12.2,12.3,11.7,10.2,10.3,10.3,10.4,10.3,10.1,9.7,9.5,9.4)
+temperature <- c(8.7, 9.2, 9.4, 9.5, 9.7, 10.1, 10.3, 10.6, 10.7, 10.8, 11.3, 11.9, 12.2, 12.3, 11.7, 10.2, 10.3, 10.3, 10.4, 10.3, 10.1, 9.7, 9.5, 9.4)
 ``` 
 
 ```{r temperature2, echo=TRUE}
@@ -630,12 +629,12 @@ temperature[c(2, 6)]
 
 A matrix is a two-dimensional object that displays data of the *same* type (numeric, character, etc) in the form of a table. 
 It is built up with the function `matrix()` in which the data is imported either in the form of concatenated data elements (ex: `c(12, 54, 987, 5, ...)`), a series or sequence of data elements (ex: `1:25`), or a vector (ex: `temperature`). 
-In addition, one must define the number of rows and columns with `nrow=` and `ncol=`.   
+In addition, one must define the number of rows and columns with `nrow =` and `ncol =`.   
 
 In the following example, the object `neo` is a matrix made of 4 rows and 6 columns filled with the numeric values stored in the vector `temperature` that we have previously created.
 
 ```{r matrix, echo=TRUE}
-neo <- matrix(temperature, nrow=4, ncol=6)
+neo <- matrix(temperature, nrow = 4, ncol = 6)
 neo 
 ```
 
@@ -644,11 +643,11 @@ neo
 
 #### Accessing data elements
 
-In a matrix, each row is numbered `[x, ]` and each column is numbered `[ ,y]`.
+In a matrix, each row is numbered `[x, ]` and each column is numbered `[ , y]`.
 Any of the data elements may be retrieved by using its coordinates `[x, y]` preceded by the name of the matrix:
 
 ```{r matrix2, echo=TRUE}
-neo[2,3]
+neo[2, 3]
 ```
 
 A full row or column may be retrieved with the same expression, but we leave empty the coordinate that is not needed:
@@ -710,7 +709,7 @@ my_list$words[3]
 In the second example, we retrieve the data element located at the second row and third column of the matrix named `matrix` in the list `my_list`:
 
 ```{r list-element-data2, echo=TRUE} 
-my_list$matrix[2,3]
+my_list$matrix[2, 3]
 ```
 
 
@@ -744,7 +743,7 @@ The object `df` printed below is a data frame that stores the average temperatur
 ```{r df, echo=TRUE}
 df <- data.frame(Year = rep(2017:2019, each = 12), 
                  Month = rep(month.name, 3), 
-                 Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
+                 Avg_temperature = c(3.4, 2.8, 4.2, 5.8, 11.4, 12.6, 14.6, 13.9, 13.7, 9.2, 4.3, 3.1, 2.3, 0.5, 0.8, 6.7, 13.5, 13.6, 16.2, 13.8, 11.6, 8.0, 6.6, 3.9, 1.7, 4.6, 4.0, 9.1, 8.8, 13.2, 15.4, 15.8, 11.6, 7.8, 3.6, 4.8))
 df
 ```
 As you may see, you get at once the _whole_ data set with all 36 rows, the 3 variables, the header with column names and the first column that gives a number to each row.  
@@ -754,7 +753,7 @@ The object `tbl` below is a tibble that contains exactly the same observations a
 ```{r tbl, echo=TRUE}
 tbl <- tibble(Year = rep(2017:2019, each = 12), 
              Month = rep(month.name, 3), 
-             Avg_temperature = c(3.4,2.8,4.2,5.8,11.4,12.6,14.6,13.9,13.7,9.2,4.3,3.1,2.3,0.5,0.8,6.7,13.5,13.6,16.2,13.8,11.6,8.0,6.6,3.9,1.7,4.6,4.0,9.1,8.8,13.2,15.4,15.8,11.6,7.8,3.6,4.8))
+             Avg_temperature = c(3.4, 2.8, 4.2, 5.8, 11.4, 12.6, 14.6, 13.9, 13.7, 9.2, 4.3, 3.1, 2.3, 0.5, 0.8, 6.7, 13.5, 13.6, 16.2, 13.8, 11.6, 8.0, 6.6, 3.9, 1.7, 4.6, 4.0, 9.1, 8.8, 13.2, 15.4, 15.8, 11.6, 7.8, 3.6, 4.8))
 tbl
 ```
 
