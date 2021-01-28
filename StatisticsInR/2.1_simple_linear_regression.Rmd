@@ -1,0 +1,1693 @@
+---
+title: "Simple linear Regression"
+output:
+  bookdown::html_document2:
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: ../css/style-chapters.css
+---
+
+```{r setup, eval=TRUE, include=FALSE}
+
+# add all packages that need loading
+library(tidyverse)
+library(knitr)
+
+# source figure settings
+source("../StatisticsInR/Files/biostats_theme.R")
+
+# set warning to be off for all chunks
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+```
+
+```{r setup-data, include=FALSE, echo=FALSE}
+
+# import data for the example
+dive_data <- read_csv("../StatisticsInR/Files/dive_depths.csv", col_names=T)
+
+# set the data type for each column
+dive_data <- dive_data %>% mutate(max_depth = as.integer(max_depth), Species = 
+                                  as.factor(species), Group = as.factor(group))
+
+# load data for spurious correlation figure
+Spurious <- read_csv("./Files/spurious.csv", col_names = TRUE)
+# convert pounds to kg
+Spurious <- Spurious %>% mutate(uranium_us = round(uranium_us/2.205, 2))
+
+# create an example dataset for illustrative purposes
+set.seed(2020) # make sure it is the same each time you run code
+your_data <- as_tibble(data.frame(response = 1:30,
+                                 explanatory = rnorm(30,1:30,3)))
+
+# create an example dataset for plotting
+set.seed(2020) # make sure it is the same each time you run code
+example_data <- as_tibble(data.frame(x = round(rnorm(100,1:100,10),2),
+                          y = seq(1,50,length.out=100),
+                          z = as.factor(1:100)))
+```
+
+### Before you start {.facta .toc-ignore}
+
+You should be familiar with basic statistical theory, basics of R, continuous 
+and categorical data, hypothesis testing, statistical modeling, 
+and the concept of linear models.
+
+</br>
+
+## Introduction
+
+In this section, we will look at how we can use simple linear regression 
+to analyze data with a continuous numeric response 
+and a numeric explanatory variable. 
+Linear regression is a type of linear model.
+
+</br>
+
+Linear regression has two motivations. 
+The first is called **inference**, 
+which is when you want to say something about a population from a sample. 
+Very often data are only available for a subset of the population (a sample), 
+but we want to generalize our conclusions for the whole population. 
+Therefore, we use statistical models to **infer** effects at the whole 
+population level from what we find at the sample level. 
+The second motivation is **prediction**, 
+where we use a model to predict values of the response for specific values of 
+the explanatory variable. 
+These predictions can either be for observed values 
+of the explanatory (mainly used for plotting), for unobserved values of the 
+explanatory variable within the same range as observations, 
+or for novel values of the explanatory variable outside the range of 
+observations (this is more risky! - more on this later).
+
+</br>
+ 
+**Example questions:** 
+
+1. **inference:** 
+does the height of plants increase with increasing temperatures?
+
+2. **prediction:** 
+how tall will a plant be if mean temperatures increase by 2&deg;C?
+
+</br>
+
+```{r plant-temp-fig, echo=FALSE, eval=TRUE, fig.cap="Panel A shows an illustration of inferring the effect of temperature on plant height. Panel B shows an illustration of the prediction of a plant height under a 2&deg;C increase in temperature. Created by Emily G. Simmonds", fig.height=150}
+include_graphics("./Figures/plant_height_temp.png")
+```
+
+
+</br>
+ 
+In simple terms, we fit a straight line to:
+
+1) estimate a relationship between $X$ and $Y$
+
+2) predict change in $Y$ from change in $X$. 
+
+</br>
+ 
+Linear regression assumes a causal relationship between $X$ and $Y$, 
+i.e. it assumes that $X$ influences $Y$, but not vice versa. 
+It is important to understand that a regression only “quantifies” the pattern between $X$ and $Y$, 
+but does not actually test for a causal relationship. 
+To test if $X$ causes an effect on $Y$, 
+you need to conduct a scientific experiment. 
+A linear relationship between two variables does not necessarily mean that $X$ has a causal influence on $Y$. 
+For example, 
+the number of PhDs awarded in math has nothing to do with the amount of Uranium stored in the USA.
+However, when plotting the two variables against each other, 
+one could assume a perfect relationship (see \@ref(fig:fig-2)). 
+Therefore, before statistically analyzing data it is essential to make sure there is a biological explanation or assumption for a relationship between $X$ and $Y$. 
+For more examples of wrong assumptions of causality [click here](https://www.tylervigen.com/spurious-correlations).
+
+</br>
+
+```{r make-uranium-plot, include=TRUE, echo=FALSE, results='hide'}
+
+uranium_plot <- ggplot(Spurious, aes(y=uranium_us, x=maths_phd))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  labs(y="Uranium stored in US (million kg)", 
+  x="Number maths PhDs awarded",
+  title="What NOT to do:\n An example of a spurious correlation")
+
+```
+
+
+
+```{r figure-2, include=TRUE, echo=FALSE, fig.cap="Example of a spurious correlation (one that does not make sense causally). Scatterplot of number of maths PhDs awarded in a year against the amount of uranium stored in US power plants annually. Smooth line indicates a regression line for this data with the 95% confidence interval as the shaded area"}
+
+uranium_plot
+
+```
+
+</br>
+
+## <i class="far fa-question-circle"></i> Which questions? 
+
+</br>
+
+Example questions you can answer with a simple linear regression:
+
+Inference
+ 
+ * How does mean annual temperature change with time?
+ * How does the time of breeding for a bird change with mean spring temperature?
+ * How does relative plant biomass change with mean light intensity?
+
+Prediction
+
+ * What will the mean summer temperature be in 2100?
+ * How heavy will a sheep be if it is 100cm long?
+
+</br>
+
+## <i class="fas fa-table"></i> Type of data {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+</br>
+
+A linear regression is used when you have continuous numeric response variable 
+and a continuous numeric explanatory variables. 
+A **simple linear regression** has only one explanatory variable, 
+a **multiple linear regression** has more than one. 
+
+</br>
+
+**Examples of continuous numeric variables**:
+
+* Mean annual temperature (&deg;C)
+* Total annual precipitation (mm)
+* Distance (km)
+* Height (cm)
+* Weight (kg)
+
+</br>
+
+**Always remember to check that the way your variables are classified in R 
+is the same as the format you expect.** 
+It is a common mistake for a variable that should be numeric
+to be classified as a Factor, or a Factor as a character string etc.
+(This should not be a problem in the latest version of R, so
+might become a historical problem.)
+
+</br>
+
+### Worked example
+
+</br>
+
+For this worked example we will be using some data on dive depths of
+marine mammals. 
+We will be answering the question:
+
+**Does body size (kg) influence maximum dive depth (m) in marine mammals?**
+
+We might expect that differences in foraging strategies, physiological processes, 
+metabolism, and power of the marine mammals would impact how deep the animals 
+can dive. 
+All of these variables correlate with body size. 
+Therefore, it could be expected that larger species can dive deeper as relative
+movement compared to body size is lower. 
+Or perhaps it is less energetically demanding
+for smaller species to dive deeper. 
+The direction and strength of the influence of body size on dive depth can be 
+quantified using a linear regression. 
+
+```{r mammal-fig, echo=FALSE, eval=TRUE, fig.cap="Illustration of marine mammals by Emily G. Simmonds", fig.height=150}
+include_graphics("./Figures/marine_mammals.png")
+```
+
+</br>
+
+#### Introduction to the data
+
+</br>
+
+These data have four variables; species, maximum recorded dive depth in metres (m), 
+body weight in kilograms (kg), and taxonomic group. 
+
+The data were collected from a variety of sources and cover several taxonomic 
+groups (including
+polar bear, sea otters, baleen whales, toothed whales, seals, and sea lions). 
+You can find the dataset [here](https://github.com/emilygsimmonds/biostats/blob/Regression/StatisticsInR/Files/dive_depths.csv) if you want to try the analysis for yourself. 
+
+</br>
+
+<details><summary> Full list of data sources</summary>
+
+Sources: 
+
+* [British Broadcasting Coorporation (BBC)](http://www.bbc.co.uk/earth/story/20150115-extreme-divers-defy-explanation)
+* [Croll et al 2001,
+Comparative Biochemistry and Physiology Part A: Molecular & Integrative Physiology,
+Volume 129, Issue 4,
+Pages 797-809](https://www.researchgate.net/figure/Maximum-depth-and-duration-of-dive-tagged-blue-whales_tbl1_11900120)
+* [Baird et al 2000, Report prepared under Contract #40ABNC050729 from the Hawaiian Islands Humpback Whale National Marine Sanctuary](http://whitelab.biology.dal.ca/rwb/humpback.htm)
+* [Bannister 2008, Great Whales, CSIRO Publishing](https://books.google.co.uk/books?id=-dXAcVFhkuQC&pg=PA33&lpg=PA33&dq=max+recorded+humpback+dive&source=bl&ots=mJvyxA4e3S&sig=ACfU3U3ZFOnypZ0Rvej3VpK11Fpci-UfAg&hl=en&sa=X&ved=2ahUKEwiHgq3enNbpAhXFSxUIHfCTD9MQ6AEwDnoECAkQAQ#v=onepage&q=max%20recorded%20humpback%20dive&f=false)
+* [Norwegian Polar Institute](https://www.npolar.no/en/species/walrus/)
+* [Eguchi and Harvey 2005, Marine Mammal Science, 21: 283-295](https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1748-7692.2005.tb01228.x)
+* [Lloyd Spencer Davis, Te Ara - the Encyclopedia of New Zealand, (accessed 30 September 2020)](https://teara.govt.nz/en/diagram/6175/ocean-dive-depths)
+* [Gales et al 2013, Unpubished Report to the IWC](https://www.researchgate.net/publication/260209989_Advances_in_non-lethal_research_on_Antarctic_minke_whales_biotelemetry_photo-identification_and_biopsy_sampling)
+* [Dolphin Communication Project](https://www.dolphincommunicationproject.org/index.php/the-latest-buzz/field-reports/bahamas-3/bahamas-2000/item/93037-how-deep-can-dolphins-dive)
+* [Encyclopedia of Marine Mammals edited by Würsig, Perrin, Thewissen, 2002, Elsevier Ltd](https://books.google.no/books?id=2rkHQpToi9sC&pg=PA325&lpg=PA325&dq=max+recorded+common+dolphin+dive&source=bl&ots=hFnuNx8dwr&sig=ACfU3U0Og9623-SPJkxROGsodqDcuEeDNQ&hl=en&sa=X&ved=2ahUKEwizoOnNodbpAhWyxaYKHW9hAHMQ6AEwDHoECAkQAQ#v=onepage&q=max%20recorded%20common%20dolphin%20dive&f=false)
+* [Polar Bear Science](https://polarbearscience.com/2018/10/15/scientific-study-finds-polar-bears-excel-at-diving-contradicting-previous-expert-opinion/)
+* [Marine Biology, compiled by Steele, edited by Steele, Thorpe, Turekian,  2009, Elsevier Ltd](https://books.google.no/books?id=kkRKJCofvXMC&pg=PA445&lpg=PA445&dq=max+recorded+sea+otter+dive&source=bl&ots=HX_ypXO6zq&sig=ACfU3U1ugMJRJtd21NLfrpDVirSmCx15kA&hl=en&sa=X&ved=2ahUKEwjo29WxotbpAhUGy6YKHQzmDHMQ6AEwAHoECAsQAQ#v=onepage&q=max%20recorded%20sea%20otter%20dive&f=false)
+* [North Atlantic Marine Mammal Commission](https://nammco.no/marinemammals/)
+* [National Oceanic and Atmospheric Administration, USA](https://www.fisheries.noaa.gov/species/)
+* [Department of Conservation, New Zealand](https://www.doc.govt.nz/nature/native-animals/marine-mammals/)
+</details>
+
+</br>
+
+First, we want to import the data and have a closer look by making a plot.
+
+</br>
+
+```{r make-dive-data-fig, include=TRUE, echo=TRUE}
+dive_data
+
+dive_fig <- ggplot(dive_data, aes(x=body_size_kg, y=max_depth, color=group))+
+  geom_point()
+
+```
+
+```{r dive-fig, include=TRUE, echo=FALSE, fig.cap="Scatterplot of body size against maximum dive depth for marine mammals. Colours indicate taxonomic group"}
+
+dive_fig
+
+```
+
+</br>
+
+The output shows that two of the variables are factors (species and group), 
+one is continuous numeric (max_depth), and the last one is integer
+(body_size_kg). 
+We know that body size actually is a continuous variable, 
+scientists probably rounded when they measured this variable, 
+because these are large numbers. 
+We will change this variable to be numeric so it better represents
+the characteristics of the data.
+
+```{r format-divedata, include=TRUE, echo=TRUE}
+
+# format the divedata
+dive_data <- mutate(dive_data, body_size_kg = as.numeric(body_size_kg))
+
+```
+
+Remember, we are interested in **whether body size (kg) influences maximum 
+dive depth (m) in marine mammals.** To answer this question we will need the variables:
+`body_size_kg` and `max_depth`. 
+We will not consider `species` or `group` at the moment, 
+but we might need them later. 
+
+</br>
+
+Now we have familiarized ourselves with the data, 
+we know our research question, and we have identified which variables we need for the analysis. 
+**We are ready to perform an analysis.** 
+
+</br>
+
+## <i class="fas fa-project-diagram"></i> Model details {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+</br>
+
+When we create a model we aim to represent mathematically the process that generated the data we observed. 
+
+When we use a linear regression model (this is also true for other types of linear models), we make an assumption that there is a linear relationship between the explanatory and response variables. 
+Mathematically, we say that we can capture the data generation process with a straight line and some error.
+ 
+The line component of the linear regression is defined by two parameters: 
+
+* <span style="color:orange">**$\alpha$**</span> (Greek letter alpha) = the intercept, 
+defining where the regression line crosses the y-axis. 
+* <span style="color:blue">**$\beta$**</span> (Greek letter beta) = the slope (steepness/gradient), 
+which defines the steepness of the regression line, 
+i.e. how much $Y$ changes for every increase of 1 unit of $X$. 
+
+We can alter the position and slope of the line by these two parameters. 
+The final part of the model is <span style="color:red">**$\varepsilon$**</span> 
+(Greek letter epsilon), 
+which is the error around the regression line. 
+This error is estimated with the parameter **$\sigma^{2}$** 
+(Greek letter sigma – squared) that is the variance of the error. 
+(Greek letters are used to refer to each part of the model using equations). 
+
+</br>
+
+We can write a linear regression model as and equation as a function of $Y$:
+
+$$
+Y_i = \color{orange}\alpha + \color{blue}\beta X_i + \color{red}\varepsilon_i
+$$
+
+#### Assumptions
+
+</br>
+
+There are several assumptions that we make when using a linear regression model:
+
+* The relationship between X and Y is linear
+* Residuals (this is another word for error) are normally distributed 
+* The residuals have a mean of 0
+* The variance of the residuals is equal for all fitted values (homoscedasticity)
+* There are no outliers
+* Each value of Y is independent
+
+</br>
+
+All of these assumptions should be met for the model to work properly and 
+they ALWAYS need to be checked. 
+We will check five of them after we have fit the model (see below). 
+The last assumption, independence of $Y$ needs to be assured before or 
+during data collection. 
+For example, if data were collected on leaf length, 
+20 leaves each from five trees, these would not be independent. 
+It would be better to collect one leaf each from 100 trees. 
+
+</br>
+
+#### Writing the model in <i class="fab fa-r-project"></i>
+
+</br>
+
+To fit the simple linear regression in <i class="fab fa-r-project"></i> 
+we will use the `lm()` function.
+</br>
+
+`lm()` stands for linear model (should seem familiar) and it takes several arguments:
+
+* formula in form: `y ~ x`
+* data: your data object
+
+</br>
+
+The function will fit the regression model using maximum likelihood estimation 
+and give us
+the maximum likelihood estimates of 
+<span style="color:orange">$\alpha$</span> and 
+<span style="color:blue">$\beta$</span> as an output. 
+It does also estimate $\sigma^{2}$ of the error, but it does not report this.
+
+</br>
+
+To use the `lm()` function you first need to think about the formula argument, 
+the `y ~ x` part. 
+The same way as in the equation above, the letter $Y$ always 
+corresponds to the response variable 
+(the thing you are trying to explain) and 
+$X$ to an explanatory variable (the thing you assume affects the response). 
+
+</br>
+
+**Does temperature influence wing length of butterflies?**
+
+</br>
+
+The explanatory variable ($X$) = temperature, it is the variable that
+does the influencing.
+The response variable ($Y$) = wing length, it is the result. 
+
+</br>
+
+You can then plug these variables into the `lm()` function in the below format 
+using the column names in place of `y` and `x` and 
+including your data frame name as the data argument. 
+
+</br>
+
+```{r model-example, include=TRUE, echo=TRUE, eval=TRUE}
+
+model_object <- lm(response ~ explanatory, data = your_data)
+
+```
+
+Running the `lm()` as illustrated above runs the linear regression model 
+and saves the output as a 'model_object'.
+
+<details><summary>I saw an `lm()` written differently, what's that about?</summary>
+
+You can use the `lm()` function without the data argument. 
+If you do this, you
+need to refer to your ($X$) and ($Y$) variables in the `y ~ x` formula using a `$`
+between the data name and the column name. 
+
+**We do not recommend using this approach.** 
+There are several reasons for this
+but a key one is that when using the `$` syntax, R sees the variable name as the
+whole entry `your_data$explanatory` rather than as the column name `explanatory`. 
+This makes it difficult to use this model for other things e.g. to predict.
+
+```{r alternative-model-fit, include=TRUE, echo=TRUE}
+
+alternative <- lm(your_data$response ~ your_data$explanatory)
+
+```
+
+</details>
+
+</br>
+
+The results of the linear regression can be viewed using the function `coef()`. 
+This takes the output of `lm()`, the model object, 
+as its argument and extracts the maximum
+likelihood estimates of <span style="color:orange">$\alpha$</span> and 
+<span style="color:blue">$\beta$</span>. 
+<span style="color:orange">$\alpha$</span> will always be labelled `(Intercept)` 
+but <span style="color:blue">$\beta$</span> will be labelled by the name of the $X$ variable.
+
+```{r example-coef1, include=TRUE, echo=TRUE}
+
+coef(model_object)
+
+```
+
+</br>
+
+### Worked example 
+
+</br>
+
+This worked example demonstrates how to fit a linear regression model in 
+<i class="fab fa-r-project"></i> using the `lm()` 
+function for the dive depths example.
+
+</br>
+
+In this example we are asking:
+
+**Does body size influence maximum dive depth in marine mammals?**
+
+</br>
+
+Our question is formulated to suggest a direction of causality, 
+we assume body size has a causal effect on maximum dive depth, 
+therefore maximum depth is our 
+response ($Y$) and body size as our explanatory variable ($X$). 
+
+</br>
+
+We can put these variables into the `lm()` function in the below format. 
+
+```{r dive-model, include=TRUE, echo=TRUE}
+
+dive_model <- lm(max_depth ~ body_size_kg, data = dive_data)
+
+```
+
+</br>
+
+Great. 
+We have run a model and assigned it to an object name. 
+
+We can look at the maximum likelihood estimates of our model parameters 
+(<span style="color:orange">$\alpha$</span> and <span style="color:blue">$\beta$</span>) 
+using the function `coef()`.
+
+```{r dive-coef1, include=TRUE, echo=TRUE}
+
+coef(dive_model)
+
+```
+
+</br>
+
+We will look at interpreting these in the next part of the worked example. 
+
+## <i class="fas fa-laptop"></i> Parameters {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+</br>
+
+We introduced the three model parameters of a simple linear regression in the 
+section above: <span style="color:orange">**$\alpha$**</span> = the intercept, 
+<span style="color:blue">**$\beta$**</span> = the slope of the line 
+(steepness/gradient), and 
+<span style="color:red">**$\sigma^{2}$**</span> the variance of the error. 
+
+$$
+Y_i = \color{orange}\alpha + \color{blue}\beta X_i + \color{red}\varepsilon_i
+$$
+
+</br>
+
+**But what do these parameters really mean?**
+
+</br>
+
+All regression analyses are fundamentally about using straight lines to 
+represent the relationship between a response ($Y$) and 
+some explanatory variables ($X$), called a **regression line**. 
+The parameters of the model determine the placement and gradient of the straight
+line, as well as representing the distribution of data points around the line. 
+
+</br>
+
+```{r make-parameter-plot, echo=FALSE}
+fitted_values <- fitted(model_object)
+
+parameter_plot <- ggplot(your_data, aes(x=explanatory, y=response))+
+  geom_point(color = "grey")+
+  geom_abline(intercept=coef(model_object)[1], 
+              slope=coef(model_object)[2], 
+              color = "blue")+
+  geom_point(aes(x=0, y=coef(model_object)[1]), 
+                 colour = 'orange', size = 4, pch=8)+
+  geom_segment(aes(x=13, xend=13, y=coef(model_object)[1]+(coef(model_object)[2]*12),
+                                yend=coef(model_object)[1]+(coef(model_object)[2]*13)),
+                colour = 'darkblue')+
+  geom_segment(aes(x=12,xend=13, y=coef(model_object)[1]+(coef(model_object)[2]*12),
+                                yend=coef(model_object)[1]+(coef(model_object)[2]*12)),
+                colour = 'darkblue')+
+  geom_text(aes(x=15, y=11, label = "Gradient of slope"),
+            colour = 'darkblue', check_overlap = TRUE)+
+  geom_text(aes(x=2.5, y=0, label = "Incercept"),
+            colour = 'orange', check_overlap = TRUE)+
+  geom_text(aes(x=24.3, y=28, label = "Residual"),
+            colour = 'red', check_overlap = TRUE)+
+  geom_segment(aes(xend=explanatory, 
+                   yend=fitted_values), colour = 'red')
+
+```
+
+
+```{r parameter-plot, include=TRUE, echo=FALSE, fig.cap="Illustration of components of a linear regression. Intercept is in orange, slope is in blue, and the residuals (explained later) are in red"}
+
+parameter_plot
+
+``` 
+
+In this section we will go through these parameters and 
+their meaning in terms of the relationship between $X$ and $Y$.
+
+</br>
+
+#### <span style="color:orange">$\alpha$</span>, the intercept
+
+This first parameter gives the value of $Y$ when $X$ = 0, it is the point that
+the regression line crossed the y-axis. 
+A positive value means that the value of $Y$ when $X$ = 0 is above 0, and a
+negative intercept value means it is below the value of $Y$ is below 0, when
+$X$ = 0.  
+
+#### <span style="color:blue">$\beta$</span>, the slope
+
+This second parameter gives the amount of change in $Y$ 
+for every unit change in $X$, it is the slope of the regression line. 
+Positive values indicate a positive relationship between $X$ and $Y$ i.e. $Y$ 
+increases as $X$ increases. 
+Negative slope values indicate the opposite, a negative relationship where $Y$
+ decreases as $X$ increases.
+The higher the value of the slope, the stronger the regression relationship. 
+
+</br>
+
+**Together $\alpha$ and $\beta$ control the position and steepness of the 
+regression line.** 
+They are called the **systematic** part of the model, 
+the bit that links $Y$ to the covariate $X$. 
+
+#### $\sigma^{2}$, the variance of error
+ 
+This is the final parameter you need to estimate for the simple linear 
+regression and it is
+a bit different from <span style="color:orange">$\alpha$</span> and <span style="color:blue">$\beta$</span>. 
+This parameter does not relate directly to the shape or 
+position of the regression line. 
+Instead, this parameter captures the variance of the data points around that 
+line, i.e. how close or far away each data point is from the regression line. 
+The variance is the **random** part of the model, 
+or in other words the error. 
+Higher error variance values indicate more variation around the model fit.
+In the case of a simple linear regression, the error is assumed to be normally distributed.
+
+</br>
+
+In \@ref(fig:parameter-plot), 
+you can see a plot of a regression line through the data points, 
+but it does not touch all of the points. 
+In other words, it is not capturing all of the variation in the data. 
+The regression line does not explain the exact position of all data points, 
+something else is also going on (this is to be expected for real data). 
+
+</br>
+
+The regression line is a **fitted line** that represents the best fit line of a relationship between $X$ and $Y$ (based on maximum likelihood estimation). 
+The value of $Y$ for each $X$ on the regression line is called a 
+**fitted value**. 
+The distance between the fitted values and the values of $Y$ 
+that were actually observed are called residuals. 
+You can extract the residuals from your model object using the function 
+`residuals()`, which is useful when checking model assumptions (see below). 
+Data points below the regression line have a negative the residual and 
+data points above the line have a positive residual. 
+These are highlighted red in \@ref(fig:parameter-plot).
+
+</br>
+
+**The regression line must always pass through the point that represents the
+mean of $X$ and the mean of $Y$. ($\bar{X}$, $\bar{Y}$).** 
+Therefore, if you change the intercept, the slope must change as well to keep the line going through the ($\bar{X}$, $\bar{Y}$) point. 
+You can have a go at doing this below. 
+
+</br>
+
+#### Exercise: Finding a 'best' line
+
+Below you will see a window containing an app. 
+The aim of this app is to try and find
+the straight line that best explains the data, by trying different slope values.
+
+There is a slider on the left hand side that lets you control the $\beta$ value, 
+the $\alpha$ is fixed at 0. 
+On the right you can see the fitted line (one is already plotted for you).  
+
+In this example 'fit' of the line is measured using something called the 
+**sum of squared residuals**. 
+This is calculated by squaring the values of all of the residuals 
+and then adding them up to get a single number:
+
+$$
+\Sigma (y_i - \bar{y_i})^2
+$$
+where, $y_i$ = the observed value of $y$ for $x_i$ and $\bar{y}$ = 
+the fitted y value for $x_i$, and $i$ is an index of 1 to $n$ (sample size).
+
+The reason the sum of squares is used to estimate the fit of a model line 
+to data is because there are roughly as many positive residuals as negative. 
+If you just sum them, the result will be roughly 0. 
+Therefore, squaring them before adding them means they don't cancel out. 
+This measure tells you how far away the observations are from the fitted line, 
+**the lower the number, the better the fit**. 
+
+```{r shiny-app-reg, echo = FALSE, message = FALSE}
+
+knitr::include_app("https://shiny.math.ntnu.no/qmbio/Shiny_apps/Regression/")
+
+```
+
+</br>
+
+Click [here]("https://shiny.math.ntnu.no/qmbio/Shiny_apps/Regression/") 
+to open the app in full scale in a separate window.
+
+**What was the best fit you managed to get?**
+
+<details><summary> What was the answer?</summary>
+
+A slope of approximately 3 should give the best answer (lowest sum of squares), 
+which is 3423.5956.
+
+</details>
+
+
+**How confident are you that you found the best line?**
+
+It is hard to know by trial and error if you have found the 'best' 
+line for the data.
+It is much easier, repeatable, 
+and reliable to use a simple linear regression instead. 
+The idea is the same as the app, but instead of trying until it looks good, 
+the equation for simple linear regression is used and 
+values for the unknown parameters are found using 
+**maximum likelihood estimation**.
+
+</br>
+
+
+#### Interpreting the parameters
+
+Now you know what each of the three parameters in a simple linear regression
+mean, you can now think about interpreting them. 
+
+**Which of the three parameters do you think is most important for answering
+the research question "Does $X$ influence $Y$?"?**
+
+</br>
+
+<details><summary>I had a go, now show me the answer.</summary></span>
+
+**The slope ($\beta$)** tells us the strength and direction the relationship 
+between $X$ and $Y$ is. 
+While the linear regression model also estimates the intercept and the residual variance, these do not directly answer our question of interest. 
+However, to make predictions, we will need all three parameters.
+
+</details>
+
+</br>
+
+### Worked example 
+
+</br>
+
+In the previous section of this worked example, we fit a simple linear 
+regression using the `lm()` function and looked at the estimates of 
+some parameters using the `coef()` function. 
+In this section, 
+we will use model theory to interpret what those parameters mean.
+
+</br>
+
+#### The intercept and slope
+
+We already know that the parameters of the intercept and slope control the 
+position and steepness of the regression line. 
+It is the estimates of these two parameters that we get from the `coef()` 
+function. 
+
+</br>
+
+For our dive depth model the estimates are:
+
+```{r dive-coef2, include = TRUE, echo = TRUE}
+coef(dive_model)
+```
+
+</br>
+
+The intercept is 756 m and the slope of the relationship between body 
+size and dive depth is -0.005. 
+
+</br>
+
+In this case, the intercept is not that interesting. 
+It tells us the expected value of $Y$ (maximum dive depth) 
+when $X$ (body size) = 0. 
+It does not make a lot of biological sense to know the expected dive depth of 
+a marine mammal that weighs 0 kg. 
+But, sometimes it can make sense to know the value $Y$ when $X$ is 0, 
+for example if $X$ was temperature.
+
+</br>
+
+The slope on the other hand is interesting. 
+It tells us the direction and strength of the relationship between body size 
+and maximum dive depth. 
+In this case our model estimates a negative slope. 
+This means that for every increase of 1 kg in body size of marine mammals the maximum dive depth decreases by 
+0.005 m. 
+In other words, there is a negative relationship between body weight 
+and dive depth and as $X$ increases $Y$ decreases (\@ref(fig:fig-6)).
+
+</br>
+
+#### Residual variance
+
+The `coef()` function can give us the maximum likelihood estimates of the 
+intercept and slope parameters, 
+but it does not give any information on the residual variance, $\sigma^{2}$. 
+To get an estimation of the residual variance, we use the `summary()` 
+function with the model object as an argument. 
+To extract $\sigma$ we use `$sigma` 
+and square the result to get $\sigma^{2}$.
+
+You cannot take `var(residuals)` directly because this uses `n-1` as the 
+denominator of the variance equation whereas to estimate $\sigma^{2}$ for
+a linear regression the denominator depends on the number of parameters being estimated. The denominator is the degrees of freedom (`n-number of parameters estimated`). In a simple linear regression there are two parameters that have
+been estimated (as well as $\sigma^{2}$) these are the intercept and the slope. Therefore, the denominator `n-2`. The more explanatory variables 
+you add to a linear regression, the more parameters you estimate and the 
+fewer degrees of freedom you will have.  
+
+</br>
+
+```{r get-dive-residual_var, include = TRUE, echo = TRUE}
+
+sigma2 <- summary(dive_model)$sigma^2
+sigma2
+
+```
+
+</br>
+
+For this model the $\sigma^{2}$ = `r summary(dive_model)$sigma^2`. 
+This number is abstract and does not mean anything on its own, 
+but it *could* be used to compare models (though there are much better ways 
+to do this). 
+It does not help in terms of answering whether body size influences dive depth. 
+But we will use it for prediction later. 
+
+</br>
+
+#### Plotting the results
+
+As well as looking at the maximum likelihood estimates of the parameters 
+from the simple linear regression, 
+we can also plot the estimated regression line. 
+
+</br>
+
+To do this, we will use `ggplot()` with `geom_line()`. 
+
+We will also go into the second aim of a regression: **predicting**. 
+Therefore, we need to use a new function called `predict()`. 
+
+</br>
+
+To make this first plot, we only need to use two arguments: 
+
+* `object` = your model object
+* `type` = "response", which means predict on the response scale
+
+</br>
+
+```{r make-dive-predictions, include = TRUE, echo = TRUE}
+
+depth_predictions <- predict(dive_model, type="response")
+
+```
+
+</br>
+
+Once we have created predictions of $Y$ from the model object, we can then plot these using `geom_line()` as in the code below. 
+
+```{r make-dive-model-fig, include = TRUE, echo = TRUE}
+dive_model_fig <- ggplot(dive_data, aes(x=body_size_kg, y=max_depth))+
+  geom_point(colour = 'grey70')+
+  geom_line(aes(y=depth_predictions))+
+  labs(y="Maximum Dive Depth (m)",
+  x="Body Size (kg)")
+```
+
+```{r dive-model-fig, include=TRUE, echo=FALSE, fig.cap="Scatter plot of dive depths against body size. The black line is the regression line predicted from the linear model"}
+
+dive_model_fig
+
+``` 
+
+</br>
+
+In the next section we will look at how to add uncertainty to these plots 
+and our interpretation. 
+
+</br>
+
+## <i class="fas fa-arrows-alt-h"></i> Quantify uncertainty {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+</br>
+
+You should already know that statistics does not give a single correct answer. 
+When you estimate the values of parameters in our statistical model, 
+there are many different values that could plausibly have produced 
+the observed data. 
+Some of these are more likely than others but several 
+will have very similar likelihoods. 
+
+</br>
+
+A simple linear regression is no different. 
+And a way to cope with this, 
+is to calculate and present the uncertainty in the parameters you estimate.
+
+</br>
+
+The `lm()` function produces results that are equivalent to maximum likelihood estimation of the parameters.
+Therefore, our consideration of uncertainty for these models follows the same
+principles as discussed [here](link to ML page). 
+You can quantify uncertainty using
+**standard errors**, **confidence intervals**, and **prediction intervals** 
+which should be familiar to you
+but head to the [uncertainty]() pages if you need a recap.
+
+</br>
+
+For any regression there are two different types of uncertainty. 
+Here, we cover at the
+**uncertainty in the parameters of the regression line, 
+$\alpha$ and $\beta$** and the **uncertainty in
+predictions of $Y$**.
+
+</br>
+
+#### Uncertainty in the estimates of $\alpha$ and $\beta$
+
+##### Standard error
+
+**The standard error of a parameter is the standard deviation of its sampling distribution. It gives a measure of the spread of the sampling distribution 
+i.e. the uncertainty.** 
+To find the standard errors for the estimates of $\alpha$ and $\beta$ 
+you can use the `summary()` function. 
+The argument that `summary()` takes is a model object, the output from `lm()`. 
+This function gives a big table with lots of information.
+The first line shows the model formula used for the model object. 
+The second line shows a summary of the residuals of the model and the
+standard errors are shown as the second column in the third part, 
+`Coefficients:`.
+
+```{r example-model-summary, include = TRUE, echo = TRUE}
+
+summary(model_object)
+
+```
+</br>
+
+If we take the `summary()` of the example model, 
+we can see the standard error or the intercept ($\alpha$) is 0.95825, 
+and the standard error for the slope ($\beta$) is 0.05483.
+
+</br>
+
+##### Confidence intervals
+
+For interpretation of the uncertainty, 
+it can be easier to use the standard error to calculate confidence intervals 
+(CI). 
+Confidence intervals indicate the range of plausible values for a parameter. 
+**They represent an interval, that if you were to collect a sample and run the
+analysis, then
+repeat that many many times AND each time
+draw a confidence interval, on average 95% of the time, 
+the true population value of the parameter would be found in 
+within the confidence interval.** 
+
+If you need a reminder of this click [here](link to uncertainty page).
+
+</br>
+
+The confidence interval can be calculated using this formula:
+
+$$
+\begin{aligned}
+UpperCI = estimate + (1.96 SE) \\
+LowerCI = estimate - (1.96 SE) \\
+\end{aligned}
+$$
+
+1.96 is used because in a standard normal distribution 
+95% of the distribution lies within 1.96 standard deviations of the mean. 
+In this case the distribution is the sampling distribution, 
+which is normal for $\alpha$ and $\beta$ and the 
+standard deviation is the standard error. 
+
+</br>
+
+Using the formulas above, 
+calculate the confidence intervals for the intercept and
+slope from the example model.
+
+</br>
+
+<details><summary> I had a go at calculating, what is the correct answer?</summary>
+
+```{r ci-calculation, include = TRUE, echo = TRUE}
+
+# INTERCEPT
+
+# Upper confidence interval
+upper_ci_intercept <- summary(model_object)$coefficients[1,1] + 
+  (1.96*summary(model_object)$coefficients[1,2])
+# Lower confidence interval
+lower_ci_intercept <- summary(model_object)$coefficients[1,1] - 
+  (1.96*summary(model_object)$coefficients[1,2])
+
+# Print the interval
+c(upper_ci_intercept, lower_ci_intercept) 
+
+# SLOPE
+
+# Upper confidence interval
+upper_ci_slope <- summary(model_object)$coefficients[2,1] + (1.96*summary(model_object)$coefficients[2,2])
+# Lower confidence interval
+lower_ci_slope <- summary(model_object)$coefficients[2,1] - (1.96*summary(model_object)$coefficients[2,2])
+
+# Print the interval
+c(upper_ci_slope, lower_ci_slope) 
+
+```
+
+</details>
+
+</br>
+
+It is also possible to get R to calculate the confidence intervals for you. 
+To do this you can use the `confint()` function. 
+The argument is a model object. 
+
+```{r example-confint, include = TRUE, echo = TRUE}
+
+confint(model_object)
+
+```
+
+</br>
+
+Hopefully these confidence intervals look the same as those you 
+calculated yourself. 
+
+</br>
+
+
+#### Uncertainty in a prediction of $Y$
+
+So far, 
+we have covered uncertainty in parameter estimates using standard errors 
+and confidence intervals but linear regression analyses 
+can also be used for prediction. 
+When a linear regression is used for 
+prediction, an interval of confidence in the prediction should also be given.
+This is a type of confidence interval specific for predictions and can be 
+called a **prediction interval**.
+
+</br>
+
+**A 95% prediction interval tells you, 
+if you were to collect a sample and run the analysis, then
+go out an collect a new observation of the response variable ($Y$)
+with particular value of the explanatory variable ($X$) 
+many many times AND each time
+draw a prediction interval, 95% of the time, the new observation
+would fall in within the prediction interval.** 
+
+</br>
+
+To find the prediction interval for a prediction you use the `predict()` 
+function with the `interval="prediction"` argument. 
+You also set the `newdata` argument to the value of $X$ you want to predict for.
+
+```{r example-predict, include = TRUE, echo = TRUE, eval = FALSE}
+
+predict(model_object, newdata=x_predict, 
+                             type="response", interval = "prediction")
+
+```
+
+</br>
+
+
+### Worked example 
+
+</br>
+
+At the end of the last section, we created a plot of our dive depth data and the estimated linear regression line. 
+Now, we will add uncertainty to that plot. 
+
+</br>
+
+First, we should look at the confidence intervals of our parameter estimates.
+
+```{r dive-confint, include = TRUE, echo = TRUE}
+
+round(confint(dive_model),2)
+
+```
+
+</br>
+
+The confidence intervals have been rounded to 2 decimal places to make them 
+easier to read. 
+The intercept interval spans from approx 450 to 1060. 
+The slope interval crosses 0, going from -0.02 to +0.01. 
+
+</br>
+
+To add these intervals to the plot, 
+we need to make new predictions including the confidence interval. 
+In this case
+we are using confidence intervals even though we are predicting, because we 
+want to show the uncertainty in $\alpha$ and $\beta$ rather than in a novel 
+prediction. 
+We have to make predictions in order to plot rather than because we
+are interested in them. 
+
+```{r make-dive-predictions2, include = TRUE, echo = TRUE}
+
+depth_predictions <- as_tibble(predict(dive_model, type="response", interval="confidence"))
+
+```
+
+</br>
+
+Once we have created predictions of $Y$ from the model object, 
+we can then plot these using `geom_line()` and `geom_ribbon()` 
+for the confidence interval as in the code below.  
+
+```{r make-dive-predictions-plot, include = TRUE, echo = TRUE}
+
+depth_predictions <- depth_predictions %>%
+                      mutate(x=dive_data$body_size_kg)
+
+fig_7 <- ggplot()+
+  geom_ribbon(data=depth_predictions, aes(x=x, ymin=lwr, ymax=upr), fill='grey50')+
+  geom_point(data=dive_data, aes(x=body_size_kg, y=max_depth),colour = 'grey70')+
+  geom_line(data=depth_predictions, aes(y=fit, x=x))+
+  labs(y="Maximum Dive Depth (m)",
+  x="Body Size (kg)")
+
+```
+
+```{r dive-predictions-plot, include = TRUE, echo = FALSE, fig.cap="Scatter plot of dive depths against body size. Line is the regression line from a linear model. Shaded area is 95% confidence interval"}
+
+depth_predictions <- depth_predictions %>%
+                      mutate(x=dive_data$body_size_kg)
+
+ggplot()+
+  geom_ribbon(data=depth_predictions, aes(x=x, ymin=lwr, ymax=upr), fill='grey50')+
+  geom_point(data=dive_data, aes(x=body_size_kg, y=max_depth),colour = 'grey70')+
+  geom_line(data=depth_predictions, aes(y=fit, x=x))+
+  labs(y="Maximum Dive Depth (m)",
+  x="Body Size (kg)")
+
+```
+
+</br>
+
+You will notice that the confidence interval is narrower 
+in the middle and wider at the ends. 
+This is partly to do with the constraint that the regression line 
+must go through the ($\bar{X}$, $\bar{Y}$) 
+point so the intercept and slope are not independent. 
+Therefore, the confidence interval will be narrowest close to that point. 
+
+</br>
+
+The plot shows that the uncertainty in the estimated relationship 
+gets increasingly uncertain as you get to higher body sizes. 
+
+</br>
+
+#### Predicting dive depths for a body size of 75000kg
+
+A colleague as just found a new species of whale (fictional). 
+The whale washed up on shore in Tromsø, it weighed 75000kg.
+Based on our linear regression analysis, how deep would we expect it to dive?
+
+```{r make-dive-predictions3, echo = TRUE, warning = FALSE}
+
+predict(dive_model, newdata=data.frame(body_size_kg=75000), 
+                             type="response", interval = "prediction")
+
+```
+
+</br>
+
+The mean prediction is 352m deep. 
+This seems ok. 
+But when we look at the prediction interval, we see that when we include uncertainty, 
+we are not even sure if they whale will dive below the surface by 
+2km or jump into the air by 1.3km. 
+When we include uncertainty, 
+it is clear that based on the current data and model, 
+we cannot say anything about the possible dive depth of the new whale. 
+We even get biologically unrealistic predictions. 
+
+</br>
+
+This is something we will look at in the next section.
+
+</br>
+
+## <i class="fas fa-tasks"></i> Model checking {.tabset .tabset-fade}
+
+You have now have a model, estimates of parameters, 
+and have calculated the uncertainty of the parameters. 
+**But how can we know if a model is any good?** 
+
+</br>
+
+### Theory
+
+</br>
+
+To find out if the model is any good from a theoretical perspective, 
+you need to check if the model meets the 
+five assumptions of the linear regression that are stated 
+in the **Model details** section above. 
+
+</br>
+
+For this, you can use graphs called **diagnostic plots**. 
+There are four key diagnostic plots that we use for simple linear regression 
+and each plot tests whether a different assumption has been met. 
+To make the diagnostic plots, you use the `plot()` function with
+our linear model object as the first argument and `which = number` 
+as the second. 
+The number should be replaced by the number corresponding to the plot you want. 
+
+</br>
+
+For more on what each plot means, go here: [Model checking](). 
+On this page, you can find some example plots for a simple linear regression. 
+
+**Note:** for all of these plots, we do not expect perfection, especially for 
+biological data. 
+
+#### 1. Residuals vs fitted plot
+
+</br>
+
+There are two examples of residuals vs fitted plots shown below. 
+If the assumptions are met, you can expect a few characteristics of the plot:
+
+* The red line should be roughly horizontally straight and at 0
+* There should be no structure in the residuals
+* The residuals should not curve
+
+</br>
+
+```{r residuals-vs-fitted-fig, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) residuals vs fitted plot for a simple linear regression"}
+
+set.seed(2020)
+example_data$a <- rpois(100,as.numeric(example_data$z)^1.2)
+
+par(mfrow=c(1,2))
+
+example_model1 <- lm(x ~ y, data = example_data)
+plot(example_model1, which = 1)
+title(main="Good", line = 1)
+
+example_model2 <- lm(y ~ a, data = example_data)
+plot(example_model2, which = 1)
+title(main="Bad", line = 1)
+
+```
+
+**In reality, it will not be as clear cut as the examples above. 
+You will need to use
+your own judgment to decide if the assumption is sufficiently met. 
+Do not expect perfection.**
+
+</br>
+
+#### Normal QQ plot
+
+There are two examples of normal QQ plots shown below. If the assumptions
+are met, you can expect:
+
+* The points to lie along the line
+
+</br>
+
+```{r normal-qq-fig, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) normal QQ diagnostic plot"}
+
+set.seed(2020)
+example_data$b <- as.numeric(example_data$z)^10
+
+par(mfrow=c(1,2))
+
+plot(example_model1, which = 2)
+title(main="Good", line = 1)
+
+example_model3 <- lm(b~x, data=example_data)
+plot(example_model3, which = 2)
+title(main="Bad", line = 1)
+
+```
+
+</br>
+
+**Notice that the y-axes have different values.**
+
+<br>
+
+#### Scale-location
+
+There are two examples of scale-leverage plots shown below. 
+If the assumptions are met, you can expect:
+
+* The red line to be horizontal
+* There is no structure in the points
+
+</br>
+
+```{r scale-location-fig, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) scale-location plot"}
+set.seed(2020)
+example_data$b <- rpois(100,as.numeric(example_data$z)^5)
+
+par(mfrow=c(1,2))
+
+plot(example_model1, which = 3)
+title(main="Good", line = 1)
+
+example_model3 <- lm(b~x, data=example_data)
+plot(example_model3, which = 3)
+title(main="Bad", line = 1)
+```
+
+</br>
+
+#### Cook's Distance
+
+There are two examples of Cook's Distance plots shown below. 
+If the assumptions are met, you can expect:
+
+* Low values of Cook's Distance (y-axis) and no points standing out on their own
+
+</br>
+
+```{r cook-d-fig, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) Cook's Distance plot"}
+
+example_data$a <- c(example_data$a[1:98], 1000, 150)
+
+par(mfrow=c(1,2))
+
+plot(example_model1, which = 4)
+title(main="Good", line = 1)
+
+example_model3 <- lm(a~x, data=example_data)
+plot(example_model3, which = 4)
+title(main="Bad", line = 1)
+
+```
+
+</br>
+
+**Notice that the y-axes have different values.**
+
+</br>
+
+### Worked example 
+
+</br>
+
+Using the theory covered in the previous section, 
+we can now check our dive_model 
+to ensure that it meets the assumptions of a simple linear regression.
+
+</br>
+
+We will use one plot at a time to test specific assumptions.
+
+</br>
+
+#### Residuals vs fitted
+
+```{r dive-residual-fig, echo = TRUE, fig.cap = "Residuals vs fitted plot for dive depths model"}
+
+plot(dive_model, which = 1)
+
+```
+
+ </br> 
+ 
+\@ref(fig:dive-residual-fig) looks quite unusual. 
+
+There are a few assumptions we are checking with this plot:
+
+* **Is the relationship between X and Y linear?** It does seem to be. 
+While the red line is not straight, 
+it does not show a clear pattern until the very end. 
+At the very end, there is a strong
+negative trend. 
+We might need to come back to this! 
+It seems like there might be one pattern for shallow diving species 
+and another for the deep divers.
+* **Do the residuals have a mean of 0?** There is a deviation at fitted 
+values of > 700, otherwise yes, the mean of the residuals is approximately 0. 
+* **Is the variance of the residuals is equal for all fitted values (homoscedasticity)?** It is not the nice cloud of random points that we expect.
+**But is it a problem?** To answer this, we need to look at bit closer. 
+The strange shape comes from the residuals at low fitted values, 
+these are the shallow diving marine mammals. 
+You might notice that there are very few of these values. 
+The majority of the data have fitted values > 700. Where we have more data, the residuals vs fitted plot looks better. 
+
+At this point, it might be hard to say how problematic the low variance 
+caused by the lack of data for low fitted values is. 
+But, we can have a look at the points causing the pattern 
+(those with a maximum dive depth < 600m).
+
+```{r dive-filter, echo = TRUE}
+
+filter(dive_data, max_depth < 600)
+
+```
+
+</br>
+
+From these data, we can see that five of the six baleen whales (Group = Bwhale) 
+are included in this subset. 
+This is quite interesting. 
+It could be biologically reasonable that these whales follow a 
+different pattern to the other species because their physiology is 
+very different. 
+
+**Keep that last point in mind when we get on to interpreting the results.**
+
+#### Normal QQ
+
+```{r dive-qq-fig, echo = TRUE, fig.cap="Normal QQ plot for dive depth model"}
+
+plot(dive_model, which = 2)
+
+```
+
+</br> 
+
+The assumption we are checking with this plot is: 
+**are the residuals are normally distributed?**
+
+As expected, 
+there is not a perfect match between the theoretical normal distribution and
+the distribution of the residuals. 
+There is some deviation at both tails of the distribution. 
+At lower quantiles, this seems ok. 
+At higher values, points 9 and 10 deviate quite a lot. 
+These points also stood out in \@ref(fig:dive-residual-fig). 
+We will need to look into them more in \@ref(fig:dive-cook-d-fig). 
+
+</br>
+
+#### Scale-location
+
+```{r dive-scale-fig, echo = TRUE, fig.cap="Scale-location plot for dive depth model"}
+
+plot(dive_model, which = 3)
+
+```
+
+</br> 
+
+The assumption we are checking with this plot is: 
+**Do the residuals have equal variance across fitted values?**
+
+\@ref(fig:fig-14) shows a very similar picture to \@ref(fig:fig-12). 
+While there is a slight increase in variance as the amount of data increases, 
+the amount of change is < 0.5 and there is not much structure in the points. 
+So, this looks like things are ok.
+
+</br>
+
+#### Cook's distance
+
+```{r dive-cook-d-fig, echo = TRUE, fig.cap = "Cook's distance plot for the dive depth model"}
+
+plot(dive_model, which = 4)
+
+```
+
+</br> 
+
+The assumption we are checking with this plot is: **Are there any outliers?**
+
+\@ref(fig:fig-15) shows that the Cook's distances of this model are not 
+very high (max = 0.2).
+So, it does not seem that any points have that large an influence on the 
+fitted values.
+However, point 10 does seem to be quite different from the others. 
+This might be worth 
+looking into.
+
+</br>
+
+We can find point 10 by looking at the 10th row of our data frame. 
+It is the entry for the Cuvier's beaked whale. 
+While this is a rare and unusual whale, it is not the only beaked whale in 
+our dataset and we have no reason to believe this data is a typo. 
+**Therefore, we would not consider this an outlier and 
+would not remove from the data.**
+
+```{r cuvier, echo = TRUE}
+
+dive_data %>% slice(10)
+
+```
+
+</br>
+
+#### Summary
+
+Overall, it seems that most of the model assumptions are met well. 
+The only red flag is in the equal variance assumption. 
+However, this seems to be caused in part by a lower amount of 
+data available at the extremes of dive depths. 
+Therefore, we think it is ok to proceed with this model.
+
+</br>
+
+In the next section we will interpret our results.
+
+</br>
+
+
+## <i class="far fa-lightbulb"></i> Draw conclusions {.tabset .tabset-fade}
+
+### Theory
+
+In the previous sections you learned how to run a simple 
+linear regression models,
+what the parameters of the model mean, 
+how to quantify uncertainty in the parameters, and 
+how to check the assumptions of the model. 
+Now, you can bring everything together to draw some conclusions. 
+
+</br>
+
+There are several components required in drawing a conclusion:
+
+* statement of the maximum likelihood estimate of the parameters of 
+interest (including strength and direction)
+* statement of the uncertainty in the estimate
+* statement of how good the model is i.e. 
+how well the model meets assumptions and the amount of variance explained 
+(using $R^2$ - explained below)
+* link the results to biology and the question asked
+* Discussion of next directions
+
+</br>
+
+One measure that can be useful for conclusions is to know 
+**how much of the variation in $Y$ is explained by $X$**. 
+To answer this you can use a measure called the $R^2$. 
+It is calculated using the following equation:
+
+$$
+R^2 = 1 - \frac{\color{darkblue}{\text{Residual Variance}} }{\text{Total Variance}}
+$$
+
+and can be found in R using `summary(your_model)$r.squared`. 
+The value is a proportion, 
+so between 0 (no variance explained) and 1 (all variance explained). 
+A good value is subjective, but > 0.5 is usually considered good, > 0.7 
+is very good and a value of 1 is suspicious. For biological data, achieving an 
+$R^{2}$ of 0.5 or higher can be challenging because in the real world there are
+lots of variables influencing each response, more than we could measure and 
+include in an analysis. In these cases, $R^{2}$ could be as low as e.g. 0.3 or
+0.1,
+but this does not mean the model is not valid. It only means that other 
+processes are causing variation in the response on top of those included in the
+model. 
+
+</br>
+
+### Worked example 
+
+This is the final section of our analysis of the data on marine mammal 
+maximum dive depths. 
+We will now bring together all of the results we have obtained and 
+draw a conclusion following the same format as in the theory section.
+
+A reminder, we were asking: 
+**Does body size influence maximum dive depth in marine mammals?**
+
+</br>
+
+The maximum likelihood estimate of the relationship between body size and 
+maximum dive depth in marine mammals was -0.005. 
+In other words, for every 1 kg increase in body weight, 
+marine mammals dived 0.005 m less deep. 
+Given that some marine mammals can dive 1000s of metres, 
+this increase per kg is very low. 
+
+</br>
+
+When we look at the uncertainty in this estimate, 
+we see the 95% confidence interval is -0.017 to 0.006. 
+The confidence interval limits are different signs, 
+meaning that 0 is included as a plausible value for the strength of the 
+relationship. 
+Therefore, we cannot conclude that body size has any impact on maximum 
+dive depth in marine mammals. 
+This is supported by the $R^2$ value, which is 0.03, 
+suggesting only 3% of the variation in maximum dive depth is 
+explained by body size. This is a good example of the lower $R^2$ we often get
+in biology. 
+
+</br> 
+
+We should remember here, 
+that when we predicted a dive depth for the fictional whale, 
+it gave us a negative result. 
+Linear models fit a straight line, 
+which can extend beyond the realistic values for some variables. 
+This should be noted and predictions should not be made outside of values 
+that are plausible. 
+This is one reason why predicting outside of the range of your data 
+can be problematic. We can also fit models that are not linear, 
+there is more on those [here](link to GLMs).
+
+</br>
+
+In model checking, there was an interesting pattern shown, 
+of little data at the lowest maximum dive depths and a 
+disproportionate representation of baleen whales. 
+If we plot the data by group and allow ggplot to fit a regression 
+line per group, we can see that there seems to be a different pattern for 
+different taxonomic groups. 
+This would make sense based on physiology and might explain why the 
+variance assumption was not met well AND why the estimated relationship 
+was so weak. 
+
+```{r make-final-dive-fig, echo = TRUE}
+
+final_dive_fig<- ggplot(dive_data, aes(x=body_size_kg, y=max_depth, color=group))+
+  geom_point()+
+  facet_wrap(.~group)+
+  geom_smooth(method='lm')
+
+```
+
+```{r final-dive-fig, include = TRUE, echo = FALSE, fig.cap = "Plot of the relationship between dive depth and body size faceted by taxonomic group"}
+
+final_dive_fig
+
+```
+
+</br>
+
+While the baleen whales show no relationship between dive depth and body size, 
+both the pinnipeds (seals and sea lions) and the toothed whales (orca, dolphins, porpoises) show quite strong positive relationships between dive depth and 
+body size. 
+By treating all groups as the same in one analysis, 
+we might have been masking the true effects. 
+
+It might be more appropriate to consider an effect of Group as well as body 
+size. We can do this using **Linear models for categorical explanatory variables**/**ANOVA**, 
+check out these pages to continue the analysis of this data.
+
+### What's next {.facta .toc-ignore}
+
+* **Linear models for categorical explanatory variables**/**ANOVA** 
+for analyses when your explanatory variable is not numeric
+* **Multiple regression** for analyses with more than one numeric 
+explanatory variable
+* **Generalised linear models** for analyses when your response variable is not 
+normally distributed
+
+## {.toc-ignore}
+
+### Further reading {.facta .toc-ignore}
+
+### Contributors {- .contributors .toc-ignore}
+
+```{r contributors, eval=FALSE}
+* Emily G. Simmonds
+```
+
+
+
