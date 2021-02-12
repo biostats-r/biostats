@@ -1,0 +1,209 @@
+---
+title: "Descriptive Statistics"
+output:
+  bookdown::html_document2:
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: css/style-chapters.css
+---
+
+```{r setup, eval=TRUE, include=FALSE}
+# add all packages that need loading
+library(tidyverse)
+library(knitr)
+# source figure settings
+source("../Templates/biostats_theme.R")
+# set warning to be off for all chunks
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+### Before you start {.facta .toc-ignore}
+
+You should be familiar with basic statistical theory and the basics of R.
+
+</br>
+
+
+
+## Introduction
+
+Descriptive statistics summarize or characterize a given sample and are the foundation of statistical tests and data visualizations.
+In this section, we will define a number of descriptive statistics and learn how to calculate them in R. 
+
+</br>
+
+
+
+### 1. Mean
+
+The *mean* (or average) is the most commonly used measure of central tendency of a sample. 
+A measure of central tendency describes a typical value within a sample. 
+The mean is often called the average and constitutes one of the measures of the central tendency of your sample.
+The mean is the sum of all the values in your sample divided by the number of values in the sample set. 
+Mathematically described as: 
+
+$$\overline{x} = \frac{\sum_{i=1}^n x_i}{n}$$ 
+
+Where $\overline{x}$ is the mean of the sample equal to the sum ($\sum$) of all observations, _i_, divided by the total number of observations, _n_. 
+
+In R, the function that calculates the mean is called `mean()`:
+
+```{r mean, echo=TRUE}
+x <- c(12, 6, 3) # create a sample vector
+mean(x) # take the mean of the sample vector
+```
+
+</br>
+
+
+
+### 2. Median
+
+The *median* is another measure of the central tendency of your sample. 
+The median is the number “in the middle” of the sample, or, the middle value of a series of values sorted from smallest to largest.
+
+Provided that the sample contains an odd number _n_ of entries, the median is the value of the $(\frac{(n+1)}{2})$ entry in the sample. 
+If the sample contains an even number _n_ of entries, then the median is the mean of the values of the $(\frac{n}{2})$ and the $(\frac{n}{2} + 1)$ entries.
+
+In R, the function that calculates the median is called `median()`:
+
+```{r median odd, echo=TRUE}
+x <- c(12, 6, 3) # odd number in sample vector
+median(x) # takes the median
+```
+
+```{r median even, echo=TRUE}
+y <- c(12, 6, 3, 1) # even number in sample vector
+median(y) # takes the median
+```
+
+</br>
+
+
+
+### 3. Minimum, maximum, range, and midpoint
+
+The *minimum* and *maximum* of a sample are the smallest and largest entries, respectively. 
+
+In R, the functions that calculate the minimum and maximum  are called `min()` and `max()`, respectively:
+
+```{r min and max, echo = TRUE}
+x <- c(12, 6, 3, -1) # sample vector
+min(x) # find the minimum
+max(x) # find the maximum
+```
+
+The *range* defines the spread of the data and is the difference between the minimum and maximum values.
+Note, a range may be expressed as a single value (the actual difference between maximum and minimum) or by writing minimum-maximum. 
+For instance, the range of the series (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) can be expressed as 9 or 1-10.
+
+In R, the function that calculates the range is `range()`. 
+However, `range()` returns a vector that contains the minimum and the maximum, respectively.
+To calculate the difference between these values, you may use `diff(range())` or `max()-min()`:
+
+```{r range, echo = TRUE}
+x <- c(12, 6, 3, -1) # sample vector
+range(x) # find the range of the sample as a vector
+diff(range(x)) # find the range as difference between minimum and maximum values with diff()
+max(x)-min(x) # find the range as difference between minimum and maximum values
+```
+
+The *midpoint* of a sample is the value equidistant from the minumum and the maximum. 
+It can be calculated by taking taking the mean of the minumum and maximum value of a sample.
+
+In R, you can calculate the midpoint of a sample with: 
+
+```{r midpoint, echo = TRUE}
+x <- c(12, 6, 3, -1) # sample vector
+(max(x) + min(x))/2
+```
+
+</br>
+
+
+
+### 4. Variance and standard deviation
+
+The *variance* (var or $\sigma^2$) corresponds to the mean of the squared differences from the mean. 
+Mathematically, variance ($\sigma^2$) of the data (x) is: 
+
+$$\sigma^2 (x) = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n}$$
+
+Where we take an entry in the sample, $x_i$, and calculate the difference between its value and the mean, $\overline{x}$, then square it. 
+Do the same for all the entries, _n_, in the sample. 
+Finally, calculate the mean of these squared differences (divide by _n_) and you get the variance. 
+Note-variance is always positive because of the squared difference.
+
+In R, the function that calculates the variance is `var()`:
+
+```{r variance, echo=TRUE}
+x <- c(12, 6, 3, -1) # sample vector
+var(x) # finds the variance of the sample
+```
+
+The standard deviation (sd or $\sigma$) is the square root of the variance. 
+Unlike the variance, the standard deviation has the same unit as the mean, the median or any entry in the sample. 
+This makes it very useful as it can be used in combination with the mean to define how values are spread around the mean. 
+Often, you will find this expressed as mean +/- sd.
+
+In R, the standard deviation is obtained via the function `sd()`. 
+Note that you will obtain the same result by calculating “manually” the square root of the variance with `sqrt(var())`:
+
+```{r standard deviation}
+x <- c(12, 6, 3, -1) # sample vector
+sd(x) # finds the standard deviation of the sample
+sqrt(var(x)) # alternative method to find the standard deviation
+```
+
+</br>
+
+
+
+### 5. Quartiles
+
+Take a sample, sort the data from smallest to largest and split it in four equal subsets.
+The quartiles are the values of the sample that cut it off in four.
+
+Quartiles are called:
+Q1: the first quartile under which the first 25% of the data in the set can be found,
+Q2: the second quartile under which the first 50% of the data in the set can be found (Q2 is also the median),
+Q3: the third quartile under which the first 75% of the data in the set can be found.
+
+In addition, one refers to:
+Q0: the minimum value in the set,
+Q4: the maximum value in the set.
+
+Note that the set of data between Q1 and Q3 (which contains the middle 50% of the data) is the interquartile range (IQR).
+
+In R, quartiles may be obtained using the function `quantile()` (NB: this is not a typo, quantile refers to the intervals (0, 25, 50, 75, 100%) at which the quartiles, the values in the data, are assessed). 
+If you choose to use only `quantile()` with no other argument than the vector containing the sample, R returns Q0, Q1, Q2, Q3, and Q4. 
+If you need only Q1, Q2 and Q3, you use an extra argument (see the following example):
+
+```{r quartiles, echo = TRUE}
+x <- c( 21 ,15, 12, 6, 3, -1, -4, -9) # sample vector
+quantile(x) # Find the Q0, Q1, Q2, Q3, and Q4
+quantile(x, probs = c(0.25, 0.5, 0.75)) # Find the Q1, Q2, and Q3 by defining which quartiles (in proportions) using the probs argument
+```
+
+Quartiles can be visualized with `ggplot()` and `geom_boxplot()`:
+
+```{r quartiles boxplot, echo=TRUE}
+plot_vector <- data.frame(x) # make the vector a data frame for ggplot
+ggplot(plot_vector, aes(y=x))+geom_boxplot() # assign the vector "x" as the y variable in the 'aes' argument and pass it to 'geom_boxplot' 
+```
+
+</br>
+
+
+
+### Further reading {.facta .toc-ignore}
+
+
+### Contributors {- .contributors .toc-ignore}
+
+```{r contributors, eval=FALSE}
+* Joshua Lynn
+* Kwaku P. Adjei
+```
+
