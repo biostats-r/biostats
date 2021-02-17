@@ -12,7 +12,7 @@ ui <-  fluidPage(
   sidebarLayout(
    
     # Sidebar with a slider input
-    sidebarPanel(
+    sidebarPanel(width = 3,
       radioButtons("type", label = "Type of predictor variable", choices = c("Categorical", "Continuous"), selected = "Categorical"),
       sliderInput(
         "n",
@@ -48,17 +48,31 @@ ui <-  fluidPage(
     
     
     # Show a plot of the generated distribution
-    mainPanel(
-      h4("Population distributions"),
-      plotOutput("pop_plot"),
-      h4(textOutput("samp_size")),
-      plotOutput("sample_plot"),
-      h4("Confidence intervals on 100 trials"),
-      plotOutput("uncertainty_plot"),
-      h4("Effect size of 100 trials"),
-      plotOutput("effect_plot"),
-      h4("P-values of 100 trials"),
-      plotOutput("p_plot")
+    mainPanel(width = 9,
+      fluidRow(
+        column(6, 
+          h4("Population distributions"),
+          plotOutput("pop_plot")
+        ),
+        column(6,
+          h4(textOutput("samp_size")),
+          plotOutput("sample_plot")
+        )
+      ),
+      fluidRow(
+        column(4, 
+          h4("Confidence intervals on 100 trials"),
+          plotOutput("uncertainty_plot")
+        ),
+        column(4,
+          h4("Effect size of 100 trials"),
+          plotOutput("effect_plot")
+        ),
+        column(4,
+          h4("P-values of 100 trials"),
+          plotOutput("p_plot")
+        )
+      )
     )
   ))
 
@@ -85,7 +99,7 @@ server <- function(input, output) {
           x = seq(lower, upper, length.out = 101),
           y = dnorm(x, mean = 0, sd = input$sd)
         ),
-        treatment = tibble(
+        treat = tibble(
           x = seq(lower, upper, length.out = 101),
           y = dnorm(x, mean = input$delta, sd = input$sd)
         ),
@@ -95,7 +109,9 @@ server <- function(input, output) {
       pop_plot <- ggplot(data = dist, aes(x = x, y = y, fill = treatment)) +
         geom_area(alpha = 0.3, position = "identity") +
         geom_vline(mapping = aes(xintercept = x, colour = treatment), data = tibble(x = c(0, input$delta), treatment = c("control", "treat")), show.legend = FALSE) +
-        labs(x = "Value", y = "Density", fill = "Treatment") 
+        labs(x = "Value", y = "Density", fill = "Treatment") +
+        theme(legend.position = c(.99, .99), legend.justification = c(1, 1))
+        
     } else {
       
       dist <- tibble(x = seq(0, max_continuous, length.out = 50),
