@@ -61,7 +61,7 @@ ui <-  fluidPage(
       ),
       fluidRow(
         column(4, 
-          h4("Confidence intervals on 100 trials"),
+          h4("Confidence intervals of 100 trials"),
           plotOutput("uncertainty_plot")
         ),
         column(4,
@@ -160,12 +160,13 @@ server <- function(input, output) {
       geom_histogram(boundary = 0, bins = 100) +
       xlim(0, 1) +
       geom_vline(xintercept = input$p, colour = "red", linetype = "dashed") +
-      labs(x = "P value", fill = glue::glue("p < {input$p}"))
+      labs(x = "P value", fill = glue::glue("p < {input$p}")) +
+      theme(legend.position = c(.99, .99), legend.justification = c(1, 1))
   })
   
  output$effect_plot <- renderPlot({
   ggplot(mods()$result, aes(x = estimate, fill = p.value < input$p)) + 
-    geom_histogram(bins = 25) +
+    geom_histogram(bins = 25, show.legend = FALSE) +
     geom_vline(xintercept = input$delta) +
     labs(
       x = if_else(input$type == "Categorical", "Estimated difference in means", "Estimated slope"),
@@ -178,6 +179,7 @@ server <- function(input, output) {
      geom_point() +
      geom_vline(xintercept = input$delta) +
      geom_vline(xintercept = 0, linetype = "dashed") +
+     scale_y_continuous(expand = c(0.01, 0.01)) +
      labs(x = if_else(input$type == "Categorical", "Estimated difference in means", "Estimated slope"), 
           y = "Simulation number")
  })
