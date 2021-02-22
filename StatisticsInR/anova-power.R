@@ -36,14 +36,12 @@ ui <-  fluidPage(
         max = 10,
         value = 5
       ),
-      sliderInput(
-        "p",
-        "p level:",
-        min = 0,
-        max = 1,
-        value = 0.05, 
-        step = 0.01
-      )
+      shinyWidgets::sliderTextInput(inputId = "p", 
+                                    label = "p level:", 
+                                    choices = c(0.001, 0.01, 0.05, 0.1),
+                                    selected = 0.05,
+                                    grid = TRUE
+                                    )
     ),
     
     
@@ -61,7 +59,7 @@ ui <-  fluidPage(
       ),
       fluidRow(
         column(4, 
-          h4("Confidence intervals of 100 trials"),
+          h4(textOutput("uncertainty_text")),
           plotOutput("uncertainty_plot")
         ),
         column(4,
@@ -86,6 +84,10 @@ server <- function(input, output) {
     } else {
       glue::glue("Sample of {input$n} observations") 
     }
+  })
+  
+  output$uncertainty_text <- renderText({
+    glue::glue("{(1 - input$p) * 100}% confidence intervals of 100 trials")
   })
     
   output$pop_plot <- renderPlot({
@@ -174,7 +176,8 @@ server <- function(input, output) {
 })
  
  output$uncertainty_plot <- renderPlot({
-   ggplot(mods()$result, aes(x = estimate, xmin =  estimate - 1.96 * std.error, xmax = estimate + 1.96 * std.error, y = n)) + 
+   mult <- qnorm(1 - input$p / 2) 
+   ggplot(mods()$result, aes(x = estimate, xmin =  estimate - mult * std.error, xmax = estimate + mult * std.error, y = n)) + 
      geom_errorbarh() +
      geom_point() +
      geom_vline(xintercept = input$delta) +
