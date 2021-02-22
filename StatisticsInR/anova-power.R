@@ -77,6 +77,11 @@ ui <-  fluidPage(
 #### Server ####
 server <- function(input, output) {
   max_continuous <- 2
+  group_colours <- scale_colour_brewer(palette = "Dark2")
+  group_fill <- scale_fill_brewer(palette = "Dark2")
+  significance_colours <- scale_colour_brewer(palette = "Set1")
+  significance_fill <- scale_fill_brewer(palette = "Set1")
+  
   
   output$samp_size <- renderText({
     if (input$type == "Categorical") {
@@ -112,6 +117,8 @@ server <- function(input, output) {
         geom_area(alpha = 0.3, position = "identity") +
         geom_vline(mapping = aes(xintercept = x, colour = treatment), data = tibble(x = c(0, input$delta), treatment = c("control", "treat")), show.legend = FALSE) +
         labs(x = "Value", y = "Density", fill = "Treatment") +
+        group_fill +
+        group_colours + 
         theme(legend.position = c(.99, .99), legend.justification = c(1, 1))
         
     } else {
@@ -163,6 +170,7 @@ server <- function(input, output) {
       xlim(0, 1) +
       geom_vline(xintercept = input$p, colour = "red", linetype = "dashed") +
       labs(x = "P value", fill = glue::glue("p < {input$p}")) +
+      significance_fill +
       theme(legend.position = c(.99, .99), legend.justification = c(1, 1))
   })
   
@@ -172,19 +180,25 @@ server <- function(input, output) {
     geom_vline(xintercept = input$delta) +
     labs(
       x = if_else(input$type == "Categorical", "Estimated difference in means", "Estimated slope"),
-      fill = glue::glue("p < {input$p}"))
+      fill = glue::glue("p < {input$p}")) +
+     significance_fill
 })
  
  output$uncertainty_plot <- renderPlot({
    mult <- qnorm(1 - input$p / 2) 
-   ggplot(mods()$result, aes(x = estimate, xmin =  estimate - mult * std.error, xmax = estimate + mult * std.error, y = n)) + 
-     geom_errorbarh() +
-     geom_point() +
+   df <- mods()$result %>% 
+     mutate(xmin =  estimate - mult * std.error,
+            xmax = estimate + mult * std.error)
+   
+   ggplot(df, aes(x = estimate, xmin =  xmin, xmax = xmax, y = n, colour = p.value < input$p)) + 
+     geom_errorbarh(show.legend = FALSE) +
+     geom_point(show.legend = FALSE) +
      geom_vline(xintercept = input$delta) +
      geom_vline(xintercept = 0, linetype = "dashed") +
      scale_y_continuous(expand = c(0.01, 0.01)) +
      labs(x = if_else(input$type == "Categorical", "Estimated difference in means", "Estimated slope"), 
-          y = "Simulation number")
+          y = "Simulation number") +
+     significance_colours
  })
  
  output$sample_plot <- renderPlot({
@@ -196,6 +210,8 @@ server <- function(input, output) {
          # geom_vline(xintercept = input$delta) +
          # geom_vline(xintercept = 0, linetype = "dashed") +
          labs(x = "Treatment", y = "Response") +
+         group_fill +
+         group_colours + 
          theme(legend.position = "none")
      } else {
        ggplot(mods()$sample, aes(x = treatment, y = value)) + 
