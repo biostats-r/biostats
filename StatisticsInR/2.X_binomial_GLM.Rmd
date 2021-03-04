@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Binomial generalised linear models"
 output:
   bookdown::html_document2:
     highlight: tango
@@ -12,12 +12,11 @@ output:
 
 # add all packages that need loading
 library(tidyverse)
-library(png)
-library(ggimage)
+library(patchwork)
 library(knitr)
-library(readr)
-library(GGally)
-library(ggpubr)
+#library(readr)
+#library(GGally)
+#library(ggpubr)
 
 # source figure settings
 source("../StatisticsInR/Files/biostats_theme.R")
@@ -32,7 +31,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r setup-data, include=FALSE, echo=FALSE}
 
 # load the sheep data
-sheep_data <- read_csv("../StatisticsInR/Files/SheepData.csv")
+sheep_data <- read_csv("../StatisticsInR/Files/sheep_data.csv")
 
 sheep_data <- sheep_data[is.na(sheep_data$Age)==FALSE,]
 
@@ -68,6 +67,19 @@ Like the linear regression, the GLM also has two motivations.
 than the standard linear models (used for linear regression, ANOVA, and analyses
 with categorical and continuous variables). 
 
+</br>
+
+Linear models are used to model a continuous response as a function of 
+explanatory variables. 
+GLMs also model a response as a function of explanatory 
+variables. However, as they are more flexible 
+GLMs can
+be used for discrete as well as continuous response variables, They can model
+non-linear relationships, and handle cases where model residuals would not be
+normally distributed. 
+
+</br>
+
 In particular, GLMs are useful when the assumptions of the linear model are 
 violated. The most common violations that can be addressed with a GLM are:
 
@@ -76,7 +88,7 @@ violated. The most common violations that can be addressed with a GLM are:
  * Unequal variance 
  
 While some of these violations could be addressed by transformation of the 
-response to try and improve linearity or equalize the variance - 
+response to try and improve linearity or equalise the variance - 
 this is not always possible or preferable. 
 The GLM makes it possible to account for violations of
 linearity and variance of residuals in a single model without changing the 
@@ -85,14 +97,17 @@ not follow a normal distribution e.g. if they are binary results or derive from
 counting. In these cases, different distributions will better represent the data
 generation process than the normal distribution used in the linear model.
 
-GLMs for the major part of most biological analyses as a lot of biological data
-are non-normal. 
+</br>
 
-A Binomial GLM still wants to:
+On this page, we focus on one particular type of GLM, the Binomial GLM. The
+Binomial GLM fits a non-linear line to:
 
-1) estimate a relationship between $X$ and $Y$
+1) estimate a relationship between $X$ and $Y$, where $Y$ is binary and 
+therefore bounded between 0 and 1. 
 
-2) predict change in $Y$ from change in $X$
+2) predict change in $Y$ from change in $X$. 
+
+</br>
 
 But unlike a linear model, the Binomial GLM does not do this with a straight
 line (on the scale of the data). The Binomial GLM fits a curved line bounded
@@ -101,19 +116,25 @@ logistic regression - more on why later),
 the response data are always binary. The $Y$ values can only take either 0 or 1, 
 Yes or No, etc, anything with only two outcomes.  
 
-```{r make-figure1, include = TRUE, echo = FALSE}
+```{r nonlinear-plot, include = TRUE, echo = FALSE, , fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
 
-fig_1 <- ggplot(aes(x, y), data = example_data)+
+ggplot(aes(x, y), data = example_data)+
   geom_point(shape = 16)+
   geom_smooth(method="glm", method.args = list(family="binomial"), 
               se=TRUE)
 
 ```
-```{r figure-1, include = TRUE, echo = FALSE, fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
 
-fig_1
+</br>
 
-```
+A large number of the models that are used in biological research are GLMs. 
+This
+is because a lot of biological data would not meet the assumptions required for
+a linear model, for example survival data, occupancy data, or presence of a 
+particular gene are all examples of binary responses. 
+
+As a result of their wide usage, 
+GLMs are a key part of modern quantitative biology!
 
 </br>
 
@@ -164,6 +185,10 @@ contains only 0s and 1s if it is numeric or integer.
 For this worked example, we will try to find out if/how body weight (kg)
 influences the survival probability of Soay sheep. 
 
+```{r sheep-fig, echo=FALSE, eval=TRUE, fig.cap="Illustration of sheep by Emily G. Simmonds", fig.height=150}
+include_graphics("./Figures/sheep.png")
+```
+
 Biologically, it is expected that smaller sheep would find it harder to survive
 harsh winters as they have fewer reserves than larger sheep. 
 
@@ -174,60 +199,50 @@ population of Soay sheep from the St. Kilda islands in Scotland, UK.
 They have been studied in a standardised way since 1985. Information on the project can be found [here](http://soaysheep.biology.ed.ac.uk/). These data are
 open source and can be found in the appendix of this [paper](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1600-0706.2012.00035.)CITE COULSON 2012.
 
-The data consists of five variables: Year (year of recording), Age (in years),
-Survival (0 = died, 1 = survived), Weight (kg) and 
-PopSize (number of females in the given year). 
+The data consists of five variables: 
+
+* Year - year of recording
+* Age - age of the sheep in years
+* Survival - whether the sheep survived until the next year or not
+* Weight - weight in kg 
+* Population size (PopSize) - number of females counted that year
+
 All measures are for female sheep only. 
 
 You can find the data [here]() if you want to follow along with the example. 
 It is a `.csv` file with column headings.
 
-First we should have a look at the data using a plot. 
+To begin the analysis, let us first have a look at the data after it 
+has been imported. We do this by looking at the raw data and making a plot. It
+can be easier to see the data if we jitter it because many data points sit on 
+top of each other. 
 
-```{r make-sheep-data-plot, include = TRUE, echo = TRUE}
+```{r sheep-data-plot, include = TRUE, echo = TRUE, fig.cap = "Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points"}
 
-fig_2 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
- geom_point()+
- ylab("Survival")+
- xlab("Weight of sheep (kg)")+
- theme_minimal()
+plot1 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
+ geom_point(colour = "grey70", size = 4)+
+ labs(x = "Weight of sheep (kg)",
+      y = "Survival of sheep",
+      title = "a")
+
+plot2 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
+ geom_jitter(colour = "grey70", size = 4, height = 0.1)+
+ labs(x = "Weight of sheep (kg)",
+      y = "Survival of sheep",
+      title = "b")
+
+plot1 + plot2 + plot_layout(nrow = 1)
  
 ```
 
-```{r figure-2, include = TRUE, echo = FALSE, fig.cap = "Scatterplot of body weight (kg) and against survival of sheep"}
-
-fig_2
-
-```
-
-This gives us a fair idea of what our data looks like. The $Y$ values are all
-either 0 or 1. 
-
-You should note that four of our variables are integers: 
-Year, Age, Weight and PopSize and one of them is a factor/binary (Survival).
-
-The weight of the sheep is actually a numeric variable as sheep can have weights 
-that are between whole kilos. You can change this in R, 
-so that it will be treated as a numeric variable.
-
-```{r sheep-data-set-up, include = TRUE, echo = TRUE}
-
-sheep_data <- mutate(sheep_data, 
-                      Weight = as.numeric(Weight),
-                      Survival=as.numeric(Survival))
-
-```
-
-Since we are interested in answering:
-
-**Does body weight (kg) influence the survival of sheep?**
-
-we only need two of the five variables in the data: `Weight` and `Survival`. 
+Since we are interested in 
+**whether weight (kg) influences the survival of sheep**, 
+we will need two of the five variables in the data: `Weight` and `Survival`. 
 We will not need `Year`, `PopSize` and `Age`. 
 
 The response variable then is `Survival`, 
 which is a binary variable (it has two outcomes 0/1). 
-The explanatory variable is `Weight`, which is numeric. 
+The explanatory variable is `Weight`, which is continuous numeric. 
 
 </br>
 
@@ -236,6 +251,7 @@ The explanatory variable is `Weight`, which is numeric.
 </br>
 
 ### Theory
+
 Every model that is created needs to be represented mathematically. 
 This representation describes how it was generated.
 
