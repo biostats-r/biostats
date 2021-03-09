@@ -37,8 +37,9 @@ sheep_data <- sheep_data[is.na(sheep_data$Age)==FALSE,]
 
 # create some example data
 set.seed(2020)
-your_data <- example_data <- tibble(x = c(rnorm(50, 5, 3), rnorm(50, 10, 3)),
-                           y = (c(sample(0:1, 50, replace = TRUE, 
+your_data <- example_data <- tibble(explanatory = c(rnorm(50, 5, 3), 
+                                                    rnorm(50, 10, 3)),
+                           response = (c(sample(0:1, 50, replace = TRUE, 
                                       prob = c(0.8, 0.2)), 
                                 sample(0:1, 50, replace = TRUE,
                                        prob = c(0.2, 0.8)))))
@@ -118,9 +119,9 @@ Yes or No, etc, anything with only two outcomes.
 
 ```{r nonlinear-plot, include = TRUE, echo = FALSE, , fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
 
-ggplot(aes(x, y), data = example_data)+
+ggplot(aes(x = explanatory, y = response), data = example_data)+
   geom_point(shape = 16)+
-  geom_smooth(method="glm", method.args = list(family="binomial"), 
+  geom_smooth(method=stats::glm, method.args = list(family="binomial"), 
               se=TRUE)
 
 ```
@@ -484,7 +485,7 @@ including your data frame name as the data argument.
 
 ```{r model-example, include=TRUE, echo=TRUE, eval=TRUE}
 
-GLMModelObject <- lm(response ~ explanatory, data = your_data,
+GLMModelObject <- glm(response ~ explanatory, data = your_data,
                      family = binomial(link = "logit"))
 
 ```
@@ -547,103 +548,204 @@ coef(sheep_model)
 
 ### Theory
 
-We have introduced the model parameters of a Binomial GLM in section: 
-$\color{orange}\alpha =$ the intercept; $\color{blue}{\beta_i}'s = $ 
-the slope of the line (steepness/gradient).
+We introduced the model parameters of a Binomial GLM in the model theory
+section above: 
+$\color{orange}\alpha =$ the intercept; $\color{blue}{\beta_i} = $ 
+the slope of the model line (steepness/gradient).
 
 **But what do these parameters really mean?**
 
 To fully understand the parameters and what they mean, we have to note that 
 there is a non-linear relationship between the explanatory and response 
-variable. To interpret the parameters, 
+variable on the scale of the observed data. 
+
+To interpret the parameters, 
 we have to recall the linear predictor and the link function.
 
-*Figure: Illustration of the logistic regression curve and the data.*
-
-The linear predictor is $\eta = \color{orange}\alpha + \color{blue}{\beta}X_i$. 
-The $\eta$ is the log odds of the probability. That is:
+The linear predictor is $\eta = \color{orange}\alpha + \color{blue}{\beta_i}X_i$. 
+The $\eta$ in this case is the log odds of the probability of success ($p$).  
+$p$ is what we are trying to estimate. 
+That is:
 
 $$
 log\bigg(\frac{p}{1-p}\bigg) = \eta = \color{orange}\alpha + \color{blue}{\beta}X_i.
 $$
 
-Then on the inverse logit scale, 
+You might recognise the first part of this formula from the introduction of the
+logit link function above, it is the logit link. Note that on the scale of the
+link, the model line will be straight. However, on the original scale will be 
+curved. 
+
+To relate the linear predictor back to the original scale of the data and $p$. 
+It is necessary to take the inverse of the link function like using 
+the below equation:
 
 $$
 p = \frac{1}{1 + e^{- \eta}} = \frac{1}{1 + e^{-(\color{orange}\alpha + \color{blue}{\beta}X_i)}}.
 $$
 
-Therefore, we can interpret the parameters on the original scale or on the 
-transformed scale. 
+Therefore, it is possible to interpret the parameters on the original scale 
+or on the link scale. We will discuss both options here. 
 
-Moreover, we will also need to describe the concept of odds to be able to 
-fully understand the interpretation of the parameters. 
-Let's discuss that now.
+</br>
 
-**Odds Ratio**
+#### Parameters on the logit scale
+
+On the logit scale, the response will be the log odds of $Y$. 
+
+Odds are often used in betting.
+Odds of 10:1 mean for every 1NOK you bet, you win 10NOK.
+The betting companies assume that for every 1 success
+there will be 10 failures.
+
+To get to the log odds there are a few steps.
+
+1. We need the probability of success: $\frac{1}{(1+10)}$ = $0.09$
+
+2. Next we use that probability to find the odds:
+$\frac{0.09}{(1-0.09)} = 0.0989$
+ 
+3. To get to the log odds, we take the log of 2:
+$log(\frac{0.09}{(1-0.09)}) = -2.31$
+
+Step 3 should look familiar. It is the same as the link 
+function in the Binomial GLM. 
 
 **$\color{orange}{\alpha} \color{orange}{, the intercept}$**
 
-THis is the parameter that gives the value of $Y$ when $X=0$. 
+This is the parameter that gives the value of the log odds of $Y$ when $X = 0$.
 
-For X (Weight) = 0, 
+**$\color{blue}{\beta} \color{blue}{, the slope}$**
 
-$$
-p = \frac{1}{1+e^{-(-8.2109 )}} = 0.0002716
-$$
+This gives the amount of change in the log odds of $Y$ as the value of $X$ 
+changes by one unit. 
 
-```{r example-results-plot, include = TRUE, echo = FALSE}
+```{r log-odds-plot, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue"}
 
-#ggplot(example_data, aes(x= Weight, y = as.numeric(Survival)-1))+
- # geom_point(colour = "grey70")+
-#  geom_smooth(method="glm", method.args = list(family="binomial"), se=F, colour = "black")+
- # geom_point(aes(x=0, y= 0.002716), colour="orange")+
-  #theme_minimal()+
-  #ylab("Survival Probability")
+example_data <- mutate(example_data,
+                       logity = predict.glm(GLMModelObject, 
+                                            newdata = example_data,
+                                            type="link"))
 
+ggplot(example_data, aes(x = explanatory, y = logity))+
+ labs(x = "x",
+      y = "log odds of y",
+      title = "Example of results of GLM on logit scale")+
+  geom_line(aes(x = explanatory, y = logity),
+            colour = "blue")+
+  geom_point(aes(x = 0, y = coef(GLMModelObject)[1],
+                 colour = "orange"), size = 4)+
+  theme(legend.position = "none")
+ 
 ```
 
-**$\color{blue}{\beta} \color{orange}{, the slope}$**
 
-This gives the amount of change in the *log odds* of $Y$ as the value of $X$ 
-changes by a unit. 
-In our example data, $\color{blue}{\beta} = 0.3171$ means that for every 1 kg 
-increase in the weight of the sparrow, the *log odds* of survival goes up 
-0.3171 times. 
+#### Parameters on the original scale
 
-*What would this look like on the original scale?*
+On the original scale, the response will be $Y$, which is a probability of 
+success (e.g. survival, presence etc). 
 
-For X (Weight) = 24, 
+**$\color{orange}{\alpha} \color{orange}{, the intercept}$**
 
-$$
-p = \frac{1}{1+e^{-(-8.2109 + 0.3171*24)}} = 0.35
-$$
-
-For X (Weight) = 25, 
+To find the expected value of $Y$ when $X = 0$. You need to convert the 
+estimate of $\alpha$ from the logit scale back to the original scale using the
+equation for the inverse of the logit link: e.g.
 
 $$
-p = \frac{1}{1+e^{-(-8.2109 + 0.3171*55)}} = 0.43
+p = \frac{1}{1+e^{-(\alpha)}}
 $$
 
-We can see that the survival probability increases as the weight of the species 
-increases. 
-However it should be noted that the change induced by $\color{blue}{\beta}$ 
-is not the same for ever $X$ (on the original scale). 
-It is only linear on the link scale. 
+This can be done in R.
 
-```{r, include = TRUE, echo = FALSE}
-#ggplot(example_data, aes(x= Weight, y = as.numeric(Survival)))+
-#  geom_point(colour = "grey70")+
-#  geom_smooth(method="glm", method.args = list(family="binomial"), se=F)+
-#  theme_minimal()+
-#  ylab("Survival Probability")
+```{r intercept-convert, include = TRUE, echo = TRUE}
+
+# estimate of the intercept on logit scale (log odds of y)
+
+coef(GLMModelObject)[1]
+
+# convert to original scale (a probability of success)
+
+1/(1 + exp(-(coef(GLMModelObject)[1])))
+ 
 ```
-**Figure 4: Plot of regression line and data.**
 
-It is worth noting that $\alpha$ and $\beta$ control the position of the 
-regression line. They are called the systematic part of the model and 
-is linked to the response $Y$ to the covariate $X$ by the link function. 
-These are used by `geom_smooth()` to plot the logistic regression. 
+**$\color{blue}{\beta} \color{blue}{, the slope}$**
+
+On the original scale the slope parameter has a somewhat different meaning. On
+the logit scale, the slope captured a linear relationship. 
+However, on the 
+original scale, the relationship between $X$ and $Y$ is not linear. 
+As a result,
+the gradient of the model line will be different for different $X$ values 
+(see \@ref(fig:original-scale-example)). 
+
+```{r original-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the original data. Intercept in orange and slope in blue", fig.height=150}
+
+newdata <- data.frame(explanatory = -5:20)
+
+newdata <- mutate(newdata, 
+                  predictions = predict(GLMModelObject, newdata))
+
+newdata$predictions2 <- exp(newdata$predictions)/(1+exp(newdata$predictions))
+
+example_data <- mutate(example_data, 
+                       predictions = predict(GLMModelObject,
+                                             example_data,
+                                             type = "response"))
+
+ggplot(example_data, aes(x = explanatory, y = response))+
+ geom_point(aes(x = explanatory, y = response),
+            colour = "grey70", size = 3)+
+ labs(x = "x",
+      y = "y",
+      title = "Example of results of GLM on original")+
+  geom_line(aes(x = explanatory, y = predictions),
+            colour = "blue")+
+  geom_point(aes(x = 0, y = 1/(1+exp(-(coef(GLMModelObject)[1]))),
+                 colour = "orange"), size = 4)+
+  theme(legend.position = "none")
+ 
+```
+
+The estimate of the $\beta$ coefficient on the logit scale, will tell you about
+the strength and direction of the relationship between $X$ and $Y$. 
+This is the
+case even though this relationship will not be linear on the original scale.
+
+To see the change in slope of the model line on the original scale you can
+predict values of $Y$ on the original scale and either plot the relationship 
+(like above in \@ref(fig:original-scale-example)) or
+simply look at the change between two $X$ values. 
+
+e.g.
+
+```{r slope-convert, include = TRUE, echo = TRUE}
+
+# predict log odds of Y when X = 2 or X = 3
+# use a linear equation for this
+
+odds_y_x2 <- coef(GLMModelObject)[1] + (coef(GLMModelObject)[2]*2)
+odds_y_x3 <- coef(GLMModelObject)[1] + (coef(GLMModelObject)[2]*3)
+
+# estimate of probability of success when X = 2
+# take inverse of the logit link
+
+prob_X2 <- 1/(1 + exp(-odds_y_x2))
+
+# estimate of probability of success when X = 3
+
+prob_X3 <- 1/(1 + exp(-odds_y_x3))
+
+# slope from X = 2 to X = 3 on original scale
+
+prob_X3 - prob_X2
+ 
+```
+
+If you were to repeat the example above for $X$ = 10 and $X$ = 11, you would not
+get the same slope on the original scale. 
+Even though it is the same on the logit scale. 
+
 
 </br>
 
