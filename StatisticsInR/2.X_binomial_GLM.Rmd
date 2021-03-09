@@ -415,6 +415,8 @@ presence.
 
 **Use when you want to link the binary data to abundance because they represent counts.**
 
+</details>
+
 </br>
 
 #### Assumptions
@@ -434,32 +436,61 @@ valid.
  * The correct distribution is used (Binomial here - it is assumed that the 
  random part of the model does follow a Binomial distribution)
 
+All of these assumptions should be met for the model to work properly and 
+they ALWAYS need to be checked. Outliers, dispersion, and variance can be 
+checked once the model has been fitted. 
+
+Independence of Y should be ensured during data collection and the correct
+distribution is determined by the characteristics of the data.
 
 </br>
 
 #### Writing the model in <i class="fab fa-r-project"></i>
 
-To fit the model in $R$, we will use the `glm()` function. 
-`glm()` stands for Generalised linear models.
+To fit the model in <i class="fab fa-r-project"></i>, we will use the `glm()` function. 
 
-`glm(y~x, data, family=binomial(link = logit))`
+`glm(y ~ x, data, family=binomial(link = logit))`
 
 The `glm()` function takes several arguments:
 
- * formula in form: `y~x`
+ * formula in form: `y ~ x` (<span style="color:orange">systematic part</span>)
 
  * data: your data object.
 
- * family: specify the link function. In our case, the binomial family. 
+ * family: specifies the distribution used for the 
+ <span style="color:purple">random part</span> of the model and the 
+ <span style="color:magenta">link function</span>. 
+ In this case, 
+ the model uses the binomial family with a logit link. 
 
-The function will fit regression model using **maximum likelihood estimation**
-and gives us the maximum likelihood estimates of $\color{orange}\alpha$ and $\color{blue}{\beta_i's}$ as an output. 
+The function will fit the GLM using **maximum likelihood estimation**
+and gives us the maximum likelihood estimates of $\color{orange}\alpha$ and
+$\color{blue}{\beta_is}$ as an output. 
 
-To begin with, we will need to identify the formula argument, the `y~x` part. 
-The $y$ is the response variable (the variable we seek to explain) and 
-$X$ to be an explanatory variable (the thing we assume affects the response). 
-As such we need to identify which variable is your response and which is 
+The formula part `y ~ x`, is the same as in the function `lm()`.
+The $y$ is the response variable and $x$ is an explanatory variable. 
+To run the GLM in <i class="fab fa-r-project"></i> first it is necessary to
+identify which variable is the response and which is/are 
 explanatory.
+
+</br>
+
+Once you have an identified response and explanatory variable/variables, you
+can then plug these variables into the `glm()` function in the below format 
+using the column names in place of `y` and `x` and 
+including your data frame name as the data argument. 
+
+</br>
+
+```{r model-example, include=TRUE, echo=TRUE, eval=TRUE}
+
+GLMModelObject <- lm(y ~ x, data = YourData,
+                     family = binomial(link = "logit"))
+
+```
+
+Running the `lm()` as illustrated above runs the linear regression model 
+and saves the output as a 'ModelObject'.
 
 From our example question, we can note that `Survival` is the response variable 
 and `Weight`is the explanatory variable. 
