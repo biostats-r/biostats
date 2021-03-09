@@ -509,33 +509,34 @@ coef(GLMModelObject)
 
 </br>
 
-This worked example demonstrates how to fit a linear regression model in $R$ 
-using the `glm()` function for the sheep data example. 
+This worked example demonstrates how to fit a GLM in $R$ 
+using the `glm()` function for the Soay sheep data example. 
 
 In this example, we are asking:
-**Does weight affect the survival of sheep?**
+**Does body weight affect the survival probability of sheep?**
 
-This question has been posed to suggest that we assume weight of the sheep has 
-an effect on the survival of the sheep. 
-Therefore the survival of the sheep (0 or 1) is the response ($Y$) and 
-weight ($X$) is the explanatory variable. 
+The survival of the sheep (0 or 1) is the response ($Y$) and 
+body weight (kg) ($X$) is the explanatory variable. 
 
-We put these variables in the `glm` function in the below format.
+We put these variables in the `glm()` function in the below format.
 
 ```{r sheep-model, include = TRUE, echo = TRUE}
 
-sheepModel <- glm(Survival~ Weight, data = sheep_data, family = "binomial")
+sheep_model <- glm(Survival ~ Weight, data = sheep_data, 
+                   family = binomial(link = "logit"))
 
 ```
 
-We have run the model and have assigned it to an object name. 
+We have run the model and have assigned it to an object name. A logit link was
+used as these data do not come from a latent continuous variable or from counts, 
+so we can use the default/canonical link function here. 
 
-Let us take a look at the maximum likelihood estimates of our model parameters ($\color{orange}\alpha$, $\color{blue}{\beta_1}$ and $\color{blue}{\beta_2}$) 
+Let us take a look at the maximum likelihood estimates of our model parameters ($\color{orange}\alpha$, $\color{blue}{\beta}$) 
 using the `coef()`.
 
 ```{r coef-sheep-model, include = TRUE, echo = TRUE}
 
-coef(sheepModel)
+coef(sheep_model)
 
 ```
 
