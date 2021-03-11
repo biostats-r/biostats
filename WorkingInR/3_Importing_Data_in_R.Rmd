@@ -46,6 +46,13 @@ knitr::kable(table, caption  ="_A simple table with header_")
 ```
 
 In this example, the table consists of 4 variables (columns) and 12 observations (rows) in addition to the header (top row). 
+All cell contents are clearly delimited.  
+
+Below is an example of a non-tabular dataset. Here, each profile contains two lines with a `field: value` pair: 
+
+```{r nontabular, echo = FALSE}
+cat(readLines('data/profile.txt'), sep = '\n')
+```
 
 
 ## About tidy data
@@ -83,18 +90,18 @@ knitr::include_graphics("Pics/csv.png")
 
 For information, this file matches the example in Table \@ref(tab:kable).
 Each line corresponds to a row in the table (including header) and cell contents are separated with a comma `,`.
-Note that `.` is used as decimal separator.
+Note that the period symbol `.` is used as decimal separator.
 
 The use of commas in the CSV format is however not universal. 
-Other symbols such as `;` may be used as delimiter.
-This is the case in several European countries where commas are decimal separator, a semi-colon `;` delimits data fields.
+Other symbols such as a semi-colon `;` may be used as a delimiter.
+This is the case in several European countries where commas are decimal separator.
 Here is the same data set as above, this time in the European format:
 
 ``` {r csv2-data, echo=FALSE, fig.cap="_Contents of another CSV file_", out.width="75%"}
 knitr::include_graphics("Pics/csv2.png")
 ```
 
-Finally, you should know that there exists other delimiter-separated formats, in which delimiters like `|` or tabs replace commas. 
+Finally, you should know that there exist other delimiter-separated formats, in which delimiters like `|` or tabs replace commas. 
 
 
 ## Know your data!
@@ -108,13 +115,19 @@ Among these reasons are:
 
 It is thus very important to know what your CSV file is made of.
 We therefore recommend to systematically inspect your data file before importing in R.
-One way to do it is simply to open the file in a text editor (or visualize it in RStudio) and define:
+One way to do it is to open the file with `cat(readLines('file.txt'), sep = '\n')` and define:
 
 + which symbol is used as decimal separator (`,` or `.`),
-+ which symbol is used as delimiter (`,` or `;`).
++ which symbol is used as delimiter (`,` or `;`).  
+
+Here is our previous example:
+```{r readLines, echo = TRUE}
+cat(readLines('data/weather.csv'), sep = '\n')
+```
+In this file, the decimal separator is `.` and the delimiter is `,`.
 
 
-# The package readr
+# Import with readr
 
 `readr` comes with several functions that read data files. 
 Among them are:
@@ -132,19 +145,23 @@ We will focus essentially on `read_delim()` as it is a general function that can
 `read_delim()` is a simple function that does several things at once. 
 First, it finds and reads the file to import. 
 Then it looks at the first 1000 rows of the file and guesses the number of variables and rows, and the data type for each variable. 
-Finally, it displays the data in a tibble keeping track of the order of both the columns and rows, and the nature of the data.
+Finally, it displays the data as a tibble keeping track of the order of both the columns and rows, and the nature of the data.
+
+NB: the function does not automatically *store* the data after reading the file. 
+This is why the tibble produced by `read_delim()` must be assigned to an object using `<-`.  
 
 `read_delim()` has two main mandatory arguments:
 
 + `file = " "` which defines where to find the data file,
 + `delim = " "` which defines the symbol used as delimiter.
 
-Note: when locating the file, R/RStudio uses the location of the current RStudio project as a root. 
-This means that you may simply write the file name if the file is in the the same folder as your `.Rproj` file. 
+When searching for the file, R/RStudio uses the location of the current RStudio project as a root. 
+As a consequence, you may simply write the file name if the file is in the same folder as your `.Rproj` file. 
 Alternatively, write `[subfolder]/[filename]` if the file is in a subfolder.
 For more info about projects, read section 5 of the chapter [Getting started with R](LINK){target="_blank"}.
 
-In the following example, we import the file `weather.csv` located in the subfolder `data` of the current RStudio project into the object `weather`. In `weather.csv`, the delimiter is `,` and the decimal separator is `.`
+In the following example, we import the file `weather.csv` located in the subfolder `data` of the current RStudio project into the object `weather`. 
+In `weather.csv`, the delimiter is `,` and the decimal separator is `.`
 
 ```{r delim-csv, echo=TRUE} 
 weather <- read_delim(file = "data/weather.csv", 
@@ -169,7 +186,7 @@ weather
 ### Choose the right delimiter
 
 The example above is rather simple and straight forward, but you may experience some issues depending on the content of the CSV file.
-Relatively often, one tries to import CSV files wrongly assuming that `,` has been used as delimiter.
+Relatively often, one tries to import CSV files wrongly assuming that `,` has been used as a delimiter.
 Here is what happens when doing this assumption for a file (`weather2.csv`) where `;` was in fact used as delimiter:
 
 ```{r delim-csv2, echo=TRUE} 
@@ -190,13 +207,14 @@ weather2
 
 
 This shows how important it is to review the data before importing it. 
-A quick check would have revealed the use of `;` as delimiter in `weather2.csv`, and you would have certainly used the follow code to import it. 
+A quick check with `cat(readLines('data/weather2.csv'), sep = '\n')` would have revealed the use of `;` as delimiter in `weather2.csv`, and you would have certainly used the follow code to import it. 
 
 ```{r delim-csv2bis, echo=TRUE} 
 weather2 <- read_delim(file = "data/weather2.csv", 
                        delim = ";")
 ```
-Here, the message `Column specification` tells you that the content of the columns `month` and `Wind (m/s)` has been recognized as of data type `character`, and that the two other columns have been recognized as `double`. While `read_delim()` got things right about the number of variables, something went wrong with the variables as we could expect `Wind (m/s)` to be recognized as `double`.
+Here, the message `Column specification` tells you that the content of the columns `month` and `Wind (m/s)` has been recognized as of data type `character`, and that the two other columns have been recognized as `number`. 
+While `read_delim()` got things right about the number of variables, something went wrong with the variables as we could expect `Wind (m/s)` to be recognized as `double`.
 To find out about this issue we need to review the imported data in the object `weather2` and compare it to the original file `weather2.csv`.
 
 ### Review the imported data
@@ -227,7 +245,8 @@ knitr::include_graphics("Pics/comp2.png")
 ## read_csv()
 
 As we have seen in the section above, `read_delim()` can read CSV files where `,` and `;` are used as delimiters.
-`readr` also comes with other functions such as `read_csv()` and its twin `read_csv2()` which are "clones" of `read_delim()` where the argument `delim =` is preset to  `delim = ","` and `delim = ";"`, respectively. 
+`readr` also comes with other functions such as `read_csv()` and its twin `read_csv2()`.
+These are "clones" of `read_delim()` where the argument `delim =` is preset to  `delim = ","` and `delim = ";"`, respectively. 
 Thus, the only argument that is strictly required is `file = " "` to determine the path of the file.
 
 Here are two examples. The first one shows the use of `read_csv()`:
@@ -255,15 +274,15 @@ Note the message above `Column specification` that indicates which symbols `read
 weather_csv2
 ```
 
-## Usefuls arguments
+## Useful arguments
 
 Both `read_delim()`, `read_csv()` and `read_csv2()` have a multitude of arguments that allow for adjusting the way data is read and displayed. Here we review a handful of them.
 
 ### n_max
 
 `n_max` sets a limit to the number of *observations* to be read.
-Note that `n_max` does not count the first row (header) as an observation. 
-Thus the first row of the data file is kept as header in the tibble.
+Note that `n_max` does not consider the first row (header) of the data file as an observation. 
+
 
 ```{r nmax, echo=TRUE} 
 weather <- read_delim(file = "data/weather.csv", 
@@ -277,7 +296,7 @@ weather
 
 ### skip
 
-The argument `skip` may be used to skip one or several rows.  
+The argument `skip` may be used to skip rows when reading the data file.  
 Be aware that:
 
 + the header in the original data file counts as one row,
@@ -295,12 +314,23 @@ weather <- read_delim(file = "data/weather.csv",
 weather
 ```
 
-As expected, the first row (with the header) is skipped, but the data from `January` have become the header for the tibble.
+As expected, the first row (with the header) is skipped, and the data from the observation `January` have become the header of the tibble.
 The argument `col_names()` introduced below will be useful for solving this issue.
 
 ### col_names
 
-The argument `col_names` may be used to **add** names to the variables/columns.
+The argument `col_names` may be used to define the name of the variables/columns of the tibble.
+If you use `col_names = TRUE`, the first row of the data file defines the name of the variables. 
+If you use `col_names = FALSE`, the first row of the data file will be the observation in the resulting tibble, and the variables will be named `X1`, `X2`, etc.
+
+```{r col-names0, echo=TRUE} 
+weather <- read_delim(file = "data/weather.csv", 
+                      delim = ",", 
+                      col_names = TRUE)
+```
+
+Otherwise, `col_names =` may be followed by the actual variable names that you want to use.
+In that case, write `col_names = c()` and list the names between the parentheses.
 Be aware that:
 
 + the names that you input will be placed on top of the tibble,
@@ -356,7 +386,7 @@ Now the tibble displays like this, with the correct data types for each column:
 ```{r col-types4, echo=TRUE} 
 counts
 ```
-If you only need to modify one or a few variables, you must name it/them when write the code:
+If you only need to modify one or a few variables, you must name it/them when writing the code:
 
 ```{r col-types5, echo=TRUE} 
 counts <- read_delim(file = "data/groups.csv", 
@@ -369,10 +399,32 @@ The tibble displays like this:
 counts
 ```
 
+
+
+Note that `col_types` is particularly useful when importing tabular data that includes formatted dates.
+Dates are usually recognized as `character` when their format does not match the expected format set as default (locale, etc).
+In the following example, dates entered  as `yyyy-mm-dd` in the last column are recognized as of type `date`:
+```{r col-types-dates1, echo=TRUE} 
+countsdates <- read_delim(file = "data/groups-dates1.csv", 
+                     delim = ",")
+```
+
+However, in the example below, dates entered as `dd-mm-yyyy` are converted to `character`:
+
+```{r col-types-dates2, echo=TRUE} 
+countsdates <- read_delim(file = "data/groups-dates2.csv", 
+                     delim = ",")
+```
+The following code fixes this problem:
+
+```{r col-types-dates3, echo=TRUE} 
+countsdates <- read_delim(file = "data/groups-dates2.csv", 
+                     delim = ",",
+                     col_types = cols(date = col_date("%d-%m-%Y")))
+```
+
+
 You will find the whole list of `cols()` parameters for `col_types`  [here](https://readr.tidyverse.org/reference/cols.html){target="_blank"}.  
-
-
-
 
 
 ### Further Reading {- .literature .toc-ignore}
