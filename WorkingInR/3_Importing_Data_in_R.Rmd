@@ -48,7 +48,9 @@ knitr::kable(table, caption  ="_A simple table with header_")
 In this example, the table consists of 4 variables (columns) and 12 observations (rows) in addition to the header (top row). 
 All cell contents are clearly delimited.  
 
-Below is an example of a non-tabular dataset. Here, each profile contains two lines with a `field: value` pair: 
+Below is an example of a *non*-tabular dataset. 
+This dataset is a list of profiles with recurrent fields (`Name`, `Position`, `Institution`). 
+Each profile contains three lines with a `field:value` pair. 
 
 ```{r nontabular, echo = FALSE}
 cat(readLines('data/profile.txt'), sep = '\n')
@@ -64,8 +66,25 @@ Briefly, tidy data follows a short series of rules:
 + each observation in the data set is presented in a specific row,
 + each cell at the intersection of a row and a column contains a single value.
 
+The following figure illustrates well these rules.
+``` {r threerules, echo=FALSE, fig.cap='_In a tidy dataset, variables are in columns, observations are in rows, and values are in cells._ --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html) - [CC BY-NC-ND 3.0 US](https://creativecommons.org/licenses/by-nc-nd/3.0/us/)'}
+knitr::include_graphics("Pics/tidy1.png")
+```
+
+
+The dataset presented in Table \@ref(tab:kable) respects all three rules, and is thus a tidy dataset.  
+
+On the contrary, the following dataset is *not* tidy:
+``` {r tidy, echo=FALSE, message=FALSE}
+table2 <- read_delim(file = "data/nottidy.csv", delim = ";")
+rmarkdown::paged_table(table2)
+```
+Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).   
+
 Importing data from a file containing tidy data is a great way to start your work, but it is *not* a prerequisite to data import.
 As long as your data is tabular, you will be able to import it in R, and later you will have the chance to tidy it (see chapter [Data handling and transforming](link){target="_blank"}).
+
+
 
 
 ## File formats
@@ -321,15 +340,22 @@ The argument `col_names()` introduced below will be useful for solving this issu
 
 The argument `col_names` may be used to define the name of the variables/columns of the tibble.
 If you use `col_names = TRUE`, the first row of the data file defines the name of the variables. 
-If you use `col_names = FALSE`, the first row of the data file will be the observation in the resulting tibble, and the variables will be named `X1`, `X2`, etc.
-
-```{r col-names0, echo=TRUE} 
+```{r col-namesT, echo=TRUE} 
 weather <- read_delim(file = "data/weather.csv", 
                       delim = ",", 
                       col_names = TRUE)
+weather
+```
+If you use `col_names = FALSE`, the first row of the data file will be the first observation in the resulting tibble, and the variables will be named `X1`, `X2`, etc.
+
+```{r col-namesF, echo=TRUE} 
+weather <- read_delim(file = "data/weather.csv", 
+                      delim = ",", 
+                      col_names = FALSE)
+weather
 ```
 
-Otherwise, `col_names =` may be followed by the actual variable names that you want to use.
+`col_names =` may also be followed by the actual variable names that you want to use.
 In that case, write `col_names = c()` and list the names between the parentheses.
 Be aware that:
 
@@ -347,17 +373,6 @@ weather <- read_delim(file = "data/weather.csv",
 weather
 ```
 
-Let's now use `col_names` in combination with `skip`:
-
-```{r col-names-skip, echo=TRUE} 
-weather <- read_delim(file = "data/weather.csv", 
-                      delim = ",", 
-                      col_names = c("Month", "Temp", "Precip", "Wind"), skip = 1)
-```
-
-```{r col-names-skip2, echo=TRUE} 
-weather
-```
 
 ### col_types 
 
@@ -415,12 +430,18 @@ However, in the example below, dates entered as `dd-mm-yyyy` are converted to `c
 countsdates <- read_delim(file = "data/groups-dates2.csv", 
                      delim = ",")
 ```
-The following code fixes this problem:
+
+To solve this issue, add the function `col_date()` in `cols()` to help R understand how dates are formatted and shall be read.
 
 ```{r col-types-dates3, echo=TRUE} 
 countsdates <- read_delim(file = "data/groups-dates2.csv", 
                      delim = ",",
                      col_types = cols(date = col_date("%d-%m-%Y")))
+```
+
+The result is the following tibble now correctly formatted:
+```{r col-types-dates4, echo=TRUE} 
+countsdates 
 ```
 
 
