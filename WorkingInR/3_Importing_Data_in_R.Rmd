@@ -21,14 +21,14 @@ source("../Templates/biostats_theme.R")
 
 ### Before we start {- .facta .toc-ignore}
 
-You must be familiar with assigning data into objects, tibbles and data types (such as numeric, character, etc).
+You must be familiar with tibbles and data types (such as numeric, character, etc).
 
 # {- .toc-ignore}
 
 
 
-In this chapter, you will learn how to import data from a plain text file into a tibble. 
-We will use functions from the package `readr` which is part of the package `tidyverse`, so make sure that you have activated it with `library(tidyverse)`.  
+In this chapter, you will learn how to display tabular data from an external text file as a tibble.
+We will use functions from the package `readr` which is part of the `tidyverse` package, so make sure that you have activated it with `library(tidyverse)`.  
 
 # Tabular data
 
@@ -41,7 +41,7 @@ Here is an example of a formatted table with header:
 
 
 ``` {r kable, echo=FALSE, message=FALSE}
-table <- read_delim(file = "Files/weather.csv", delim = ",")
+table <- read_delim(file = "data/weather.csv", delim = ",")
 knitr::kable(table, caption  ="_A simple table with header_")
 ```
 
@@ -63,28 +63,39 @@ As long as your data is tabular, you will be able to import it in R, and later y
 
 ## File formats
 
-There are different formats in which tabular data is stored in plain-text files.
-The most common format is CSV, which stands for **C**omma-**S**eparated **V**alues.
-It is this format that we are going to deal with here.
-In a CSV file, the data is stored in a  similar manner to this: 
+Tabular data may be stored in files using various formats, spreadsheets, etc. 
+The most common spreadsheets store data in their own, proprietary file format, e.g. MS Excel which produces `.xls` and `.xlsx` files.
+Such formats may be a limitation to data management in R.
+Simpler formats such as plain text files with `.txt` or `.csv` should always be preferred when saving or exporting data from spreadsheets.
 
-``` {r csv-data, echo=FALSE, fig.cap="_Contents of a CSV file_", out.width="75%"}
+
+### The CSV format
+
+One of the most common format for storing tabular data in plain text files is CSV, which stands for **C**omma-**S**eparated **V**alues.
+It is this format that we are going to deal with here.
+Note that CSV-formatted files often have (but not always) a `.csv` extension. They may also have a regular `.txt` extension.  
+
+In a CSV-formatted file, the data is stored in a similar manner to this: 
+
+``` {r csv-data, echo=FALSE, fig.cap="_Contents of a CSV file viewed in the text editor Notepad_", out.width="75%"}
 knitr::include_graphics("Pics/csv.png")
 ```
 
-For information, this file (here displayed in the text editor Notepad) matches the example in Table \@ref(tab:kable).
+For information, this file matches the example in Table \@ref(tab:kable).
 Each line corresponds to a row in the table (including header) and cell contents are separated with a comma `,`.
 Note that `.` is used as decimal separator.
 
-The CSV format is however not universal. 
+The use of commas in the CSV format is however not universal. 
 Other symbols such as `;` may be used as delimiter.
-Sometimes CSV is also confused with delimiter-separated formats, in which other delimiters like `|` or tabs replace commas. 
-In European countries where commas are decimal separator, a semi-colon `;` delimits data fields in CSV files.
+This is the case in several European countries where commas are decimal separator, a semi-colon `;` delimits data fields.
 Here is the same data set as above, this time in the European format:
 
 ``` {r csv2-data, echo=FALSE, fig.cap="_Contents of another CSV file_", out.width="75%"}
 knitr::include_graphics("Pics/csv2.png")
 ```
+
+Finally, you should know that there exists other delimiter-separated formats, in which delimiters like `|` or tabs replace commas. 
+
 
 ## Know your data!
 
@@ -103,36 +114,43 @@ One way to do it is simply to open the file in a text editor (or visualize it in
 + which symbol is used as delimiter (`,` or `;`).
 
 
-# The package Readr
+# The package readr
 
-`readr` is a package which is part of the `tidyverse` family.
-`readr` comes with several functions that can import your data file. 
+`readr` comes with several functions that read data files. 
 Among them are:
 
 + `read_delim()`,
 + `read_csv()`,
 + `read_csv2()`.
 
-We will focus essentially on `read_delim()` as it can import all the formats. 
-`read_csv()` and `read_csv2()` are simplified version of `read_delim()` which are preset to import CSV files in which a comma `,` or a semi-colon `;` is defined as delimiter, respectively.
+We will focus essentially on `read_delim()` as it is a general function that can import all the formats. 
+`read_csv()` and `read_csv2()` are more specific functions which are preset to import CSV-formatted files in which a comma `,` or a semi-colon `;` is defined as delimiter, respectively.
 
 
 ## read_delim()
 
-`read_delim()` is a simple function that does several things at once. First, it finds and reads the file to import. Then it looks at the first 1000 rows of the file and guesses the number of variables and rows, and the data type for each variable. Finally, it creates a *tibble* and puts the data in it while keeping the order of both the columns and rows and the nature of the data.
+`read_delim()` is a simple function that does several things at once. 
+First, it finds and reads the file to import. 
+Then it looks at the first 1000 rows of the file and guesses the number of variables and rows, and the data type for each variable. 
+Finally, it displays the data in a tibble keeping track of the order of both the columns and rows, and the nature of the data.
 
-In its simplest form, `read_delim()` only needs to know two things about your data file:
+`read_delim()` has two main mandatory arguments:
 
-+ where to find it,
-+ which delimiter to consider.
++ `file = " "` which defines where to find the data file,
++ `delim = " "` which defines the symbol used as delimiter.
 
-The argument to locate the file on your machine is `file = " "`, and the argument to indicate the delimiter is `delim = " "`. 
+Note: when locating the file, R/RStudio uses the location of the current RStudio project as a root. 
+This means that you may simply write the file name if the file is in the the same folder as your `.Rproj` file. 
+Alternatively, write `[subfolder]/[filename]` if the file is in a subfolder.
+For more info about projects, read section 5 of the chapter [Getting started with R](LINK){target="_blank"}.
 
-In the following example, we import the file `weather.csv` located in the subfolder `Files` of the current RStudio project into the object `weather`. In `weather.csv`, the delimiter is `,` and the decimal separator is `.`
+In the following example, we import the file `weather.csv` located in the subfolder `data` of the current RStudio project into the object `weather`. In `weather.csv`, the delimiter is `,` and the decimal separator is `.`
 
 ```{r delim-csv, echo=TRUE} 
-weather <- read_delim(file = "Files/weather.csv", delim = ",")
+weather <- read_delim(file = "data/weather.csv", 
+                      delim = ",")
 ```
+
 When the function is executed, the console shows a short series of warnings and messages.
 In the frame above, the message `Column specification` tells you that the content of the column `month` has been recognized as of data type `character`, and that the three other columns have been recognized as `double` (which is similar to `numeric`).  
 
@@ -142,7 +160,7 @@ Now the tibble `weather` is available in R as you may see in the tab `Environmen
 knitr::include_graphics("Pics/csv-env.png")
 ```
 
-The content of the tibble is as follows:
+You can display the table as follows:
 
 ```{r weather, echo=TRUE} 
 weather
@@ -151,11 +169,12 @@ weather
 ### Choose the right delimiter
 
 The example above is rather simple and straight forward, but you may experience some issues depending on the content of the CSV file.
-Relatively often, one tries to import CSV files assuming that `,` has been used as delimiter.
+Relatively often, one tries to import CSV files wrongly assuming that `,` has been used as delimiter.
 Here is what happens when doing this assumption for a file (`weather2.csv`) where `;` was in fact used as delimiter:
 
 ```{r delim-csv2, echo=TRUE} 
-weather2 <- read_delim(file = "Files/weather2.csv", delim = ",")
+weather2 <- read_delim(file = "data/weather2.csv", 
+                       delim = ",")
 ```
 The message `Column specification` tells you that the content of the whole CSV file has been transferred into one single column named `month;temperature (Celsius);precipitation (mm);Wind (m/s)` and recognized as of data type `character`.
 Accordingly, the object `weather2`, now visible in the tab `Environment` (see figure \@ref(fig:csv-env2)), is described as a tibble with 12 observations and only one variable.
@@ -174,7 +193,8 @@ This shows how important it is to review the data before importing it.
 A quick check would have revealed the use of `;` as delimiter in `weather2.csv`, and you would have certainly used the follow code to import it. 
 
 ```{r delim-csv2bis, echo=TRUE} 
-weather2 <- read_delim(file = "Files/weather2.csv", delim = ";")
+weather2 <- read_delim(file = "data/weather2.csv", 
+                       delim = ";")
 ```
 Here, the message `Column specification` tells you that the content of the columns `month` and `Wind (m/s)` has been recognized as of data type `character`, and that the two other columns have been recognized as `double`. While `read_delim()` got things right about the number of variables, something went wrong with the variables as we could expect `Wind (m/s)` to be recognized as `double`.
 To find out about this issue we need to review the imported data in the object `weather2` and compare it to the original file `weather2.csv`.
@@ -193,7 +213,9 @@ This is a problem that may occur when the decimal separator used in the file is 
 To solve that issue, you must impose the separator using `locale = locale(decimal_mark = ",")`:
 
 ```{r delim-csv2ter, echo=TRUE} 
-weather3 <- read_delim(file = "Files/weather2.csv", delim = ";", locale = locale(decimal_mark = ","))
+weather3 <- read_delim(file = "data/weather2.csv", 
+                       delim = ";", 
+                       locale = locale(decimal_mark = ","))
 ```
 
 The last column is now recognized as `double` and the data in the object `weather3` matches the data in the file:
@@ -202,16 +224,16 @@ knitr::include_graphics("Pics/comp2.png")
 ```
 
 
-## Other functions
+## read_csv()
 
 As we have seen in the section above, `read_delim()` can read CSV files where `,` and `;` are used as delimiters.
-`readr` also comes with other functions such as `read_csv()` and `read_csv2()` which are "clones" of `read_delim()` where the argument `delim =` is preset to  `delim = ","` and `delim = ";"`, respectively. 
+`readr` also comes with other functions such as `read_csv()` and its twin `read_csv2()` which are "clones" of `read_delim()` where the argument `delim =` is preset to  `delim = ","` and `delim = ";"`, respectively. 
 Thus, the only argument that is strictly required is `file = " "` to determine the path of the file.
 
 Here are two examples. The first one shows the use of `read_csv()`:
 
 ```{r read-csv, echo=TRUE} 
-weather_csv <- read_csv(file = "Files/weather.csv")
+weather_csv <- read_csv(file = "data/weather.csv")
 ```
 
 The resulting tibble looks correct:
@@ -224,7 +246,7 @@ weather_csv
 The second one shows the use of `read_csv2()`:
 
 ```{r read-csv2, echo=TRUE} 
-weather_csv2 <- read_csv2(file = "Files/weather2.csv")
+weather_csv2 <- read_csv2(file = "data/weather2.csv")
 ```
 
 Note the message above `Column specification` that indicates which symbols `read_csv2()` has considered when importing the data. The resulting tibble looks correct:
@@ -232,6 +254,124 @@ Note the message above `Column specification` that indicates which symbols `read
 ```{r read-csv-tibble2, echo=TRUE} 
 weather_csv2
 ```
+
+## Usefuls arguments
+
+Both `read_delim()`, `read_csv()` and `read_csv2()` have a multitude of arguments that allow for adjusting the way data is read and displayed. Here we review a handful of them.
+
+### n_max
+
+`n_max` sets a limit to the number of *observations* to be read.
+Note that `n_max` does not count the first row (header) as an observation. 
+Thus the first row of the data file is kept as header in the tibble.
+
+```{r nmax, echo=TRUE} 
+weather <- read_delim(file = "data/weather.csv", 
+                      delim = ",",
+                      n_max = 6)
+```
+```{r nmax2, echo=TRUE} 
+weather
+```
+
+
+### skip
+
+The argument `skip` may be used to skip one or several rows.  
+Be aware that:
+
++ the header in the original data file counts as one row,
++ the first row that comes after those which have been skipped becomes the header for the resulting tibble.
+
+In the following example, we read the data file `weather.csv` and skip the first row:
+
+```{r skip, echo=TRUE} 
+weather <- read_delim(file = "data/weather.csv", 
+                      delim = ",", 
+                      skip = 1)
+```
+
+```{r skip2, echo=TRUE} 
+weather
+```
+
+As expected, the first row (with the header) is skipped, but the data from `January` have become the header for the tibble.
+The argument `col_names()` introduced below will be useful for solving this issue.
+
+### col_names
+
+The argument `col_names` may be used to **add** names to the variables/columns.
+Be aware that:
+
++ the names that you input will be placed on top of the tibble,
++ the header in the original data file will become the first row of the resulting tibble.
+Here is an example:
+
+```{r col-names, echo=TRUE} 
+weather <- read_delim(file = "data/weather.csv", 
+                      delim = ",", 
+                      col_names = c("Month", "Temp", "Precip", "Wind"))
+```
+
+```{r col-names2, echo=TRUE} 
+weather
+```
+
+Let's now use `col_names` in combination with `skip`:
+
+```{r col-names-skip, echo=TRUE} 
+weather <- read_delim(file = "data/weather.csv", 
+                      delim = ",", 
+                      col_names = c("Month", "Temp", "Precip", "Wind"), skip = 1)
+```
+
+```{r col-names-skip2, echo=TRUE} 
+weather
+```
+
+### col_types 
+
+The argument `col_types` may be used to modify the data type of the variables.
+This is useful for example when you need to set a variable as `factor` whereas R has defined it as `character`.
+Here is an example with three simple variables.
+
+```{r col-types, echo=TRUE} 
+counts <- read_delim(file = "data/groups.csv", 
+                     delim = ",")
+```
+As the message clearly indicates, the first and last variables are recognized as `double` (i.e. `numeric`) while the second one is recognized as `character`. 
+The tibble in the object `counts` displays as follows:
+```{r col-types2, echo=TRUE} 
+counts
+```
+Let's use `col_types = cols()` to manually set the data types to `double`, `factor` and `integer`, respectively.
+
+```{r col-types3, echo=TRUE} 
+counts <- read_delim(file = "data/groups.csv", 
+                     delim = ",", 
+                     col_types = cols(col_double(), col_factor(), col_integer()))
+```
+
+Now the tibble displays like this, with the correct data types for each column:
+```{r col-types4, echo=TRUE} 
+counts
+```
+If you only need to modify one or a few variables, you must name it/them when write the code:
+
+```{r col-types5, echo=TRUE} 
+counts <- read_delim(file = "data/groups.csv", 
+                     delim = ",", 
+                     col_types = cols(group = col_factor()))
+```
+
+The tibble displays like this:
+```{r col-types6, echo=TRUE} 
+counts
+```
+
+You will find the whole list of `cols()` parameters for `col_types`  [here](https://readr.tidyverse.org/reference/cols.html){target="_blank"}.  
+
+
 
 
 
