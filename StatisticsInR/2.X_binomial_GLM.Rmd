@@ -290,7 +290,7 @@ $\eta$ with every unit change of $X$.
 This part of the model represents the spread of the actual data points around
 the linear predictor. 
 This random part is how we deal with the errors (residuals) of the model
-$\color{red}\epsilon_i$. 
+<span style="color:red">$\varepsilon$</span>. 
 In linear models, this part was assumed to be Normal. 
 In a Binomial GLM, it is assumed to be Binomially distributed (the clue is in 
 the name). 
@@ -465,8 +465,9 @@ The `glm()` function takes several arguments:
  the model uses the binomial family with a logit link. 
 
 The function will fit the GLM using **maximum likelihood estimation**
-and gives us the maximum likelihood estimates of $\color{orange}\alpha$ and
-$\color{blue}{\beta_is}$ as an output. 
+and gives us the maximum likelihood estimates of 
+<span style="color:orange">$\alpha$</span> and
+<span style="color:blue">$\beta_is$</span> as an output. 
 
 The formula part `y ~ x`, is the same as in the function `lm()`.
 The $y$ is the response variable and $x$ is an explanatory variable. 
@@ -496,7 +497,8 @@ and saves the output as a `GLMModelObject`.
 We can then view our results from the model object by using the function `coef()`. 
 This will take the output of the `glm()`, the model object, 
 as its argument and extracts the maximum likelihood estimates of 
-$\color{orange}\alpha$ and $\color{blue}{\beta}$.
+<span style="color:orange">$\alpha$</span> and 
+<span style="color:blue">$\beta$</span>.
 
 ```{r coef-example, include = TRUE, echo = TRUE}
 
@@ -532,7 +534,8 @@ We have run the model and have assigned it to an object name. A logit link was
 used as these data do not come from a latent continuous variable or from counts, 
 so we can use the default/canonical link function here. 
 
-Let us take a look at the maximum likelihood estimates of our model parameters ($\color{orange}\alpha$, $\color{blue}{\beta}$) 
+Let us take a look at the maximum likelihood estimates of our model parameters (<span style="color:orange">$\alpha$</span>, 
+<span style="color:blue">$\beta$</span>) 
 using the `coef()`.
 
 ```{r coef-sheep-model, include = TRUE, echo = TRUE}
@@ -550,7 +553,8 @@ coef(sheep_model)
 
 We introduced the model parameters of a Binomial GLM in the model theory
 section above: 
-$\color{orange}\alpha =$ the intercept; $\color{blue}{\beta_i} = $ 
+<span style="color:orange">$\alpha$</span> = 
+the intercept; <span style="color:blue">$\beta_i$</span> = 
 the slope of the model line (steepness/gradient).
 
 **But what do these parameters really mean?**
@@ -611,11 +615,11 @@ $log(\frac{0.09}{(1-0.09)}) = -2.31$
 Step 3 should look familiar. It is the same as the link 
 function in the Binomial GLM. 
 
-**$\color{orange}{\alpha} \color{orange}{, the intercept}$**
+**<span style="color:orange">$\alpha$, the intercept</span>**
 
 This is the parameter that gives the value of the log odds of $Y$ when $X = 0$.
 
-**$\color{blue}{\beta} \color{blue}{, the slope}$**
+**<span style="color:blue">$\beta$, the slope</span>**
 
 This gives the amount of change in the log odds of $Y$ as the value of $X$ 
 changes by one unit. 
@@ -645,7 +649,7 @@ ggplot(example_data, aes(x = explanatory, y = logity))+
 On the original scale, the response will be $Y$, which is a probability of 
 success (e.g. survival, presence etc). 
 
-**$\color{orange}{\alpha} \color{orange}{, the intercept}$**
+**<span style="color:orange">$\alpha$, the intercept</span>**
 
 To find the expected value of $Y$ when $X = 0$. You need to convert the 
 estimate of $\alpha$ from the logit scale back to the original scale using the
@@ -669,7 +673,7 @@ coef(GLMModelObject)[1]
  
 ```
 
-**$\color{blue}{\beta} \color{blue}{, the slope}$**
+**<span style="color:blue">$\beta$, the slope</span>**
 
 On the original scale the slope parameter has a somewhat different meaning. On
 the logit scale, the slope captured a linear relationship. 
@@ -680,13 +684,6 @@ the gradient of the model line will be different for different $X$ values
 (see \@ref(fig:original-scale-example)). 
 
 ```{r original-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the original data. Intercept in orange and slope in blue", fig.height=150}
-
-newdata <- data.frame(explanatory = -5:20)
-
-newdata <- mutate(newdata, 
-                  predictions = predict(GLMModelObject, newdata))
-
-newdata$predictions2 <- exp(newdata$predictions)/(1+exp(newdata$predictions))
 
 example_data <- mutate(example_data, 
                        predictions = predict(GLMModelObject,
@@ -746,108 +743,118 @@ If you were to repeat the example above for $X$ = 10 and $X$ = 11, you would not
 get the same slope on the original scale. 
 Even though it is the same on the logit scale. 
 
-
-</br>
-
-#### Interpreting the parameters
-
-Now we know what each of the parameters in a Binomial GLM
-mean, we can now think about interpreting them. 
-
-**Which of the three parameters do you think is most important for answering
-our research question "Does Weight influence Survival probability?"?**
-
-</br>
-
-<details><summary>I had a go, now show me the answer.</summary></span>
-
-**The slope ($\beta$).** This is because the gradient or slope of the regression
-line is what tells us how strong and in what direction the relationship between 
-$X$ and $Y$ is. 
-While we need to estimate the intercept of the line, 
-it does not directly tell us about the relationship of interest.
-
-To predict, we need all of the parameters. 
-
-</details>
-
 </br>
 
 ### Worked example 
 
-In the previous section, we fit a binomial GLM using the `glm()` function and 
+In the previous section, we fit a Binomial GLM using the `glm()` function and 
 looked at the estimates of some parameters using the `coef()` function. 
-In this section, we will use the model theory to interpret what those parameters 
+In this section, we will use the model theory to interpret what those parameters
 mean. 
 
-**$\color{orange}{The intercept and slope}$**
+#### <span style="color:orange">The intercept</span>
 
-We have already seen that the parameters of the intercept and slope control the 
-regression line. These estimates are obtained from the `coef()` function in R.
-
-For our sheep data model, the estimates are:
+For our sheep data model, the estimate of the intercept is:
 
 ```{r coef-sheep-model2, include = TRUE, echo = TRUE}
 
-coef(sheepModel)
+coef(sheep_model)[1]
 
 ```
 
-We convert these estimates to the original scale as:
+This is the estimate of the log odds of survival for a sheep which has a body weight of 0 kg. 
+The intercept estimate is a log odds of `r coef(sheep_model)[1]` of survival 
+for a sheep that weighs 0 kg. 
+
+To get the probability of survival for a sheep with a body
+weight of 0 kg we need to convert these estimates to the original scale using
+the code below:
 
 ```{r back-transform-sheep, include = TRUE, echo = TRUE}
 
-1/(1+exp(-coef(sheepModel)))
+1/(1+exp(-coef(sheep_model)[1]))
 
 ```
 
-The intercept is -0.2392, and it means that the log odds of the survival of 
-sheep falls by 0.2392 when the weight of the sheep is $0$ kg and the population 
-size is $0$. 
 In other words, 
-the survival probability of a sheep is 0.107 when the weight is $0$ kg. 
+the survival probability of a sheep is `r 1/(1+exp(-coef(sheep_model)[1]))` 
+when their weight is 0 kg. 
+
 In this example, the intercept is not very interesting, 
 as it does not make a lot of biological sense to know the expected survival 
-probability of sheep when their weight is $0$ kg. 
-A sheep born at anytime will weigh more than $0$ kg. 
+probability of sheep when their weight is 0 kg. 
+A sheep born at anytime will weigh more than 0 kg. 
 
-The slope of `Weight` are interesting to us since they tell us the direction 
-and the strength between the weight of the sheep and the survival of the sheep. 
+#### <span style="color:blue">The slope</span>
 
-In this case, our model estimates that the log odds of the survival of sheep 
-increases by $0.1817$ when the weight of the sheep increases by a 1 kg. 
+The estimate of the slope of the relationship between body weight and 
+survival probability is interesting to us since it can tell us the direction
+and the strength of the effect of body weight on survival of the sheep. 
 
-**Plotting the Results**
-As well as looking at the maximul likelihood estimates of the parameters from 
-the Binomial GLM, we can also plot the results.
 
-To do this, we use the `ggplot()` with `geom_line()`. 
-We will also use a new function called `predict()`.
+```{r coef-sheep-model3, include = TRUE, echo = TRUE}
+
+coef(sheep_model)[2]
+
+```
+
+In this case, our model estimates that the log odds of the survival of the sheep
+increases by `r coef(sheep_model)[2]` when the weight of the sheep increases by
+1 kg. This shows a positive relationship between body weight and survival 
+probability. 
+
+To see what this effect looks like on the original scale, it is easiest to
+plot the results using predictions on the response scale (original scale). This
+is what we do below. 
+
+#### Plotting the Results 
+
+As well as looking at the maximum likelihood estimates of the parameters from 
+the Binomial GLM, we can also plot the results. This is especially useful for
+interpreting the results on the original data scale. 
+
+To do this, we use the `ggplot()` with `geom_line()` and the `predict()`
+function.
 
 To make the first plot, we will only need to use two arguments:
 
  * `object` = your model object
- * `type` = "response", which means predict on the response scale.
+ * `type` = "link", which means predict on the link scale or
+ "response", which means predict on the response scale. 
+ 
+We will make predictions on both the link and original scale so that we 
+can compare the results. 
 
 ```{r sheep-predictions1, include = TRUE, echo = TRUE}
 
-newdata <- data.frame(Weight= sheep_data$Weight)
-
-SheepPredictions <- predict(sheepModel,newdata, type = "response")
+sheep_data <- mutate(sheep_data, 
+                     predictions_link = predict(sheep_model, 
+                                            type = "link"),
+                     predictions_original = predict(sheep_model, 
+                                            type = "response"))
 
 ```
 
-Once we have created predictions $Y$ from the model object, 
+Once we have created predictions of $Y$ from the model object, 
 we can plot these using `geom_line()` as in the code below.
 
-```{r}
-ggplot(sheep_data, aes(x=Weight, y=Survival))+
-  geom_point(colour = "grey70")+
-  geom_line(aes(y=SheepPredictions))+
-  theme_minimal()+
-  ylab("Survival Probability")
+```{r fig-sheep-preditions1, include = TRUE, echo = TRUE, fig.cap = "a) Plot of fitted GLM line on the logit scale b) Plot of jittered raw data and fitted GLM line for the soay sheep data on the original scale"}
+
+link <- ggplot(sheep_data, aes(x=Weight, y=predictions_link))+
+  geom_line(aes(y=predictions_link), colour = "blue")+
+  labs(x = "Weight (kg)", y = "Log Odds of Survival")
+
+original <- ggplot(sheep_data, aes(x=Weight, y=Survival))+
+  geom_jitter(colour = "grey70", size = 2,
+              height = 0.05)+
+  geom_line(aes(y=predictions_original), colour = "blue")+
+  labs(x = "Weight (kg)", y ="Survival Probability")
+
+link + original + plot_layout(nrow = 1)
+
 ```
-**Figure 5: Plot of regression line and data.**
+
+</br>
 
 In the next section, we will look at how to add uncertainty to these plots and 
 our interpretation. 
@@ -1028,11 +1035,11 @@ To find the prediction interval for a prediction you need to change the
 The below example predicts the Survival probability for a sparrow of $50$ kg.
 
 ```{r, echo = TRUE, warning = FALSE, eval = FALSE}
-PredictionInterval <- predict(ExampleModel, newdata=data.frame(Weight=50), 
-        type="link", se=TRUE)
-cbind(fit = plogis(PredictionInterval$fit),
-      lower = plogis(PredictionInterval$fit - 1.96*PredictionInterval$se.fit),
-      upper = plogis(PredictionInterval$fit + 1.96*PredictionInterval$se.fit))
+#PredictionInterval <- predict(ExampleModel, newdata=data.frame(Weight=50), #
+ #       type="link", se=TRUE)
+#cbind(fit = plogis(PredictionInterval$fit),
+#      lower = plogis(PredictionInterval$fit - #1.96*PredictionInterval$se.fit),
+#      upper = plogis(PredictionInterval$fit + 1.96*PredictionInterval$se.fit))
 ```
 
 </br>
@@ -1052,7 +1059,7 @@ a 82% to 100% chance of surviving.
  
 ```{r}
 
-round(confint(sheepModel),2)
+#round(confint(sheepModel),2)
 
 ```
 
@@ -1063,7 +1070,7 @@ To add these intervals to the plot,
 we need to make new predictions including the interval
 
 ```{r}
-SheepPredictions <- as_tibble(predict(sheepModel, type="response", interval="confidence"))
+#SheepPredictions <- as_tibble(predict(sheepModel, type="response", interval="confidence"))
 ```
 
 Once we have created predictions of $Y$ from the model object, 
@@ -1071,22 +1078,22 @@ we can plot them using `geom_line()` as in the code below.
 
 ```{r}
 
-newdata <- data.frame(Weight=sheep_data$Weight)
-SheepIntervals <- predict(sheepModel, newdata= newdata, type="link", se=TRUE)
+#newdata <- data.frame(Weight=sheep_data$Weight)
+#SheepIntervals <- predict(sheepModel, newdata= newdata, type="link", se=TRUE)
 
 # Plot of Confidence Intervals
 
-Intervals <- data.frame(cbind(Weight = sheep_data$Weight,
-  fit = plogis(SheepIntervals$fit),
-                   lower = plogis(SheepIntervals$fit - 1.96*SheepIntervals$se.fit),
-                   upper= plogis(SheepIntervals$fit + 1.96*SheepIntervals$se.fit)))
+#Intervals <- data.frame(cbind(Weight = sheep_data$Weight,
+#  fit = plogis(SheepIntervals$fit),
+#                   lower = plogis(SheepIntervals$fit - #1.96*SheepIntervals$se.fit),
+#                   upper= plogis(SheepIntervals$fit + #1.96*SheepIntervals$se.fit)))
 
-ggplot(data = Intervals, aes(x=Weight, y= fit))+
-  geom_line(color="blue")+
-  geom_point(data=sheep_data, aes(x=Weight, y=Survival))+
-       geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.5)+
-  ylab("Survival Probability")+
-  theme_minimal()
+#ggplot(data = Intervals, aes(x=Weight, y= fit))+
+#  geom_line(color="blue")+
+#  geom_point(data=sheep_data, aes(x=Weight, y=Survival))+
+#       geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.5)+
+#  ylab("Survival Probability")+
+#  theme_minimal()
 
 ```
 *Figure 7: Plot of regression line and confidence interval around the sheep data.*
@@ -1103,11 +1110,11 @@ A researcher has found a new species of sheep. The sheep weighs 47kg.
 Based on our regression model, what is the survival probability of the sheep.
 
 ```{r}
-PredictionInterval <- predict(sheepModel, newdata=data.frame(Weight=47), 
-        type="link", se=TRUE)
-cbind(fit = plogis(PredictionInterval$fit),
-      lower = plogis(PredictionInterval$fit - 1.96*PredictionInterval$se.fit),
-      upper = plogis(PredictionInterval$fit + 1.96*PredictionInterval$se.fit))
+#PredictionInterval <- predict(sheepModel, newdata=data.frame(Weight=47), 
+#        type="link", se=TRUE)
+#cbind(fit = plogis(PredictionInterval$fit),
+#      lower = plogis(PredictionInterval$fit - #1.96*PredictionInterval$se.fit),
+#      upper = plogis(PredictionInterval$fit + #1.96*PredictionInterval$se.fit))
 ```
 
 The survival probability is 0.9983. This seems okay, 
@@ -1170,7 +1177,7 @@ The deviance residuals is the default in the `glm()`.
 
 In $R$, the Deviance residuals are obtained by:
 ```{r, eval = FALSE}
-residualsD <- resid(ExampleModel, type = "deviance")
+#residualsD <- resid(ExampleModel, type = "deviance")
 ```
 
 </br>
@@ -1192,14 +1199,14 @@ This plot tests the assumptions of
 
 </br>
 ```{r, eval = FALSE}
-fitted <- fitted(ExampleModel) #extract fittedvalues
-
-par(mfrow=c(1,2))
-plot(fitted, residualsP, main = "Pearson")
-abline(h=0)
-
-plot(fitted, residualsD, main = "Deviance")
-abline(h=0)
+#fitted <- fitted(ExampleModel) #extract fittedvalues
+#
+#par(mfrow=c(1,2))
+#plot(fitted, residualsP, main = "Pearson")
+#abline(h=0)
+#
+#plot(fitted, residualsD, main = "Deviance")
+#abline(h=0)
 ```
 *Figure 8: Residuals vs fitted plot for the Example model.*
 
@@ -1229,8 +1236,8 @@ The line represents a perfect theoretical
 normal distribution, the points come from our model.
 
 ```{r, eval = FALSE}
-qqnorm(residualsD)
-qqline(residualsD)
+#qqnorm(residualsD)
+#qqline(residualsD)
 ```
 *Figure 9: normal QQ plot for the example model.*
 
@@ -1258,7 +1265,7 @@ We look for significant values of the Cook's distance, about $0.02$.
 </br>
 
 ```{r, eval = FALSE}
-plot(ExampleModel, which = 4)
+#plot(ExampleModel, which = 4)
 ```
 *Figure 10: Cook's Distance plot for the Example model.*
 
@@ -1274,7 +1281,7 @@ we would need to go back to the data and check
 for typos, mistakes, or anything that could be wrong with these points. 
 
 ```{r, eval = FALSE}
-example_data[c(112,124,132),]
+#example_data[c(112,124,132),]
 ```
 
 The weights at these points are `23.2`, `22.8` and `22.6`. 
@@ -1283,7 +1290,7 @@ these points are very far from the others.
 Hence we do not not discard these values. 
 
 ```{r, eval = FALSE}
-hist(example_data$Weight, main = "")
+#hist(example_data$Weight, main = "")
 ```
 *Figure 11: Histogram of the weights of the sparrows.*
 
@@ -1311,17 +1318,17 @@ We will use one plot at a time to test specific assumptions.
 #### Residuals vs fitted
 
 ```{r, echo=T, message=F}
-resP <- residuals(sheepModel, type="pearson")
-resD <- residuals(sheepModel, type="deviance")
-
-fitted <- fitted(sheepModel) #extract fittedvalues
-
-par(mfrow=c(1,2))
-plot(fitted, resP, main = "Pearson")
-abline(h=0)
-
-plot(fitted, resD, main = "Deviance")
-abline(h=0)
+#resP <- residuals(sheepModel, type="pearson")
+#resD <- residuals(sheepModel, type="deviance")
+#
+#fitted <- fitted(sheepModel) #extract fittedvalues
+#
+#par(mfrow=c(1,2))
+#plot(fitted, resP, main = "Pearson")
+#abline(h=0)
+#
+#plot(fitted, resD, main = "Deviance")
+#abline(h=0)
 
 ```
 *Figure 12: Residuals vs fitted plot for the sheep model.*
@@ -1344,7 +1351,7 @@ Moreover, we can also see a linear trend of the upper and lover residuals
 #### Normal QQ
 
 ```{r, echo=T, message=F}
-plot(sheepModel, which = 2)
+#plot(sheepModel, which = 2)
 ```
 *Figure 13: Normal QQ plot for dive depth model.*
 
@@ -1363,7 +1370,7 @@ We will need to look into them more in Figure 9.
 #### Cook's distance
 
 ```{r, echo=T, message=F}
-plot(sheepModel, which = 4)
+#plot(sheepModel, which = 4)
 ```
 *Figure 14: Cook's distance plot for the dive depth model.*
 
@@ -1392,11 +1399,11 @@ from the data.** However, we can focus our attention on getting more covariates
 that can help us explain more the variance and improve the model fit. 
 
 ```{r, echo=T, message=F}
-sheep_data[c(47,107,392),]
+#sheep_data[c(47,107,392),]
 ```
 
 ```{r}
-hist(sheep_data$Weight, main="")
+#hist(sheep_data$Weight, main="")
 ```
 *Figure 15: Histogram of the weight of the sheep.*
 
@@ -1527,10 +1534,22 @@ as we do not have problem with our sample size at the moment.
 
 </br>
 
-# What's next? {.facta}
+## {.toc-ignore}
+
+### What's next? {.facta}
 
 * **Poisson Generalized linear models** for analyses when your response 
 variable is not normally distributed.
+
+### Further reading {.facta .toc-ignore}
+
+### Contributors {- .contributors .toc-ignore}
+
+```{r contributors, eval=FALSE}
+* Kwaku Peprah Adjei
+* Emily G. Simmonds
+* Bob O'Hara
+```
 
 
 
