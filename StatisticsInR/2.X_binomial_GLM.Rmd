@@ -967,7 +967,7 @@ confint(glm_model_object)
 
 </br>
 
-##### Uncertainty in predictions of $Y$ or log odds of $Y$
+##### Plotting uncertainty in $\alpha$ and $\beta$
 
 The above section has shown how you can quantify uncertainty in the line 
 parameters of a Binomial GLM as numbers. 
@@ -978,6 +978,8 @@ showing our GLM fitted line. This can be done either on the link scale or the
 original scale. 
 
 To do this, we need to generate new predictions with the `predict()` function. 
+We also need to calculate the upper and lower confidence interval bounds using
+the standard error. 
 
 This is a little different to using `predict()` for a linear model object. For
 GLMs there are some different arguments. 
@@ -991,6 +993,13 @@ link scale).
 standard error for the prediction should be given in addition to the mean 
 prediction. The standard error will be on the scale of the mean prediction i.e.
 either link scale or original dependent on which `type` was specified. 
+
+</br>
+
+The `interval` argument that was used for linear model objects to specify a
+prediction or a confidence interval does not work for predictions on a GLM
+object. Therefore, the standard errors presented are for a 95% confidence 
+interval. 
 
 ```{r preditions_example, echo = TRUE}
 
@@ -1007,16 +1016,19 @@ newdata <- data.frame(explanatory = seq(min(example_data$explanatory),
 
 predictions <- newdata %>% mutate(predictions_link = predict(glm_model_object, 
                                                          newdata = newdata, 
-                                                         type="link", se.fit=TRUE)$fit,
+                                                         type="link", 
+                                                         se.fit=TRUE)$fit,
                               SE_link = predict(glm_model_object, 
                                                          newdata = newdata, 
-                                                         type="link", se.fit=TRUE)$se.fit,
+                                                         type="link", 
+                                                         se.fit=TRUE)$se.fit,
                               predictions_original = predict(glm_model_object, 
                                                          newdata = newdata, 
                                                          type="response", se.fit=TRUE)$fit,
                               SE_original = predict(glm_model_object, 
                                                          newdata = newdata, 
-                                                         type="response", se.fit=TRUE)$se.fit)
+                                                         type="response",
+                                                         se.fit=TRUE)$se.fit)
 
 
 predictions
@@ -1029,53 +1041,176 @@ between 0 and 1, but this is not the case on the link scale.
 
 </br>
 
-### Worked example 
+Then you can plot these. Remember these are confidence intervals not prediction
+intervals. The `predict` function will not give prediction intervals for a GLM. 
+In fact, it is not always an easy or sensible thing to create in this context,
+especially for a Binomial GLM. When the mean prediction is close to 0 or 1, the
+prediction interval can easily fill the whole possible value space (i.e. span
+from 0 right to 1), which is not very logical and is hard to interpret. 
 
- At the end of the last section, we created of our sheepmodel and the estimated 
- regression line. Now we will add uncertainty to that plot.
- 
- First, we should look at the confidence intervals of our parameter estimates.
- 
-```{r}
+To get the upper and lower bounds of the confidence interval from
+a GLM using `predict()` you need to calculate the bounds yourself. 
+You need to add or
+subtract 1.96 times the standard error from the mean prediction. 
 
-#round(confint(sheepModel),2)
+```{r plot_ci_example, fig.caption = "Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the original response scale (B)"}
+
+predictions <- predictions %>% mutate(upper_ci_link = predictions_link + (2*SE_link),
+                                      lower_ci_link = predictions_link - (2*SE_link),
+                                      upper_ci_original = predictions_original + (2*SE_original),
+                                      lower_ci_original = predictions_original - (2*SE_original))
+
+# plot predictions on the link scale 
+
+example_predictions_link <- ggplot(data = predictions, 
+                                 aes(x = explanatory, 
+                                     y = predictions_link))+
+  geom_line(color="blue")+
+  geom_ribbon(aes(ymin = lower_ci_link, 
+                  ymax = upper_ci_link), 
+              alpha = 0.5)+
+  labs(title = "A. Predictions on link scale",
+       y = "Log odds of response",
+       x = "Explanatory")
+
+# For this plot, the base can be the original data
+example_predictions_original <- ggplot() +
+  geom_jitter(data = example_data, 
+              aes(x = explanatory, y = response), 
+              colour = "grey", size = 2, height = 0.01) +
+  geom_ribbon(data = predictions,
+              aes(x = explanatory,
+                  ymin = lower_ci_original, 
+                  ymax = upper_ci_original), 
+              alpha = 0.5) +
+  geom_line(data = predictions, 
+            aes(x = explanatory, y = predictions_original), 
+            colour = "blue") +
+  labs(title = "B. Predictions on original scale",
+       y = "Probability",
+       x = "Explanatory")
+
+example_predictions_link + example_predictions_original
 
 ```
 
-The confidence interval has been rounded to two decimal places to make them 
+
+### Worked example 
+
+At the end of the last section, we created of our sheep model and looked at the 
+estimated model line. 
+Now we will add uncertainty to that plot.
+ 
+First, we should look at the confidence intervals of our parameter estimates.
+ 
+```{r}
+
+round(confint(sheep_model),2)
+
+```
+
+The confidence interval has been rounded to two decimal places to make it 
 easier to read. 
 
 To add these intervals to the plot, 
-we need to make new predictions including the interval
+we need to make new predictions including the upper and lower bounds of the 
+prediction interval. We will do this on the link scale and the original 
+response scale. 
 
-```{r}
-#SheepPredictions <- as_tibble(predict(sheepModel, type="response", interval="confidence"))
+
+```{r sheep_predictions}
+
+# first make some new data to predict for
+newdata <- data.frame(Weight = seq(min(sheep_data$Weight),
+               max(sheep_data$Weight),
+               length.out = 100))
+
+sheep_predictions <- newdata %>% mutate(predictions_link = predict(sheep_model,
+                                                    newdata,
+                                                    type="link", 
+                                                    se.fit = TRUE)$fit,
+                            # the next lines add the lower and upper ci bounds
+                            lower_ci_link = predict(sheep_model,
+                                                    newdata,
+                                                    type="link", 
+                                                    se.fit = TRUE)$fit - 
+                                                    (1.96*predict(sheep_model,
+                                                    newdata,
+                                                    type="link", 
+                                                    se.fit = TRUE)$se.fit),
+                            upper_ci_link = predict(sheep_model, 
+                                                    newdata,
+                                                    type="link", 
+                                                    se.fit = TRUE)$fit + 
+                                                    (1.96*predict(sheep_model,
+                                                    newdata,
+                                                    type="link", 
+                                                    se.fit = TRUE)$se.fit),
+                            # then predict on the original scale
+                            predictions_original = predict(sheep_model,
+                                                    newdata,
+                                                    type="response", 
+                                                    se.fit = TRUE)$fit,
+                            # and add the confidence interval bounds
+                            lower_ci_original = predict(sheep_model,
+                                                    newdata, 
+                                                    type="response", 
+                                                    se.fit = TRUE)$fit - 
+                                                    (1.96*predict(sheep_model,
+                                                    newdata,
+                                                    type="response", 
+                                                    se.fit = TRUE)$se.fit),
+                            upper_ci_original = predict(sheep_model,
+                                                    newdata, 
+                                                    type="response", 
+                                                    se.fit = TRUE)$fit + 
+                                                    (1.96*predict(sheep_model,
+                                                    newdata,
+                                                    type="response", 
+                                                    se.fit = TRUE)$se.fit))
+
 ```
+</br>
 
 Once we have created predictions of $Y$ from the model object, 
-we can plot them using `geom_line()` as in the code below.
+we can plot them using `geom_line()` and `geom_ribbon()` as in the code below.
 
-```{r}
+```{r sheep_predictions_plot, fig.caption = "A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the original scale including 95% confidence interval (grey)"}
 
-#newdata <- data.frame(Weight=sheep_data$Weight)
-#SheepIntervals <- predict(sheepModel, newdata= newdata, type="link", se=TRUE)
+# Plot of Confidence Intervals on the link scale
 
-# Plot of Confidence Intervals
+sheep_predictions_link <- ggplot(data = sheep_predictions, 
+                                 aes(x = Weight, 
+                                     y = predictions_link))+
+  geom_line(color="blue")+
+  geom_ribbon(aes(ymin = lower_ci_link, 
+                  ymax = upper_ci_link), 
+              alpha = 0.5)+
+  labs(title = "A. Predictions on link scale",
+       y = "Log odds of survival",
+       x = "Body weight (kg)")
 
-#Intervals <- data.frame(cbind(Weight = sheep_data$Weight,
-#  fit = plogis(SheepIntervals$fit),
-#                   lower = plogis(SheepIntervals$fit - #1.96*SheepIntervals$se.fit),
-#                   upper= plogis(SheepIntervals$fit + #1.96*SheepIntervals$se.fit)))
+# For this plot, the base can be the original data
+sheep_predictions_original <- ggplot() +
+  geom_jitter(data = sheep_data, 
+              aes(x = Weight, y = Survival), 
+              colour = "grey", size = 2, height = 0.01) +
+  geom_ribbon(data = sheep_predictions,
+              aes(x = Weight,
+                  ymin = lower_ci_original, 
+                  ymax = upper_ci_original), 
+              alpha = 0.5) +
+  geom_line(data = sheep_predictions, 
+            aes(x = Weight, y = predictions_original), 
+            colour = "blue") +
+  labs(title = "B. Predictions on original scale",
+       y = "Probability of survival",
+       x = "Body weight (kg)")
 
-#ggplot(data = Intervals, aes(x=Weight, y= fit))+
-#  geom_line(color="blue")+
-#  geom_point(data=sheep_data, aes(x=Weight, y=Survival))+
-#       geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.5)+
-#  ylab("Survival Probability")+
-#  theme_minimal()
+
+sheep_predictions_link + sheep_predictions_original
 
 ```
-*Figure 7: Plot of regression line and confidence interval around the sheep data.*
 
 It can be observed from the figure above that the confidence intervals for the 
 predictions around $1$ are very narrower. 
@@ -1083,25 +1218,6 @@ This means that as we get closer to the true classification (0 or 1),
 we are able to estimate them with much certainty.
 
 </br>
-##### Predicting Survival Probability for a weight of 50 kg
-
-A researcher has found a new species of sheep. The sheep weighs 47kg. 
-Based on our regression model, what is the survival probability of the sheep.
-
-```{r}
-#PredictionInterval <- predict(sheepModel, newdata=data.frame(Weight=47), 
-#        type="link", se=TRUE)
-#cbind(fit = plogis(PredictionInterval$fit),
-#      lower = plogis(PredictionInterval$fit - #1.96*PredictionInterval$se.fit),
-#      upper = plogis(PredictionInterval$fit + #1.96*PredictionInterval$se.fit))
-```
-
-The survival probability is 0.9983. This seems okay, 
-since a sheep of weight $47$ kg will be able to withstand lots of 
-environmental conditions.
-
-</br>
-
 
 ## <i class="fas fa-tasks"></i> Model checking {.tabset .tabset-fade}
 
