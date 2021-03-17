@@ -486,13 +486,13 @@ including your data frame name as the data argument.
 
 ```{r model-example, include=TRUE, echo=TRUE, eval=TRUE}
 
-GLMModelObject <- glm(response ~ explanatory, data = your_data,
+glm_model_object <- glm(response ~ explanatory, data = your_data,
                      family = binomial(link = "logit"))
 
 ```
 
 Running the `glm()` as illustrated above runs the GLM 
-and saves the output as a `GLMModelObject`.
+and saves the output as a `glm_model_object`.
 
 We can then view our results from the model object by using the function `coef()`. 
 This will take the output of the `glm()`, the model object, 
@@ -502,7 +502,7 @@ as its argument and extracts the maximum likelihood estimates of
 
 ```{r coef-example, include = TRUE, echo = TRUE}
 
-coef(GLMModelObject)
+coef(glm_model_object)
 
 ```
 
@@ -627,7 +627,7 @@ changes by one unit.
 ```{r log-odds-plot, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue"}
 
 example_data <- mutate(example_data,
-                       logity = predict.glm(GLMModelObject, 
+                       logity = predict.glm(glm_model_object, 
                                             newdata = example_data,
                                             type="link"))
 
@@ -637,7 +637,7 @@ ggplot(example_data, aes(x = explanatory, y = logity))+
       title = "Example of results of GLM on logit scale")+
   geom_line(aes(x = explanatory, y = logity),
             colour = "blue")+
-  geom_point(aes(x = 0, y = coef(GLMModelObject)[1],
+  geom_point(aes(x = 0, y = coef(glm_model_object)[1],
                  colour = "orange"), size = 4)+
   theme(legend.position = "none")
  
@@ -665,11 +665,11 @@ This can be done in R.
 
 # estimate of the intercept on logit scale (log odds of y)
 
-coef(GLMModelObject)[1]
+coef(glm_model_object)[1]
 
 # convert to original scale (a probability of success)
 
-1/(1 + exp(-(coef(GLMModelObject)[1])))
+1/(1 + exp(-(coef(glm_model_object)[1])))
  
 ```
 
@@ -686,7 +686,7 @@ the gradient of the model line will be different for different $X$ values
 ```{r original-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the original data. Intercept in orange and slope in blue", fig.height=150}
 
 example_data <- mutate(example_data, 
-                       predictions = predict(GLMModelObject,
+                       predictions = predict(glm_model_object,
                                              example_data,
                                              type = "response"))
 
@@ -698,7 +698,7 @@ ggplot(example_data, aes(x = explanatory, y = response))+
       title = "Example of results of GLM on original")+
   geom_line(aes(x = explanatory, y = predictions),
             colour = "blue")+
-  geom_point(aes(x = 0, y = 1/(1+exp(-(coef(GLMModelObject)[1]))),
+  geom_point(aes(x = 0, y = 1/(1+exp(-(coef(glm_model_object)[1]))),
                  colour = "orange"), size = 4)+
   theme(legend.position = "none")
  
@@ -721,8 +721,8 @@ e.g.
 # predict log odds of Y when X = 2 or X = 3
 # use a linear equation for this
 
-odds_y_x2 <- coef(GLMModelObject)[1] + (coef(GLMModelObject)[2]*2)
-odds_y_x3 <- coef(GLMModelObject)[1] + (coef(GLMModelObject)[2]*3)
+odds_y_x2 <- coef(glm_model_object)[1] + (coef(glm_model_object)[2]*2)
+odds_y_x3 <- coef(glm_model_object)[1] + (coef(glm_model_object)[2]*3)
 
 # estimate of probability of success when X = 2
 # take inverse of the logit link
@@ -868,12 +868,12 @@ our interpretation.
 
 ### Theory
 
-As was discussed under the simple linear model, 
+As was discussed for linear models, 
 statistics does not give a single correct answer. 
 When we estimate the parameters in our statistical model, 
-we would always have many plausible parameters that could have produced our 
+there will be many plausible parameters that could have produced our 
 observed data. In these cases, some of the parameters will be more likely
-than the others.
+than the others to have generated the observed data.
 
 The Binomial GLM is no exception. 
 We will have to consider and present the uncertainty in the parameters we 
@@ -887,17 +887,15 @@ We will therefore quantify uncertainty using *standard errors*,
 which should be familiar to you but head to the [uncertainty]() 
 pages if you need a recap.
 
-For any regression there are two different types of uncertainty we will look 
-at *uncertainty in our line of parameters $\alpha$ and $\beta$* and 
+Just as with linear models there are two different types of uncertainty 
+we will look 
+at *uncertainty in the model line of parameters $\alpha$ and $\beta$* and 
 *uncertainty in a prediction of $Y$*.
 
 </br>
 
 ##### Uncertainty in the estimates of $\alpha$ and $\beta$
 
-Remember that *the standard error of a parameter is the standard deviation of 
-its sampling distribution. It gives a measure of the spread of its sampling 
-distribution i.e. our uncertainty.* 
 To find the standard errors for the estimates of $\alpha$ and $\beta$ 
 we can use `summary()` function. 
 This takes the model object from the `glm()` as its argument. 
@@ -907,16 +905,20 @@ The second line shows the summary of the residuals of the model and the
 standard errors are shown in the second column of the third part, 
 `Coefficients:`.
 
-```{r}
-#summary(ExampleModel)
+```{r summary_glm_example}
+summary(glm_model_object)
 ```
 </br>
 
-By taking the `summary()` of the ExampleModel, we can see the standard error of 
-the intercept ($\alpha$) is $3.2560$, and the standard error for the slope 
-($\beta$) is $0.1274$.
+By taking the `summary()` of the example model, we can see the standard error of 
+the intercept ($\alpha$) is `r summary(glm_model_object)$coefficients[1,2]`, 
+and the standard error for the slope 
+($\beta$) is `r summary(glm_model_object)$coefficients[2,2]`.
 
-We also observe that the standard error is smaller than the estimated effects.
+We also observe that the standard error is smaller than the estimated effects. 
+Actually, to indicate a clear direction of the effect, the standard error should
+be less than half the size of the estimated coefficient. This would ensure that
+95% confidence intervals for the effect (see below) do not span 0. 
 
 </br>
 
@@ -935,7 +937,7 @@ within the confidence interval.**
 </br>
 
 To calculate a confidence interval from a standard error you need to use the 
-formulas:
+formulas (this is exactly the same as for linear models):
 
 $$
 \begin{aligned}
@@ -943,110 +945,87 @@ UpperCI = estimate + (1.96 SE) \\
 LowerCI = estimate - (1.96 SE) \\
 \end{aligned}
 $$
-
-1.96 is used because in a standard normal distribution 95% of the distribution 
-lies within 1.96 standard deviations of the mean. 
-In this case the distribution is the sampling distribution, 
-which is normal for $\alpha$ and $\beta$ and the standard deviation is the 
-standard error. 
-
-After estimating the upper and lower limits of these parameters, 
-we have to remember to convert them to their original scale using the 
-`plogis()` function in $R$. 
+Remember that the estimates of the coefficients are for the effect of 
+$X$ on the log odds of $Y$ (i.e. on the link scale). Therefore any measures of 
+uncertainty are also on the link scale. 
+After estimating the upper and lower confidence intervals of these parameters, 
+it might be useful to convert them to the original scale to understand their
+effect. This is especially true for the intercept ($\alpha$). 
 
 </br>
 
-Using the formulas above, we can get confidence intervals for the intercept and
-slope from the ExampleModel.
+Using the `confint()` function it is possible to display the 95% confidence 
+intervals for the intercept and
+slope.
 
-```{r}
-#confint(ExampleModel)
+```{r confint_glm_example}
+
+confint(glm_model_object)
+
 ```
 
 
 </br>
 
-##### Plotting Uncertainty
+##### Uncertainty in predictions of $Y$ or log odds of $Y$
 
-We have seen how you can quantify uncertainty in our line parameters into 
-numbers. But often in science, it is clearer to show these things visually.
+The above section has shown how you can quantify uncertainty in the line 
+parameters of a Binomial GLM as numbers. 
+But often in science, it is clearer to show these things visually.
 
-We can add the confidence intervals to Figure showing our regression line.
+We can add the confidence intervals to \@ref(fig:log-odds-plot) 
+showing our GLM fitted line. This can be done either on the link scale or the
+original scale. 
 
 To do this, we need to generate new predictions with the `predict()` function. 
-This `interval` argument tells R to include predictions of $Y$ based on the 
-upper and lower confidence intervals of the estimates of $\alpha$ and $\beta$. 
-We can then add these to the plot using `geom_ribbon()`.
 
-```{r, echo = TRUE}
-#newdata <- data.frame(Weight=example_data$Weight)
-#ExampleIntervals <- predict(ExampleModel, newdata= newdata, type="link", se=TRUE)
+This is a little different to using `predict()` for a linear model object. For
+GLMs there are some different arguments. 
+The key arguments are:
 
-#Intervals <- data.frame(cbind(Weight = example_data$Weight,
-#  fit = plogis(ExampleIntervals$fit),
-#                   lower = plogis(ExampleIntervals$fit - 1.96*ExampleIntervals$se.fit),
-#                   upper= plogis(ExampleIntervals$fit + 1.96*ExampleIntervals$se.fit)))
+* `type`. This argument can take values "link" (gives predictions on the link
+scale), "response" (gives predictions on the original response scale) or "terms"
+(gives a matrix of the fitted values of each term in the model formula on the
+link scale).
+* `se.fit`. This argument can be `TRUE` or `FALSE` and indicates whether the 
+standard error for the prediction should be given in addition to the mean 
+prediction. The standard error will be on the scale of the mean prediction i.e.
+either link scale or original dependent on which `type` was specified. 
 
-#ggplot(data = Intervals, aes(x=Weight, y= fit))+
-#  geom_line(color="blue")+
-#  geom_point(data=example_data, aes(x=Weight, y=Survival))+
-#       geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.5)+
-#  ylab("Survival Probability")+
-#  theme_minimal()
+```{r preditions_example, echo = TRUE}
+
+# First create the new data to predict for 
+# This example generates 100 values of the explanatory variable from min to max
+
+newdata <- data.frame(explanatory = seq(min(example_data$explanatory),
+                                        max(example_data$explanatory),
+                                        length.out = 100))
+
+# Then add predictions to the newdata for the link and original scale
+# REMEMBER the confidence intervals too, you can access these by taking the 
+# $se.fit of the results of `predict`, $fit is the mean prediction
+
+predictions <- newdata %>% mutate(predictions_link = predict(glm_model_object, 
+                                                         newdata = newdata, 
+                                                         type="link", se.fit=TRUE)$fit,
+                              SE_link = predict(glm_model_object, 
+                                                         newdata = newdata, 
+                                                         type="link", se.fit=TRUE)$se.fit,
+                              predictions_original = predict(glm_model_object, 
+                                                         newdata = newdata, 
+                                                         type="response", se.fit=TRUE)$fit,
+                              SE_original = predict(glm_model_object, 
+                                                         newdata = newdata, 
+                                                         type="response", se.fit=TRUE)$se.fit)
+
+
+predictions
+
 ```
-*Figure 6: Plot of regression line and confidence interval around the Example data.*
 </br>
 
-##### Uncertainty in Predictions of $Y$
-
-So far, we have looked at uncertainty in parameter estimates using standard 
-errors and confidence intervals but Generalised linear regression analyses 
-can also be used for prediction. 
-
-</br>
-
-When we use a regression for prediction it has uncertainty. 
-Uncertainty in relationship is captured by confidence intervals.
-Prediction uncertainty captured by **prediction intervals**. 
-A prediction interval gives a range of values that can be considered likely to 
-contain a future observation. 
-
-</br>
-
-While confidence intervals are used to represent uncertainty in parameters
-and to relate them to an underlying population, prediction intervals are used 
-to represent uncertainty in predictions. 
-It gives a plausible range for the next observation of the response (i.e. 
-for the new value of Y). It is a type of confidence interval, 
-but in regression it will be wider than the confidence interval of the line 
-(which includes uncertainty in our parameters $\alpha$ and $\beta$). 
-**A 95% prediction interval tells you, 
-if you were to collect a sample and run the analysis, then
-go out an collect a new observation of the response variable ($Y$)
-with particular value of the explanatory variable ($X$) 
-many many times AND each time
-draw a prediction interval, 95% of the time, the new observation
-would fall in within the prediction interval.** 
-
-</br>
-
-To find the prediction interval for a prediction you need to change the 
-`interval` argument in the `predict()` function to `="prediction"`. 
-The below example predicts the Survival probability for a sparrow of $50$ kg.
-
-```{r, echo = TRUE, warning = FALSE, eval = FALSE}
-#PredictionInterval <- predict(ExampleModel, newdata=data.frame(Weight=50), #
- #       type="link", se=TRUE)
-#cbind(fit = plogis(PredictionInterval$fit),
-#      lower = plogis(PredictionInterval$fit - #1.96*PredictionInterval$se.fit),
-#      upper = plogis(PredictionInterval$fit + 1.96*PredictionInterval$se.fit))
-```
-
-</br>
-
-The predicted survival probabilty is 0.99952 with the interval between 0.82 
-and 1. Which means that our model predicts a sparrow of weight $50$ kg to have 
-a 82% to 100% chance of surviving.
+You should notice that all predictions on the original scale around bounded 
+between 0 and 1, but this is not the case on the link scale. 
 
 </br>
 
