@@ -1225,85 +1225,112 @@ we are able to estimate them with much certainty.
 
 ### Theory
 
-Till this point, we have the model, parameter estimates and uncertainty 
-quantification for the binomial GLM.
-**We then discuss how to know if the model is good.**
+Until this point, we have run a Binomial GLM, got parameter estimates and 
+quantified uncertainty. Next, **we will look at how to know if the model is 
+any good.** To do this, we need to check if the assumptions for a Binomial GLM
+are met for our data. 
 
-Under the linear models, 
-we used **Residuals vs fitted plots** for equal variance and linearity, 
-**the normal Q-Q plots** for normality of residuals and the **Cooks distance**
-for the outliers. 
-These are easier to interpret since we know what we are looking for. 
-However, this is not the case for GLMs since they have non-normal variance. 
+For linear models, 
+we used **residuals vs fitted plots** to check for equal variance and linearity, 
+**normal Q-Q plots** to check for normality of residuals and the 
+**Cooks distance** to check for the outliers. 
 
-To handle this the non-constant variance, 
-we aim at producing plots that are roughly normal. 
-There are two ways of doing: **Pearson** and **Deviance** residuals. 
+For GLMs things are a little different since GLMs have non-normal and 
+non-constant variance (for Binomial and Poisson distributions the variance is
+controlled by the mean). 
+
+To account for the non-constant variance and be able to use diagnostic plots to 
+check if model assumptions are met, the residuals of a GLM need to be altered. 
+There are two ways of doing this: **Pearson** and **Deviance** residuals. 
 These are not perfect in any way. 
-These measures scale the residuals by variance in some way. 
+These measures scale the residuals by the variance. 
 Once we have scaled the residuals in this way to account for non-equal variance, 
 they should be approximately normal.
 
 **Pearson residuals**
 
-Thsís is defined as 
+These are calculated by dividing the residual (difference between observed data
+point $y_i$ and the fitted value $\hat{\mu}$) but the standard deviation of the estimates $\sigma_x$: 
 $$
-Res_p = \frac{x - \mu_x}{\sigma_x}.
+Res_p = \frac{y_i - \hat{\mu}}{\sigma_x}.
 $$
-
-where $\mu_x$ is the mean of the residuals and $\sigma_x$ 
-for the variance of the residuals. 
 
 In $R$, the Pearson residuals are obtained by:
-```{r, eval = FALSE}
-residualsP <- resid(ExampleModel, type = "pearson")
+```{r pearson_residual, eval = FALSE}
+
+residuals_pearson <- resid(glm_model_object, type = "pearson")
 
 ```
+
+Pearson residuals follow a chi-squared ($\chi^2$) distribution. 
 
 **Deviance Residuals**
 
-This is defined:
+These are calculated by calculating the individual deviance $d_i$ 
+(the contribution of
+each data point to the deviance of the model) and then assigning this a direction
+based on the sign of the difference between the observed data point  $y_i$ and 
+the fitted value $\hat{\mu}$. : 
 $$
-Res_D = sgn(y_i - E(y_i))\sqrt{D_i}
+Res_D = sign(y_i - \hat{\mu})\sqrt{d_i}
 $$
-where $sgn(x)=1$ when $x>0$ and $-1$ when $x<0$. 
+where $sign(y_i - \hat{\mu}) = 1$ when $y_i - \hat{\mu} > 0$ and 
+$sign(y_i - \hat{\mu}) = -1$ when $y_i - \hat{\mu} < 0$. 
 
-The deviance residuals is the default in the `glm()`. 
+The deviance residuals are the default in the `glm()`. 
 
 In $R$, the Deviance residuals are obtained by:
-```{r, eval = FALSE}
-#residualsD <- resid(ExampleModel, type = "deviance")
+
+```{r deviance_residuals, eval = FALSE}
+
+residuals_deviance <- resid(glm_model_object, type = "deviance")
+
 ```
 
 </br>
-
-
-
-</br>
-
 
 #### 1. Residuals vs fitted plot
 
-This plot tests the assumptions of 
-**The relationship between X and Y is linear**, 
-**The residuals have a mean of 0**, and 
-**The variance of the residuals is equal for all fitted values 
-(homoscedasticity)**. Remember that we use the scaled residuals 
+From this plot, we can test a few things: that the relationship between 
+X and Y is linear (on the link scale), the residuals have (approximately) 
+a mean of 0, and the variance of the residuals is equal for all fitted values 
+(homoscedasticity). 
+These are not key assumptions of a GLM, even though they
+were for a linear model. However, once we have scaled the residuals, these 
+characteristics are something we would expect to be approximately true. 
+
+**Note that this will be very approximate! 
+The plots could in fact look quite bad.**
+
+Remember that we use the scaled residuals 
 (Pearson or Deviance) instead of the original residuals.
+The original residuals would not meet any of these assumptions. 
 
 
 </br>
-```{r, eval = FALSE}
-#fitted <- fitted(ExampleModel) #extract fittedvalues
-#
-#par(mfrow=c(1,2))
-#plot(fitted, residualsP, main = "Pearson")
-#abline(h=0)
-#
-#plot(fitted, residualsD, main = "Deviance")
-#abline(h=0)
+
+```{r fitted_vs_residuals_example, eval = FALSE}
+
+# extract fitted values
+# and add to a data frame with the residuals
+fitted <- tibble(fitted = fitted(glm_model_object),
+                 residuals_pearson = residuals_pearson,
+                 residuals_deviance = residuals_deviance)
+
+pearson <- ggplot(data = fitted, aes(x = fitted, 
+                              y = residuals_pearson))+
+geom_point(colour = "grey")+
+geom_hline(yintercept = 0)+
+labs(title = "Pearson")
+
+deviance <- ggplot(data = fitted, aes(x = fitted, 
+                               y = residuals_deviance))+
+geom_point(colour = "grey")+
+geom_hline(yintercept = 0)+
+labs(title = "Deviance")
+
+pearson + deviance
 ```
-*Figure 8: Residuals vs fitted plot for the Example model.*
 
 </br>
 
@@ -1325,7 +1352,8 @@ variation and as such get the model better.
 This plot tests the assumption of **the residuals are normally distributed**. 
 
 </br>
- If our assumptions
+
+If our assumptions
 are met, we expect **The points lie along the line.** 
 The line represents a perfect theoretical
 normal distribution, the points come from our model.
@@ -1334,7 +1362,6 @@ normal distribution, the points come from our model.
 #qqnorm(residualsD)
 #qqline(residualsD)
 ```
-*Figure 9: normal QQ plot for the example model.*
 
 </br>
 In our model, 
@@ -1524,8 +1551,8 @@ In the next section we will interpret our results.
 
 ### Theory
 
-In the previous sections you learned how to run a Binomial Generalised linear 
-models, what the parameters of the model mean, 
+In the previous sections you learned how to run a Binomial GLM, 
+what the parameters of the model mean, 
 how to quantify uncertainty in the parameters, and 
 how to check the assumptions of the model. 
 Now, we can bring everything together to draw some conclusions. 
@@ -1542,80 +1569,32 @@ interest (including strength and direction).
 
 </br>
 
-#### Example conclusion for example data
-
-The question we asked in this example was 
-**Does weight influence the survival of sparrows?**
-
-To answer this, we need an estimate of the strength of the relationship between 
-survival and weight. We find this from the slope of our model. 
-The maximum likelihood estimate of the slope is 0.3171. 
-This corresponds to a postive relationship between weight and survival 
-of sparrows where log odds of survival goes up by 0.3171 times for every 
-1kg the sparrow puts on. 
-
-</br> 
-
-However, there is some uncertainty around this estimate. 
-The 95% confidence intervals of the relationship are 0.0760 to 0.5785. 
-The confidence intervals show that the estimate of the intercept has high 
-uncertainty relative to the estimate size. 
-The confidence interval does not span 0. 
-In other words, 0 does not sit between the upper and lower interval because 
-they are same signs (both are positive). 
-This means that 0 cannot be included in the plausible range of parameter values 
-for the relationship (a slope of 0 = no relationship). 
-**As a result, we can conclude that there seems to be a significant effect of 
-weight on the survival of sparrows at the population level.**
-
-</br> 
-
-Despite having a significant result, our model did not meet the assumptions of
-a Binomial GLM reasonably well. However, the sample size was a bit higher (>30),
-so having more than can be excused. 
-However, collecting more covariates to explain away some of the model variation
-would rather improve the model fit.  
-
-</br>
-
-Overall, it seems that weight does have much effect on the survival of sparrows 
-based on the data we analysed. 
-The postive effect we estimated is strong and when we consider uncertainty, 
-the direction of the effect is also clear. 
-However, the model failed to meet all the assumptions of the Binomial GLM. 
-All of this suggests that there are other drivers that are influencing the 
-survival of sparrows that we did not measure here.
-
-
-</br>
-
-For next steps, 
-we might want to collect new data looking at other explanatory variables that 
-we think might be more important.
-</br>
-
 
 ### Worked example 
 
 This is the final section of our analysis of the data on survival of sheep. 
 We will now bring together all of the results we have obtained and draw a 
-conclusion following the same format as the sparrow example.
+conclusion following the same format as the in the theory section.
 
 A reminder, we were asking: **Does weight influence survival of sheep?**
 
 </br>
 
 The maximum likelihood estimate of the relationship between weight and survival 
-probability is 0.1817. In other words, for every 1 kg increase in body weight,
-the log odds of the survival of the sheep increases by 0.1817 times. 
+probability is `r coef(sheep_model)[2]`. 
+In other words, for every 1 kg increase in body weight,
+the log odds of the survival of the sheep increases by a log odds of
+`r round(coef(sheep_model)[2],2)`. 
 
 </br>
 
 When we look at the uncertainty in this estimate, we see the 95% confidence 
-interval is 0.15 to 0.21. The confidence interval limits are same signs, 
+interval is `r round(confint(sheep_model)[2,],2)`. 
+The confidence interval limits are same signs, 
 meaning that 0 is not included as a plausible value for the strength of 
-the relationship. Therefore, we can conclude that weight has any impact 
-on survival of sheep.  
+the relationship.
+Therefore, we can conclude that weight has seems to have a positive impact 
+on the survival of sheep.  
 
 </br>
 
