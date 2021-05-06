@@ -6,6 +6,8 @@ output:
     toc: true
     toc_float: true
     css: ../css/style-chapters.css
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, eval=TRUE, include=FALSE}
@@ -14,9 +16,7 @@ output:
 library(tidyverse)
 library(patchwork)
 library(knitr)
-#library(readr)
-#library(GGally)
-#library(ggpubr)
+library(fontawesome)
 
 # source figure settings
 source("../StatisticsInR/Files/biostats_theme.R")
@@ -25,8 +25,6 @@ source("../StatisticsInR/Files/biostats_theme.R")
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```
-
-# Binomial GLM
 
 ```{r setup-data, include=FALSE, echo=FALSE}
 
@@ -42,7 +40,16 @@ your_data <- example_data <- tibble(explanatory = c(rnorm(50, 5, 3),
                            response = (c(sample(0:1, 50, replace = TRUE, 
                                       prob = c(0.8, 0.2)), 
                                 sample(0:1, 50, replace = TRUE,
-                                       prob = c(0.2, 0.8)))))
+                                       prob = c(0.2, 0.8)))),
+                           group = rep(c("a", "b", "c", "d", "e",
+                                         "f", "g", "h", "i", "j"), each = 10))
+
+example_data2 <- example_data %>% group_by(group, response) %>% 
+  summarise(count = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = "response", values_from = "count") %>%
+  mutate(explanatory = sample(1:100, 10, replace = TRUE),
+         successes = `0`, failures = `1`)
 
 ```
 
@@ -51,52 +58,18 @@ your_data <- example_data <- tibble(explanatory = c(rnorm(50, 5, 3),
 Before reading this page, you should be comfortable with basic statistical 
 theory, using R, continuous and categorical data, and **linear models**.
 
+You should also review the basics of the Binomial distribution [here](). ADD LINK.
+
 </br>
 
 ## Introduction
 
+SEPARATION SHOULD BE ADDED SOMEWHERE BUT I'M NOT SURE WHERE - ANY IDEAS? AND
+HOW MUCH DETAIL?
+
 In this section, we will look at how we can use a Binomial Generalized Linear 
 Model (GLM) 
 to analyze data with a binary response and numeric explanatory variables.
-
-This model builds on from the standard linear models covered on these pages 
-[1](), [2](), [3](). GLMs are similar to the linear models conceptually and in 
-R, but are very much more flexible.
-
-Like the linear regression, the GLM also has two motivations. 
-**inference** and **prediction**. But as the name suggests, it is more general
-than the standard linear models (used for linear regression, ANOVA, and analyses
-with categorical and continuous variables). 
-
-</br>
-
-Linear models are used to model a continuous response as a function of 
-explanatory variables. 
-GLMs also model a response as a function of explanatory 
-variables. However, as they are more flexible 
-GLMs can
-be used for discrete as well as continuous response variables, They can model
-non-linear relationships, and handle cases where model residuals would not be
-normally distributed. 
-
-</br>
-
-In particular, GLMs are useful when the assumptions of the linear model are 
-violated. The most common violations that can be addressed with a GLM are:
-
- * Residuals that are not normally distributed
- * Non-linearity
- * Unequal variance 
- 
-While some of these violations could be addressed by transformation of the 
-response to try and improve linearity or equalise the variance - 
-this is not always possible or preferable. 
-The GLM makes it possible to account for violations of
-linearity and variance of residuals in a single model without changing the 
-response. This is especially useful when you know that the response data will
-not follow a normal distribution e.g. if they are binary results or derive from
-counting. In these cases, different distributions will better represent the data
-generation process than the normal distribution used in the linear model.
 
 </br>
 
@@ -114,8 +87,12 @@ But unlike a linear model, the Binomial GLM does not do this with a straight
 line (on the scale of the data). The Binomial GLM fits a curved line bounded
 between 0 and 1 on the y-axis. This is because the Binomial GLM (also called a 
 logistic regression - more on why later), 
-the response data are always binary. The $Y$ values can only take either 0 or 1, 
-Yes or No, etc, anything with only two outcomes.  
+the response data are the result of binary trials e.g Yes or No, anything with 
+only two outcomes. But it can represent the result of single trials or many e.g.
+did an individual survive or die (1 trial), or the proportion of survivors from a 
+population of 10 (10 trials). 
+The $Y$ values can only 
+take values between 0 or 1 (either 0 and 1 themselves or proportions e.g. 0.1).  
 
 ```{r nonlinear-plot, include = TRUE, echo = FALSE, , fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
 
@@ -163,14 +140,18 @@ Prediction
 
 ### Theory
 
-As mentioned above, in a Binomial GLM the response data are always binary. 
-The values of the response variable should have only two outcomes. Examples of 
+As mentioned above, in a Binomial GLM the response data are always the result of
+binary trials. 
+The values of the response variable should have either only two outcomes or
+be the result of many trials (a number of successes and number of failures or
+a proportion). Examples of 
 this type of data would be:
 
- * Survived/died
+ * Number that survived and number that died
  * Present/absent
  * Yes/no
  * On/off
+ * Proportion of seedlings that germinated
 
 Just as was stated for the linear models, 
 **always remember to check that the way your variables are classified in R 
@@ -178,8 +159,6 @@ is the same as the format you expect.**
 
 In this case, there are several options that will work. The response variable 
 $Y$ can be stored as a factor, an integer, or as a continuous numeric variable. 
-However, it is important that it only has two levels (if it is a factor) or 
-contains only 0s and 1s if it is numeric or integer. 
 
 ### Worked example 
 
@@ -191,13 +170,16 @@ include_graphics("./Figures/sheep.png")
 ```
 
 Biologically, it is expected that smaller sheep would find it harder to survive
-harsh winters as they have fewer reserves than larger sheep. 
+harsh winters as they have fewer reserves (such as body fat) than larger sheep. 
 
 #### Introduction to the data
 
-This example uses have data on some sheep. The data are from 1986 to 1996 for a
+This data for this example are from 1986 to 1996 for a
 population of Soay sheep from the St. Kilda islands in Scotland, UK.  
-They have been studied in a standardised way since 1985. Information on the project can be found [here](http://soaysheep.biology.ed.ac.uk/). These data are
+They have been monitored following a standardised protocol since 1985. 
+Each year the sheep
+are caught, weighed, and the population size is counted. Information on the 
+project can be found [here](http://soaysheep.biology.ed.ac.uk/). These data are
 open source and can be found in the appendix of this [paper](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1600-0706.2012.00035.)CITE COULSON 2012.
 
 The data consists of five variables: 
@@ -207,6 +189,10 @@ The data consists of five variables:
 * Survival - whether the sheep survived until the next year or not
 * Weight - weight in kg 
 * Population size (PopSize) - number of females counted that year
+
+```{r show-data, include = TRUE, echo = TRUE, }
+sheep_data
+```
 
 All measures are for female sheep only. 
 
@@ -218,19 +204,22 @@ has been imported. We do this by looking at the raw data and making a plot. It
 can be easier to see the data if we jitter it because many data points sit on 
 top of each other. 
 
+NEED TO ADD LINE TO READ IN DATA IF WE CAN DECIDE SOMEWHERE TO HOST IT. YOU
+CAN GET IT FROM THE PAPER BUT NOT SURE IF WE CAN HOST IT ELSEWHERE.
+
 ```{r sheep-data-plot, include = TRUE, echo = TRUE, fig.cap = "Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points"}
 
 plot1 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
  geom_point(colour = "grey70", size = 4)+
  labs(x = "Weight of sheep (kg)",
       y = "Survival of sheep",
-      title = "a")
+      tag = "a")
 
 plot2 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
  geom_jitter(colour = "grey70", size = 4, height = 0.1)+
  labs(x = "Weight of sheep (kg)",
       y = "Survival of sheep",
-      title = "b")
+      tag = "b")
 
 plot1 + plot2 + plot_layout(nrow = 1)
  
@@ -270,7 +259,15 @@ they take for the Binomial GLM:
 
 </br>
 
-##### The <span style="color:orange">systematic part</span>
+In <i class="fab fa-r-project"></i> it looks like this:
+
+`glm(y ~ x, data, family = binomial(link = "logit"))`
+
+there are more details below in the **fitting the model in <i class="fab fa-r-project"></i>** section. 
+
+</br>
+
+**The <span style="color:orange">systematic part</span>**
 
 This is the part of the model that is hopefully the most familiar, it is a
 linear equation just like those used in linear models. 
@@ -285,7 +282,11 @@ $\eta$ with every unit change of $X$.
 
 </br>
 
-##### The <span style="color:purple">random part</span>
+In <i class="fab fa-r-project"></i> this is written as `y ~ x`. 
+
+</br>
+
+**The <span style="color:purple">random part</span>**
 
 This part of the model represents the spread of the actual data points around
 the linear predictor. 
@@ -305,7 +306,15 @@ $N$ is known (it comes from the data),
 so there is only one unknown parameter that must be estimated.
 That is $p$. 
 
-#### The <span style="color:magenta">Link function</span>
+</br>
+
+In <i class="fab fa-r-project"></i> the random part of the GLM
+is specified by the `family` argument for a Binomial GLM it is 
+`family = binomial`. 
+
+</br>
+
+**The <span style="color:magenta">Link function</span>**
 
 The link function transforms the <span style="color:orange">systematic part</span> 
 of the model onto the scale of data, connecting it to the 
@@ -324,7 +333,25 @@ The default link function, or canonical function, for a Binomial distribution
 is the logit function (hence the alternative name of logistic regression). 
 So,
 in a Binomial GLM the logit of the linear predictor is linked to $Y$ instead
-of the linear predictor itself. 
+of the linear predictor itself.
+
+</br>
+
+In <i class="fab fa-r-project"></i> the link
+is specified within the `family` argument, but with an extra argument called
+`link`. For a Binomial GLM with a logit link it is
+`family = binomial(link = logit)`. 
+
+</br>
+
+Using the logit link converts a probability to a log-odds. The log-odds is the 
+natural logarithm of the odds ratio ($$\frac{p}{1-p}$$). The odds ratio
+is the probability of a event occurring over the probability it doesn't 
+occur. Odds are often used in the things like betting, e.g. to represent the 
+odds of a particular horse winning a race. An odds ratio of 10:1 means that the 
+companies assume that for every 10 successes (for the company i.e. a horse
+loses and they keep the money) there will be 1 failure (the horse wins and the
+company has to pay).
 
 The logit link takes the following form:
 
@@ -334,7 +361,7 @@ $$
 \end{aligned}
 $$
 
-Where $\mu$ = the log odds, which is the output of the model.
+Where $\mu$ = the log-odds, which is the output of the model. 
 
 The inverse of the logit link is:
 
@@ -354,16 +381,17 @@ $$
 
 Where $p$ = the probability of success.
 
-Here $\mu$ is on the link scale and $p$ is on the original scale. 
+Here $\mu$ is on the link scale and $p$ is on the response scale (the scale of
+the response variable). 
 
 </br>
 
 Other possible link functions for a Binomial GLM are the 
 **probit** and **cloglog** functions.
 
-For more information </details></summary>click here</summary>
+For more information <details><summary>click here</summary>
 
-### The Probit link
+**The Probit link**
 
 One way of thinking of binomial problems is as a threshold:
 
@@ -395,7 +423,7 @@ higher probability of success.
 
 **Use when you want a threshold model because you have an unobserved variable that causes a binary response.**
 
-### cloglog
+**cloglog**
 
 Using a cloglog link allows binary data to be linked to count data.
 
@@ -420,7 +448,7 @@ presence.
 
 </br>
 
-#### Assumptions
+**Assumptions**
 
 There are several assumptions that should be met for the Binomial GLM to be 
 valid.
@@ -446,11 +474,12 @@ distribution is determined by the characteristics of the data.
 
 </br>
 
-#### Writing the model in <i class="fab fa-r-project"></i>
+**Writing the model in <i class="fab fa-r-project"></i>**
 
-To fit the model in <i class="fab fa-r-project"></i>, we will use the `glm()` function. 
+To fit the model in <i class="fab fa-r-project"></i>, 
+we will use the `glm()` function. 
 
-`glm(y ~ x, data, family=binomial(link = logit))`
+`glm(y ~ x, data, family = binomial(link = "logit"))`
 
 The `glm()` function takes several arguments:
 
@@ -477,17 +506,58 @@ explanatory.
 
 </br>
 
+There are two ways of fitting a Binomial GLM using the `glm()` function:
+
+* Option 1: fitting response as a single factor (for single trials and proportions).
+
+* Option 2: fitting response as two columns (for multiple trials).
+
+</br>
+
+**For data with results of single trials (0s and 1s) or proportions (0-1)**
+
+The $y$ is the response variable and is a single vector of numbers, usually in
+the format of a factor or logical or integer. 
+
+</br>
+
+**For data with results of multiple trials (number of successes and number
+of failures)**
+
+The $y$ is still the response variable but instead of single column of 0s and 1s 
+or proportions, there are two columns (one of successes and one of failures). The
+columns are combined using `cbind()` within the `glm()` function:
+
+`glm(cbind(success, failure) ~ x, data = data, family = binomial(link = "logit"))`
+
+Doing this accounts for number of trials because `glm()` will also get information
+on the number of trials conducted (successes + failures).
+
+</br>
+
 Once you have an identified response and explanatory variable/variables, you
 can then plug these variables into the `glm()` function in the below format 
 using the column names in place of `response` and `explanatory` and 
 including your data frame name as the data argument. 
 
+Both modes of fitting are shown below. 
+
 </br>
 
 ```{r model-example, include=TRUE, echo=TRUE, eval=TRUE}
 
+### single trial version
+
 glm_model_object <- glm(response ~ explanatory, data = your_data,
                      family = binomial(link = "logit"))
+
+### multiple trials version
+
+glm_multiple_trials <- glm(cbind(successes, failures) ~ explanatory, 
+                           data = example_data2,
+                     family = binomial(link = "logit"))
+
+
 
 ```
 
@@ -504,7 +574,12 @@ as its argument and extracts the maximum likelihood estimates of
 
 coef(glm_model_object)
 
+coef(glm_multiple_trials)
+
 ```
+
+You can see that the format of the output is the same regardless of whether it
+is a Binomial GLM on a set of single trials, or multiple trials. 
 
 </br>
 
@@ -567,7 +642,7 @@ To interpret the parameters,
 we have to recall the linear predictor and the link function.
 
 The linear predictor is $\eta = \color{orange}\alpha + \color{blue}{\beta_i}X_i$. 
-The $\eta$ in this case is the log odds of the probability of success ($p$).  
+The $\eta$ in this case is the log-odds of the probability of success ($p$).  
 $p$ is what we are trying to estimate. 
 That is:
 
@@ -577,10 +652,10 @@ $$
 
 You might recognise the first part of this formula from the introduction of the
 logit link function above, it is the logit link. Note that on the scale of the
-link, the model line will be straight. However, on the original scale will be 
+link, the model line will be straight. However, on the response scale will be 
 curved. 
 
-To relate the linear predictor back to the original scale of the data and $p$. 
+To relate the linear predictor back to the response scale of the data and $p$. 
 It is necessary to take the inverse of the link function like using 
 the below equation:
 
@@ -588,19 +663,14 @@ $$
 p = \frac{1}{1 + e^{- \eta}} = \frac{1}{1 + e^{-(\color{orange}\alpha + \color{blue}{\beta}X_i)}}.
 $$
 
-Therefore, it is possible to interpret the parameters on the original scale 
+Therefore, it is possible to interpret the parameters on the response scale 
 or on the link scale. We will discuss both options here. 
 
 </br>
 
-#### Parameters on the logit scale
+**Parameters on the logit scale**
 
 On the logit scale, the response will be the log odds of $Y$. 
-
-Odds are often used in betting.
-Odds of 10:1 mean for every 1NOK you bet, you win 10NOK.
-The betting companies assume that for every 1 success
-there will be 10 failures.
 
 To get to the log odds there are a few steps.
 
@@ -643,16 +713,15 @@ ggplot(example_data, aes(x = explanatory, y = logity))+
  
 ```
 
+**Parameters on the response scale**
 
-#### Parameters on the original scale
-
-On the original scale, the response will be $Y$, which is a probability of 
+On the response scale, the response will be $Y$, which is a probability of 
 success (e.g. survival, presence etc). 
 
 **<span style="color:orange">$\alpha$, the intercept</span>**
 
 To find the expected value of $Y$ when $X = 0$. You need to convert the 
-estimate of $\alpha$ from the logit scale back to the original scale using the
+estimate of $\alpha$ from the logit scale back to the response scale using the
 equation for the inverse of the logit link: e.g.
 
 $$
@@ -667,7 +736,7 @@ This can be done in R.
 
 coef(glm_model_object)[1]
 
-# convert to original scale (a probability of success)
+# convert to response scale (a probability of success)
 
 1/(1 + exp(-(coef(glm_model_object)[1])))
  
@@ -675,15 +744,15 @@ coef(glm_model_object)[1]
 
 **<span style="color:blue">$\beta$, the slope</span>**
 
-On the original scale the slope parameter has a somewhat different meaning. On
+On the response scale the slope parameter has a somewhat different meaning. On
 the logit scale, the slope captured a linear relationship. 
 However, on the 
-original scale, the relationship between $X$ and $Y$ is not linear. 
+response scale, the relationship between $X$ and $Y$ is not linear. 
 As a result,
 the gradient of the model line will be different for different $X$ values 
-(see \@ref(fig:original-scale-example)). 
+(see \@ref(fig:response-scale-example)). 
 
-```{r original-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the original data. Intercept in orange and slope in blue", fig.height=150}
+```{r response-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue", fig.height=150}
 
 example_data <- mutate(example_data, 
                        predictions = predict(glm_model_object,
@@ -695,7 +764,7 @@ ggplot(example_data, aes(x = explanatory, y = response))+
             colour = "grey70", size = 3)+
  labs(x = "x",
       y = "y",
-      title = "Example of results of GLM on original")+
+      title = "Example of results of GLM on response")+
   geom_line(aes(x = explanatory, y = predictions),
             colour = "blue")+
   geom_point(aes(x = 0, y = 1/(1+exp(-(coef(glm_model_object)[1]))),
@@ -707,11 +776,11 @@ ggplot(example_data, aes(x = explanatory, y = response))+
 The estimate of the $\beta$ coefficient on the logit scale, will tell you about
 the strength and direction of the relationship between $X$ and $Y$. 
 This is the
-case even though this relationship will not be linear on the original scale.
+case even though this relationship will not be linear on the response scale.
 
-To see the change in slope of the model line on the original scale you can
-predict values of $Y$ on the original scale and either plot the relationship 
-(like above in \@ref(fig:original-scale-example)) or
+To see the change in slope of the model line on the response scale you can
+predict values of $Y$ on the response scale and either plot the relationship 
+(like above in \@ref(fig:response-scale-example)) or
 simply look at the change between two $X$ values. 
 
 e.g.
@@ -733,14 +802,14 @@ prob_X2 <- 1/(1 + exp(-odds_y_x2))
 
 prob_X3 <- 1/(1 + exp(-odds_y_x3))
 
-# slope from X = 2 to X = 3 on original scale
+# slope from X = 2 to X = 3 on response scale
 
 prob_X3 - prob_X2
  
 ```
 
 If you were to repeat the example above for $X$ = 10 and $X$ = 11, you would not
-get the same slope on the original scale. 
+get the same slope on the response scale. 
 Even though it is the same on the logit scale. 
 
 </br>
@@ -767,7 +836,7 @@ The intercept estimate is a log odds of `r coef(sheep_model)[1]` of survival
 for a sheep that weighs 0 kg. 
 
 To get the probability of survival for a sheep with a body
-weight of 0 kg we need to convert these estimates to the original scale using
+weight of 0 kg we need to convert these estimates to the response scale using
 the code below:
 
 ```{r back-transform-sheep, include = TRUE, echo = TRUE}
@@ -803,15 +872,15 @@ increases by `r coef(sheep_model)[2]` when the weight of the sheep increases by
 1 kg. This shows a positive relationship between body weight and survival 
 probability. 
 
-To see what this effect looks like on the original scale, it is easiest to
-plot the results using predictions on the response scale (original scale). This
+To see what this effect looks like on the response scale, it is easiest to
+plot the results using predictions on the response scale (response scale). This
 is what we do below. 
 
 #### Plotting the Results 
 
 As well as looking at the maximum likelihood estimates of the parameters from 
 the Binomial GLM, we can also plot the results. This is especially useful for
-interpreting the results on the original data scale. 
+interpreting the results on the response data scale. 
 
 To do this, we use the `ggplot()` with `geom_line()` and the `predict()`
 function.
@@ -822,7 +891,7 @@ To make the first plot, we will only need to use two arguments:
  * `type` = "link", which means predict on the link scale or
  "response", which means predict on the response scale. 
  
-We will make predictions on both the link and original scale so that we 
+We will make predictions on both the link and response scale so that we 
 can compare the results. 
 
 ```{r sheep-predictions1, include = TRUE, echo = TRUE}
@@ -830,7 +899,7 @@ can compare the results.
 sheep_data <- mutate(sheep_data, 
                      predictions_link = predict(sheep_model, 
                                             type = "link"),
-                     predictions_original = predict(sheep_model, 
+                     predictions_response = predict(sheep_model, 
                                             type = "response"))
 
 ```
@@ -838,19 +907,19 @@ sheep_data <- mutate(sheep_data,
 Once we have created predictions of $Y$ from the model object, 
 we can plot these using `geom_line()` as in the code below.
 
-```{r fig-sheep-preditions1, include = TRUE, echo = TRUE, fig.cap = "a) Plot of fitted GLM line on the logit scale b) Plot of jittered raw data and fitted GLM line for the soay sheep data on the original scale"}
+```{r fig-sheep-preditions1, include = TRUE, echo = TRUE, fig.cap = "a) Plot of fitted GLM line on the logit scale b) Plot of jittered raw data and fitted GLM line for the soay sheep data on the response scale"}
 
 link <- ggplot(sheep_data, aes(x=Weight, y=predictions_link))+
   geom_line(aes(y=predictions_link), colour = "blue")+
   labs(x = "Weight (kg)", y = "Log Odds of Survival")
 
-original <- ggplot(sheep_data, aes(x=Weight, y=Survival))+
+response <- ggplot(sheep_data, aes(x=Weight, y=Survival))+
   geom_jitter(colour = "grey70", size = 2,
               height = 0.05)+
-  geom_line(aes(y=predictions_original), colour = "blue")+
+  geom_line(aes(y=predictions_response), colour = "blue")+
   labs(x = "Weight (kg)", y ="Survival Probability")
 
-link + original + plot_layout(nrow = 1)
+link + response + plot_layout(nrow = 1)
 
 ```
 
@@ -894,7 +963,7 @@ at *uncertainty in the model line of parameters $\alpha$ and $\beta$* and
 
 </br>
 
-##### Uncertainty in the estimates of $\alpha$ and $\beta$
+**Uncertainty in the estimates of $\alpha$ and $\beta$**
 
 To find the standard errors for the estimates of $\alpha$ and $\beta$ 
 we can use `summary()` function. 
@@ -906,14 +975,16 @@ standard errors are shown in the second column of the third part,
 `Coefficients:`.
 
 ```{r summary_glm_example}
+
 summary(glm_model_object)
+
 ```
 </br>
 
 By taking the `summary()` of the example model, we can see the standard error of 
-the intercept ($\alpha$) is `r summary(glm_model_object)$coefficients[1,2]`, 
+the intercept ($\alpha$) is `r round(summary(glm_model_object)$coefficients[1,2],2)`, 
 and the standard error for the slope 
-($\beta$) is `r summary(glm_model_object)$coefficients[2,2]`.
+($\beta$) is `r round(summary(glm_model_object)$coefficients[2,2], 2)`.
 
 We also observe that the standard error is smaller than the estimated effects. 
 Actually, to indicate a clear direction of the effect, the standard error should
@@ -922,7 +993,7 @@ be less than half the size of the estimated coefficient. This would ensure that
 
 </br>
 
-##### Confidence intervals
+**Confidence intervals**
 
 For interpretation of the uncertainty, it can be easier to use the standard 
 error to calculate confidence intervals. 
@@ -945,11 +1016,12 @@ UpperCI = estimate + (1.96 SE) \\
 LowerCI = estimate - (1.96 SE) \\
 \end{aligned}
 $$
+
 Remember that the estimates of the coefficients are for the effect of 
 $X$ on the log odds of $Y$ (i.e. on the link scale). Therefore any measures of 
 uncertainty are also on the link scale. 
 After estimating the upper and lower confidence intervals of these parameters, 
-it might be useful to convert them to the original scale to understand their
+it might be useful to convert them to the response scale to understand their
 effect. This is especially true for the intercept ($\alpha$). 
 
 </br>
@@ -967,7 +1039,7 @@ confint(glm_model_object)
 
 </br>
 
-##### Plotting uncertainty in $\alpha$ and $\beta$
+**Plotting uncertainty in $\alpha$ and $\beta$**
 
 The above section has shown how you can quantify uncertainty in the line 
 parameters of a Binomial GLM as numbers. 
@@ -975,7 +1047,7 @@ But often in science, it is clearer to show these things visually.
 
 We can add the confidence intervals to \@ref(fig:log-odds-plot) 
 showing our GLM fitted line. This can be done either on the link scale or the
-original scale. 
+response scale. 
 
 To do this, we need to generate new predictions with the `predict()` function. 
 We also need to calculate the upper and lower confidence interval bounds using
@@ -986,13 +1058,13 @@ GLMs there are some different arguments.
 The key arguments are:
 
 * `type`. This argument can take values "link" (gives predictions on the link
-scale), "response" (gives predictions on the original response scale) or "terms"
+scale), "response" (gives predictions on the response scale) or "terms"
 (gives a matrix of the fitted values of each term in the model formula on the
 link scale).
 * `se.fit`. This argument can be `TRUE` or `FALSE` and indicates whether the 
 standard error for the prediction should be given in addition to the mean 
 prediction. The standard error will be on the scale of the mean prediction i.e.
-either link scale or original dependent on which `type` was specified. 
+either link scale or response dependent on which `type` was specified. 
 
 </br>
 
@@ -1010,7 +1082,7 @@ newdata <- data.frame(explanatory = seq(min(example_data$explanatory),
                                         max(example_data$explanatory),
                                         length.out = 100))
 
-# Then add predictions to the newdata for the link and original scale
+# Then add predictions to the newdata for the link and response scale
 # REMEMBER the confidence intervals too, you can access these by taking the 
 # $se.fit of the results of `predict`, $fit is the mean prediction
 
@@ -1022,13 +1094,15 @@ predictions <- newdata %>% mutate(predictions_link = predict(glm_model_object,
                                                          newdata = newdata, 
                                                          type="link", 
                                                          se.fit=TRUE)$se.fit,
-                              predictions_original = predict(glm_model_object, 
+                              predictions_response = predict(glm_model_object, 
                                                          newdata = newdata, 
                                                          type="response", se.fit=TRUE)$fit,
-                              SE_original = predict(glm_model_object, 
+                              SE_response = predict(glm_model_object, 
                                                          newdata = newdata, 
                                                          type="response",
-                                                         se.fit=TRUE)$se.fit)
+                                                         se.fit=TRUE)$se.fit) %>%
+                as_tibble()
+
 
 
 predictions
@@ -1036,7 +1110,7 @@ predictions
 ```
 </br>
 
-You should notice that all predictions on the original scale around bounded 
+You should notice that all predictions on the response scale around bounded 
 between 0 and 1, but this is not the case on the link scale. 
 
 </br>
@@ -1053,12 +1127,12 @@ a GLM using `predict()` you need to calculate the bounds yourself.
 You need to add or
 subtract 1.96 times the standard error from the mean prediction. 
 
-```{r plot_ci_example, fig.caption = "Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the original response scale (B)"}
+```{r plot_ci_example, fig.caption = "Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the response scale (B)"}
 
 predictions <- predictions %>% mutate(upper_ci_link = predictions_link + (2*SE_link),
                                       lower_ci_link = predictions_link - (2*SE_link),
-                                      upper_ci_original = predictions_original + (2*SE_original),
-                                      lower_ci_original = predictions_original - (2*SE_original))
+                                      upper_ci_response = predictions_response + (2*SE_response),
+                                      lower_ci_response = predictions_response - (2*SE_response))
 
 # plot predictions on the link scale 
 
@@ -1073,24 +1147,24 @@ example_predictions_link <- ggplot(data = predictions,
        y = "Log odds of response",
        x = "Explanatory")
 
-# For this plot, the base can be the original data
-example_predictions_original <- ggplot() +
+# For this plot, the base can be the response data
+example_predictions_response <- ggplot() +
   geom_jitter(data = example_data, 
               aes(x = explanatory, y = response), 
               colour = "grey", size = 2, height = 0.01) +
   geom_ribbon(data = predictions,
               aes(x = explanatory,
-                  ymin = lower_ci_original, 
-                  ymax = upper_ci_original), 
+                  ymin = lower_ci_response, 
+                  ymax = upper_ci_response), 
               alpha = 0.5) +
   geom_line(data = predictions, 
-            aes(x = explanatory, y = predictions_original), 
+            aes(x = explanatory, y = predictions_response), 
             colour = "blue") +
-  labs(title = "B. Predictions on original scale",
+  labs(title = "B. Predictions on response scale",
        y = "Probability",
        x = "Explanatory")
 
-example_predictions_link + example_predictions_original
+example_predictions_link + example_predictions_response
 
 ```
 
@@ -1114,7 +1188,7 @@ easier to read.
 
 To add these intervals to the plot, 
 we need to make new predictions including the upper and lower bounds of the 
-prediction interval. We will do this on the link scale and the original 
+prediction interval. We will do this on the link scale and the response 
 response scale. 
 
 
@@ -1146,13 +1220,13 @@ sheep_predictions <- newdata %>% mutate(predictions_link = predict(sheep_model,
                                                     newdata,
                                                     type="link", 
                                                     se.fit = TRUE)$se.fit),
-                            # then predict on the original scale
-                            predictions_original = predict(sheep_model,
+                            # then predict on the response scale
+                            predictions_response = predict(sheep_model,
                                                     newdata,
                                                     type="response", 
                                                     se.fit = TRUE)$fit,
                             # and add the confidence interval bounds
-                            lower_ci_original = predict(sheep_model,
+                            lower_ci_response = predict(sheep_model,
                                                     newdata, 
                                                     type="response", 
                                                     se.fit = TRUE)$fit - 
@@ -1160,7 +1234,7 @@ sheep_predictions <- newdata %>% mutate(predictions_link = predict(sheep_model,
                                                     newdata,
                                                     type="response", 
                                                     se.fit = TRUE)$se.fit),
-                            upper_ci_original = predict(sheep_model,
+                            upper_ci_response = predict(sheep_model,
                                                     newdata, 
                                                     type="response", 
                                                     se.fit = TRUE)$fit + 
@@ -1175,7 +1249,7 @@ sheep_predictions <- newdata %>% mutate(predictions_link = predict(sheep_model,
 Once we have created predictions of $Y$ from the model object, 
 we can plot them using `geom_line()` and `geom_ribbon()` as in the code below.
 
-```{r sheep_predictions_plot, fig.caption = "A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the original scale including 95% confidence interval (grey)"}
+```{r sheep_predictions_plot, fig.caption = "A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
 # Plot of Confidence Intervals on the link scale
 
@@ -1190,25 +1264,25 @@ sheep_predictions_link <- ggplot(data = sheep_predictions,
        y = "Log odds of survival",
        x = "Body weight (kg)")
 
-# For this plot, the base can be the original data
-sheep_predictions_original <- ggplot() +
+# For this plot, the base can be the response data
+sheep_predictions_response <- ggplot() +
   geom_jitter(data = sheep_data, 
               aes(x = Weight, y = Survival), 
               colour = "grey", size = 2, height = 0.01) +
   geom_ribbon(data = sheep_predictions,
               aes(x = Weight,
-                  ymin = lower_ci_original, 
-                  ymax = upper_ci_original), 
+                  ymin = lower_ci_response, 
+                  ymax = upper_ci_response), 
               alpha = 0.5) +
   geom_line(data = sheep_predictions, 
-            aes(x = Weight, y = predictions_original), 
+            aes(x = Weight, y = predictions_response), 
             colour = "blue") +
-  labs(title = "B. Predictions on original scale",
+  labs(title = "B. Predictions on response scale",
        y = "Probability of survival",
        x = "Body weight (kg)")
 
 
-sheep_predictions_link + sheep_predictions_original
+sheep_predictions_link + sheep_predictions_response
 
 ```
 
@@ -1230,196 +1304,121 @@ quantified uncertainty. Next, **we will look at how to know if the model is
 any good.** To do this, we need to check if the assumptions for a Binomial GLM
 are met for our data. 
 
-For linear models, 
-we used **residuals vs fitted plots** to check for equal variance and linearity, 
-**normal Q-Q plots** to check for normality of residuals and the 
-**Cooks distance** to check for the outliers. 
+</br>
 
-For GLMs things are a little different since GLMs have non-normal and 
-non-constant variance (for Binomial and Poisson distributions the variance is
-controlled by the mean). 
+To check the assumptions of a Binomial GLM, we will follow the same procedure as
+for GLMs more broadly. For a reminder of this, go back to the 
+[Introduction to GLMs page]().
 
-To account for the non-constant variance and be able to use diagnostic plots to 
-check if model assumptions are met, the residuals of a GLM need to be altered. 
-There are two ways of doing this: **Pearson** and **Deviance** residuals. 
-These are not perfect in any way. 
-These measures scale the residuals by the variance. 
-Once we have scaled the residuals in this way to account for non-equal variance, 
-they should be approximately normal.
+</br>
 
-**Pearson residuals**
+The first step is to:
 
-These are calculated by dividing the residual (difference between observed data
-point $y_i$ and the fitted value $\hat{\mu}$) but the standard deviation of the estimates $\sigma_x$: 
-$$
-Res_p = \frac{y_i - \hat{\mu}}{\sigma_x}.
-$$
+**Plot the model predictions and the data together**
 
-In $R$, the Pearson residuals are obtained by:
-```{r pearson_residual, eval = FALSE}
+From this plot, it is possible to test: 
 
-residuals_pearson <- resid(glm_model_object, type = "pearson")
+* that the fitted model line is capturing the relationship between x and y on
+the response scale
+
+</br>
+
+To do this, we can re-plot the example plot from the section above. 
+
+```{r example_predictions_plot, fig.caption = "plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+
+example_predictions_response +
+    labs(title = "Model predictions and data on response scale")
 
 ```
 
-Pearson residuals follow a chi-squared ($\chi^2$) distribution. 
+If you look carefully at \@ref(fig:example_predictions_plot) you can see that 
+there are more data points that are 0 for the response for 
+negative values of the explanatory variable.
+As the values of the explanatory variable increase, we find progressively more
+1 values for the response. 
+Therefore, we would expect a model line that that an intercept of close to 0 on
+the response scale and then shows a positive relationship between x and y, 
+reaching an asymptote (levelling off) at a response value of 1 at the extreme
+end of the observed values of the explanatory variable (around 20). 
+This is exactly what the fitted model line does! 
+Therefore, in this case, it is possible to see that the model fits the data
+quite well.
 
-**Deviance Residuals**
+</br>
 
-These are calculated by calculating the individual deviance $d_i$ 
-(the contribution of
-each data point to the deviance of the model) and then assigning this a direction
-based on the sign of the difference between the observed data point  $y_i$ and 
-the fitted value $\hat{\mu}$. : 
-$$
-Res_D = sign(y_i - \hat{\mu})\sqrt{d_i}
-$$
-where $sign(y_i - \hat{\mu}) = 1$ when $y_i - \hat{\mu} > 0$ and 
-$sign(y_i - \hat{\mu}) = -1$ when $y_i - \hat{\mu} < 0$. 
+Note that if you had proportional data or those from multiple trials that the 
+data points might be distributed around the fitted line. 
 
-The deviance residuals are the default in the `glm()`. 
+Then it would be possible to also test:
 
-In $R$, the Deviance residuals are obtained by:
+* whether the data points are evenly distributed around the fitted line
 
-```{r deviance_residuals, eval = FALSE}
+```{r example_predictions_plot_proportion, fig.caption = "plot of the fitted GLM line on the response scale with proportional response, including 95% confidence interval (grey)"}
 
-residuals_deviance <- resid(glm_model_object, type = "deviance")
+ggplot(aes(x = explanatory, y = successes/(successes + failures)), 
+       data = example_data2)+
+  geom_point(shape = 16)+
+  geom_smooth(method=stats::glm, method.args = list(family="binomial"), 
+              se=TRUE)
 
 ```
 
-</br>
+</br> 
 
-#### 1. Residuals vs fitted plot
-
-From this plot, we can test a few things: that the relationship between 
-X and Y is linear (on the link scale), the residuals have (approximately) 
-a mean of 0, and the variance of the residuals is equal for all fitted values 
-(homoscedasticity). 
-These are not key assumptions of a GLM, even though they
-were for a linear model. However, once we have scaled the residuals, these 
-characteristics are something we would expect to be approximately true. 
-
-**Note that this will be very approximate! 
-The plots could in fact look quite bad.**
-
-Remember that we use the scaled residuals 
-(Pearson or Deviance) instead of the original residuals.
-The original residuals would not meet any of these assumptions. 
-
+In this example, the fit is much worse. 
+Although there are an even number of data points above and below the fitted model
+line, they are very widely spread away from it. 
+The model line does not seem to be explaining the data well, that is partly 
+because there is so little data (only 10 data points).
+But hopefully shows what a less well fitting model looks like. 
 
 </br>
+</br>
 
-```{r fitted_vs_residuals_example, eval = FALSE}
+The second step for checking model assumptions is: 
 
-# extract fitted values
-# and add to a data frame with the residuals
-fitted <- tibble(fitted = fitted(glm_model_object),
-                 residuals_pearson = residuals_pearson,
-                 residuals_deviance = residuals_deviance)
+**Overdispersion**
 
-pearson <- ggplot(data = fitted, aes(x = fitted, 
-                              y = residuals_pearson))+
-geom_point(colour = "grey")+
-geom_hline(yintercept = 0)+
-labs(title = "Pearson")
+Checking for overdispersion tests if these assumptions are met:
 
-deviance <- ggplot(data = fitted, aes(x = fitted, 
-                               y = residuals_deviance))+
-geom_point(colour = "grey")+
-geom_hline(yintercept = 0)+
-labs(title = "Deviance")
+* Correct variance function is used
 
-pearson + deviance
+* Dispersion parameter is constant
+
+In a Binomial GLM it is assumed that the variance is controlled by the 
+mean. But this is not always true. 
+It is something we need to check as part of the model checking process.
+
+</br>
+
+To check for overdispersion in GLMs we need to calculate the deviance ratio. 
+This is done by taking the ratio of residual deviance and residual degrees of 
+freedom.
+
+The assumption is that the deviance = 1 for Binomial GLMs. 
+Values higher than 2 indicates that the residuals likely have more dispersion
+than expected. 
+But there is no fixed threshold for when overdispersion is occurring,
+each researcher has to decide on their own how high a deviance ratio is a problem.
+
+</br>
+
+The deviance values are found in `summary()` at the bottom of the table
+
+```{r, echo=TRUE, include=TRUE}
+
+summary(glm_model_object)
+
 ```
 
-</br>
+</br> 
 
-The Pearson and Deviance residuals showed similar structure. 
-Around the point zero, the residuals decreased with increase in the 
-fitted values. The plot shows a linear trend, but we do expect the points to be 
-randomly scattered around the point $0$. 
-This suggests that our model has an issues with the linearity and equal 
-variance. 
-To solve this, we can try and add another covariate to explain some of the 
-variation and as such get the model better.
+For the example above 
+the **Deviance ratio = 124.79/98 = `r 124.79/98`.**
 
-
-</br>
-
-
-#### Normal QQ plot
-
-This plot tests the assumption of **the residuals are normally distributed**. 
-
-</br>
-
-If our assumptions
-are met, we expect **The points lie along the line.** 
-The line represents a perfect theoretical
-normal distribution, the points come from our model.
-
-```{r, eval = FALSE}
-#qqnorm(residualsD)
-#qqline(residualsD)
-```
-
-</br>
-In our model, 
-it was observed that the points do not lie along the straight line. 
-Although we have had a tweak the residuals, 
-they are still not normally distributed. 
-This supports the assertion that other covariates should be added to model to 
-improve its prediction.
-
-We also observe that there are some outliers in our data, 
-which is quite normal to observe from a QQ-plot. 
-We find that some points lie extremely from the others. 
-These points would be known however from the next model checking. 
-
-</br>
-
-#### Cook's Distance
-
-This plot tests the assumption of **no outliers**. 
-It lets you identify influential points. 
-We look for significant values of the Cook's distance, about $0.02$.
-
-</br>
-
-```{r, eval = FALSE}
-#plot(ExampleModel, which = 4)
-```
-*Figure 10: Cook's Distance plot for the Example model.*
-
-</br>
-
-<details><summary>Check your answer</summary>
-
-The point 132, 124 and 112 appears quite different to all others, 
-they have more influence.
-
-To decide if points 132, 124 and 112, 
-we would need to go back to the data and check
-for typos, mistakes, or anything that could be wrong with these points. 
-
-```{r, eval = FALSE}
-#example_data[c(112,124,132),]
-```
-
-The weights at these points are `23.2`, `22.8` and `22.6`. 
-However, a quick histogram of the weights (figure 11) do not suggest that 
-these points are very far from the others. 
-Hence we do not not discard these values. 
-
-```{r, eval = FALSE}
-#hist(example_data$Weight, main = "")
-```
-*Figure 11: Histogram of the weights of the sparrows.*
-
-</details>
-
-</br>
-
+This value is a bit above 1, but much lower than 2, so the dispersion assumption
+seems to be met in the example. 
 
 </br>
 
@@ -1433,110 +1432,75 @@ to ensure that it meets the assumptions of a Binomial GLM.
 
 </br>
 
-We will use one plot at a time to test specific assumptions.
+First, we will look again at **the plot of the model predictions and the data
+together.**
 
 </br>
 
-#### Residuals vs fitted
+```{r sheep_predictions_plot2, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
-```{r, echo=T, message=F}
-#resP <- residuals(sheepModel, type="pearson")
-#resD <- residuals(sheepModel, type="deviance")
-#
-#fitted <- fitted(sheepModel) #extract fittedvalues
-#
-#par(mfrow=c(1,2))
-#plot(fitted, resP, main = "Pearson")
-#abline(h=0)
-#
-#plot(fitted, resD, main = "Deviance")
-#abline(h=0)
+sheep_predictions_response +
+  labs(title = "Model predictions on response scale")
 
 ```
-*Figure 12: Residuals vs fitted plot for the sheep model.*
 
- </br> 
+</br> 
  
-Figure 12 looks quite unusual. 
-There are a few assumptions we are checking with this plot:
+The fit of this model is perhaps a little harder than the example in the theory
+section. 
+This is partly caused because there is more data, so it overlaps a lot. 
 
+```{r sheep_predictions_plot2, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
-* **Do the residuals have a mean of 0?** 
-The mean of the residual deviance will be approximately $0$.
-* **Is the variance of the residuals is equal for all fitted values 
-(homoscedasticity)?** It is not the nice cloud of random points that we expect.
-**But is it a problem?** To answer this, we need to look at bit closer. 
-We observe that the points are not spread randomly around the mean of $0$. 
-Moreover, we can also see a linear trend of the upper and lover residuals 
-(linearly decaying with increase in fitted values).
+ggplot() +
+  geom_jitter(data = sheep_data, 
+              aes(x = Weight, y = Survival), 
+              colour = "grey70", size = 2, height = 0.1) +
+  geom_ribbon(data = sheep_predictions,
+              aes(x = Weight,
+                  ymin = lower_ci_response, 
+                  ymax = upper_ci_response), 
+              alpha = 0.5) +
+  geom_line(data = sheep_predictions, 
+            aes(x = Weight, y = predictions_response), 
+            colour = "blue") +
+  labs(title = "Model predictions on response scale",
+       y = "Probability of survival",
+       x = "Body weight (kg)")
 
-#### Normal QQ
-
-```{r, echo=T, message=F}
-#plot(sheepModel, which = 2)
 ```
-*Figure 13: Normal QQ plot for dive depth model.*
-
-</br> 
-
-The assumption we are checking with this plot is: 
-**are the residuals are normally distributed?**
-
-As expected, there is not a perfect match between the theoretical normal 
-distribution and the distribution of the residuals. 
-There is some deviation at the lower tail of the distribution. At upper half, 
-this seems ok. At lower values, points 47, 107 and 392
-deviate quite a lot. These points also stood out in Figure 6. 
-We will need to look into them more in Figure 9. 
-
-#### Cook's distance
-
-```{r, echo=T, message=F}
-#plot(sheepModel, which = 4)
-```
-*Figure 14: Cook's distance plot for the dive depth model.*
-
-</br> 
-
-The assumption we are checking with this plot is: **Are there any outliers?**
-
-Figure 9 shows that some the Cook's distances of this model are very high 
-(max = 0.2). The values at $46$, $107$ and $392$ have been flagged. 
-Hence there is the need to investigate if these points have any 
-significant influence on the model. 
-We do this by extracting the data points at these places.
 
 </br>
 
-We can find points $46$, $107$ and $392$ by looking at the 46th, 
-107th and 392th row of our data frame. 
-It can be observed that the sheep with weight $23$ survived but those with 
-weight $30.6$ and $32.8$ did not survive. 
-From the histogram below (figure 15), 
-these values does not deviate from the others. 
-This possibly means that weight may be enough to explain the variation of the
-survival of the sheep. 
-**Therefore, we would not consider this an outlier and would not remove 
-from the data.** However, we can focus our attention on getting more covariates 
-that can help us explain more the variance and improve the model fit. 
+If we increase the jitter of the points from 0.01 to 0.1, it becomes a bit easier
+to see the pattern. 
+Now it is possible to see there are many more data points with a response value
+of 1, than there are data points with a response value of 0. 
+There are especially few response values of 0 (death) for sheep with a body
+weight above 25kg.
+Very few of these big sheep die. 
 
-```{r, echo=T, message=F}
-#sheep_data[c(47,107,392),]
-```
-
-```{r}
-#hist(sheep_data$Weight, main="")
-```
-*Figure 15: Histogram of the weight of the sheep.*
+So, we would expect a model line to fit well, if it captures small sheep having
+a lower survival change than big sheep. 
+It seems that the model does capture the data quite well in this case. 
 
 </br>
 
-#### Summary
+Next, we should **check overdispersion.**
 
-Overall, it seems that most of the model assumptions are not met well. 
-This suggests that `weight` may not be enough to explain the total variation 
-in the model. It would be better to fit the model by adding more covariates. 
-Therefore, we have to condiser another model.
+```{r overdispersion_sheep}
+
+summary(sheep_model)
+
+```
+
+The deviance ratio for the sheep model is:
+
+1251.5/1326 = `r 1251.5/1326`. 
+
+This is actually slightly below the expected dispersion of 1, but it is pretty 
+close.
+So, it seems the dispersion assumption is met for the sheep model. 
 
 </br>
 
@@ -1544,12 +1508,11 @@ In the next section we will interpret our results.
 
 </br> 
 
-</br>
-
-
 ## <i class="far fa-lightbulb"></i> Draw conclusions {.tabset .tabset-fade}
 
 ### Theory
+
+</br>
 
 In the previous sections you learned how to run a Binomial GLM, 
 what the parameters of the model mean, 
@@ -1572,25 +1535,43 @@ interest (including strength and direction).
 
 ### Worked example 
 
+</br>
+
 This is the final section of our analysis of the data on survival of sheep. 
 We will now bring together all of the results we have obtained and draw a 
 conclusion following the same format as the in the theory section.
 
-A reminder, we were asking: **Does weight influence survival of sheep?**
+A reminder, we were asking: **Does weight influence survival of Soay sheep?**
 
 </br>
 
 The maximum likelihood estimate of the relationship between weight and survival 
 probability is `r coef(sheep_model)[2]`. 
 In other words, for every 1 kg increase in body weight,
-the log odds of the survival of the sheep increases by a log odds of
+the log-odds of the survival of the sheep increases by
 `r round(coef(sheep_model)[2],2)`. 
+
+On the response scale this increase is non-linear and is better shown with a
+graph. 
+
+```{r sheep_predictions_plot3, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+
+sheep_predictions_response +
+  labs(title = "Model predictions on response scale")
+
+```
+
+</br>
+
+Here it is clearer to see the increase in survival probability with body weight. 
+The increase in survival is steepest for smaller sheep, levelling off after
+around 25kg at a 0.95 probability of survival in a given year for these big sheep. 
 
 </br>
 
 When we look at the uncertainty in this estimate, we see the 95% confidence 
 interval is `r round(confint(sheep_model)[2,],2)`. 
-The confidence interval limits are same signs, 
+The confidence interval limits are same sign, 
 meaning that 0 is not included as a plausible value for the strength of 
 the relationship.
 Therefore, we can conclude that weight has seems to have a positive impact 
@@ -1598,13 +1579,15 @@ on the survival of sheep.
 
 </br>
 
-In model checking, all the assumptions of the Binomial GLMs were not met. 
-With the significant relationship of the weight and the survival of the sheep, 
-it suggests that the model's total variation cannot be explained only by the 
-covariate `weight`. 
-Attention should then be focused on collecting more relevant covariates to 
-explain some of the variance, 
-as we do not have problem with our sample size at the moment. 
+In model checking, all the assumptions of the Binomial GLMs were met. 
+The model was not overdispersed, the data are Binomial (coming from single trials)
+and the fitted model line captured the pattern of the data well. 
+
+It should be noted that there is also data on Age in the Soay sheep dataset. 
+It is reasonable to assume that Age and Body weight have some relationship. 
+Older sheep are likely to be bigger than new lambs. 
+Therefore, it might be good to also include Age in the model possibly conducting
+model selection to decide if this variable is needed. 
 
 </br>
 
@@ -1620,7 +1603,7 @@ variable is not normally distributed.
 ### Contributors {- .contributors .toc-ignore}
 
 ```{r contributors, eval=FALSE}
-* Kwaku Peprah Adjei
+* Kwaku Peprah Adjei (lead)
 * Emily G. Simmonds
 * Bob O'Hara
 ```
