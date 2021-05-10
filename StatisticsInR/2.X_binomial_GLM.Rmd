@@ -1,5 +1,5 @@
 ---
-title: "Binomial generalised linear models"
+title: "Binomial generalized linear models"
 output:
   bookdown::html_document2:
     highlight: tango
@@ -76,7 +76,8 @@ to analyze data with a binary response and numeric explanatory variables.
 On this page, we focus on one particular type of GLM, the Binomial GLM. The
 Binomial GLM fits a non-linear line to:
 
-1) estimate a relationship between $X$ and $Y$, where $Y$ is binary and 
+1) estimate a relationship between $X$ and $Y$, where $Y$ comes from binary 
+trials and is
 therefore bounded between 0 and 1. 
 
 2) predict change in $Y$ from change in $X$. 
@@ -299,7 +300,7 @@ the name).
 The Binomial distribution is used to represent the number of 
 successes ($r$) from a number of independent trials ($N$) when
 the probability of success ($p$) is the same for each trial. We
-use it for binary data, 0s and 1s.
+use it for data from binary trials.
 
 The Binomial distribution has two parameters $N$ and $p$. Usually,
 $N$ is known (it comes from the data), 
@@ -317,7 +318,7 @@ is specified by the `family` argument for a Binomial GLM it is
 **The <span style="color:magenta">Link function</span>**
 
 The link function transforms the <span style="color:orange">systematic part</span> 
-of the model onto the scale of data, connecting it to the 
+of the model onto the scale of data (called the response scale), connecting it to the 
 <span style="color:purple">random part</span>. 
 
 This step is necessary because the model is non-linear. If you were to directly
@@ -345,13 +346,19 @@ is specified within the `family` argument, but with an extra argument called
 </br>
 
 Using the logit link converts a probability to a log-odds. The log-odds is the 
-natural logarithm of the odds ratio ($$\frac{p}{1-p}$$). The odds ratio
+natural logarithm of the odds ratio: $$\frac{p}{1-p}$$. 
+
+</br>
+
+The odds ratio
 is the probability of a event occurring over the probability it doesn't 
 occur. Odds are often used in the things like betting, e.g. to represent the 
 odds of a particular horse winning a race. An odds ratio of 10:1 means that the 
 companies assume that for every 10 successes (for the company i.e. a horse
 loses and they keep the money) there will be 1 failure (the horse wins and the
 company has to pay).
+
+</br>
 
 The logit link takes the following form:
 
@@ -362,6 +369,8 @@ $$
 $$
 
 Where $\mu$ = the log-odds, which is the output of the model. 
+
+</br>
 
 The inverse of the logit link is:
 
@@ -464,6 +473,8 @@ valid.
  
  * The correct distribution is used (Binomial here - it is assumed that the 
  random part of the model does follow a Binomial distribution)
+ 
+ </br>
 
 All of these assumptions should be met for the model to work properly and 
 they ALWAYS need to be checked. Outliers, dispersion, and variance can be 
@@ -481,6 +492,8 @@ we will use the `glm()` function.
 
 `glm(y ~ x, data, family = binomial(link = "logit"))`
 
+</br>
+
 The `glm()` function takes several arguments:
 
  * formula in form: `y ~ x` (<span style="color:orange">systematic part</span>)
@@ -492,6 +505,8 @@ The `glm()` function takes several arguments:
  <span style="color:magenta">link function</span>. 
  In this case, 
  the model uses the binomial family with a logit link. 
+ 
+ </br>
 
 The function will fit the GLM using **maximum likelihood estimation**
 and gives us the maximum likelihood estimates of 
@@ -516,8 +531,7 @@ There are two ways of fitting a Binomial GLM using the `glm()` function:
 
 **For data with results of single trials (0s and 1s) or proportions (0-1)**
 
-The $y$ is the response variable and is a single vector of numbers, usually in
-the format of a factor or logical or integer. 
+The $y$ is the response variable and is a single vector of numbers.
 
 </br>
 
@@ -528,7 +542,8 @@ The $y$ is still the response variable but instead of single column of 0s and 1s
 or proportions, there are two columns (one of successes and one of failures). The
 columns are combined using `cbind()` within the `glm()` function:
 
-`glm(cbind(success, failure) ~ x, data = data, family = binomial(link = "logit"))`
+`glm(cbind(success, failure) ~ x, data = data, 
+family = binomial(link = "logit"))`
 
 Doing this accounts for number of trials because `glm()` will also get information
 on the number of trials conducted (successes + failures).
@@ -632,6 +647,8 @@ section above:
 the intercept; <span style="color:blue">$\beta_i$</span> = 
 the slope of the model line (steepness/gradient).
 
+</br>
+
 **But what do these parameters really mean?**
 
 To fully understand the parameters and what they mean, we have to note that 
@@ -644,6 +661,9 @@ we have to recall the linear predictor and the link function.
 The linear predictor is $\eta = \color{orange}\alpha + \color{blue}{\beta_i}X_i$. 
 The $\eta$ in this case is the log-odds of the probability of success ($p$).  
 $p$ is what we are trying to estimate. 
+
+</br>
+
 That is:
 
 $$
@@ -685,6 +705,8 @@ $log(\frac{0.09}{(1-0.09)}) = -2.31$
 Step 3 should look familiar. It is the same as the link 
 function in the Binomial GLM. 
 
+</br>
+
 **<span style="color:orange">$\alpha$, the intercept</span>**
 
 This is the parameter that gives the value of the log odds of $Y$ when $X = 0$.
@@ -712,6 +734,9 @@ ggplot(example_data, aes(x = explanatory, y = logity))+
   theme(legend.position = "none")
  
 ```
+
+
+</br>
 
 **Parameters on the response scale**
 
@@ -742,6 +767,8 @@ coef(glm_model_object)[1]
  
 ```
 
+</br>
+
 **<span style="color:blue">$\beta$, the slope</span>**
 
 On the response scale the slope parameter has a somewhat different meaning. On
@@ -752,7 +779,7 @@ As a result,
 the gradient of the model line will be different for different $X$ values 
 (see \@ref(fig:response-scale-example)). 
 
-```{r response-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue", fig.height=150}
+```{r response-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue", fig.height=5}
 
 example_data <- mutate(example_data, 
                        predictions = predict(glm_model_object,
@@ -772,6 +799,8 @@ ggplot(example_data, aes(x = explanatory, y = response))+
   theme(legend.position = "none")
  
 ```
+
+</br>
 
 The estimate of the $\beta$ coefficient on the logit scale, will tell you about
 the strength and direction of the relationship between $X$ and $Y$. 
@@ -1378,6 +1407,8 @@ But hopefully shows what a less well fitting model looks like.
 
 The second step for checking model assumptions is: 
 
+</br>
+
 **Overdispersion**
 
 Checking for overdispersion tests if these assumptions are met:
@@ -1450,7 +1481,7 @@ The fit of this model is perhaps a little harder than the example in the theory
 section. 
 This is partly caused because there is more data, so it overlaps a lot. 
 
-```{r sheep_predictions_plot2, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+```{r sheep_predictions_plot3, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
 ggplot() +
   geom_jitter(data = sheep_data, 
@@ -1554,7 +1585,7 @@ the log-odds of the survival of the sheep increases by
 On the response scale this increase is non-linear and is better shown with a
 graph. 
 
-```{r sheep_predictions_plot3, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+```{r sheep_predictions_plot4, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
 sheep_predictions_response +
   labs(title = "Model predictions on response scale")
@@ -1591,9 +1622,11 @@ model selection to decide if this variable is needed.
 
 </br>
 
-## {.toc-ignore}
+## {.toc-ignore} 
 
-### What's next? {.facta}
+ANYONE KNOW HOW TO REMOVE THIS TITLE?
+
+### What's next? {.facta .toc-ignore}
 
 * **Poisson Generalized linear models** for analyses when your response 
 variable is not normally distributed.
