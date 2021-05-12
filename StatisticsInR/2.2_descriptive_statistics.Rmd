@@ -30,7 +30,7 @@ You should be familiar with basic statistical theory and the basics of R.
 
 You are interested in the heights of plants in an alpine meadow. 
 
-![Photo credit: Joshua Lynn](/Users/joshisoriginal/Downloads/treeInMeadow.jpg)
+![Photo credit: Joshua Lynn](./Figures/treeInMeadow.jpg)
 
 You have measured the heights of five of the plant species, entered the values (in cm) into the below table,  and now you want to summarize the plant heights for the meadow.
 Notice that the one tree species, *Juniper communis*, is much taller than the other species in this meadow.  
@@ -47,8 +47,8 @@ Species <- c("Juniper communis", "Betula nana", "Vaccinium myrtillus", "Festuca 
 Height <- c(200, 50, 15, 20, 10, 10)
 height_data2 <- data.frame(Species, Height)
 ```
-```{r view table, echo=FALSE, eval= TRUE}
-head(height_data)
+```{r view table, echo=TRUE, eval= TRUE}
+head(height_data) # we use `head()` to look at our data set already loaded into R
 ```
 
 
@@ -72,16 +72,15 @@ $$\overline{x} = \frac{\sum_{i=1}^n x_i}{n}$$
 Where $\overline{x}$ is the mean of the sample equal to the sum ($\sum$) of all observations, _i_, divided by the total number of observations, _n_. 
 
 In R, the function that calculates the mean is called `mean()`. 
-We will first look at our height data and the use the `mean()` function to find the value for our data:
+We will first look at our height data and the use the `mean()` function to find the mean for our data:
 
 ```{r mean, echo=TRUE, eval=TRUE}
-head(height_data) # we use `head()` to look at our data set already loaded into R
 mean(height_data$Height) # then we use the `mean()` function to calculate the mean for our height sample
 ```
 
 And so, we have a mean of 59 cm for the height of our five plant species. 
-But notice how the mean is higher than 4 of the species. 
-It seems reasonable to ask: in this case, is the mean an accurate representation of the samples central tendency?
+But notice how the mean is higher than the height measured for four of the species. 
+It seems reasonable to ask: in this case, is the mean an accurate representation of the sample's central tendency?
 
 </br>
 
@@ -89,9 +88,9 @@ It seems reasonable to ask: in this case, is the mean an accurate representation
 
 ### Median
 
-The *median* is another measure of the central tendency of your sample. 
+The *median* is another measure of the central tendency of a sample. 
 The median is the number “in the middle” of the sample, or, the middle value of a series of values sorted from smallest to largest.
-Given that the median only considers the middle of value, it may more accurately estimate a samples central tendency by not putting as much weight on *outliers*, or values that very are different from the rest of the sample.
+Given that the median only considers the middle of value, it may more accurately estimate a sample's central tendency by not putting as much weight on *outliers*, or values that very are different from the rest of the sample.
 
 Provided that the sample contains an odd number _n_ of entries, the median is the value of the $(\frac{(n+1)}{2})$ entry in the sample. 
 If the sample contains an even number _n_ of entries, then the median is the mean of the values of the $(\frac{n}{2})$ and the $(\frac{n}{2} + 1)$ entries.
@@ -145,7 +144,7 @@ max(height_data2$Height)-min(height_data2$Height) # find the range as difference
 ```
 We see that the `range()` returns our minimum and maximum height values, while the other two functions return the difference between the minumum and and maximum height values.
 
-The *midpoint* of a sample is the value equidistant from the minimum and the maximum. 
+The *midpoint* of a sample is the value equidistant or in the middle between the minimum and the maximum. 
 It can be calculated by taking taking the mean of the minumum and maximum value of a sample.
 
 In R, you can calculate the midpoint of a sample with: 
@@ -180,12 +179,12 @@ We see that the most common value of height in our dataset is 10 cm and there ar
 Means and medians describe the central tendency of a sample, but they give us no information on the spread or dispersion of the data used to find this central tendency. 
 We cover measures of sample dispersion in this section.
 
-The *variance* (var or $\sigma^2$) corresponds to the mean of the squared differences from the mean. 
+The *variance* (var or $\sigma^2$) corresponds to the mean of the squared differences from the sample mean. 
 Mathematically, variance ($\sigma^2$) of the sample (x) is: 
 
-$$\sigma^2 (x) = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n}$$
+$$\sigma^2 (x) = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n-1}$$
 
-Where we take an entry in the sample, $x_i$, and calculate the difference between its value and the mean, $\overline{x}$, then square it. 
+Where we take an entry in the sample, $x_i$, and calculate the difference between its value and the sample mean, $\overline{x}$, then square it. 
 Do the same for all the entries, _n_, in the sample. 
 Finally, calculate the mean of these squared differences (divide by _n_) and you get the variance. 
 Note-variance is always positive because of the squared difference.
@@ -198,7 +197,7 @@ var(height_data2$Height) # finds the variance of the sample
 Here, we get the variance of the height data- the variance is over 27 times larger than the tallest species' height! 
 Why might that be?
 
-The standard deviation (sd or $\sigma$) is the square root of the variance. 
+The *standard deviation* (sd or $\sigma$) is the square root of the variance. 
 Unlike the variance, the standard deviation has the same unit as the mean, median or any entry in the sample because of this square root transformation. 
 This makes it very useful as it can be used in combination with the mean to define how values are spread around the mean. 
 Often, you will find this expressed as mean +/- sd.
@@ -219,7 +218,7 @@ $$\sigma_\overline{x} = \frac{\sigma}{\sqrt{n}}$$
 
 Where $\sigma$ is the standard deviation of the sample and *n* is the number of independent observations in the sample.
 
-There is no standard function to calculate a samples standard error in R, but many statistical test functions will calculate the standard error for a parameter as part of the output. 
+There is no standard function to calculate a sample's standard error in R, but many statistical test functions will calculate the standard error for a parameter as part of the output. 
 Here is a way to calculate the se from scratch:
 
 ```{r standard error, echo=TRUE, eval=TRUE}
@@ -228,7 +227,32 @@ sd(height_data2$Height)/sqrt(length(height_data2$Height)) # take the sd of the s
 We can interpret the se as the expected "error" in our estimate of mean plant height. 
 What would happen to the standard error if we measured the height of every plant in the meadow? 
 This is an important point! 
-The standard error of a mean estimate approaches zero as we increase the number of observations ($\sigma_\overline{x} \sim 0 $ as $n \rightarrow \infty$).
+The standard error of a mean estimate approaches zero as we increase the number of observations ($\sigma_\overline{x} \sim 0$ as $n \rightarrow \infty$).
+Given that many tests in frequentist statistics (e.g., t-tests) use se to determine "significance" of results, increasing sample size will increase the probability of obtaining a statistically significant result, even if the estimate is biologically negligible. 
+To further exemplify this fact, see the below figure where tree height mean is the same in the two samples (the points), but one sample has three times the number of observations (*n*) and much smaller se (the lines passing through the points):
+
+```{r stadard error figure, echo=FALSE, eval=TRUE}
+Species <- c("Juniper communis", "Betula nana", "Vaccinium myrtillus", "Festuca rubra", "Veronica alpina",
+             "Juniper communis", "Betula nana", "Vaccinium myrtillus", "Festuca rubra", "Veronica alpina",
+             "Juniper communis", "Betula nana", "Vaccinium myrtillus", "Festuca rubra", "Veronica alpina")
+Height <- c(200, 50, 15, 20, 10, 200, 50, 15, 20, 10, 200, 50, 15, 20, 10)
+height_data3 <- data.frame(Species, Height)
+
+height_data4 <- bind_rows(height_data, height_data3, .id= "sample") %>%
+  group_by(sample) %>% summarize(samp_mean = mean(Height),
+                              samp_se = sd(Height)/sqrt(length(Height))) %>%
+  mutate(sample = factor(sample)) %>%
+  mutate(sample = recode(sample, "1" = "n=5" ,"2" = "n=15"))
+  
+
+ggplot(height_data4, aes(x=sample, y= samp_mean)) + geom_point(size=4) +
+         geom_linerange(aes(x= sample,ymin=(samp_mean - samp_se), ymax = (samp_mean + samp_se)))+
+  scale_x_discrete("Height sample size") + 
+  scale_y_continuous("Height mean and se",expand=c(0,0))
+
+```
+
+
 
 </br>
 
@@ -248,6 +272,7 @@ In addition, one refers to:
 Q0: the minimum value in the set,
 Q4: the maximum value in the set.
 
+Quartiles give you an idea of how much of your data falls within a specified percentage range. 
 Note that the set of data between Q1 and Q3 (which contains the middle 50% of the data) is the interquartile range (IQR).
 
 In R, quartiles may be obtained using the function `quantile()`.
@@ -260,7 +285,7 @@ quantile(height_data2$Height) # Find the Q0, Q1, Q2, Q3, and Q4
 quantile(height_data2$Height, probs = c(0.25, 0.5, 0.75)) # Find the Q1, Q2, and Q3 by defining which quartiles (in proportions) using the probs argument
 ```
 
-Quartiles can be visualized with `ggplot()` and `geom_boxplot()`:
+Quartiles can be visualized with boxplots in `ggplot()` and `geom_boxplot()`:
 
 ```{r quartiles boxplot, echo=TRUE}
 ggplot(height_data2, aes(y=Height, x=""))+geom_boxplot()+# assign the vector "x" as the y variable in the 'aes' argument and pass it to 'geom_boxplot' 
@@ -271,7 +296,8 @@ ggplot(height_data2, aes(y=Height, x=""))+geom_boxplot()+# assign the vector "x"
   annotate("text", x = 1.42, y = 11, label = "<-Q1")+
   annotate("text", x = 1.063, y = 5, label = "^Q0 or min")
 ```
-We can see the distribution of the height data and its quartiles with the boxplot. 
+We can see the distribution of the height data and its quartiles with the boxplot.
+The Q2 thick line is the mean, Q0 and Q4 are the min and maxe, respectively, and Q1 and Q3 are the 25% and 75% quartiles, respectively. 
 Note how much of an outlier *Juniper communis* is relative to the other species.  
 
 </br>
