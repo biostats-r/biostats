@@ -20,7 +20,8 @@ knitr::include_graphics("Pics/fork_branch_tutorial/0_forks_branches.jpg")
 ## What is a fork?
 
 GitHub is useful for developing your own code, but at some point you might want to collaborate with other people on a project. 
-Or you might come across a GitHub repository that you want to use as a starting point for your own work. In both cases **forks** are the way to go. 
+Or you might come across a GitHub repository that you want to use as a starting point for your own work.
+In both cases **forks** are the way to go. 
 
 A fork is a copy of somebody's GitHub repository. 
 You can fork a repo and work independently of the original project. 
@@ -29,7 +30,7 @@ Or if you are collaborating with other people you can stay connected with the or
 However, you cannot directly affect (or damage) the original project, which is somewhat less scary, right?
 <br/><br/>
 
-### the workflow
+### The workflow
 
 To understand the **workflow**, let's see how Angelina and Kingsley collaborate using GitHub (see Figure \@ref(fig:github)).
 
@@ -45,9 +46,36 @@ knitr::include_graphics("Pics/fork_branch_tutorial/1_workflow3.png")
 ```
 <br/><br/>
 
+### Forking with `usethis`
+
+The easiest way to fork a repo on GitHub and clone it to your computer is with the `usethis` package.
+Find the user name and repo name of the repo you want to fork.
+To fork and clone the "kingsleyshacklebolt/dragon_study" repo, use
+
+```{r create-with-github, eval = FALSE, echo = TRUE}
+library(usethis)
+create_from_github("kingsleyshacklebolt/dragon_study", fork = TRUE)
+```
+
+This will 
+
+- fork the repo, creating a copy in your own GitHub account.
+- clone your fork of the repo onto your computer. 
+By default, the clone will be put on your desktop. 
+You can copy the entire folder to somewhere more convenient, or set the `destdir` argument.
+- set up the connections between the clone, your fork and the original repo. You can see these connections in the terminal with the command
+
+```{bash remotes, echo = TRUE, eval = FALSE}
+git remote -v
+```
+
+
+
 ### Fork a repo on GitHub
 
-To **fork** a repo, go to GitHub, log into your account (see section \@ref(preparation) for how to make an GitHub account) and go to the repository you want to **fork**
+Sometimes if you only want to make a small change to a repo, it might be more convenient to make a **fork** on GitHub and make all the edits directy on GitHub.
+
+To do this, go to GitHub, log into your account (see section \@ref(preparation) for how to make an GitHub account) and go to the repository you want to **fork**.
 
 Let us assume that Angelina wants to fork the magic_dragon repo from biostats.
 Click on the **fork** button on the top right of the webpage and wait until the repo is forked.
@@ -58,82 +86,11 @@ knitr::include_graphics("Pics/fork_branch_tutorial/2_fork_repo.png")
 <br/><br/>
 <br/><br/>
 
-#### Excercise: fork a repo on GitHub
-
-Now it is your time to **fork** a repo.
-Go to the magic_dragons repo on biostats https://github.com/biostats-r/magic_dragons and **fork** the repo following the instructions above
-You need to have a GitHub account (see section \@ref(preparation) for how to make an GitHub account).
-
-You should now have a repo in your GitHub account called magic_dragons.
-We will later in this tutorial use the forked repo to make a pull request.
-
-
-
-### Clone a forked GitHub repository
-
-To clone a forked repo, go to GitHub.
-On the top of the page is the name of the **forked repository** and the project name.
-Click on the green **Code** button on the top right, make sure you are on the **SSH** tab and copy the url link.
-
-```{r clone}
-knitr::include_graphics("Pics/fork_branch_tutorial/3_clone.PNG")
-```
-<br/><br/>
-<br/><br/>
-Go to RStudio and click on **File > New Project**.
-
-```{r new-project, out.width = '60%'}
-knitr::include_graphics("Pics/gittutorial/12_new_project.png")
-```
-<br/><br/>
-<br/><br/>
-Select **Version Control**.
-
-```{r version-control, out.width = '60%'}
-knitr::include_graphics("Pics/gittutorial/13_version_control.png")
-```
-<br/><br/>
-<br/><br/>
-Select **Git**.
-
-```{r git, out.width = '60%'}
-knitr::include_graphics("Pics/gittutorial/14_git.png")
-```
-<br/><br/>
-<br/><br/>
-Paste the url link from above and click **Create Project**.
-
-```{r add-url, out.width = '60%'}
-knitr::include_graphics("Pics/fork_branch_tutorial/4_add_url.png")
-```
-
-If you want to **work independently** from the original repo, then this is it.
-
-However, if you want to stay connected to the **upstream repo**, then go to terminal and type:
-
-```
-git remote add upstream git@github.com:user_name/repo_name.git
-```
-
-So Angelina would then type:
-```
-git remote add upstream git@github.com:biostats_r/magic_dragons.git
-```
-
-If you follow these steps, everything should work.
-In case you have made a typo or something else is wrong with your **upstream repo** you first need to remove upstream before you can add or change it.
-Here is the command to remove upstream:
-
-```
-$ git remote rm upstream
-```
-
-Now you have cloned the project **local** to your computer and you are ready to start working in your fork.
 
 
 ## What is a branch?
 
-You have forked a repository and are ready to start working on the project. 
+You have forked a repository and are ready to start working on the project.
 Let's talk about **branches**.
 
 A **branch** lets you develop code, fix a problem, or test an idea without affecting the original project. 
@@ -310,9 +267,24 @@ Go ahead and fix it.
 If everything was ok, then you are done.
 
 
-### Update your fork in the Terminal
+### Update your fork
 
-Once your **pull request** has been accepted, you have to update your fork to get the latest changes from **upstream**. 
+Once your **pull request** has been accepted, you have to update your fork to get the latest changes from **upstream**.
+
+You can do this either on GitHub or in the terminal
+
+#### On GitHub
+
+Go to your fork on GitHub.
+Click the "Fetch upstream" link beneath the green "Code" button, then press "Fetch and Merge" in the popup.
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Is your fork behind? You can now sync from the parent repo with just a single click! 🖱💥 <a href="https://t.co/4Zx6OwVTxO">pic.twitter.com/4Zx6OwVTxO</a></p>&mdash; GitHub (@github) <a href="https://twitter.com/github/status/1390382527588798477?ref_src=twsrc%5Etfw">May 6, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+
+Now go to RStudio and pull the updates to your computer. 
+Unless you want to continue working on the same branch, you should now return to the main branch. 
+
+#### In the terminal
+
 Go to RStudio and the **Terminal** tab.
 <br/><br/>
 <br/><br/>
@@ -445,7 +417,8 @@ The **Git flight rules** are an exhaustive resource for what to do when things g
 
 ### What's next {.facta .toc-ignore}
 
-Nothing yet. Go and eat more cake 🍰
+Nothing yet. 
+Go and eat more cake 🍰
 
 
 ### Contributors {- .contributors .toc-ignore}

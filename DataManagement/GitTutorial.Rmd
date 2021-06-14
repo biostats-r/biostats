@@ -56,7 +56,7 @@ knitr::include_graphics("Pics/gittutorial/0_workflow_git.png")
 <br/><br/>
 
 
-## Preparation
+## Installation
 
 Download and install git: https://git-scm.com/
 
@@ -71,97 +71,99 @@ knitr::include_graphics("Pics/gittutorial/1_sign_up.png")
 <br/><br/>
 <br/><br/>
 
-Now you have to configure your name and email associated with your GitHub account.
-Go to RStudio and type:
+## Set-up
 
-```
+Now you have to configure your name and email associated with your GitHub account.
+Go to RStudio and, using your own identification, type:
+
+```{r eval = FALSE, echo=TRUE}
 ## install if needed (do this exactly once):
 ## install.packages("usethis")
 
 library(usethis)
-use_git_config(user.name = "kingsleyshaklebolt", user.email = "kingsleyshaklebolt@ministryofmagic.com")
+use_git_config(
+  user.name = "kingsleyshaklebolt", 
+  user.email = "kingsleyshaklebolt@ministryofmagic.com"
+  )
 ```
 
 The next step is to connect RStudio and GitHub.
-
+There are several ways to do this. 
+The easiest is to use the `usethis` package (version 2.0.0 or higher).
 
 ## Connect RStudio and GitHub
 
-In RStudio click on **Tools > Global Options**, select **Git/SVN** tab. 
+GitHub needs to validate who you are before you can connect it and RStudio.
+We can do this by generating and saving a Personal Access Token (PAT).
+You only need to do this once.
 
-Ensure that the path to the Git executable is correct.
-This is particularly important in Windows where it may not default correctly (e.g. C:/Program Files (x86)/Git/bin/git.exe).
+```{r PAT, eval = FALSE, echo = TRUE}
+create_github_token()
+```
+This function will open GitHub. 
+After confirming your password, you will be shown a page to make a new PAT.
+You don't need to change any of the options.
+Just click the green "Generate token" button at the bottom of the page.
 
-Click **Create RSA Key**
-<br/><br/>
-```{r git-svn}
-knitr::include_graphics("Pics/gittutorial/2_git_svn.png")
-```
-<br/><br/>
-<br/><br/>
+The next page will show you your PAT. 
+Copy it by clicking on the clipboard icon and return to R.
 
-Click **Create** and close this window.
-<br/><br/>
-```{r create-key}
-knitr::include_graphics("Pics/gittutorial/3_create_key.png")
-```
-<br/><br/>
-<br/><br/>
+Now run
 
-Back on the previous window click **View public key**. And copy the displayed **Public Key**.
-<br/><br/>
-```{r public-key}
-knitr::include_graphics("Pics/gittutorial/4_public_key.png")
+```{r PAT2, eval = FALSE, echo = TRUE}
+gitcreds::gitcreds_set()
 ```
-<br/><br/>
-<br/><br/>
-Go to your GitHub account, click in the upper right corner and open your account **Settings**.
-<br/><br/>
-```{r settings}
-knitr::include_graphics("Pics/gittutorial/5_settings.png")
-```
-<br/><br/>
-<br/><br/>
 
-Click on **SSH and GPG keys**.
-<br/><br/>
-```{r ssh}
-knitr::include_graphics("Pics/gittutorial/6_ssh.png")
-```
-<br/><br/>
-<br/><br/>
+this will ask you for your PAT: paste it at the prompt and press return.
+This will save the PAT so that it can be used to access GitHub.
+Treat your PAT as a password - never save it in a script.
 
-Click **New SSH key**. Paste in the **Public Key** that you copied from RStudio.
-<br/><br/>
-```{r new-ssh}
-knitr::include_graphics("Pics/gittutorial/7_new_ssh.png")
+This is a good time to run
+
+```{r eval = FALSE, echo = TRUE}
+git_vaccinate()
 ```
-<br/><br/>
-<br/><br/>
+
+to make git safer to use.
+
+## Making a repo
+
 Now you are ready to start using RStudio and GitHub.
-<br/><br/>
+There are two main workflows:
 
+1. Make a new local repo and push it to GitHub
+2. Clone an existing repo from GitHub onto your computer
 
-## Create a GitHub repository
+We will cover these in turn.
 
-Go to Github, click on the green **New** button or the plus sign in the upper right corner and create a **New Repository**. 
-Give a meaningful and concise name.
-Spaces will not be accepted in the name, use underscore or dashes instead.
-You can choose if you want to add a **README** file (advisable), a **.gitignore** file and choose the relevant type (advisable) and select a **licence** (relevant for publishing a project).
+### Local first
 
-You can also choose if you want to make your repository **Public** or **Private**.
-Keeping your repository private makes collaborations more difficult.
+This workflow is useful if you already have an RStudio project on your computer or are starting a new project.
 
-<br/><br/>
-```{r new-repo}
-knitr::include_graphics("Pics/gittutorial/8_make_new_repo.png")
+In Rstudio, start by creating a git repo for your project with 
+
+```{r init, eval = FALSE, echo = TRUE}
+use_git()
 ```
-<br/><br/>
-<br/><br/>
-```{r name-it}
-knitr::include_graphics("Pics/gittutorial/9_name_it.png")
+
+After creating the repo, the function will ask whether you want to commit some files.
+
+- If it is a new project, this is safe to agree to.
+- If it is an existing project there might be some files that you don't want to commit, for example very large files or files with sensitive information such as passwords. 
+In this case, don't let R commit everything, instead pick which files you want committed (see section \@ref(stage-commit-and-push)) and improve the `.gitignore` (see section \@ref(gitignore-file)) so they cannot be committed by accident.
+
+Then let RStudio restart so that the git panel is activated.
+
+Once you have committed at least one file, you can create a repo on GitHub.
+
+```{r github, eval = FALSE, echo = TRUE}
+use_github()
 ```
-<br/><br/>
+
+By default, the repo name on GitHub will match the RStudio project name, and the repo will be public.
+
+Now go to GitHub, find your repo and check the files you committed have been uploaded.
+
 This is how your new repo looks like.
 <br/><br/>
 ```{r new-repo2}
@@ -170,102 +172,33 @@ knitr::include_graphics("Pics/gittutorial/10_new_repo.png")
 <br/><br/>
 
 
-## Clone a GitHub repository
+### GitHub first
 
 Cloning your GitHub repository means that you are making a copy of your **remote** repository on Github, **locally** on your computer. 
 You can clone any repository on GitHub, whether it is your own or belongs to somebody else, as long as it is public. 
 This also means that all your repositories that are public can be seen by everybody, but do not worry too much about this, GitHub has millions of repos.
-Therefore it is important not to commit sensitive information like passwords.
+But make sure you do not commit sensitive information such as passwords.
 
-
-Go to the GitHub repository you just created or any other that you want to clone. 
-Click on the green **Code** button, make sure you are on the SSH tab and copy the repository URL.
+Go to the GitHub repository you that you want to clone and find the names of the owner and the repo. 
 
 <br/><br/>
 ```{r clone}
-knitr::include_graphics("Pics/gittutorial/11_clone.PNG")
+knitr::include_graphics("Pics/gittutorial/11a_clone.png")
 ```
 <br/><br/>
-<br/><br/>
-Go to RStudio, click on **File > New Project > Version Control > Git**.
-<br/><br/>
-```{r new-project, out.width = '50%'}
-knitr::include_graphics("Pics/gittutorial/12_new_project.png")
-```
-<br/><br/>
-<br/><br/>
-```{r version-control, out.width = '50%'}
-knitr::include_graphics("Pics/gittutorial/13_version_control.png")
-```
-<br/><br/>
-<br/><br/>
-```{r git, out.width = '50%'}
-knitr::include_graphics("Pics/gittutorial/14_git.png")
-```
-<br/><br/>
-<br/><br/>
-Paste the url link from GitHub.
-It should be something like
+<br/><br/> 
 
-```
-https://github.com/myaccount/myrepo.git
+To clone the "kingsleyshacklebolt/dragon_study" repo, use
 
+```{r create-with-github, eval = FALSE, echo = TRUE}
+create_from_github("kingsleyshacklebolt/dragon_study")
 ```
 
-For Kingsley it would be:
-```
-https://github.com/kingsleyshacklebolt/dragon_study.git
+If the repo you are trying to clone is not your own, the function will first make a **fork** (see forking tutorial) on GitHub into your account.
+The function will clone the repo onto your desktop by default. 
+You can copy the entire directory from there to somewhere more appropriate.
 
-```
-
-The **Project directory name** will automatically be the repo name.
-Choose where to store the project and click **Create Project**.
-<br/><br/>
-```{r paste-url, out.width = '50%'}
-knitr::include_graphics("Pics/gittutorial/15_paste_url.png")
-```
-<br/><br/>
-<br/><br/>
 Now it is time to commit and push.
-
-
-## Connect existing RStudio project to GitHub
-
-The general workflow for how to start a new project is described above (see \@ref(create-a-github-repository) Create a GitHub repository). 
-But you might have existing RStudio projects that you want to connect to GitHub, which we will explain here.
-
-Go to Github and create a new repository (see \@ref(clone-a-github-repository) Clone a GitHub repository).
-
-Open the RStudio project you want to connect with GitHub.
-
-Go to the **Terminal** tab in RStudio and type:
-
-<!-- Add picture from Terminal -->
-<!-- <br/><br/> -->
-<!-- ```{r terminal} -->
-<!-- knitr::include_graphics("Pics/gittutorial/16_terminal.png") -->
-<!-- ``` -->
-<!-- <br/><br/> -->
-
-```
-git clone git:myaccount/myrepo.git
-
-# For Kingsley this would be:
-git clone git:kingsleyshacklebolt/dragon_study.git
-
-```
-<br/><br/>
-Restart RStudio.
-And now you should see the git panel with a green and blue arrow to push and pull.
-All the files that already exist in your repo will show up with yellow question marks and are ready to be committed.
-
-<br/><br/>
-```{r git_window}
-knitr::include_graphics("Pics/gittutorial/17_git_window.png")
-```
-<br/><br/>
-It is time to commit and push code to GitHub.
-
 
 ## Stage, commit and push
 
@@ -357,7 +290,7 @@ We strongly suggest to use forks and branches when collaborating on a project (s
 ## .gitignore file
 
 When creating a new GitHub repository you can add a `.gitignore` text file, which tells git all the files that should be ignored.
-In general only data or output files should be **committed**, but exceptions can be useful for relatively small and unchanging files.
+In general, data or output files should not be **committed**, but exceptions can be useful for relatively small and unchanging files.
 
 Every change you are making to a file in your R project and **commit** to GitHub, will be tracked. 
 **Commit** files, code and output to GitHub, where you want to track changes.
@@ -404,6 +337,26 @@ In this tutorial we only explain a limited selection of things that can go wrong
 
 ## Trouble shooting
 
+**Git not found**
+
+Sometimes, RStudio will complain that is cannot find git even after you install it.
+
+In RStudio click on Tools > Global Options, select Git/SVN tab.
+
+Ensure that the path to the Git executable is correct.
+This is particularly important in Windows where it may not default correctly (e.g. C:/Program Files (x86)/Git/bin/git.exe).
+
+
+**Git not working**
+
+If you use a university windows computer, it might default to using a path like
+
+`\\helix\user_name\..` 
+
+This is a UNC path.
+Git does not work with UNC paths.
+Make sure you start RStudio from, for example, `O:\`.
+
 **Undo last commit**
 
 If you have committed something that you do not want to, you can undo the last commit.
@@ -423,7 +376,7 @@ For more help with trouble shooting see the [https://github.com/k88hudson/git-fl
 **Happy Git** provides instructions for how to getting started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong.
 https://happygitwithr.com/ 
 
-The **Git fligh rules** are an exaustive ressource for what to do whne things go wrong. https://github.com/k88hudson/git-flight-rules
+The **Git flight rules** are an exaustive ressource for what to do whne things go wrong. https://github.com/k88hudson/git-flight-rules
 
 
 
