@@ -17,10 +17,7 @@ data(penguins, package = 'palmerpenguins')
 source("../Templates/biostats_theme.R")
 ```
 Many datasets have missing values.
-
-This tutorial ...
-
-It showcases tools in the `tidyverse` package for data handling with NA.
+These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m where the sea is only 100m deep. 
 
 Missing values in R are represented by `NA`.
 
@@ -29,101 +26,47 @@ x <- c(0, 5, NA)
 x
 ```
 
-## NA arithemetic
+This tutorial shows you how to cope with missing values in R, focusing on manipulating data with the `tidyverse` package, and running statistical analyses.
 
-What is five plus an unknown number?
-The answer is, of course, unknown.
-NA are contagious in calculations: if one value is `NA` the result is `NA`.
+The `penguins` dataset from `palmerpenguins` is used as an example.
 
-```{r contagion}
-x <- c(1, 7, NA)
-sum(x)
-mean(x)
-min(x)
-```
-
-The solution is to use the `na.rm` argument to these functions to exclude the `NA` from the calculation.
-
-```{r na.rm}
-sum(x, na.rm = TRUE)
-mean(x, na.rm = TRUE)
-min(x, na.rm = TRUE)
-```
-
-### NA in correlations and covariances
-
-The functions for calculating correlation, `cor`, and covariance, `cov`, work a little differently as these functions can work on two vectors or on a matrix or data frame.
-The `use` argument is used to control how `NA` are treated.
-
-If you want to find the correlation between two vectors, then use
-
-```{r cor}
-cor(penguins$bill_length_mm, penguins$bill_depth_mm)
-cor(penguins$bill_length_mm, penguins$bill_depth_mm, use = "pairwise.complete.obs")
-```
-
-If you have a matrix (or data frame), and want to calculate a correlation matrix, then `use = "complete.obs"` will calculate this using just the rows that have no `NA`, and `use = "pairwise.complete.obs"` will calculate the correlation between each pair of variables using all complete pairs of observations on those variables. 
-
-
-```{r cor-matrix}
-penguins %>% 
-  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %>% 
-  cor(use = "pairwise.complete.obs") 
-```
-
-## Missing values and regession models
-
-By default regression models such as `lm`, `glm`, and `lmer` remove any case that has an NA in either the response or predictor fields.
-This behaviour is controlled by the `na.action` argument.
-This is great if we are interested in the model coefficients, it can cause problems if there are NA in the data and we want to add the residuals, fitted values, or predictions into the original data frame for plotting.
-
-```{r lm-omit, error = TRUE}
-mod <- lm(bill_length_mm ~ body_mass_g, data = penguins)
-
-penguins %>% mutate(fit = fitted(mod))
-```
-The problem is that there are fewer cases in the model (which omitted the NA) than the original data frame (which still has them).
-
-We can make this work by using `na.action = na.exclude` which will pad the fitted values with NA so that it is the same length as the original data.
-
-```{r lm-exclude, error = TRUE}
-mod <- lm(bill_length_mm ~ body_mass_g, data = penguins, na.action = na.exclude)
-
-penguins %>% mutate(fit = fitted(mod))
-```
-
-With `na.exclude` the NA are still excluded from the model fitting - most models do not allow NA values. 
-Sometimes, it might be better to drop variables with many NA from the model rather than losing many cases.
-
-
-
+# Data handling with missing values
 
 ## Detecting missing values
 
-```{r}
+`NA` values can be detected with the function `is.na` (NB lower case).
+
+```{r is.na}
 x <- c(0, 7, NA)
 is.na(x)
+```
+
+We could use this, for example, to find the number of missing values in a column of the `penguins` data.
+
+```{r is.na.sum}
+penguins %>% 
+  summarise(n_missing = sum(is.na(bill_length_mm)))
 ```
 
 
 ## Importing data with missing values
 
-When you import a text file (e.g., a csv file) any blank cells, or cells with `NA` will be treated as NA.
-If you have code NA as something else, you can use the `na` argument to `read_delim`
+When you import a text file (e.g., a csv file) any blank cells, or cells with "NA" will be treated as `NA`.
+If you have coded missing values as something else, you can use the `na` argument to `read_delim`
 
 ```{r, eval = FALSE}
 # set blank cells, "NA" or "missing" to NA  
 read_delim(file = "my_file.csv", na = c("", "NA", "missing"))
 ```
 
-In `readxl::read_excel`, the default for the `na` argument is just for blank cells to be made NA, but other values can be added in the same way as in `read_delim`.
+In `readxl::read_excel`, the default for the `na` argument is just for blank cells to be made `NA`, but other values can be added in the same way as in `read_delim`.
 
-## Removing missing values
+## Removing rows with missing values
 
 We can remove rows with `NA` in particular columns from a data frame using `drop_na`.
-For example, to remove rows in the `penguins` data set with an NA in the `bill_length_mm` or `bill_depth_mm` columns, we could use
+For example, to remove rows in the `penguins` data set with an `NA` in the `bill_length_mm` or `bill_depth_mm` columns, we could use
 
-```{r}
+```{r drop-na}
 penguins %>% 
   drop_na(bill_length_mm, bill_depth_mm)
 ```
@@ -131,25 +74,62 @@ penguins %>%
 Alternatively, we can use `filter` and `is.na`. 
 This is most useful when removing `NA` is one of several arguments to `filter`.
 
-You might see some code using `na.omit` to remove cases (rows) with missing values from a data frame.
-This can be dangerous as it will remove cases with an `NA` in any column, not just the columns you are interested in.
+```{r filter-na}
+penguins %>% 
+  filter(species == "Gentoo", !is.na(bill_length_mm))
+```
+
+You might see some code using `na.omit` to remove rows with missing values from a data frame.
+This can be dangerous as it will remove rows with an `NA` in any column, not just the columns you are interested in.
 
 ## Replacing missing values
 
 Sometimes you want to replace `NA` with another value.
-Perhaps you want to make a plot where `NA` values are labelled unknown, or you know that the `NA` values are actually zeros.
+Perhaps you want to make a plot where `NA` values are labelled unknown, or you know that the `NA` values are actually zeros, or the `NA` are values below the detection limit of an instrument and you want to replace these with half the detection limit.
+
 You can use `tidyr::replace_na` to do this.
 
-```{r}
-#replace_na()
+Here, the code replaces missing values for bill length with the mean value for bill length.
+
+```{r replace-na}
+penguins %>% 
+  mutate(bill_length_mm = replace_na(bill_length_mm, mean(bill_length_mm, na.rm = TRUE)))
 ```
 
-## Replacing NA with values from another vector
+## Replacing `NA` in factors
 
-`coalesce`
+The code in the previous section won't work if we try to replace an `NA` in a factor. 
 
-...
+```{r bad-factor, warning = TRUE, message = TRUE}
+penguins %>% 
+  mutate(sex = replace_na(sex, "missing")) %>% 
+  distinct(sex)
+```
+As the warning indicates, the problem is that "missing" is not one of the levels of the factor sex.
 
+Instead we need to use the function `forcats:fct_explicit_na` (the `forcats` package is part of `tidyverse` for manipulating factors).
+
+```{r good-factor}
+penguins %>% 
+  mutate(sex = fct_explicit_na(sex, na_level = "missing")) %>% 
+  count(sex)
+```
+
+
+## Replacing `NA` with values from another vector
+
+Sometimes you have a vector with `NA` and you want to replace the missing values with values from a second vector.
+The `coalesce` can do this.
+
+
+```{r}
+x <- c(NA, 2, 3, NA)
+y <- c(-1, -2, -3, -4)
+coalesce(x, y)
+```
+Here, the first value of `x` is `NA`, so the first value of `y` is used.
+The second value of `x` is not `NA`, and so can be used.
+And so on.
 
 ## Setting mising values
 
@@ -160,24 +140,24 @@ We can do this with `dplyr::na_if`.
 
 ```{r na_if}
 x <- c(1, 7, -9999)
-na_if(x, -9999)
+na_if(x, y = -9999)
 ```
 
 
-## Missing values and dplyr filter
+## Missing values and dplyr `filter`
 
 `dplyr::filter` returns rows where the condition is strictly TRUE.
-This is usually what you want: if we want to select male birds from the penguins dataset we don't want the birds with unknown sex.
+This is usually what you want: if we want to filter penguins with long bills from the penguins dataset we don't want the birds with unknown bill length.
 
-Occasionally we do want to keep the rows with NA. 
-Perhaps we have a column of comments, many of which are NA, and we only want to remove rows where the non-NA values meet some criterion.
+Occasionally we do want to keep the rows with `NA`. 
+Perhaps we have a column of comments, many of which are `NA`, and we only want to remove rows where the non-`NA` values meet some criterion.
 
 ```{r}
 penguins %>% 
   filter(sex == "Female" | is.na(sex))
 ```
 
-Here the `|` means OR.
+Here the `|` means OR in Boolean logic.
 
 ## Missing values and dplyr `if_else` and `case_when`
 
@@ -196,7 +176,7 @@ case_when(
 )
 ```
 The problem occurs here because `NA` is treated as a logical vector, while the other values are characters.
-The solution is to use `NA_character_` which is an NA with the correct type.
+The solution is to use `NA_character_` which is an `NA` with the correct type.
 
 ```{r case-when}
 x <- 0:2
@@ -210,6 +190,103 @@ case_when(
 Other typed `NA` include `NA_real_` for numeric values and `NA_integer` for integer values.
 
 
+# Statistics with missing values
 
+## `NA` arithemetic
+
+What is five plus an unknown number?
+The answer is, of course, unknown.
+
+```{r}
+5 + NA
+```
+
+NA are contagious in calculations: if one value is `NA` the result is `NA`.
+This effects many descriptive statistics.
+
+```{r contagion}
+x <- c(1, 7, NA)
+sum(x)
+mean(x)
+min(x)
+```
+
+The solution is to use the `na.rm` argument to these functions to exclude the `NA` from the calculation.
+
+```{r na.rm}
+sum(x, na.rm = TRUE)
+mean(x, na.rm = TRUE)
+min(x, na.rm = TRUE)
+```
+
+### `NA` in correlations and covariances
+
+The functions for calculating correlation, `cor`, and covariance, `cov`, work a little differently as these functions can work on two vectors or on a matrix or data frame.
+The `use` argument is used to control how `NA` are treated.
+
+By default, if any values are `NA` in either vector, the result is also `NA`.
+If you want to find the correlation between two vectors without the `NA`, then use
+
+```{r cor}
+cor(penguins$bill_length_mm, penguins$bill_depth_mm, use = "pairwise.complete.obs")
+```
+
+If you have a matrix (or data frame), and want to calculate a correlation matrix, then `use = "complete.obs"` will calculate this using just the rows that have no `NA`, and `use = "pairwise.complete.obs"` will calculate the correlation between each pair of variables using all complete pairs of observations on those variables. 
+
+```{r cor-matrix}
+penguins %>% 
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %>% 
+  cor(use = "pairwise.complete.obs") 
+```
+
+## Missing values and regession models
+
+By default regression models such as `lm`, `glm`, and `lmer` remove any case that has an `NA` in either the response or predictors.
+This behaviour is controlled by the `na.action` argument.
+This is great if we are interested in the model coefficients, but it can cause problems if there are `NA` in the data and we want to add the residuals, fitted values, or predictions into the original data frame for plotting.
+
+```{r lm-omit, error = TRUE}
+mod <- lm(bill_length_mm ~ body_mass_g, data = penguins)
+
+penguins %>% mutate(fit = fitted(mod))
+```
+The problem is that there are fewer observation in the model (which omitted the `NA`) than the original data frame (which still has them).
+
+We can make this work by using `na.action = na.exclude` which will pad the fitted values with `NA` so that it is the same length as the original data.
+
+```{r lm-exclude, error = TRUE}
+mod <- lm(bill_length_mm ~ body_mass_g, data = penguins, na.action = na.exclude)
+
+penguins %>% mutate(fit = fitted(mod))
+```
+
+With `na.exclude` the `NA` are still excluded from the model fitting - most models do not allow `NA` values. 
+
+When comparing models, for example with `anova`, all models need to have been fit to the same dataset. 
+This can cause problems if `NA` have caused different numbers of observations to be removed.
+
+```{r bad-anova, error = TRUE}
+mod2 <- lm(bill_length_mm ~ body_mass_g + sex, data = penguins, na.action = na.exclude)
+
+anova(mod, mod2)
+```
+
+The easiest solution is to remove rows with `NA` in any predictor before fitting any of the models.
+
+## Imputing missing values
+
+As shown above, observations with missing values are omitted from the model. 
+If a predictor has many missing values, it may be better to exclude the predictor from the model to avoid losing too many observations.
+
+An alternative is to impute the missing data. 
+This should be done with great caution as it can bias the results, especially if a substantial proportion of the data are imputed.
+
+There are several ways that can be used to impute missing values. 
+
+The simplest is to replace a the missing value with the mean or median of the variable as shown in section \@ref(replacing-missing-values).
+
+More complex methods use the multivariate relationship between predictors to estimate the missing values. 
+Several R packages can help with this, for example, the package `mice`.
+[Yadav and Roychoudhury (2018)](https://doi.org/10.1016/j.knosys.2018.06.012) compare the performance of some popular methods.
 
 
