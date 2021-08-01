@@ -1,0 +1,820 @@
+---
+title: "Introducing R markdown"
+description: R markdown for writing reproducible reports
+output:
+  bookdown::html_document2: 
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: ../css/style-chapters.css
+editor_options: 
+  markdown: 
+    wrap: sentence
+bibliography: reproducibility.bib
+suppress-bibliography: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(palmerpenguins)
+library(tidyverse)
+library(flair)
+source("../Templates/biostats_theme.R")
+```
+
+
+### Before you start {- .facta .toc-ignore}
+
+The first part of this tutorial will introduce you to R markdown, a tool that lets you combine code and text to  write reproducible documents. 
+
+The second part will show you how author a manuscript, report or thesis in R markdown.
+
+You will need to have installed
+
+- [RStudio](https://www.rstudio.com/products/rstudio/)
+- [R](https://cran.r-project.org/)
+
+
+# Getting started
+
+## Why you should use R markdown
+
+The traditional way to write a paper is to run the analyses in R or some other software and then copy the figures, tables etc. into a word processor.
+Then you find an error in the code or data and need to repeat the process. 
+Repeatedly.
+
+This is very inefficient and error prone.
+
+R markdown lets you have the code and the text in one document.
+If the code or the data are updated, new versions of the figures and tables are automatically generated and inserted into the corrected document.
+
+This is a much more reproducible process.
+
+
+
+## Creating and knitting an R markdown file
+
+An R markdown file is a plain text file.
+You can create a new text file, give it the ".Rmd" extension, and start typing.
+But it is better to use RStudio.
+
+Go to the "File" menu bar, then "New File", then "R Markdown...".
+The first time you do this, you may be asked to install some extra packages. 
+Now you will have a pop-up window asking for the Title, author and output format (Fig. \@ref(fig:output-pic)).
+
+```{r output-pic, fig.cap = "Choose the output format", echo = FALSE}
+knitr::include_graphics("Pics/output_type.png")
+```
+
+You can fill these in now, or edit the document later.
+I recommend you start with "HTML" format as is doesn't require anything else to be installed.
+When you are ready, click OK, and a new R markdown file will open. 
+It will look something like Figure \@ref(fig:rmarkdown-pic)
+
+```{r rmarkdown-pic, fig.cap = "The default R markdown document.", echo = FALSE}
+knitr::include_graphics("Pics/rmarkdown.png")
+```
+
+You will learn about the elements of this file in section \@ref(elements-of-an-r-markdown-file).
+
+## Knitting the R markdown file
+
+You can see the rendered R markdown document by knitting it.
+Click the blue "Knit" button which is above the document.
+
+```{r knit-pic, fig.cap = "The knit button", out.width="214px", echo = FALSE}
+knitr::include_graphics("Pics/knit.png")
+```
+The first time you knit the document, you need to save it.
+
+# Elements of an R markdown file
+
+## YAML
+
+The YAML is metadata for the document that goes right at the top of the file.
+It can set the document author and title, the output format and many other things.
+YAML format can be difficult to get right as it is sensitive to white space.
+You can use an RStudio Addin from the package `ymlthis` to help write the YAML.
+
+### R code in YAML
+
+It is possible to add R code to the YAML, for example to show the current date.
+The R code needs to be enclosed in quote marks AND back-ticks with an `r` before the code.
+If the code contains quotemarks, then they need to be different from the enclosing quotemarks (i.e. single vs double quotes).
+
+```{r r-yaml, echo = FALSE, eval = FALSE}
+---
+title: "My Manuscript"
+output: html_document
+date:'`r format(Sys.Date(), "%d %B %Y")`'
+---
+```
+
+```{r r-yaml-flair, echo=FALSE}
+decorate("r-yaml", eval = FALSE) %>% 
+  flair_lines(4)
+```
+
+See the data-time tutorial for more about the codes in `"%d %B %Y"`.
+
+### Output formats
+
+R markdown documents can be rendered in many different output formats, including
+
+- presentations (with [`xaringan::moon_reader`](https://bookdown.org/yihui/rmarkdown/xaringan.html) or [ioslides](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html))
+- posters (with [`posterdown`](https://cran.r-project.org/web/packages/posterdown/))
+- books (with [`bookdown`](https://bookdown.org/yihui/bookdown/)).
+- theses (with [`thesisdown`](https://github.com/ismayc/thesisdown))
+
+This tutorial focuses on documents like reports.
+
+There is a choice of output format for documents. 
+This can be specified when the R markdown file is created in RStudio or by editing the YAML.
+
+Producing an html file to view in a browser is the simplest, as nothing extra needs installing. 
+The YAML should look something like this.
+
+```{r html, echo = FALSE, eval = FALSE}
+---
+title: "My Manuscript"
+output: html_document
+---
+```
+
+```{r html-flair, echo=FALSE}
+decorate("html", eval = FALSE) %>% 
+  flair_lines(3)
+```
+
+Word documents are also easy; just change the output to `word_document`.
+This can be very useful if you have a supervisor or collaborators who cannot cope with R markdown directly, but consider using the [`redoc`](https://noamross.github.io/redoc/index.html) package which lets you convert an edited word document back into R markdown.
+
+Rendering the R markdown file as a PDF requires some external tools (LaTeX) to be installed. 
+This can be done with the `tinytxt package`.
+
+```{r tinytxt, eval = FALSE, echo = TRUE}
+# run this only once
+install.packages('tinytex')
+tinytex::install_tinytex()
+```
+
+Then the output format in the YAML can be changed to `pdf_document`.
+
+
+## Text
+
+Type to make text!
+RStudio has a built-in spell checker that will underline words it doesn't recognise in red. 
+Go to "Tools" >> "Global Options..." >> "Spelling" to change the language.
+
+Paragraphs have a blank line between them.
+It is good practice to write one sentence per line. 
+The extra line breaks will be removed when the document in knitted.
+If you want to force a line break, put two spaces at the end of the line.
+
+Formatting is generated with some special characters.
+For example:
+
+-   \# Title
+-   \#\# Subtitle
+-   \*italic\* or \_italics\_ = *italic*
+-   \*\* bold\*\* or \_\_bold\_\_ = **bold**
+-   Superscript m\^2\^ = m^2^
+-   Subscript CO\~2\~ = CO~2~
+
+If you don't like formatting the document by hand, you can use the RStudio visual editor by clicking on the grey [Å]{style="color:grey"} above the document.
+
+A more complete list is given in the [R markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf).
+
+## Code chunks
+
+Code in an R markdown document is contained in code chunks.
+
+This is a code chunk that loads the penguin data from the `palmerpenguins` package.
+
+````
+```{r import, echo = FALSE}`r ''`
+data(penguins, package = "palmerpenguins)
+```
+````
+
+It starts with three back-ticks, followed by braces.
+Inside the braces, the "r" indicates that this is a chunk in the R language.
+The next word is the optional chunk name.
+After the comma are optional chunk arguments.
+Then on a new line is the body of the chunk.
+The chunk ends with three back-ticks on their own line.
+
+### Making a chunk
+
+You can type the back-ticks and braces needed to make a chunk, but it is easier to get RStudio to insert the chunk.
+You can do this with the <span style="background-color: green;color:white;"><sup>+</sup>C</span> button or use the keyboard shortcut <kbd>ctrl</kbd>+<kbd>alt</kbd>+<kbd>i</kbd> (on a mac <kbd>Command</kbd>+<kbd>Option</kbd>+<kbd>i</kbd> ).
+
+### Chunk language
+
+We will just work with R chunks, but it is possible to run chunks in other languages in RStudio, including Python.
+
+### Chunk names
+
+It is a good idea to name chunks.
+If you don't, they will automatically be called "unnamed-chunk-n" where "n" is a incrementing number.
+This is inconvenient for debugging (you need to work out which chunk is "unnamed-chunk-37") and for working with any image files generated by the document.
+In section \@ref(cross-referencing) you will see how to use chunk names to cross-reference figures and tables in your document.
+
+#### Rules for naming chunks
+
+Chunk names should be informative and can contain letters and numbers.
+Words should be separated by hyphens ("-").
+
+**Important**
+
+Avoid spaces, underscores, and periods in chunk names.
+They will cause all sorts of strange problems.
+
+### Chunk options
+
+There are lots of chunk options, but only a few that you will need to use frequently.
+Here are some and their default.
+
+-   `echo` (TRUE) Show the chunk's code in the output.
+-   `eval` (TRUE) Run the chunk code.
+-   `include` (TRUE) Include the output of the chunk in the document.
+- `message` (TRUE) Include messages from R.
+- `warning`(TRUE) Include warnings from R.
+- `error` (FALSE) If TRUE, shows any error message. 
+If FALSE, stops knitting when there is an error in R code.
+
+I leave `message` and `warning` as TRUE while I am writing the document, so I can see any possible problems, and set them to FALSE when I knit the final version.
+
+I sometimes find it useful to set `error` to TRUE as can make it easier to debug any errors in the code.
+
+
+Chunk options for figures are shown in section \@ref(figure-chunk-options).
+
+Full list <http://yihui.name/knitr/options/>
+
+### Setting default chunk options
+
+Default chunk options can be set for all chunks with `knitr::opts_chunk$set` in the first chunk.
+New R markdown files created by RStudio automatically have this in a chunk called "setup".
+
+````
+```{r setup, include=FALSE}`r ''`
+knitr::opts_chunk$set(echo = TRUE)
+```
+````
+
+This chunk sets `echo = TRUE` for all chunks.
+The `include=FALSE` will stop any output from this chunk being included in the output.
+
+### Running a chunk
+
+Code in chunks will be run when the document is knitted (unless `eval = FALSE`), but it is also useful to run the code interactively to check that it works.
+You can do this by clicking on the green play buttons at the right of the chunk (Fig. \@ref(fig:run-pic)) or from the Run button above the document.
+If the code depends on previous chunks, the grey/green icon will run them all.
+
+```{r run-pic, fig.cap = "The green run chunk icon and the grey/green icon to run all previous chunks.", out.width="220px", echo = FALSE}
+knitr::include_graphics("Pics/run-chunk.png")
+```
+
+### Hiding a chunk
+
+If a chunk has a lot of code, it can be useful to hide it to make it easier to navigate the document.
+The grey arrow next to the line numbers will do this. 
+Sections of text can also be hidden.
+
+
+### Environments and working directory
+
+R knits R markdown documents in a new R session.
+The environment is empty: the R markdown document does not have access to any objects in your current environment (this is a good thing for reproducible analyses).
+This means that any data you want to use in the document needs to be imported by the code in the document.
+
+The working directory for the new R session used when knitting the R markdown file is the directory where the file is.
+If the file is in the root directory of an RStudio project, relative paths will work the same way in the R markdown document as from the console.
+If the file is in a sub-directory, use `here::here()` to form paths relative to the project root.
+
+## Inline code
+
+In addition to the output from chunks of code, you can insert code directly into text.
+Inline code is enclosed by back-ticks and starts with an `r`.
+
+```{r inline1, echo = FALSE, eval = FALSE}
+Seven times six is `r 7 * 6`
+```
+
+```{r inline1-flair, echo=FALSE}
+decorate("inline1", eval = FALSE) %>% 
+  flair_rx("`.*`")
+```
+
+<span style="background-color: Beige;">Seven times six is `r 7 * 6`</span>
+
+If you want numbers written as words, use the package `english`.
+
+```{r inline-english, echo = FALSE, eval = FALSE}
+Seven times six is `r english::words(7 * 6)`
+```
+
+```{r inline-english-flair, echo=FALSE}
+decorate("inline-english", eval = FALSE) %>% 
+  flair_rx("`.*`")
+```
+
+<span style="background-color: Beige;">Seven times six is `r english::words(7 * 6)`</span>
+
+It is best to keep inline code short to keep the text readable.
+One trick is to do all necessary calculation in a previous chunk, so only the name of the object with the result needs to be in the inline code.
+If there are many results to report, consider storing them in a list as in the following example.
+
+```{r penguin-stats}
+cor_adelie <- cor.test(
+  ~ bill_length_mm + body_mass_g, 
+  data = penguins, 
+  subset = species == "Adelie")
+
+adelie_list <- list(
+  #degrees of freedom
+  df = cor_adelie$parameter,
+  # extract correlation and round
+  est = round(cor_adelie$estimate, 2),
+  #format p.value with an "=" is the first character is not "<". 
+  #See the characters tutorial for more on the stringr package and regular expressions.
+  p_val = str_replace(
+    string = format.pval(cor_adelie$p.value, eps = 0.001),
+    pattern = "^(?!<)", 
+    replacement = "= ")
+)
+```
+
+```{r inline-list, echo = FALSE, eval = FALSE}
+Bill length and body mass in Adelie penguins are positively correlated, 
+r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).
+```
+
+```{r inline-list-flair, echo=FALSE}
+decorate("inline-list", eval = FALSE) %>% 
+  flair_rx("`r [a-z_\\$]*`")
+```
+
+
+<span style="background-color: Beige;">Bill length and body mass in Adelie penguins are positively correlated, r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).</span>
+
+
+# Figures, tables and equations
+
+## Figures made in R
+
+Plots can be included with a chunk that makes a figure with either base plot or ggplot.
+
+If you make the plot with ggplot, remember to print it.
+
+```` 
+```{r histogram,  fig.cap = "An embedded figure"}`r ''`
+p <- ggplot(penguins, aes(x = bill_length_mm)) + 
+  geom_histogram()
+p # remember to print the plot
+```
+````
+
+### Figure chunk options
+
+There are several useful chunk options for figures, including:
+
+-   `fig.cap` figure caption.
+-   `fig.height` figure height *in inches* (1 inch = 25.4 mm)
+-   `fig.width` figure width *in inches*
+
+## Embedding external images
+
+Photographs and other figures that have been prepared outside of R can be included with a the path or URL of the file.
+
+`![Alt description](image.jpg)`
+
+But you have much more control with `knitr::include_graphics()` which lets you set a caption, adjust the size, and more.
+
+```` 
+```{r include-figure, out.width = "100%", fig.cap = "An embedded figure"}`r ''`
+knitr::include_graphics("my_image.png")
+```
+````
+
+Use the `out.width` and `out.height` chunk options to set the size of the figure.
+
+## Tables
+
+You can make tables in markdown by hand, but it is so much easier to use R.
+
+Simple tables can be made with the function `knitr::kable`.
+Several packages, including `kableExtra` and [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) can make beautiful tables.
+
+### kable
+
+```{r kable}
+
+knitr::kable(x = slice(penguins, 1:5), #the data for the table
+             caption = "The top penguins" # the caption
+)
+```
+
+### kableExtra
+
+`kableExtra` extends `knitr::kable`, letting you add extra rows of headers, repeating headers if the table spans multiple pages and many other features.
+
+```{r, message = FALSE}
+library(kableExtra)
+penguins %>% 
+  #rename some columns
+  rename(length_mm = bill_length_mm, depth_mm = bill_depth_mm) %>% 
+  #replace "_" with spaces
+  rename_with(str_replace_all,  pattern = "_", replacement = " ") %>% 
+  #capitalise first letter
+  rename_with(str_to_sentence) %>% 
+  #get first five rows
+  slice(1:5) %>% 
+kbl(booktabs = TRUE, caption = "The top penguins") %>% 
+  kable_styling(full_width = TRUE) %>%
+  add_header_above(c(" ", " ", "Bill" = 2, "Body" = 2, " ", " "))
+  
+```
+
+Further reading on [kableExtra](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf).
+
+## Equations
+
+Equations are embedded in a pair of dollar symbols.
+RStudio will show a preview of the equation as you type it.
+Equations are written with [LaTeX notation](https://en.wikibooks.org/wiki/LaTeX/Mathematics).
+
+```{r equations, echo = FALSE}
+read_csv('
+What, How, Output         
+"Lower-case Greek letters", "`$\\sigma$`", "$\\sigma$"
+"Upper-Case Greek Letters", "`$\\Sigma$`", "$\\Sigma$"
+"Subscript", "`$\\beta_{0}$`", "$\\beta_{0}$"
+"Superscript", "`$\\chi^{2}$`", "$\\chi^{2}$"
+"Fractions", "`$\\frac{1}{2}$`", "$\\frac{1}{2}$"
+"Roots", "`$\\sqrt{4} = 2$`", "$\\sqrt{4} = 2$"') %>% 
+  kbl(booktabs = TRUE) %>% 
+  kable_styling(full_width = TRUE)
+```
+
+<br>
+
+Here is an example of using an inline equation.
+
+```
+The $\delta^{13}C$ value ...
+```
+<span style="background-color: Beige;">The $\delta^{13}C$ value ...</span>
+
+
+A double dollar enclosure gives the equation its own line.
+For example, this is the equation of a standard deviation that uses several different elements.
+
+```
+$$SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}$$
+```
+$$SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}$$
+
+When making a complex formula, build one element at a time, often starting in the middle, rather than trying to get it all working at once.
+
+# Towards a manuscript
+
+## Citations and bibliographies
+
+R markdown can add citations and a bibliography to a document.
+Use the bibliography field in the YAML to point to the bibliography file.
+
+```{r bibliography, echo = FALSE, eval = FALSE}
+---
+title: "My Manuscript"
+output: html_document
+bibliography: reproducibility.bib
+---
+```
+
+```{r bibliography-flair, echo=FALSE}
+decorate("bibliography", eval = FALSE) %>% 
+  flair_lines(4)
+```
+
+The bibliography file can be in one of several formats, including bibTeX (\*.bib) and endnote (\*.enl).
+Any reference manager should be able to export to a bibTeX file.
+
+### Bibliography placement
+
+By default, the bibliography is placed at the end of the document.
+It is a good idea to end the R markdown file with an appropriate header.
+
+```{r bib-pos, echo = FALSE, eval = FALSE}
+# Conclusions
+
+R markdown is cool.
+
+# References {-}
+```
+
+```{r bib-pos-flair, echo=FALSE}
+decorate("bib-pos", eval = FALSE) %>% 
+  flair_lines(5)
+```
+
+The `{-}` stops R markdown from numbering the reference section header.
+
+If you want to move the bibliography, for example because you need to finish with an appendix, you need to use this bit of magic.
+You also need to use the output format `bookdown::html_document2` in the YAML.
+
+```{r bib-move, echo = FALSE, eval = FALSE}
+# Conclusions
+
+R markdown is very cool.
+
+# References {-}
+
+&lt;div id="refs"&gt;&lt;/div&gt;
+
+# Appendix A
+```
+
+```{r bib-move-flair, echo=FALSE}
+decorate("bib-move", eval = FALSE) %>% 
+  flair_lines(7)
+```
+
+### Citations
+
+Use the citation keys from the bibliography to cite the reference in the text.
+So to cite the reference with the citation key "Cooper2017" we would use.
+
+
+    Reproducible code [@Cooper2017] ...
+    @Cooper2017 discuss ... 
+
+The output depends on the csl file.
+Using the default author-date style gives
+
+<hr>
+<span style="background-color: Beige;">
+Reproducible code [@Cooper2017] ...\
+@Cooper2017 discuss ...
+\
+</span>
+<hr>
+
+The `citr` package [install from [GitHub](https://github.com/crsh/citr)] makes an RStudio add-in for adding citations to the text from the bibliograpy.
+
+### Citation style
+
+If you don't like the default citation style, or you want to submit a manuscript to a journal with an overly pedantic editor, you can change the citation style by specifying a csl file in the YAML.
+
+```{r csl, echo = FALSE, eval = FALSE}
+---
+title: "My Manuscript"
+output: html_document
+bibliography: reproducibility.bib
+csl: plos-one.csl
+---
+```
+
+```{r csl-flair, echo=FALSE}
+decorate("csl", eval = FALSE) %>% 
+  flair_lines(5)
+```
+
+The csl (Citation Style Language) file defines the citation style.
+There are many citation style available from <http://zotero.org/styles>.
+
+### Citation problems
+
+Unfortunately, there can be problems with the bibliography and citation.
+Most can be solved by googling the error message.
+A few common problems are addressed here.
+
+##### Incorrect capitalisation
+
+Many CLS styles convert the title to title case (i.e. only first letter of the first word is capitalised).
+This can be annoying as names (people, countries, species) can be given in the wrong case.
+
+A paper with the title 
+
+`Population ecology of polar bears at Svalbard, Norway.`
+
+may appear as
+
+`Population ecology of polar bears at svalbard, norway.`
+
+This can be fixed by editing the bibtex file, putting braces around the word with capitals that need to be kept.
+
+`Population ecology of polar bears at {Svalbard}, {Norway}.`
+
+##### Accents and other special characters
+
+The tool-chain that processes R markdown files can sometimes fall over with accented characters or other diacritic marks in the references. 
+The error message will look something like this
+
+```
+! Package inputenc Error: Unicode character ́ (U+0301)  
+(inputenc)                not set up for use with LaTeX.
+```
+
+One solution is to edit the bibtex file to replace the accented character with an [escaped code](https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes).
+For example, the "í" in "Martínez" could be replaced by "\\'{i}".  
+
+## Cross-referencing
+
+Cross-referencing lets you refer to figures and tables in your document.
+Once set up, this happens automatically, so you don't need to re-number all the figures when you add or delete one.
+
+Cross-referencing needs to use a bookdown package output, declared in the YAML.
+
+```{r bookdown, echo = FALSE, eval = FALSE}
+---
+title: "My Manuscript"
+output: bookdown::html_document2
+---
+```
+
+```{r bookdown-flair, echo=FALSE}
+decorate("bookdown", eval = FALSE) %>% 
+  flair_lines(3)
+```
+
+### Cross-referencing figures and tables
+
+The chunk that made the figure or table needs to have a name (no underscores!) and a caption.
+
+````
+```{r penguin-hist, fig.cap = "Histogram of penguin body mass"}`r ''`
+penguins %>% 
+  ggplot(aes(x = body_mass_g, fill = species)) +
+  geom_histogram()
+```
+````
+
+```{r penguin-hist, echo = FALSE, fig.cap = "Histogram of penguin body mass", fig.height=3, fig.width=5, message=FALSE, warning = FALSE}
+penguins %>% 
+  ggplot(aes(x = body_mass_g, fill = species)) +
+  geom_histogram()
+```
+
+To cross-reference the figure made by the above chunk, we need to use this notation.
+
+```
+Penguins are cool (Fig. \@ref(fig:penguin-hist))
+```
+
+<span style="background-color: Beige;">Penguins are cool (Fig. \@ref(fig:penguin-hist))</span>
+
+To refer to a table made by a chunk called `penguin-results`, you would use
+
+```
+Penguins are cool (Table \@ref(tab:penguin-results))
+```
+
+Note that the `fig` has been replaced by `tab` in the reference.
+
+If you get the chunk name wrong, there will be a warning when the document in knitted, and question marks shown where the reference should be.
+
+```
+Figure \@ref(fig:no-exist)) does not exist
+```
+<span style="background-color: Beige;">Non-existing figure (Fig. \@ref(fig:no-exist))</span>
+
+### Cross-referencing equations
+
+To cross-reference an equation, we need to give it a label.
+
+```
+$$
+\frac{\sum_{i=1}^{n}{x_i}}{n}
+ (\#eq:mean)
+$$
+```
+Note that the equation must be on the line below the dollars. 
+RStudio will try to show the label in the preview - ignore it.
+Now the label can be used.
+
+```
+The mean (equation \@ref(eq:mean)).
+```
+
+$$
+\frac{\sum_{i=1}^{n}{x_i}}{n}
+ (\#eq:mean)
+$$
+ 
+<span style="background-color: Beige;">The mean (equation \@ref(eq:mean)).</span>
+
+
+
+### Cross-referencing document sections
+
+You can also refer to other sections of the document using the title/subtitle.
+For example, to refer to this section, you would use
+
+```
+Cross-referencing (Section \@ref(cross-referencing-document-sections))
+```
+<span style="background-color: Beige;">Cross-referencing (Section \@ref(cross-referencing-document-sections))</span>
+
+Note that the reference must be written in lower case and spaces must be replaced by hyphens.
+Punctuation is deleted.
+
+## Journal-specific formatting
+
+Use the `rticles` package to produce a draft manuscript in a journal-specific format.
+Many journal formats are available.
+
+```{r rticles, eval = FALSE, echo = TRUE}
+library("rmarkdown")
+draft("MyArticle.Rmd", template = "plos", package = "rticles")
+```
+
+## Line numbers
+
+If you are creating a PDF, you can include line numbers by adding a header-includes section to the YAML.
+
+```{r line-page-numbers, echo = FALSE, eval = FALSE}
+---
+title: "My Manuscript"
+output: bookdown::pdf_document2
+header-includes:
+   - \usepackage{lineno}
+   - \linenumbers
+---
+```
+
+```{r line-page-numbers-flair, echo=FALSE}
+decorate("line-page-numbers", eval = FALSE) %>% 
+  flair_lines(4:6)
+```
+
+Other LaTeX packages can be added in a similar way to add extra functionality, for example, pages in [landscape](https://stackoverflow.com/questions/25849814/rstudio-rmarkdown-both-portrait-and-landscape-layout-in-a-single-pdf).  
+
+# Other topics
+
+## Child documents
+
+If a document becomes very long, it might be worth moving sections to a separate R markdown document known as a child document.
+When the parent R markdown file is knitted, the child file will be included in the output.
+The child file can also be knitted separately.
+
+Child documents can be included in the parent document by using the child option in a code chunk with the file's name and path.
+
+```` 
+```{r child = "discussion.Rmd"}`r ''`
+```
+````
+
+**Important**
+
+-   The chunk must be empty.
+-   Chunk names in the child R markdown file(s) must be unique and different from the names in the parent file.
+-   Any call to `knitr::opts_chunk$set` in a child document will set the chunk option defaults for the rest of the document.
+
+## Too much or too slow code
+
+If code runs slowly, the output of code chunks can be cached, so next time the document is rendered the existing cached results can be used.
+The caching system in R markdown can be activated by setting the chunk option `cache = TRUE`.
+The caching system can be tricky to set up for complex projects, and the [`targets` package](https://books.ropensci.org/targets/) is a much more robust framework for building reproducible analysis pipelines.
+See this [demonstration project](https://github.com/richardjtelford/neotomaTargets) for an example of how to set up `targets`.
+
+## Paramertised reports
+
+If you need a template for many reports, for example, showing results for a specific location or time period, consider using 
+[Paramertised reports](https://bookdown.org/yihui/rmarkdown/parameterized-reports.html)
+which allow you to pass a variable into an R markdown document when it is knitted.
+
+# Troubleshooting
+
+It is normal to have errors when working with R and R markdown.
+Problems can be minimised by developing the document and code incrementally and knitting it repeatedly so that errors can be detected immediately.
+
+Here are some common problems.
+
+## Duplicate chunk names
+
+Chunk names must be unique. 
+If they are not you will get an error message including the following
+
+```
+  Duplicate chunk label 'import', which has been used for the chunk:
+```
+
+Identify the offending chunk and rename it.
+
+## More errors to come
+
+Tell me what you find difficult.
+
+
+### Further reading {- .facta .toc-ignore}
+
+- [R markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+- [R markdown from RStudio](https://rmarkdown.rstudio.com/index.html)
+- [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
+
+### Contributors {- .contributors .toc-ignore}
+
+* Richard J. Telford
