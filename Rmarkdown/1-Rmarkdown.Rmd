@@ -1,6 +1,6 @@
 ---
-title: "Introduction to R markdown"
-description: R markdown
+title: "Introducing R markdown"
+description: R markdown for writing reproducible reports
 output:
   bookdown::html_document2: 
     highlight: tango
@@ -22,6 +22,19 @@ library(flair)
 source("../Templates/biostats_theme.R")
 ```
 
+
+### Before you start {- .facta .toc-ignore}
+
+The first part of this tutorial will introduce you to R markdown, a tool that lets you combine code and text to  write reproducible documents. 
+
+The second part will show you how author a manuscript, report or thesis in R markdown.
+
+You will need to have installed
+
+- [RStudio](https://www.rstudio.com/products/rstudio/)
+- [R](https://cran.r-project.org/)
+
+
 # Getting started
 
 ## Why you should use R markdown
@@ -36,6 +49,8 @@ R markdown lets you have the code and the text in one document.
 If the code or the data are updated, new versions of the figures and tables are automatically generated and inserted into the corrected document.
 
 This is a much more reproducible process.
+
+
 
 ## Creating and knitting an R markdown file
 
@@ -76,7 +91,7 @@ The first time you knit the document, you need to save it.
 
 ## YAML
 
-The YAML is metadata for the document that goes right at top of the file.
+The YAML is metadata for the document that goes right at the top of the file.
 It can set the document author and title, the output format and many other things.
 YAML format can be difficult to get right as it is sensitive to white space.
 You can use an RStudio Addin from the package `ymlthis` to help write the YAML.
@@ -183,8 +198,8 @@ data(penguins, package = "palmerpenguins)
 
 It starts with three back-ticks, followed by braces.
 Inside the braces, the "r" indicates that this is a chunk in the R language.
-The next word in the optional chunk name.
-After the comma are a optional chunk arguments.
+The next word is the optional chunk name.
+After the comma are optional chunk arguments.
 Then on a new line is the body of the chunk.
 The chunk ends with three back-ticks on their own line.
 
@@ -274,7 +289,7 @@ The environment is empty: the R markdown document does not have access to any ob
 This means that any data you want to use in the document needs to be imported by the code in the document.
 
 The working directory for the new R session used when knitting the R markdown file is the directory where the file is.
-If the file is in the root directory of an RStudio project, relative paths will work same way in the R markdown document as from the console.
+If the file is in the root directory of an RStudio project, relative paths will work the same way in the R markdown document as from the console.
 If the file is in a sub-directory, use `here::here()` to form paths relative to the project root.
 
 ## Inline code
@@ -301,7 +316,7 @@ If there are many results to report, consider storing them in a list.
 
 ## Figures made in R
 
-Plots can be included with an chunk that makes a figure with either base plot or ggplot.
+Plots can be included with a chunk that makes a figure with either base plot or ggplot.
 
 If you make the plot with ggplot, remember to print it.
 
@@ -406,7 +421,7 @@ For example, this is the equation of a standard deviation that uses several diff
 `$$SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}$$` 
 $$SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}$$
 
-When making complex formula, build one element at a time, often starting in the middle, rather than trying to get it all working at once.
+When making a complex formula, build one element at a time, often starting in the middle, rather than trying to get it all working at once.
 
 # Towards a manuscript
 
@@ -452,7 +467,7 @@ decorate("bib-pos", eval = FALSE) %>%
 The `{-}` stops R markdown from numbering the reference section header.
 
 If you want to move the bibliography, for example because you need to finish with an appendix, you need to use this bit of magic.
-You also need to use output format `bookdown::html_document2` in the YAML.
+You also need to use the output format `bookdown::html_document2` in the YAML.
 
 ```{r bib-move, echo = FALSE, eval = FALSE}
 # Conclusions
@@ -485,7 +500,7 @@ Using the default author-date style gives
 
 <hr>
 <span style="background-color: Beige;">
-Reproducibility code [@Cooper2017] ...\
+Reproducible code [@Cooper2017] ...\
 @Cooper2017 discuss ...
 \
 </span>
@@ -571,7 +586,7 @@ decorate("bookdown", eval = FALSE) %>%
 
 ### Cross-referencing figures and tables
 
-The chunk that made the figure or table needs to have a name (no underscores!), and a caption.
+The chunk that made the figure or table needs to have a name (no underscores!) and a caption.
 
 ````
 ```{r penguin-hist, fig.cap = "Histogram of penguin body mass"}`r ''`
@@ -638,12 +653,12 @@ For example, to refer to this section, you would use
 
 <span style="background-color: Beige;">Cross-referencing (Section \@ref(cross-referencing))</span>
 
-Note that the reference is given in lower case and spaces replaced by hyphens.
+Note that the reference must be written in lower case and spaces must be replaced by hyphens.
 Punctuation is deleted.
 
-## Journal specific formatting
+## Journal-specific formatting
 
-Use the `rticles` package to produce a draft manuscript in a journal specific format.
+Use the `rticles` package to produce a draft manuscript in a journal-specific format.
 Many journal formats are available.
 
 ```{r rticles, eval = FALSE, echo = TRUE}
@@ -670,7 +685,7 @@ decorate("line-page-numbers", eval = FALSE) %>%
   flair_lines(4:6)
 ```
 
-Other LaTeX packages can be added in a similar way to add extra functionality, for example, pages in [landscape](https://stackoverflow.com/questions/25849814/rstudio-rmarkdown-both-portrait-and-landscape-layout-in-a-single-pdf),  
+Other LaTeX packages can be added in a similar way to add extra functionality, for example, pages in [landscape](https://stackoverflow.com/questions/25849814/rstudio-rmarkdown-both-portrait-and-landscape-layout-in-a-single-pdf).  
 
 # Other topics
 
@@ -697,14 +712,13 @@ Child documents can be included in the parent document by using the child option
 
 If code runs slowly, the output of code chunks can be cached, so next time the document is rendered the existing cached results can be used.
 The caching system in R markdown can be activated by setting the chunk option `cache = TRUE`.
-The caching system can be tricky to set up for complex projects, and the [`targets` package](https://books.ropensci.org/targets/) is much more robust framework for building reproducible analysis pipelines.
+The caching system can be tricky to set up for complex projects, and the [`targets` package](https://books.ropensci.org/targets/) is a much more robust framework for building reproducible analysis pipelines.
 See this [demonstration project](https://github.com/richardjtelford/neotomaTargets) for an example of how to set up `targets`.
 
-
-## Paramertized reports
+## Paramertised reports
 
 If you need a template for many reports, for example, showing results for a specific location or time period, consider using 
-[Paramertized reports](https://bookdown.org/yihui/rmarkdown/parameterized-reports.html)
+[Paramertised reports](https://bookdown.org/yihui/rmarkdown/parameterized-reports.html)
 which allow you to pass a variable into an R markdown document when it is knitted.
 
 # Troubleshooting
