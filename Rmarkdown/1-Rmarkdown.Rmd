@@ -115,6 +115,8 @@ decorate("r-yaml", eval = FALSE) %>%
   flair_lines(4)
 ```
 
+See the data-time tutorial for more about the codes in `"%d %B %Y"`.
+
 ### Output formats
 
 R markdown documents can be rendered in many different output formats, including
@@ -297,19 +299,66 @@ If the file is in a sub-directory, use `here::here()` to form paths relative to 
 In addition to the output from chunks of code, you can insert code directly into text.
 Inline code is enclosed by back-ticks and starts with an `r`.
 
-Seven times six is `` `r '\x60r 7 * 6\x60'` ``
+```{r inline1, echo = FALSE, eval = FALSE}
+Seven times six is `r 7 * 6`
+```
+
+```{r inline1-flair, echo=FALSE}
+decorate("inline1", eval = FALSE) %>% 
+  flair_rx("`.*`")
+```
 
 <span style="background-color: Beige;">Seven times six is `r 7 * 6`</span>
 
 If you want numbers written as words, use the package `english`.
 
-Seven times six is `` `r 'english::words(\x60r 7 * 6\x60)'` ``
+```{r inline-english, echo = FALSE, eval = FALSE}
+Seven times six is `r english::words(7 * 6)`
+```
+
+```{r inline-english-flair, echo=FALSE}
+decorate("inline-english", eval = FALSE) %>% 
+  flair_rx("`.*`")
+```
 
 <span style="background-color: Beige;">Seven times six is `r english::words(7 * 6)`</span>
 
 It is best to keep inline code short to keep the text readable.
 One trick is to do all necessary calculation in a previous chunk, so only the name of the object with the result needs to be in the inline code.
-If there are many results to report, consider storing them in a list.
+If there are many results to report, consider storing them in a list as in the following example.
+
+```{r penguin-stats}
+cor_adelie <- cor.test(
+  ~ bill_length_mm + body_mass_g, 
+  data = penguins, 
+  subset = species == "Adelie")
+
+adelie_list <- list(
+  #degrees of freedom
+  df = cor_adelie$parameter,
+  # extract correlation and round
+  est = round(cor_adelie$estimate, 2),
+  #format p.value with an "=" is the first character is not "<". 
+  #See the characters tutorial for more on the stringr package and regular expressions.
+  p_val = str_replace(
+    string = format.pval(cor_adelie$p.value, eps = 0.001),
+    pattern = "^(?!<)", 
+    replacement = "= ")
+)
+```
+
+```{r inline-list, echo = FALSE, eval = FALSE}
+Bill length and body mass in Adelie penguins are positively correlated, 
+r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).
+```
+
+```{r inline-list-flair, echo=FALSE}
+decorate("inline-list", eval = FALSE) %>% 
+  flair_rx("`r [a-z_\\$]*`")
+```
+
+
+<span style="background-color: Beige;">Bill length and body mass in Adelie penguins are positively correlated, r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).</span>
 
 
 # Figures, tables and equations
@@ -377,11 +426,15 @@ library(kableExtra)
 penguins %>% 
   #rename some columns
   rename(length_mm = bill_length_mm, depth_mm = bill_depth_mm) %>% 
+  #replace "_" with spaces
+  rename_with(str_replace_all,  pattern = "_", replacement = " ") %>% 
+  #capitalise first letter
+  rename_with(str_to_sentence) %>% 
   #get first five rows
   slice(1:5) %>% 
 kbl(booktabs = TRUE, caption = "The top penguins") %>% 
   kable_styling(full_width = TRUE) %>%
-  add_header_above(c(" ", " ", "bill" = 2, "body" = 2, " ", " "))
+  add_header_above(c(" ", " ", "Bill" = 2, "Body" = 2, " ", " "))
   
 ```
 
@@ -738,6 +791,10 @@ If they are not you will get an error message including the following
 ```
 
 Identify the offending chunk and rename it.
+
+## More errors to come
+
+Tell me what you find difficult.
 
 
 ### Further reading {- .facta .toc-ignore}
