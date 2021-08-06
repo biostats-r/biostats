@@ -26,7 +26,7 @@ x <- c(0, 5, NA)
 x
 ```
 
-This tutorial shows you how to cope with missing values in R, focusing on manipulating data with the `tidyverse` package, and running statistical analyses.
+This tutorial shows you how to cope with missing values in R, focusing on manipulating data with the `tidyverse` package, running statistical analyses, and making figures with `ggplot2`.
 
 The `penguins` dataset from `palmerpenguins` is used as an example.
 
@@ -39,6 +39,7 @@ The `penguins` dataset from `palmerpenguins` is used as an example.
 ```{r is.na}
 x <- c(0, 7, NA)
 is.na(x)
+
 ```
 
 We could use this, for example, to find the number of missing values in a column of the `penguins` data.
@@ -93,7 +94,11 @@ Here, the code replaces missing values for bill length with the mean value for b
 
 ```{r replace-na}
 penguins %>% 
-  mutate(bill_length_mm = replace_na(bill_length_mm, mean(bill_length_mm, na.rm = TRUE)))
+  mutate(
+    bill_length_mm = replace_na(
+      data = bill_length_mm, 
+      replace = mean(bill_length_mm, na.rm = TRUE))
+  )
 ```
 
 ## Replacing `NA` in factors
@@ -107,7 +112,7 @@ penguins %>%
 ```
 As the warning indicates, the problem is that "missing" is not one of the levels of the factor sex.
 
-Instead we need to use the function `forcats:fct_explicit_na` (the `forcats` package is part of `tidyverse` for manipulating factors).
+Instead we need to use the function `forcats::fct_explicit_na` (the `forcats` package is part of `tidyverse` for manipulating factors).
 
 ```{r good-factor}
 penguins %>% 
@@ -228,7 +233,9 @@ By default, if any values are `NA` in either vector, the result is also `NA`.
 If you want to find the correlation between two vectors without the `NA`, then use
 
 ```{r cor}
-cor(penguins$bill_length_mm, penguins$bill_depth_mm, use = "pairwise.complete.obs")
+cor(x = penguins$bill_length_mm,
+    y = penguins$bill_depth_mm, 
+    use = "pairwise.complete.obs")
 ```
 
 If you have a matrix (or data frame), and want to calculate a correlation matrix, then `use = "complete.obs"` will calculate this using just the rows that have no `NA`, and `use = "pairwise.complete.obs"` will calculate the correlation between each pair of variables using all complete pairs of observations on those variables. 
@@ -280,15 +287,82 @@ If a predictor has many missing values, it may be better to exclude the predicto
 
 An alternative is to impute the missing data. 
 This should be done with caution as it can bias the results, especially if a substantial proportion of the data are imputed.
-But if missing data are not randomly distributed, omitting observations with missing data can also bias interpretations.
+On the other hand, if missing data are not randomly distributed, omitting observations with missing data can also bias the results.
 
 There are several ways that can be used to impute missing values. 
 
 The simplest is to replace a the missing value with the mean or median of the variable as shown in section \@ref(replacing-missing-values).
 
 More complex methods use the multivariate relationship between predictors to estimate the missing values. 
-Several R packages can help with this, for example, the package `mice`.
+Several R packages can help with this, e.g., `mice`.
 [Yadav and Roychoudhury (2018)](https://doi.org/10.1016/j.knosys.2018.06.012) compare the performance of some popular methods.
+
+# Missing values and `ggplot2`
+
+By default, missing values in the `x` or `y` aesthetics are dropped by `ggplot` with a warning, whereas missing values in the `colour` or `fill` aesthetics are shown in grey. 
+This behaviour can be controlled with the `na.value` argument to the relevant `scale_*_*` function.
+
+```{r ggplot2, warning = TRUE, fig.height=3, fig.width=3}
+#x or y NA
+p <- tibble(
+  x = 1:5, 
+  y = c(1, 2, NA, 4, 5),
+  colour = c(1, 2, 3, 4, NA)
+) %>% 
+  ggplot(aes(x = x, y = y, colour = colour)) +
+  geom_point(size = 3)
+
+p
+
+# change defaults
+p + 
+  scale_y_continuous(na.value = 0) +
+  scale_colour_continuous(na.value = "hotpink")
+
+```
+
+
+# Related concepts
+
+`NaN` and `Inf` are related to `NA`.
+
+## `NaN`
+
+`NaN` represents Not a Number.
+`NaN` can be generated, for example, by taking the log of a negative number.
+They can be tested for with `is.nan()`
+
+```{r nan}
+x <- log(c(1, -1, NA))
+x
+is.nan(x)
+```
+
+
+## Inf
+
+`Inf` and `-Inf` represent positive and negative infinite numbers respectively.
+These can be generated, for example, by dividing by zero, and tested for with `is.infinite()`
+
+```{r inf}
+x <- c(-Inf, 0, Inf)
+is.infinite(x)
+```
+
+## Comparison of tests
+
+The test `is.finite()` it `TRUE` if the value is numeric and not `NA`, `NaN`, `Inf` or `-Inf`.
+
+```{r comparison, echo = FALSE}
+tibble(
+  value = c(1, NA, NaN, Inf, -Inf),
+  is.na = is.na(value),
+  is.nan = is.nan(value),
+  is.infinite = is.infinite(value),
+  is.finite(value)
+) %>% knitr::kable()
+```
+
 
 ### Contributors {- .contributors .toc-ignore}
 
