@@ -1,0 +1,755 @@
+---
+title: "Writing an R package"
+output:
+  bookdown::html_document2:
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: ../css/style-chapters.css
+--- 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library("dplyr")
+# source figure settings
+source("../Templates/biostats_theme.R")
+data("penguins", package = "palmerpenguins")
+```
+
+This tutorial will show you how to write your own R package.
+
+### Before you start {- .facta .toc-ignore}
+
+You will need to have installed
+
+- [RStudio](https://www.rstudio.com/products/rstudio/)
+- [R](https://cran.r-project.org/)
+
+
+## Why write your own package
+
+- Publish code that implements novel statistical method
+- Code to import data from, for example, a logger
+- Wrap up various functions that you want to reuse
+
+# System setup
+
+You should use the latest version of R (currently 4.1.0) and a recent version of RStudio.
+It is a good idea to have git installed and have a GitHub (or similar) account.
+
+You will also need to install the `devtools` package
+
+```{r devtools, eval = FALSE}
+install.packages("devtools")
+```
+
+This will also install the `usethis`, `roxygen2` and `testthat` packages that we will use.
+
+If you are using Windows, you may need to install Rtools if your package will contain C++ code or similar. 
+You can download and install Rtools from  https://cran.r-project.org/bin/windows/Rtools/ using the defaults.
+Rtools is not an R package.
+
+# Creating the package infrastructure 
+
+A package starts life as a directory with some files and subdirectories that R expects.
+There is nothing to stop you building the whole thing from scratch.
+But it is _so_ much easier to get some help from `usethis`.
+
+The `create_package` function takes the path of the project you want to write, creates this directory, add adds some files and subdirectories.
+
+The name of the directory will become the name of the package.
+Choose carefully as it is easier to get it right now than change it later.
+There are special rules for naming packages
+
+* Contain only ASCII letters, numbers, and '.' 
+* Have at least two characters
+* Start with a letter
+* Not end with '.'
+
+The function `available::available()` can tell you if your name is valid and if it clashes with an existing package.
+
+```{r available}
+available::available("helper")
+```
+
+Once you have chosen your name, you can create the skeleton of your package.
+
+```{r create-project, eval = FALSE}
+# Choose a path on your computer
+# My package will be called DemoPackage
+package_path = "/home/gbsrt/Documents/teaching/DemoPackage"
+usethis::create_package(path = package_path)
+```
+
+When you run this, it will open a new RStudio session.
+The files tab should look something like this.
+
+```{r initial-files-pic, echo = FALSE, out.width = "1354px"}
+knitr::include_graphics("Pics/package-files.png")
+```
+
+- `.gitignore` - which files should git ignore
+- `.Rbuildignore` - When R builds a package, it does not like unexpected files. This `.Rbuildignore` tells it which ones it can ignore.
+- `DemoPackage.Rproj` - an Rstudio project
+- `DESCRIPTION` - metadata about the package
+- `NAMESPACE` - Which functions are to be imported/exported. It is automatically generated so don't edit this file by hand, but delete it if it becomes corrupt.
+- `R` - a folder for your R code
+
+Almost everything concerned with setting up a package is easier with the `usethis` package.
+We are going to be using it a lot, so it is a good idea to load it now.
+
+```{r usethis}
+library(usethis)
+```
+
+## DESCRIPTION file
+
+The `DESCRIPTION` file contains the information used by CRAN to make the package page there (see for example [devtools](https://cran.r-project.org/web/packages/devtools/index.html)).
+
+Start by editing the title, author and description fields of the `DESCRIPTION` files. 
+The title field must be in title case (they really do check this when you submit to CRAN).
+
+```
+Package: DemoPackage
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "First",
+           family = "Last",
+           role = c("aut", "cre"),
+           email = "first.last@example.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+```
+
+When you have finished, be sure to save the file otherwise your changes will be over-written.
+
+## Choose a licence
+
+You need to set a licence for your package otherwise, legally, no-one will be allowed to make a copy and use it.  
+
+Frequently used open source licences for R packages are 
+
+- [MIT licence](https://choosealicense.com/licenses/mit/) is a permissive licence, letting people do almost anything (including use, copy, modify, merge, publish, distribute, sublicense, or sell) with the software. 
+Generate with `use_mit_license()`
+- [GPL licence](https://choosealicense.com/licenses/gpl-3.0/) lets people do almost anything _except_ distributing closed source versions. 
+Generate with `use_gpl_license()`
+
+I generally use the MIT licence.
+Data packages probably should use a `CC0` licence.
+
+For more information about licences, see the [R package book](https://r-pkgs.org/license.html) and [Choose a License](https://choosealicense.com/)
+
+
+## git and GitHub
+
+You don't have to use git and GitHub when writing a package, but there are many advantages if you are do. 
+
+You are probably aware of some of these
+
+ - Version control
+ - Collaboration
+ - Issue tracking - for bug reports or feature requests 
+ - Distribution - people can install your package directly from CRAN.
+
+A fourth is that you can use GitHub actions.
+GitHub actions will perform some action on your repo. 
+For example, with `use_github_action_check_standard()` we can check the package works on the latest version of R on linux, macOS and Windows every time we push a commit.
+This is essential if you want your package to be released on CRAN, but useful anyway, as it can find problems that are not apparent on your own computer.
+
+See the git and GitHub tutorial for how to make a GitHub repo for your package.
+To set up GitHub actions, just run the following command, then commit and push.
+
+```{r github-setup, eval = FALSE}
+use_github_action_check_standard()
+```
+
+# Contents
+
+## Basic workflow
+
+1) Write tests (section \@ref(tests))
+2) Write functions (section \@ref(functions)) and documentation (section \@ref(documentation-with-roxygen2))
+3) Check package (section \@ref(checking))
+4) Fix errors goto 3
+5) Test drive with `devtools::load_all()`
+6) Build and install (section \@ref(build-and-install))
+
+Because there are usually lots of errors to fix, it is sensible to build the package slowly, testing with Check frequently.
+
+## Tests
+
+You need to write tests for your package to ensure your functions do what they are supposed.
+They protect you against breaking your package when you edit your code.
+Tests are run when the package is checked
+
+You can, ideally should, write tests before you write your functions.
+We can use the `testthat` package for the tests.
+
+Set up the testing infrastructure with
+
+```{r use-testthat}
+use_testthat()
+```
+
+Now set up a test file for one or more related functions with `use_test()`.
+
+```{r use-test}
+use_test(name = "import")
+```
+
+This will create and open a file called `test-import.R` which looks like 
+
+```{r}
+test_that("multiplication works", {
+  expect_equal(2 * 2, 4)
+})
+```
+
+The first argument of `test_that()` is a description, second argument is an expression which contains the test. 
+More complex tests might need some additional set-up code in the expression.
+There are several `expect_*()` functions to test different aspects of the function, including that errors and warnings are thrown as expected.
+Each `test_that()` call can test multiple expectations. 
+You can have multiple `test_that()` calls per file. 
+
+Look for examples of tests on GitHub if you need inspiration.
+
+Functions are much easier to test the functions do one job.
+This is also best practice when writing functions.
+For example, if you were writing a package to import, process, and plot logger data, you would make at least three functions to do this, not one function that does everything.
+
+## Functions
+
+Functions are made with the keyword function, can have one or more arguments separated by commas, and needs assigning to a name.
+
+```{r function}
+my_function <- function(arg1 = 1, arg2){
+  arg1 * arg2
+}
+
+my_function(3, 4)
+```
+
+Functions need to be saved in `R/`.
+Related functions can be saved in the same file.
+
+### Well behaved functions
+
+Try not to alter the state of the users R session.
+Don't include calls to library() or require() in functions (see  section \@ref(importing-and-exporting-functions)).
+If you need to change the state, then revert it with `on.exit()`.
+Even if the function throws an error, the state of `par` will be reverted to its original state.
+
+```{r on-exit}
+my_function <- function(){
+  op <- options(digits = 1) # set options
+  on.exit(options(op)) #next line
+  # main code
+}
+```
+
+
+
+
+
+### Data validation - expect the unexpected.
+
+If you are going to release your package, you need to try to make it idiot proof. 
+Assume users will make mistakes with their data input. 
+Use code to validate that the data are correct, or else throw an error.
+`if` statements and `stop()` are useful here.
+
+### S3 classes in R
+
+When you use a generic function in R such as `plot()`, `print()`, `autoplot()` or `summary()`, what happens is that the class of the object in determined and dispatched to the appropriate function, which will have the name of the generic followed by the name of the class, separated by a dot.
+
+So a call to `plot()` with an object of class `cca` will be dispatched to `plot.cca`. 
+
+You can find out the class of an object with `class()`
+
+The class of an object can be set with `class()`.
+
+```{r class}
+my_function <- function(){
+  result <- complex_logic()
+  class(result) <- "my_class"
+  result
+  }
+```
+
+If the object already has a class and you want to keep it, you need something like
+
+```{r class2}
+  class(result) <- c("my_class", class(result))
+```
+
+To make a `print()` or `plot()` method for `my_class`, we simply make a function called `print.my_class` or `plot.my_class`.
+The method will be declared automatically when the documentation (\@ref(documentation-with-roxygen2)) is made.
+
+### Going further with classes {- .facta .toc-ignore}
+
+- Make your [own generics](https://adv-r.hadley.nz/s3.html#s3-methods)
+- Use the more formal [S4 or R6 class](https://adv-r.hadley.nz/oo.html) systems
+
+### ...
+
+Ellipses can be used in two ways when writing functions.
+
+The first is to pass unknown arguments to a second function (e.g., `plot.cca()`).
+
+If we make a `plot.my_class()` function we can use the ellipses so we don't need to specify all the possible arguments in plot.
+
+```{r ellipses1}
+plot.my_class <- function(obj, ...){
+  #logic to prepare data for plotting
+  x <- obj$x
+  y <-obj$y
+  plot(x, y, ...)
+}
+```
+
+Now all of arguments to `plot.default()` can be used.
+
+The second way to use ellipses is when there are a variable number of arguments.
+We can capture the `...` using `list()`, and then process it further. 
+
+```{r dot-list, eval = TRUE}
+dot_to_list <- function(...){
+  list(...)
+}
+
+dot_to_list(1, 2, "c")
+```
+
+### Using `dplyr`, `ggplot2` etc
+
+Tidyverse packages such as `dplyr` and `ggplot2` which use Non-Standard Evaluation (NSE) are a little challenging to use in functions.
+
+We cannot just do something like this as we get an error
+
+```{r tidyselect, error = TRUE, eval = TRUE}
+my_select <- function(data, col){
+  select(data, col)
+}
+
+my_select(penguins, col = species)
+```
+
+One solution is to use the curly-curly notation
+
+```{r tidyselect-working, error = TRUE, eval = TRUE}
+#select
+my_select2 <- function(data, col){
+  select(data, {{col}})
+}
+
+my_select2(penguins, col = species)
+
+# filter
+my_filter <- function(data, col, `%test%`, value){
+  filter(data, {{col}} %test% value)
+}
+
+my_filter(penguins, col = species, `%test%` = `==`, value = "Adelie")
+
+#mutate Note the := operator.
+my_mutate <- function(data, col1, col2, sum_col){
+  mutate(data, {{sum_col}} := {{col1}} + {{col2}})
+}
+
+my_mutate(penguins, bill_length_mm, bill_depth_mm, sum_col = bill)
+
+#ggplot
+my_plot <- function(data, x, y){
+  ggplot(data, aes(x = {{x}}, y = {{y}})) + 
+    geom_point()
+}
+
+my_plot(penguins, x = bill_length_mm, y = body_mass_g)
+```
+
+Another is to have the arguments as strings and use the `.data` pronoun from `rlang` (don't forget to import `rlang` (see section \@ref(importing-and-exporting-functions).
+
+```{r .data, eval = TRUE}
+my_select3 <- function(data, col){
+  select(data, .data[[col]])
+}
+
+my_select3(penguins, col = "species")
+```
+
+NSE can also be a problem for functions that don't take column names as arguments.
+
+
+```{r NSE}
+process_penguin_type_data <- function(data){
+  data %>% 
+    group_by(species) %>% 
+    summarise(bill = mean(bill_length_mm))
+} 
+
+```
+
+The next function should work, but will generate a note in the checking stage. as the check does not recognise `` or ``.
+```
+> checking R code for possible problems ... NOTE
+  process_penguin_type_data: no visible binding for global variable
+    ‘species’
+  process_penguin_type_data: no visible binding for global variable
+    ‘bill_length_mm’
+  Undefined global functions or variables:
+    bill_length_mm species
+```
+
+To fix this, either declare these variables as global with this line added to the file (outside the function).
+
+
+```{r globalvariables}
+utils::globalVariables(c('bill_length_mm', 'species'))
+```
+
+Or, perhaps better, use the `.data` pronoun.
+
+```{r NSE2}
+process_penguin_type_data <- function(data){
+  data %>% 
+    group_by(.data$species) %>% 
+    summarise(bill = mean(.data$bill_length_mm))
+} 
+```
+
+## Documentation with Roxygen2
+
+The documentation for the package lives in `man/` in .Rd files.
+The files are written in a LaTeX like language, that is quite hard to get to right.
+Fortunately, the [`roxygen2` package](https://roxygen2.r-lib.org/index.html) takes most of the pain away as the format is much simpler. Also, some parts of the documentation are automatically generated by inspecting the code, and it is easier to keep the documentation and code in sync because the are in the same file.
+
+The roxygen2 comments sit above the function, and start with `#'` to distinguish them from ordinary comments.
+
+The first sentence of the roxygen becomes the title of the help file. 
+Then we can use roxygen tags for the rest of the documentation.
+Roxygen tags all start with an `@`.
+Once you type this, RStudio gives you suggestions.
+
+`@description` One paragraph description of what the function does.
+
+`@param` argument_name followed by a description of the argument
+All parameters must be documented.
+
+`@details` All the gory details. Possibly several paragraphs (separate with a blank line).
+
+`@return` A description of the object returned by the function (if any)
+
+`@examples`
+Working examples which will be run when the package is tested.
+Examples should run relatively quickly or they become tedious.
+They need to use `library()` to load any packages needed other than the package being developed.
+Any packages loaded by `library()` need to be declared in the DESCRIPTION file (see section \@ref(importing-and-exporting-functions))
+
+
+You can use [markdown](https://roxygen2.r-lib.org/articles/markdown.html) to enhance the documentation, including links etc. 
+
+### Importing and exporting functions
+
+The roxygen comments are also where you import functions from other packages and mark your functions for export.
+This information will be written into the NAMESPACE file so you don't have to (see the [R package book](https://r-pkgs.org/namespace.html#namespace) for more information about this file).
+
+If you want to use a function from any other package (except `base`) you need to add the dependency to the package to the DESCRIPTION file.
+
+```{r use-package}
+use_package("dplyr")
+#use_dev_package("packageFromGithub")
+```
+
+You can now use a function from `dplyr` with `dplyr::mutate`.
+This gets messy if you need to use lots of functions from a package.
+Then it is better to import them.
+We could use 
+
+```
+#' @import dplyr
+```
+to import all functions in the package, or 
+
+```
+#' @importFrom dplyr %>%
+```
+if we want to just import specific functions.
+This is safer as it minimises the risk of conflicts.
+
+Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (section \@ref(troubleshooting)).
+
+Export any of your functions that you want users to have access to by adding `@export` to the roxygen comments.
+
+### Generate the .Rd files
+
+Convert the roxygen comments to .Rd files with 
+
+```{r document}
+devtools::document() 
+```
+
+View the compiled help files by running 
+
+```{r load-all}
+devtools::load_all()
+```
+
+which simulates loading the package without having to install it properly. 
+Then you can use `?` as normal to get the help (links won't work)
+
+
+## Data
+
+Many packages include data, either because they are needed for examples, or because the aim of the package is to distribute a dataset (probably with some functions to access it).
+
+Data are stored in `data/` as `.rda` files and can be loaded into R with the `data()` function.
+
+```{r penguins, eval = FALSE}
+data("penguins", package = "palmerpenguins")
+```
+
+The best way to add `.rda` files is to use the function `use_data_raw()` with the name of the dataset you want create.
+
+```{r, eval = FALSE}
+use_data_raw(name = "dataset1")
+```
+
+This will create `data_raw/` and add a file called `dataset1.R` that looks like this.
+
+```{r data_set1, eval = FALSE}
+## code to prepare `dataset1` dataset goes here
+
+usethis::use_data(dataset1, overwrite = TRUE)
+```
+
+Add the code needed to reproducibly create `dataset1`, perhaps importing and processing data files that you have copied into `data-raw/`.
+
+When you run the entire script, the code will create `dataset1.rda` in `data/`.
+
+### Documenting data
+
+Data in `data/` need to be documented.
+Write the documentation for the data using roxygen2 and save it in `R/`.
+I usually call this file `data.R` and document all the datasets in it.
+
+In my traitstrap package, one of the data objects is called trait. 
+Here is the entry from `R/data.R`:
+
+```
+#' Trait data
+#'
+#' A dataset containing plant traits in control plots on Svalbard from PFCT4
+#' TraitTrain course.
+#'
+#' @format A data frame with 53940 rows and 10 variables:
+#' \describe{
+#'   \item{Taxon}{species name}
+#'   \item{Site}{site name}
+#'   \item{PlotID}{plot name}
+#'   \item{Trait}{trait name with unit}
+#'   \item{Value}{trait value}
+#' }
+#' @source \url{http://https://www.uib.no/en/rg/EECRG/114808/plant-functional-traits-course-4}
+"trait"
+```
+
+The first line gives the title followed by the desciption. 
+The \@format field lets you describe the data. 
+The last line has the object name in quotes (note no #' first).
+
+## Adding other files
+
+R gets upset if there are files where they are not supposed to be in the R package. 
+You cannot put extra files into the package root directory. 
+The solution is to put extra files into subdirectories in `inst/`.
+
+If you want to include raw data files because your package has functions to process them, they can go in `inst/extdata/`.
+
+When the package is compiled, `inst/` will be removed and `extdata/` will be put into the package root directory.
+
+Tutorials and other resources can also be put into suitable directories in `inst/`.
+
+## Checking
+
+Now we are ready to check the package compiles correctly. 
+The check function is slow (it checks many aspects of the package), so before running it, run some functions that check different aspects of the package.
+
+```{r pre-check}
+# build the documentation
+devtools::document()
+
+# check the examples work
+devtools::run_examples()
+
+# check the tests work
+devtools::test()
+```
+
+After fixing any problems, check the entire package either with the `Check` button in  the Build tab (in the same panel as the Environment tab), or with `devtools::check()`.
+They do exactly the same work, but the Check button leaves the console available.
+
+Check is very thorough.
+It will almost certainly report errors, warnings or notes the first times you run it.
+Identify the problems, fix them and run check again.
+
+Now use 
+
+```{r load-all2}
+devtools::load_all()
+```
+
+and give your functions a test drive.
+
+### Build and install
+
+When you are happy with your package, use the "Install and Restart" button in the build tab to install your package.
+Now you can load it with `library()` as you would any other package.
+
+# More documentation
+
+## readme.md for GitHub 
+
+Your GitHub repo needs a readme file to explain to users how to install the package and get started.
+
+You can create `readme.Rmd` with 
+
+```{r use-readme-rmd}
+use_readme_rmd()
+```
+
+This will create a draft for you to fill in and knit, and set git hooks to remind you to commit both the `readme.Rmd` and the resulting `readme.md` together.
+Do not edit the `readme.md` by hand.
+
+## Vignettes
+
+A vignette is a long-form documentation for your package.
+It can be anything from a walk-through of how to use the package to a detailed explanation of the implementation.
+
+Create a vignette with:
+
+```{r vignette}
+use_vignette("my-vignette")
+```
+ which will modify the DESCRIPTION file, and draft the R markdown file `vignettes/myvignette.Rmd`.
+ Fill it in and knit it.
+
+## A package website
+
+[`packagedown`](https://pkgdown.r-lib.org/articles/pkgdown.html) is an amazing package that takes your packages help files and vignettes and makes them into a website that you can host on GitHub.
+
+For a minimal website, you need and run
+
+```{r packagedown}
+# Run *once* to configure package to use pkgdown
+usethis::use_pkgdown()
+# Run to build the website
+pkgdown::build_site()
+```
+
+Commit and push the built webpages, the [configure your GitHub repo](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) to support publishing (about 5 clicks).
+
+You can even set up GitHub actions to build the website automatically after every push.
+
+# Distributing your package
+
+If your package is in a public repo on GitHub, you don't have to do anything more. 
+Users can install it with
+
+```{r install-github}
+remotes::install_github("my-user-name/myPackageName")
+```
+
+You can also submit your package to CRAN for consideration. 
+This is a lot more work than using GitHub for distribution, but will make your package available to a wider audience. 
+See the [R package book section on CRAN](https://r-pkgs.org/release.html) for how to do it.
+
+# Troubleshooting
+
+These are some errors, warnings and notes you might find with check and how to fix them.
+
+## Warning 'library' or 'require' call
+
+```
+> checking dependencies in R code ... WARNING
+  'library' or 'require' call not declared from: ‘dplyr’
+  'library' or 'require' call to ‘dplyr’ in package code.
+    Please use :: or requireNamespace() instead.
+    See section 'Suggested packages' in the 'Writing R Extensions' manual.
+```
+Diagnosis: you have a `library()` call in one of your functions. 
+
+Solution: see section \@ref(importing-and-exporting-functions)) for how to import functions correctly.
+
+## Note no visible global function definition
+
+```
+  my_function: no visible global function definition for
+    ‘rnorm’
+  Undefined global functions or variables:
+    rnorm
+  Consider adding
+    importFrom("stats", "rnorm")
+  to your NAMESPACE file.
+```
+
+Diagnosis: you have used a function from another package other than `base` in function `my_function` without importing it.
+
+Solution: see section \@ref(importing-and-exporting-functions)) for how to import functions correctly. 
+
+## Error Invalid NAMESPACE file
+
+```
+> checking package namespace information ... ERROR
+  Invalid NAMESPACE file, parsing gives:
+  Error in asChar(ivars): empty name in directive 'importFrom' in 'NAMESPACE' file
+  
+  See section ‘Package namespaces’ in the ‘Writing R Extensions’ manual.
+```
+
+Diagnosis: A package has been imported with `@import` or `@importFrom` in roxygen comments but not added to the DESCRIPTION file.
+
+Solution: Delete the malformed NAMESPACE file. 
+Then add the missing package to the DESCRIPTION file with `use_package()` (see section \ref(importing-and-exporting-functions))
+
+## Note no visible binding for global variable
+
+```
+> checking R code for possible problems ... NOTE
+  my_function: no visible binding for global variable
+    ‘species’
+  Undefined global functions or variables:
+     species
+```
+
+Diagnosis: You are probably using dplyr, ggplot2 or related packages.
+
+Solution: Use the `.data` pronoun or declare global variables (see section \ref(using-dplyr-ggplot2-etc)).
+
+## NOTE Non-standard file/directory found at top level
+
+```
+> checking top-level files ... NOTE
+  Non-standard file/directory found at top level:
+    ‘extra.R’
+```
+
+Diagnosis: You have an unexpected file in the package's root directory.
+
+Solution: Add this file to `.Rbuildignore`, or move it to a more appropriate place, perhaps `inst/`.
+
+### Further reading {- .facta .toc-ignore}
+
+- Wickham, H. and Bryan, J. [R Packages](https://r-pkgs.org/)
+- Wickham, H. [Advanced R](https://adv-r.hadley.nz/)
+- [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html) Official documentation from CRAN.
+
+### Contributors {- .contributors .toc-ignore}
+
+Richard J. Telford
