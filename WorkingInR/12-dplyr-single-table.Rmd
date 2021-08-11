@@ -1,0 +1,424 @@
+# Working with single tables in `dplyr`
+
+```{r setup, include=FALSE}
+# continue knitting after errors
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+options(tibble.print_min = 3)
+# packages
+library("tidyverse")
+
+source("../Templates/biostats_theme.R")
+```
+
+Data frames are usually the most convenient objects for storing, plotting or analysing data in R. 
+We also need to be able to manipulate data in data frames.
+
+This tutorial will show you how to manipulate data frames using the `dplyr` package, part of `tidyverse`.
+
+Everything that can be done with `dplyr` can be done with base R. 
+The `dplyr` solution is usually easier to write and understand, and can be faster.
+
+There are many function in `dplyr`, this tutorial focuses on the functions I find most useful.
+
+### Load the package
+
+You can load `dplyr` with 
+
+```{r load-dplyr}
+library("dplyr")
+```
+
+But is is usually more convenient to load `tidyverse` so that you get `ggplot2`, `dplyr`, `readr` and other useful packages with one command.
+
+```{r load-packages, eval = FALSE}
+library("tidyverse")
+```
+
+
+### More feedback `tidylog`
+
+We can get more feedback on what `dplyr` functions have done to the data by loading the `tidylog` package.
+
+```{r tidylog, echo = TRUE, message = FALSE}
+library("tidylog")
+# if you are using conflicted, you will need to set conflict_prefer() for all dplyr function
+# use purrr::map to iterate over tidylog functions 
+# library(conflicted)
+# map(getNamespaceExports("tidylog"), ~conflict_prefer(.x, winner = "tidylog"))
+```
+
+More than once, `tidylog` has helped identified bugs in my code.
+
+## The `penguins` dataset
+
+This tutorial will use the `penguins` dataset from the [`palmerpenguins` package](https://github.com/allisonhorst/palmerpenguins).
+This dataset includes measurements of three species of penguin.
+
+```{r penguins}
+# Load the data
+data("penguins", package = "palmerpenguins")
+# Show the data
+penguins
+```
+
+
+## Selecting columns with `select()`
+
+You can choose which columns of the data frame you want with `select()`.
+
+The first argument is the data, which is supplied by the pipe `|>`, the next arguments are the names of the columns you want. 
+The names do not need quote marks.
+
+```{r select1}
+#select species, bill_length_mm & bill_depth_mm
+penguins %>% 
+  select(species, bill_length_mm, bill_depth_mm)
+```
+
+
+This is equivalent to the base R code
+
+```{r select1.5}
+#select species, bill_length_mm & bill_depth_mm
+penguins[, c("species", "bill_length_mm", "bill_depth_mm")] 
+```
+Remember that if you want to use the output of this code in a further analysis, you need to assign it to an object name with `<-`.
+
+### `select()` helpers  
+
+Sometimes we don't want to write out the names of all the columns we want to select.
+We might not even know them all in advance. 
+Fortunately there are some helper functions.
+
+If you want to `select()` adjacent columns, you can use the notation `first:last`.
+
+```{r select2}
+#select species to bill_depth_mm
+penguins %>% select(species:bill_depth_mm)
+```
+
+Sometimes it is easier to remove the columns you don't want. 
+You can do this by putting a `-` in front of the column name.
+
+```{r select3}
+#select everything but year and sex
+penguins %>% select(-year, -sex)
+```
+
+If there is a pattern to the column names that we want to select (or remove), there are some helper functions.
+For example, to select columns that start with "bill", we can use `starts_with()`.
+
+```{r select4}
+#select bill_length_mm & bill_depth_mm" 
+penguins %>% select(starts_with("bill"))
+```
+
+Conversely, if we want to select all columns that end with "mm", we can use `ends_with()`.
+`contains()` is more flexible and `matches()` is the most powerful of the helper functions, using regular expressions to identify the columns (see the regular expression tutorial).
+
+Sometimes, you might want to select all the columns of a certain type. 
+For example, to select all the numeric columns we can use the `is.numeric` function inside `select()` with the helper `where()`.
+
+```{r select5}
+penguins %>% select(where(is.numeric)) # No brackets on the function
+```
+
+Other `is.*` functions exist, for example, `is.character` for text, `lubridate::is.Date` for dates.
+
+You can also select columns by number (1 being the first column), but this is generally a bad idea because it makes the code difficult to understand and if a new column is added, or the column order is changed, the code will break.
+
+Which of these strategies works best is context dependent.
+
+## Renaming columns with `rename`
+
+You can use `rename()` to rename columns
+
+```{r rename1}
+penguins %>% rename(Species = species)
+```
+
+The syntax is `new_name = current_name`.
+
+You can also rename a column when selecting.
+This is convenient if you are using `select()` anyway.
+
+```{r rename2}
+penguins %>% select(Species = species)
+```
+
+
+## Moving columns with `relocate()`
+
+Sometimes it is useful to reorder the columns. 
+This is never necessary for data analysis or plotting, but can be needed when making a table for presentation.
+
+```{r relocate}
+penguins %>% relocate(island)
+```
+
+The default is to move the named column first, the `.before` and `.after` arguments let you move the column into any position. 
+
+## Filtering rows with `filter()`
+
+Filtering rows that meet some condition is a very common task.
+
+For example, to filter rows of `penguins` that have a bill length greater than 40 mm, we can use 
+
+```{r filter1}
+penguins %>% filter(bill_length_mm > 40)
+```
+
+This will filter out each row where the condition is `TRUE`.
+
+The base R equivalent of this is 
+
+```{r filter_base}
+penguins[penguins$bill_length_mm > 40, ]
+```
+
+Generally, `filter` makes it easier to understand, especially with more complex criteria.
+
+
+Other tests include 
+
+- `==` exactly equals. Often a bad idea to use with numeric data 
+- `near` safe function for testing equality of numeric data as it has a tolerance for rounding errors.
+
+```{r filter-near}
+sqrt(2) ^ 2 == 2 # should be true, but rounding errors 
+sqrt(2) ^ 2 - 2 # the difference
+near(sqrt(2) ^ 2, 2) # safe alternative
+```
+
+- `!=` not equal to
+- `<` less than
+- `<=` less than or equal to
+- `>` greater than
+- `>=` greater than or equal to
+- `is.na()` for filtering by missing values.
+- `between()` for filtering values with a range
+- `%in%` is used when you want to test if a value is in a vector
+
+```{r filter-in}
+penguins %>% 
+  filter(species %in% c("Adelie", "Chinstrap"))
+#equivalent to 
+penguins %>% 
+  filter(species == "Adelie" | species == "Chinstrap") # with many alternatives, this gets long
+```
+
+### Filtering on multiple criteria
+
+If we want to filter on multiple criteria, we need to decide whether we want all criteria to be `TRUE` (AND in Boolean logic), or for one or more to be `TRUE` (OR in Boolean logic).
+
+If we want all criteria to be `TRUE`, we can separate them by a comma (or by an `&` if you want to be explicit).
+
+```{r filter-AND}
+penguins %>% 
+  filter(bill_length_mm > 40, bill_depth_mm > 18)
+```
+
+If we want rows where any of the criteria is `TRUE`, we can separate them by a `|`.
+
+```{r filter-OR}
+penguins %>% 
+  filter(bill_length_mm > 40 | bill_depth_mm > 18)
+```
+
+We can negate a criterion by putting `!` in front of it.
+So to filter rows that do not have bills longer than 40 mm we can use
+
+```{r filter-NOT}
+penguins %>% filter(!bill_length_mm > 40)
+```
+
+Of course, in this example, we could also use `<=` as the test.
+
+### Common errors
+
+The commonest error is to use a single `=` rather than `==`.
+Only the latter is a test of equality.
+If you do this, the error message is quite helpful.
+
+```{r filter-error, error=TRUE}
+penguins %>% filter(species = "Chinstrap")
+```
+
+Another common error is to forget to quote any strings.
+
+```{r filter-error2, error=TRUE}
+penguins %>% filter(species == Chinstrap)
+```
+
+## Slicing the data with `slice()`
+
+Sometimes it is useful to extract rows by row number. 
+
+```{r slice}
+penguins %>% slice(3:7)
+```
+
+You can use negative numbers to remove rows. 
+Be careful using `slice()` as if the data change, different rows may be returned. 
+
+
+## Distinct rows with `distinct()`
+
+If there are duplicates in the data, we can remove these with `distinct()`.
+`distinct()` with no extra arguments will remove duplicate rows. 
+
+```{r}
+penguins %>% distinct()
+```
+
+If we are only interested in some of the columns, we can supply the names of these columns.
+
+```{r}
+penguins %>% distinct(island)
+```
+
+Other columns will be removed unless the argument `.keep_all = TRUE` is used.
+
+## Random rows
+
+Sometimes you want to sample rows at random from a data.frame. 
+This can be done with `slice_sample()`. 
+This can either sample a constant _n_ rows or constant fraction of the rows depending on whether the `n` or `prop` argument is used.
+
+```{r sample-n}
+penguins %>% slice_sample(n = 10)
+```
+
+## Mutating and adding columns with `mutate`
+
+The function `mutate()` can add an new column or replace an existing one.
+
+To make a new column called `body_mass_kg` we can use
+
+```{r}
+penguins %>% 
+  mutate(body_mass_kg = body_mass_g / 1000)
+```
+
+There are lots of functions that are useful to use with mutate. 
+Any function that returns either a single value or as many values as are in the data can be used.
+
+`mutate()` is very useful when cleaning data.
+
+- See text manipulation tutorial for cleaning text with the `stringr` package.
+- See date and time tutorial for cleaning dates and times with the `lubridate` package.
+
+
+## Summarising data with `summarise()`
+
+`summarise()` lets us summarise data.
+We can use it if we want to calculate a summary statistic of the data. 
+Remember to separate arguments with a comma.
+
+```{r summarise1}
+penguins %>% summarise(
+  flipper_len_mean = mean(flipper_length_mm, na.rm = TRUE), 
+  flipper_len_sd = sd(flipper_length_mm, na.rm = TRUE)
+  )
+```
+
+Only the columns created in the `summarise()` and any grouping columns (see below) will be kept.
+
+### Summarising multiple columns
+
+Sometimes you want to summarise multiple columns at the same time.
+This can be done with the `across()` helper function. 
+`across()` needs to be told which columns to process and what function or functions to use.
+
+```{r across}
+penguins %>%
+   summarise(across(c(bill_length_mm, bill_depth_mm), .fns = mean, na.rm = TRUE))
+
+#using a list of functions
+penguins %>%
+  summarise(across(.cols = starts_with("bill"), .fns = list(sd = sd, mean = mean), na.rm = TRUE))
+```
+
+You can also use `across()` with `mutate()` to mutate several columns at the same time.
+
+
+## Grouping data with `group_by`
+
+`group_by()` changes the way that many of the `dplyr` functions work.
+Instead of working on the entire dataset, they now work on each group in the data
+
+To find the mean flipper length for each species, we need to `group_by()` species and then `summarise()`.
+
+```{r group-by}
+penguins %>% 
+  group_by(species) %>% 
+  summarise(mean_flipper_length = mean(flipper_length_mm))
+```
+
+
+Grouped data can be ungrouped with `ungroup()`.
+This can help prevent surprises!
+
+
+## Sorting with `arrange()`
+
+To sort the data frame by one or more of the variables we can use `arrange()`.
+
+```{r arrange1}
+penguins %>% arrange(bill_length_mm, bill_depth_mm)
+```
+
+This will sort smallest first. 
+To reverse the sort order, use `desc()`
+
+```{r arrange2}
+penguins %>% arrange(desc(bill_length_mm), desc(bill_depth_mm))
+```
+
+ 
+## Counting rows with `count()` and `n()`
+
+The function `n` can count how many rows there are in the each group (or the entire data frame if it is not grouped).
+It can be used with either `mutate()` or `summarise()`.
+
+```{r n}
+penguins %>% 
+  group_by(species) %>% 
+  summarise(n = n())
+```
+
+Or with `count()`
+
+```{r count}
+penguins %>% 
+  count(species)
+```
+
+`count()` is more concise, but `group_by()` and `summarise()` is useful when you need to calculate more variables (for example mean and standard deviation). 
+
+
+
+## Common problems
+
+### Non standard names
+
+Ideally column names should follow the standard rules for naming objects in R - UPPER and lower case letters, numbers, "." and "_" with the first character being a letter (or a dot if you want an invisible object).
+Sometimes when you import data, it has non-standard names with spaces or extra characters.
+If you need to refer to a column name that doesn't follow the rules, you need to enclose it with back-ticks.
+```{r non-standard-names}
+df <- tibble(`Region/Country` = "Norway", value = 42)
+df
+df %>% rename(region_country = `Region/Country`)
+```
+It is sometimes best to rename these columns to make them easier to refer to. 
+`janitor::clean_names()` is very efficient for making easy-to-use names.
+
+## Resources
+
+- [stat545](https://stat545.com/dplyr-intro.html)
+- [R for data science](https://r4ds.had.co.nz/) (Online copy of book)
+- [`dplyr` cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+### Contributors {- .contributors .toc-ignore}
+
+Richard J. Telford
