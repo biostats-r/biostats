@@ -1,0 +1,76 @@
+# Tidying data with `tidyr`
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tidy data
+
+Before you can start analysing or plotting data, you often need to tidy it.
+[Tidy data](https://tidyr.tidyverse.org/articles/tidy-data.html) is a standardised way to structure a dataset which makes it much easier to process, analyse and plot the data.
+Functions in the `tidyr` and `dplyr` packages, both part of tidyverse, can be very useful for tidying data.
+
+In tidy data 
+
+  -  Every column is a variable.
+  -  Every row is an observation.
+  -  Every cell is a single value.
+
+The process of tidying data is to convert the data you have to data that meets this standard.
+
+
+## `separate()` multiple values
+
+If a cell contains multiple values, we can use `separate()`.
+
+
+
+## Wide to long data
+
+
+
+Data
+
+```{r pivot-anim, echo=FALSE, out.width = "400px", fig.cap = "Wide data to long data with `pivot_longer()` and `pivot_wider()` ."}
+knitr::include_graphics("Pics/tidyr-pivot_longer_wider.gif")
+```
+
+`pivot_longer()`
+
+Bergen climate data from [Wikipedia](https://no.wikipedia.org/wiki/Bergen) (NB wikipedia is not a good source of climate data - use [seklima](https://seklima.met.no/) for Norwegian data).
+
+```{r, bergen_klima}
+bergen_klima <- read_delim(
+"Måned 	Jan 	Feb 	Mar 	Apr 	Mai 	Jun 	Jul 	Aug 	Sep 	Okt 	Nov 	Des
+Normal maks. temp. °C 	3.6 	4.0 	5.9 	9.1 	14.0 	16.8 	17.6 	17.4 	14.2 	11.2 	6.9 	4.7
+Døgnmiddeltemp. °C 	1.7 	1.7 	3.3 	5.8 	10.4 	13.1 	14.2 	14.2 	11.5 	8.8 	4.8 	2.7
+Normal min. temp. °C 	-0.4 	-0.5 	0.9 	3.0 	7.2 	10.2 	11.5 	11.6 	9.1 	6.6 	2.8 	0.6
+Nedbør (mm) 	190 	152 	170 	114 	106 	132 	148 	190 	283 	271 	259 	235", delim = "\t", trim_ws = TRUE)
+```
+
+```{r}
+bergen_klima_long <- bergen_klima %>% 
+  pivot_longer(Jan:Des, names_to = "Month", values_to = "value")
+
+```
+
+
+
+## Long to wide
+
+`pivot_wider()`
+
+```{r}
+bergen_klima_wider <- bergen_klima_long %>% 
+  pivot_wider(names_from = "Måned", values_from = "value")
+
+bergen_klima_wider
+```
+```{r}
+bergen_klima_wider %>% janitor::clean_names()
+```
+
+
+### Further reading {.facta .toc-ignore}
+
+[tidy data vignette]( https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
