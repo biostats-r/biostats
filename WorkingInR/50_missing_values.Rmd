@@ -1,12 +1,5 @@
----
-title: "Missing values in R"
-output:
-  bookdown::html_document2: 
-    highlight: tango
-    toc: yes
-    toc_float: yes
-    css: ../css/style-chapters.css
----
+
+# Handling missing values
 
 ``` {r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
@@ -30,9 +23,9 @@ This tutorial shows you how to cope with missing values in R, focusing on manipu
 
 The `penguins` dataset from `palmerpenguins` is used as an example.
 
-# Data handling with missing values
+## Data handling with missing values
 
-## Detecting missing values
+### Detecting missing values
 
 `NA` values can be detected with the function `is.na` (NB lower case).
 
@@ -50,7 +43,7 @@ penguins %>%
 ```
 
 
-## Importing data with missing values
+### Importing data with missing values
 
 When you import a text file (e.g., a csv file) any blank cells, or cells with "NA" will be treated as `NA`.
 If you have coded missing values as something else, you can use the `na` argument to `read_delim`
@@ -62,7 +55,7 @@ read_delim(file = "my_file.csv", na = c("", "NA", "missing"))
 
 In `readxl::read_excel`, the default for the `na` argument is just for blank cells to be made `NA`, but other values can be added in the same way as in `read_delim`.
 
-## Removing rows with missing values
+### Removing rows with missing values
 
 We can remove rows with `NA` in particular columns from a data frame using `drop_na`.
 For example, to remove rows in the `penguins` data set with an `NA` in the `bill_length_mm` or `bill_depth_mm` columns, we could use
@@ -83,7 +76,7 @@ penguins %>%
 You might see some code using `na.omit` to remove rows with missing values from a data frame.
 This can be dangerous as it will remove rows with an `NA` in any column, not just the columns you are interested in.
 
-## Replacing missing values
+### Replacing missing values
 
 Sometimes you want to replace `NA` with another value.
 Perhaps you want to make a plot where `NA` values are labelled unknown, or you know that the `NA` values are actually zeros, or the `NA` are values below the detection limit of an instrument and you want to replace these with half the detection limit.
@@ -101,7 +94,7 @@ penguins %>%
   )
 ```
 
-## Replacing `NA` in factors
+### Replacing `NA` in factors
 
 The code in the previous section won't work if we try to replace an `NA` in a factor. 
 
@@ -110,6 +103,7 @@ penguins %>%
   mutate(sex = replace_na(sex, "missing")) %>% 
   distinct(sex)
 ```
+
 As the warning indicates, the problem is that "missing" is not one of the levels of the factor sex.
 
 Instead we need to use the function `forcats::fct_explicit_na` (the `forcats` package is part of `tidyverse` for manipulating factors).
@@ -121,7 +115,7 @@ penguins %>%
 ```
 
 
-## Replacing `NA` with values from another vector
+### Replacing `NA` with values from another vector
 
 Sometimes you have a vector with `NA` and you want to replace the missing values with values from a second vector.
 The `coalesce` can do this.
@@ -136,7 +130,7 @@ Here, the first value of `x` is `NA`, so the first value of `y` is used.
 The second value of `x` is not `NA`, and so can be used.
 And so on.
 
-## Setting mising values
+### Setting mising values
 
 Some data sets use a number to represent a missing value, for example -9999.
 Obviously, if you do any calculations with a data set containing -9999 as a missing value, the results could be seriously wrong.
@@ -149,7 +143,7 @@ na_if(x, y = -9999)
 ```
 
 
-## Missing values and dplyr `filter`
+### Missing values and dplyr `filter`
 
 `dplyr::filter` returns rows where the condition is strictly TRUE.
 This is usually what you want: if we want to filter penguins with long bills from the penguins dataset we don't want the birds with unknown bill length.
@@ -164,7 +158,7 @@ penguins %>%
 
 Here the `|` means OR in Boolean logic.
 
-## Missing values and dplyr `if_else` and `case_when`
+### Missing values and dplyr `if_else` and `case_when`
 
 Sometimes is it useful to set values to `NA` with `if_else` (when there is a choice of two outcomes) or `case_when` (when there is a choice of two or more outcomes).
 
@@ -195,9 +189,9 @@ case_when(
 Other typed `NA` include `NA_real_` for numeric values and `NA_integer` for integer values.
 
 
-# Statistics with missing values
+## Statistics with missing values
 
-## `NA` arithemetic
+### `NA` arithemetic
 
 What is five plus an unknown number?
 The answer is, of course, unknown.
@@ -246,7 +240,7 @@ penguins %>%
   cor(use = "pairwise.complete.obs") 
 ```
 
-## Missing values and regession models
+### Missing values and regession models
 
 By default regression models such as `lm`, `glm`, and `lmer` remove any case that has an `NA` in either the response or predictors.
 This behaviour is controlled by the `na.action` argument.
@@ -280,7 +274,7 @@ anova(mod, mod2)
 
 The easiest solution is to remove rows with `NA` in any predictor before fitting any of the models.
 
-## Imputing missing values
+### Imputing missing values
 
 As shown above, observations with missing values are omitted from the model. 
 If a predictor has many missing values, it may be better to exclude the predictor from the model to avoid losing too many observations.
@@ -297,7 +291,7 @@ More complex methods use the multivariate relationship between predictors to est
 Several R packages can help with this, e.g., `mice`.
 [Yadav and Roychoudhury (2018)](https://doi.org/10.1016/j.knosys.2018.06.012) compare the performance of some popular methods.
 
-# Missing values and `ggplot2`
+## Missing values and `ggplot2`
 
 By default, missing values in the `x` or `y` aesthetics are dropped by `ggplot` with a warning, whereas missing values in the `colour` or `fill` aesthetics are shown in grey. 
 This behaviour can be controlled with the `na.value` argument to the relevant `scale_*_*` function.
@@ -322,11 +316,11 @@ p +
 ```
 
 
-# Related concepts
+## Related concepts
 
 `NaN` and `Inf` are related to `NA`.
 
-## `NaN`
+### `NaN`
 
 `NaN` represents Not a Number.
 `NaN` can be generated, for example, by taking the log of a negative number.
@@ -339,7 +333,7 @@ is.nan(x)
 ```
 
 
-## Inf
+### Inf
 
 `Inf` and `-Inf` represent positive and negative infinite numbers respectively.
 These can be generated, for example, by dividing by zero, and tested for with `is.infinite()`
@@ -349,7 +343,7 @@ x <- c(-Inf, 0, Inf)
 is.infinite(x)
 ```
 
-## Comparison of tests
+### Comparison of tests
 
 The test `is.finite()` it `TRUE` if the value is numeric and not `NA`, `NaN`, `Inf` or `-Inf`.
 
@@ -359,7 +353,7 @@ tibble(
   is.na = is.na(value),
   is.nan = is.nan(value),
   is.infinite = is.infinite(value),
-  is.finite(value)
+  is.finite = is.finite(value)
 ) %>% knitr::kable()
 ```
 
