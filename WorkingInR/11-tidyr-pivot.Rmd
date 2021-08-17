@@ -1,15 +1,15 @@
 # Tidying data with `tidyr`
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-```
-
 ## Tidy data
 
 Before you can start analysing or plotting data, you often need to tidy it.
 [Tidy data](https://tidyr.tidyverse.org/articles/tidy-data.html) is a standardised way to structure a dataset which makes it much easier to process, analyse and plot the data.
 Functions in the `tidyr` and `dplyr` packages, both part of tidyverse, can be very useful for tidying data.
+
+```{r load-tidyr}
+library(tidyr)
+```
+
 
 In tidy data 
 
@@ -39,7 +39,7 @@ By default, `separate()` splits the data at non-alphanumeric values.
 This behaviour can be controlled with the `sep` argument.
 
 ```{r separate}
-dat %>% separate(col = id, into = c("site", "plot"))
+dat |> separate(col = id, into = c("site", "plot"))
 ```
 
 
@@ -73,7 +73,7 @@ The months, selected by the `cols` argument in the column names (see section \@r
 
 
 ```{r pivot-long}
-bergen_klima_long <- bergen_klima %>% 
+bergen_klima_long <- bergen_klima |> 
   pivot_longer(cols = Jan:Des, names_to = "Month", values_to = "value")
 bergen_klima_long
 ```
@@ -86,7 +86,7 @@ We can do this `pivot_wider()`.
 We can tell `pivot_wider()` which column contains what will become the column names and the data with the `names_from` and `values_from`, respectively.
 
 ```{r pivot-wider}
-bergen_klima_wider <- bergen_klima_long %>% 
+bergen_klima_wider <- bergen_klima_long |> 
   pivot_wider(names_from = "Måned", values_from = "value")
 
 bergen_klima_wider
