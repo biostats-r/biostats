@@ -243,14 +243,16 @@ Related functions can be saved in the same file.
 
 Try not to alter the state of the users R session.
 Don't include calls to library() or require() in functions (see  section \@ref(importing-and-exporting-functions)).
-If you need to change the state, then revert it with `on.exit()`.
-Even if the function throws an error, the state of `par` will be reverted to its original state.
+If you need to change the state, then revert it with when the function finishes.
+You can do this with `withr::defer()`.
+This is better behaved than the base R equivalent `on.exit()`.
+Even if the function throws an error, the state of `options` will be reverted to its original state.
 
 ```{r on-exit}
-my_function <- function(){
+my_function <- function(x){
   op <- options(digits = 1) # set options
-  on.exit(options(op)) #next line
-  # main code
+  withr::defer(options(op)) #next line
+  print(x)
 }
 ```
 
@@ -573,6 +575,13 @@ The solution is to put extra files into subdirectories in `inst/`.
 If you want to include raw data files because your package has functions to process them, they can go in `inst/extdata/`.
 
 When the package is compiled, `inst/` will be removed and `extdata/` will be put into the package root directory.
+The path to the file can the be accessed with `system.file()`.
+
+```{r system-file}
+path <- system.file("extdata", package = "readr")
+list.files(path)
+```
+
 
 Tutorials and other resources can also be put into suitable directories in `inst/`.
 
