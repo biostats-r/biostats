@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>8 Working with multiple tables in dplyr | Working in R</title>
+<meta name="author" content="Jonathan Soulé, Aud Halbritter and Richard J Telford">
+<meta name="description" content="All the dplyr functions we have looked at so far work on a single data frame. This chapter introduces joins, which work on a pair of data frames with at least one identifying variable in common,...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="8 Working with multiple tables in dplyr | Working in R">
+<meta property="og:type" content="book">
+<meta property="og:description" content="All the dplyr functions we have looked at so far work on a single data frame. This chapter introduces joins, which work on a pair of data frames with at least one identifying variable in common,...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="8 Working with multiple tables in dplyr | Working in R">
+<meta name="twitter:description" content="All the dplyr functions we have looked at so far work on a single data frame. This chapter introduces joins, which work on a pair of data frames with at least one identifying variable in common,...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet">
+<script src="libs/panelset-0.2.6/panelset.js"></script><link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="/home/gbsrt/Documents/teaching/biostats-1/css/style-chapters.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Working in R</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html"><span class="header-section-number">1</span> Introduction</a></li>
+<li class="book-part">Setting up R and RStudio</li>
+<li><a class="" href="getting-started-with-r.html"><span class="header-section-number">2</span> Getting started with R</a></li>
+<li class="book-part">First steps in R</li>
+<li><a class="" href="first-steps-in-r.html"><span class="header-section-number">3</span> First steps in R</a></li>
+<li><a class="" href="importing-data-in-r.html"><span class="header-section-number">4</span> Importing data in R</a></li>
+<li class="book-part">Data manipulation with the tidyverse</li>
+<li><a class="" href="pipes.html"><span class="header-section-number">5</span> Pipes</a></li>
+<li><a class="" href="tidying-data-with-tidyr.html"><span class="header-section-number">6</span> Tidying data with tidyr</a></li>
+<li><a class="" href="working-with-single-tables-in-dplyr.html"><span class="header-section-number">7</span> Working with single tables in dplyr</a></li>
+<li><a class="active" href="working-with-multiple-tables-in-dplyr.html"><span class="header-section-number">8</span> Working with multiple tables in dplyr</a></li>
+<li class="book-part">Other topics</li>
+<li><a class="" href="handling-missing-values.html"><span class="header-section-number">9</span> Handling missing values</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="working-with-multiple-tables-in-dplyr" class="section level1" number="8">
+<h1>
+<span class="header-section-number">8</span> Working with multiple tables in <code>dplyr</code><a class="anchor" aria-label="anchor" href="#working-with-multiple-tables-in-dplyr"><i class="fas fa-link"></i></a>
+</h1>
+<p>All the <code>dplyr</code> functions we have looked at so far work on a single data frame.
+This chapter introduces joins, which work on a pair of data frames with at least one identifying variable in common, and the <code>bind_*</code> functions which bind two or more data frames together.</p>
+<div id="merging-data-frames-with-mutating-joins" class="section level2" number="8.1">
+<h2>
+<span class="header-section-number">8.1</span> Merging data frames with mutating joins<a class="anchor" aria-label="anchor" href="#merging-data-frames-with-mutating-joins"><i class="fas fa-link"></i></a>
+</h2>
+<p>Mutating joins combine two data frames by matching rows according to one or more identifying variables that are in both data frames.</p>
+<p>The most commonly used mutating join is a left join.
+Left joins take all rows from the first data set, and the rows from the second data frame where the values of the identifying variable match the first (Fig. <a href="working-with-multiple-tables-in-dplyr.html#fig:left-join-anim">8.1</a>).</p>
+<div class="figure">
+<span style="display:block;" id="fig:left-join-anim"></span>
+<img src="Pics/left-join.gif" alt="Left join. The coloured column contains the identifiers." width="400px"><p class="caption">
+Figure 8.1: Left join. The coloured column contains the identifiers.
+</p>
+</div>
+<p>If there are duplicate values in the identifying column, this (Fig. <a href="working-with-multiple-tables-in-dplyr.html#fig:left-join-extra-anim">8.2</a>) causes the matching rows to be duplicated.
+If the number of rows in the result increases when you were not expecting it, that can indicate that your identifier are not unique.</p>
+<div class="figure">
+<span style="display:block;" id="fig:left-join-extra-anim"></span>
+<img src="Pics/left-join-extra.gif" alt="Left join. The coloured column contains the identifiers." width="400px"><p class="caption">
+Figure 8.2: Left join. The coloured column contains the identifiers.
+</p>
+</div>
+<p>Left joins are implemented in <code>dplyr</code> with <code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code>.</p>
+<p>Let use <code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code> to add the location of each island to the penguin data set.</p>
+<div class="sourceCode" id="cb392"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># location of the three islands in the penguins dataset.</span>
+
+<span class="va">penguin_islands</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+  <span class="op">~</span> <span class="va">island</span>, <span class="op">~</span> <span class="va">Latitude</span>, <span class="op">~</span> <span class="va">Longitude</span>, <span class="co"># tribble is a convenient way to make small datasets</span>
+  <span class="st">"Torgersen"</span>, <span class="op">-</span><span class="fl">64.766667</span>,<span class="op">-</span><span class="fl">64.083333</span>,
+  <span class="st">"Biscoe"</span>, <span class="op">-</span><span class="fl">64.818569</span>, <span class="op">-</span><span class="fl">63.775636</span>,
+  <span class="st">"Dream"</span>,  <span class="op">-</span><span class="fl">64.733333</span>, <span class="op">-</span><span class="fl">64.233333</span>, 
+  <span class="st">"Alpha"</span>, <span class="op">-</span><span class="fl">64.316667</span>, <span class="op">-</span><span class="fl">63</span><span class="op">)</span>
+
+<span class="va">penguin_islands</span></code></pre></div>
+<pre><code>## # A tibble: 4 × 3
+##   island    Latitude Longitude
+##   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Torgersen    -64.8     -64.1
+## 2 Biscoe       -64.8     -63.8
+## 3 Dream        -64.7     -64.2
+## 4 Alpha        -64.3     -63</code></pre>
+<p>The first two arguments to <code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code> are the data frames, the third is the <code>by</code> argument which tells the join which column to make the join by.
+Here, we are joining by a single column with the same name in both data frames.
+It is possible to join by multiple columns and where the columns have different names in each dataset.</p>
+<div class="sourceCode" id="cb394"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">penguin_small</span> <span class="op">&lt;-</span> <span class="va">penguins</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="co"># small version of data for easy viewing</span></code></pre></div>
+<pre><code>## group_by: one grouping variable (species)</code></pre>
+<pre><code>## slice (grouped): removed 338 rows (98%), 6 rows remaining</code></pre>
+<div class="sourceCode" id="cb397"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join</a></span><span class="op">(</span><span class="va">penguin_small</span>, <span class="va">penguin_islands</span>, by <span class="op">=</span> <span class="st">"island"</span><span class="op">)</span></code></pre></div>
+<pre><code>## left_join: added 2 columns (Latitude, Longitude)</code></pre>
+<pre><code>##            &gt; rows only in x   0</code></pre>
+<pre><code>##            &gt; rows only in y  (1)</code></pre>
+<pre><code>##            &gt; matched rows     6</code></pre>
+<pre><code>##            &gt;                 ===</code></pre>
+<pre><code>##            &gt; rows total       6</code></pre>
+<pre><code>## # A tibble: 6 × 10
+## # Groups:   species [3]
+##   species   island    bill_length_mm bill_depth_mm flipper_length_…
+##   &lt;fct&gt;     &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
+## 1 Adelie    Torgersen           39.1          18.7              181
+## 2 Adelie    Torgersen           39.5          17.4              186
+## 3 Chinstrap Dream               46.5          17.9              192
+## 4 Chinstrap Dream               50            19.5              196
+## 5 Gentoo    Biscoe              46.1          13.2              211
+## 6 Gentoo    Biscoe              50            16.3              230
+## # … with 5 more variables: body_mass_g &lt;int&gt;, sex &lt;fct&gt;,
+## #   year &lt;int&gt;, Latitude &lt;dbl&gt;, Longitude &lt;dbl&gt;</code></pre>
+<p>Only three of the four islands in <code>penguin_islands</code> have data in the <code>penguins</code> data set.
+Different variants of mutating joins will treat this in different ways.</p>
+<ul>
+<li>
+<code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code> takes all rows from the first (left) data frame and matching rows from the second (right).</li>
+<li>
+<code><a href="https://rdrr.io/pkg/tidylog/man/right_join.html">right_join()</a></code> does the opposite to <code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code>, taking all rows from the second (right) data frame and matching rows from the first.</li>
+<li>
+<code><a href="https://rdrr.io/pkg/tidylog/man/inner_join.html">inner_join()</a></code> will take only rows that match in both data frames.</li>
+<li>
+<code><a href="https://rdrr.io/pkg/tidylog/man/full_join.html">full_join()</a></code> will take all rows from in both data frames.</li>
+</ul>
+<p>In all cases, missing values will are given an <code>NA</code>.</p>
+</div>
+<div id="all-possible-combinations" class="section level2" number="8.2">
+<h2>
+<span class="header-section-number">8.2</span> All possible combinations<a class="anchor" aria-label="anchor" href="#all-possible-combinations"><i class="fas fa-link"></i></a>
+</h2>
+<p>The mutating joins described above give you the rows from each data frame where the identifying variables match.
+Sometimes you want all possible combinations of rows.
+This is known as the Cartesian product and can be generated with <code>crosing()</code>.
+<code>crosing()</code> works with data frames as well as vectors as shown here.</p>
+<div class="sourceCode" id="cb405"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html">crossing</a></span><span class="op">(</span>a <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 2
+##   a         b
+##   &lt;chr&gt; &lt;int&gt;
+## 1 a         1
+## 2 a         2
+## 3 b         1
+## 4 b         2
+## 5 c         1
+## 6 c         2</code></pre>
+</div>
+<div id="filtering-joins" class="section level2" number="8.3">
+<h2>
+<span class="header-section-number">8.3</span> Filtering joins<a class="anchor" aria-label="anchor" href="#filtering-joins"><i class="fas fa-link"></i></a>
+</h2>
+<p>Filtering joins let you filter one dataset according to whether rows have a match in the a second dataset.</p>
+<p><code><a href="https://rdrr.io/pkg/tidylog/man/semi_join.html">semi_join()</a></code> finds rows that have a matching row</p>
+<div class="figure">
+<span style="display:block;" id="fig:semi-join-anim"></span>
+<img src="Pics/semi-join.gif" alt="Left join. The coloured column contains the identifiers." width="400px"><p class="caption">
+Figure 8.3: Left join. The coloured column contains the identifiers.
+</p>
+</div>
+<div class="sourceCode" id="cb407"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">penguin_islands</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/semi_join.html">semi_join</a></span><span class="op">(</span><span class="va">penguins</span>, by <span class="op">=</span> <span class="st">"island"</span><span class="op">)</span></code></pre></div>
+<pre><code>## semi_join: added no columns</code></pre>
+<pre><code>##            &gt; rows only in x  (1)</code></pre>
+<pre><code>##            &gt; rows only in y  (0)</code></pre>
+<pre><code>##            &gt; matched rows     3</code></pre>
+<pre><code>##            &gt;                 ===</code></pre>
+<pre><code>##            &gt; rows total       3</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   island    Latitude Longitude
+##   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Torgersen    -64.8     -64.1
+## 2 Biscoe       -64.8     -63.8
+## 3 Dream        -64.7     -64.2</code></pre>
+<p><code><a href="https://rdrr.io/pkg/tidylog/man/anti_join.html">anti_join()</a></code> finds rows that do not have a matching row</p>
+<div class="figure">
+<span style="display:block;" id="fig:anti-join-anim"></span>
+<img src="Pics/anti-join.gif" alt="Left join. The coloured column contains the identifiers." width="400px"><p class="caption">
+Figure 8.4: Left join. The coloured column contains the identifiers.
+</p>
+</div>
+<div class="sourceCode" id="cb415"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">penguin_islands</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/anti_join.html">anti_join</a></span><span class="op">(</span><span class="va">penguins</span>, by <span class="op">=</span> <span class="st">"island"</span><span class="op">)</span></code></pre></div>
+<pre><code>## anti_join: added no columns</code></pre>
+<pre><code>##            &gt; rows only in x   1</code></pre>
+<pre><code>##            &gt; rows only in y  (0)</code></pre>
+<pre><code>##            &gt; matched rows    (3)</code></pre>
+<pre><code>##            &gt;                 ===</code></pre>
+<pre><code>##            &gt; rows total       1</code></pre>
+<pre><code>## # A tibble: 1 × 3
+##   island Latitude Longitude
+##   &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Alpha     -64.3       -63</code></pre>
+<p>These can be very useful when cleaning data to find problems.</p>
+</div>
+<div id="binding-data-frames-together" class="section level2" number="8.4">
+<h2>
+<span class="header-section-number">8.4</span> Binding data frames together<a class="anchor" aria-label="anchor" href="#binding-data-frames-together"><i class="fas fa-link"></i></a>
+</h2>
+<p>If we have two or more data frames that we want to combine we can one of the <code>bind_*</code> functions.</p>
+<div id="more-columns---bind_cols" class="section level3" number="8.4.1">
+<h3>
+<span class="header-section-number">8.4.1</span> More columns - <code>bind_cols()</code><a class="anchor" aria-label="anchor" href="#more-columns---bind_cols"><i class="fas fa-link"></i></a>
+</h3>
+<p>If the data frames contain information about the same observations, they can be combined with <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols()</a></code>.</p>
+<p>So data1, data2, and data3 can be combined to make one data frame with many columns</p>
+<div class="sourceCode" id="cb423"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">data1</span>, <span class="va">data2</span>, <span class="va">data3</span><span class="op">)</span></code></pre></div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols()</a></code> expects that the row order is the same in both datasets, but cannot check this.
+It only checks that the number of rows is the same in each data frame.
+If possible, use a join instead.</p>
+</div>
+<div id="more-rows---bind_rows" class="section level3" number="8.4.2">
+<h3>
+<span class="header-section-number">8.4.2</span> More rows - <code>bind_rows()</code><a class="anchor" aria-label="anchor" href="#more-rows---bind_rows"><i class="fas fa-link"></i></a>
+</h3>
+<p>If the data frame contain more observations (rows), and typically at least some of the same columns, they can be combined with <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code>.
+This is useful if, for example, there are data from two years that need combining.</p>
+<p>One feature of <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code> that I find useful is the <code>.id</code> argument that makes an extra column for an identifier.</p>
+<div class="sourceCode" id="cb424"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">svalbard_islands</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span> <span class="op">~</span> <span class="va">island</span>, <span class="op">~</span> <span class="va">Latitude</span>, <span class="op">~</span> <span class="va">Longitude</span>,
+   <span class="st">"Nordaustlandet"</span>, <span class="fl">79.558405</span>, <span class="fl">24.017351</span>,
+ <span class="st">"Prins Karls Forland"</span>, <span class="fl">78.554090</span>, <span class="fl">11.256545</span><span class="op">)</span>
+
+<span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>
+  Palmer <span class="op">=</span> <span class="va">penguin_islands</span>, 
+  Svalbard <span class="op">=</span> <span class="va">svalbard_islands</span>, 
+  .id <span class="op">=</span> <span class="st">"Archipelago"</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 4
+##   Archipelago island              Latitude Longitude
+##   &lt;chr&gt;       &lt;chr&gt;                  &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Palmer      Torgersen              -64.8     -64.1
+## 2 Palmer      Biscoe                 -64.8     -63.8
+## 3 Palmer      Dream                  -64.7     -64.2
+## 4 Palmer      Alpha                  -64.3     -63  
+## 5 Svalbard    Nordaustlandet          79.6      24.0
+## 6 Svalbard    Prins Karls Forland     78.6      11.3</code></pre>
+</div>
+<div id="contributors-5" class="section level3 unnumbered contributors toc-ignore">
+<h3>Contributors<a class="anchor" aria-label="anchor" href="#contributors-5"><i class="fas fa-link"></i></a>
+</h3>
+<p>Richard J. Telford</p>
+
+</div>
+</div>
+</div>
+
+
+
+  <div class="chapter-nav">
+<div class="prev"><a href="working-with-single-tables-in-dplyr.html"><span class="header-section-number">7</span> Working with single tables in dplyr</a></div>
+<div class="next"><a href="handling-missing-values.html"><span class="header-section-number">9</span> Handling missing values</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#working-with-multiple-tables-in-dplyr"><span class="header-section-number">8</span> Working with multiple tables in dplyr</a></li>
+<li><a class="nav-link" href="#merging-data-frames-with-mutating-joins"><span class="header-section-number">8.1</span> Merging data frames with mutating joins</a></li>
+<li><a class="nav-link" href="#all-possible-combinations"><span class="header-section-number">8.2</span> All possible combinations</a></li>
+<li><a class="nav-link" href="#filtering-joins"><span class="header-section-number">8.3</span> Filtering joins</a></li>
+<li>
+<a class="nav-link" href="#binding-data-frames-together"><span class="header-section-number">8.4</span> Binding data frames together</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#more-columns---bind_cols"><span class="header-section-number">8.4.1</span> More columns - bind_cols()</a></li>
+<li><a class="nav-link" href="#more-rows---bind_rows"><span class="header-section-number">8.4.2</span> More rows - bind_rows()</a></li>
+<li><a class="nav-link" href="#contributors-5">Contributors</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-08-24.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer>
+</body>
+</html>
