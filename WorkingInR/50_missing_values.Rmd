@@ -1,14 +1,8 @@
+# (PART\*) Other topics {-}
 
 # Handling missing values
 
-``` {r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
-library("tidyverse")
 
-data(penguins, package = 'palmerpenguins')
-
-source("../Templates/biostats_theme.R")
-```
 Many datasets have missing values.
 These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m where the sea is only 100m deep. 
 
@@ -38,7 +32,7 @@ is.na(x)
 We could use this, for example, to find the number of missing values in a column of the `penguins` data.
 
 ```{r is.na.sum}
-penguins %>% 
+penguins |> 
   summarise(n_missing = sum(is.na(bill_length_mm)))
 ```
 
@@ -61,7 +55,7 @@ We can remove rows with `NA` in particular columns from a data frame using `drop
 For example, to remove rows in the `penguins` data set with an `NA` in the `bill_length_mm` or `bill_depth_mm` columns, we could use
 
 ```{r drop-na}
-penguins %>% 
+penguins |> 
   drop_na(bill_length_mm, bill_depth_mm)
 ```
 
@@ -69,7 +63,7 @@ Alternatively, we can use `filter` and `is.na`.
 This is most useful when removing `NA` is one of several arguments to `filter`.
 
 ```{r filter-na}
-penguins %>% 
+penguins |> 
   filter(species == "Gentoo", !is.na(bill_length_mm))
 ```
 
@@ -86,7 +80,7 @@ You can use `tidyr::replace_na` to do this.
 Here, the code replaces missing values for bill length with the mean value for bill length.
 
 ```{r replace-na}
-penguins %>% 
+penguins |> 
   mutate(
     bill_length_mm = replace_na(
       data = bill_length_mm, 
@@ -99,8 +93,8 @@ penguins %>%
 The code in the previous section won't work if we try to replace an `NA` in a factor. 
 
 ```{r bad-factor, warning = TRUE, message = TRUE}
-penguins %>% 
-  mutate(sex = replace_na(sex, "missing")) %>% 
+penguins |> 
+  mutate(sex = replace_na(sex, "missing")) |> 
   distinct(sex)
 ```
 
@@ -109,8 +103,8 @@ As the warning indicates, the problem is that "missing" is not one of the levels
 Instead we need to use the function `forcats::fct_explicit_na` (the `forcats` package is part of `tidyverse` for manipulating factors).
 
 ```{r good-factor}
-penguins %>% 
-  mutate(sex = fct_explicit_na(sex, na_level = "missing")) %>% 
+penguins |> 
+  mutate(sex = fct_explicit_na(sex, na_level = "missing")) |> 
   count(sex)
 ```
 
@@ -152,7 +146,7 @@ Occasionally we do want to keep the rows with `NA`.
 Perhaps we have a column of comments, many of which are `NA`, and we only want to remove rows where the non-`NA` values meet some criterion.
 
 ```{r}
-penguins %>% 
+penguins |> 
   filter(sex == "Female" | is.na(sex))
 ```
 
@@ -235,8 +229,8 @@ cor(x = penguins$bill_length_mm,
 If you have a matrix (or data frame), and want to calculate a correlation matrix, then `use = "complete.obs"` will calculate this using just the rows that have no `NA`, and `use = "pairwise.complete.obs"` will calculate the correlation between each pair of variables using all complete pairs of observations on those variables. 
 
 ```{r cor-matrix}
-penguins %>% 
-  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %>% 
+penguins |> 
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |> 
   cor(use = "pairwise.complete.obs") 
 ```
 
@@ -249,7 +243,7 @@ This is great if we are interested in the model coefficients, but it can cause p
 ```{r lm-omit, error = TRUE}
 mod <- lm(bill_length_mm ~ body_mass_g, data = penguins)
 
-penguins %>% mutate(fit = fitted(mod))
+penguins |> mutate(fit = fitted(mod))
 ```
 The problem is that there are fewer observation in the model (which omitted the `NA`) than the original data frame (which still has them).
 
@@ -258,7 +252,7 @@ We can make this work by using `na.action = na.exclude` which will pad the fitte
 ```{r lm-exclude, error = TRUE}
 mod <- lm(bill_length_mm ~ body_mass_g, data = penguins, na.action = na.exclude)
 
-penguins %>% mutate(fit = fitted(mod))
+penguins |> mutate(fit = fitted(mod))
 ```
 
 With `na.exclude` the `NA` are still excluded from the model fitting - most models do not allow `NA` values. 
@@ -302,7 +296,7 @@ p <- tibble(
   x = 1:5, 
   y = c(1, 2, NA, 4, 5),
   colour = c(1, 2, 3, 4, NA)
-) %>% 
+) |> 
   ggplot(aes(x = x, y = y, colour = colour)) +
   geom_point(size = 3)
 
@@ -354,7 +348,7 @@ tibble(
   is.nan = is.nan(value),
   is.infinite = is.infinite(value),
   is.finite = is.finite(value)
-) %>% knitr::kable()
+) |> knitr::kable()
 ```
 
 

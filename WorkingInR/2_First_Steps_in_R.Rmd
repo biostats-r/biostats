@@ -1,21 +1,6 @@
----
-title: "First steps in R"
-output:
-  bookdown::html_document2: 
-    highlight: tango
-    toc: yes
-    toc_float: yes
-    css: ../css/style-chapters.css
----
+# (PART\*) First steps in R {-}
 
-``` {r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
-library("tidyverse")
-
-data(penguins, package = 'palmerpenguins')
-
-source("../Templates/biostats_theme.R")
-```
+# First steps in R
 
 ### Before we start {- .facta .toc-ignore}
 
@@ -23,9 +8,9 @@ You must have successfully installed both R and RStudio on your machine.
 You must know how to install and activate a package.  
 
 
-# Basic operations in R
+## Basic operations in R
 
-## Arithmetic operations
+### Arithmetic operations
 
 Performing arithmetic operations is no big deal in R. 
 Simply write any operation using the usual arithmetic operators `+`, `-`, `*` and `/` and run your code. 
@@ -34,30 +19,18 @@ No need to type `=`.
 R allows you to add parentheses `(` `)` when you need to impose the order of operations.
 When it comes to raising a number to the power of another one, use the symbol `^` or `**`. 
 
-Try this here in the following app with the example `4+9`, or any other operation of your choice. 
-Try to use `(` `)`, try to combine several of the above-mentioned operators, be creative! 
+### Exercise {- .facta .toc-ignore}
 
+In R, calculate:
 
-<!---app1-->
+- 25 plus 49
+- 6 minus 19
+- 8 multiplied by 6
+- 7 divided by 2
+- 9 squared
+- multiply the sum of 9 and 2 by 3
 
-<iframe class="app" src="https://bioceed.shinyapps.io/First_Steps_In_R_1/"  frameborder="no" height="250px" width="100%"></iframe>
-
-<!--------->
-
-
-## Operations with functions
-
-More complex operations such as square root, logarithms and exponentiation shall be run using specific functions. 
-These functions are `sqrt()`, `log()`, `ln()`, `exp()`,  etc. 
-
-
-<!---app2-->
-
-<iframe class="app" src="https://bioceed2.shinyapps.io/First_Steps_In_R_2/"  frameborder="no" height="450px" width="100%"></iframe>
-
-<!--------->
-
-## Comparisons
+### Comparisons
 
 You can compare 2 elements using the following operators:
 
@@ -74,14 +47,81 @@ When comparing two elements, R returns either `TRUE` or `FALSE`.
 9^2 != 9 * (3 + 6)
 ```
 
-# Storing data in objects
+### Exercise {- .facta .toc-ignore}
+
+In R,
+
+- Test whether 22/7 is larger than `pi`
+- Test if cats are greater than dogs. Why? (remember to use quote marks)
+
+### Operations with functions
+
+More complex operations such as square root, logarithms and exponentiation shall be run using specific functions. 
+These functions are `sqrt()`, `log()`, `exp()`,  etc.
+
+### Exercise {- .facta .toc-ignore}
+
+In R, calculate
+
+- The square root of 29
+- The exponent of 29
+- The natural logarithm of 29
+- The base 10 logarithm of 29
+
+You may need to look at the built in help for some of these.
+
+## Help!
+
+You can get help for any function by putting a `?` before the name of the function. 
+
+So to get help for the function `log()`, run
+
+```{r help1, eval=FALSE}
+?log
+```
+
+This will open the help file in the `Help` tab of RStudio (by default in the lower left quadrant.
+
+Most help files have a similar structure (although some sections are optional).
+
+ - **Description** briefly describes the function
+ - **Usage**  shows the function and its arguments including any defaults
+ - **Arguments** describes how the arguments to the functions should be used
+ - **Details** Give more details about how to use the function
+ - **Value** Describes the output of the function
+ - **Examples** Gives examples of how to use the function. 
+ This is often one of the most useful parts of the help. 
+ You can run the functions either by copy-pasting them, or using the function `example`.
+ 
+```{r help-example, eval = FALSE}
+example(log)
+```
+ 
+### Other sources of help
+
+One of the great things about R is how many sources of help there are.
+
+- R questions on [stackoverflow.com]( https://stackoverflow.com/questions/tagged/r)
+- [Rstudio community](https://community.rstudio.com/)
+
+There are hundreds of thousands of answers between these sites, so it is likely that other people have had the same problem and asked the same question.
+Always search to see if find an answer before asking a question.
+For both these site, it is very important to provide a minimal reproducible example.
+That is example data (perhaps a built-in dataset) and code that can be run to show the problem.
+Code not relevant to the problem should be removed.
+The package `reprex` is useful for making reproducible example.
+Very often, making the reproducible example is enough to identify and fix the problem.
+
+
+
+## Storing data in objects
 
 R uses objects to store data in memory. 
 Storing data in an object is referred to as "assigning data".
 There are different types of data and objects; we will talk much more about them further below.
 For now, let's see why one should assign data to objects, and how to do it.
 
-## Why assigning data?
+### Why assigning data?
 
 Putting data into named objects allows you to:
 
@@ -109,9 +149,8 @@ plot2 <- ggplot(data = penguins, aes(x = flipper_length_mm)) +
 
 # Count penguins for each species / sex
 plot1 <- ggplot(penguins, aes(x = sex, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange", "purple", "cyan4"),
-                    guide = FALSE) +
+  geom_bar(alpha = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
   theme_minimal() +
   facet_wrap(~species, ncol = 1) +
   coord_flip()
@@ -135,7 +174,7 @@ In fact, everything that R needed in order to make the figure had been previousl
 The clear benefit of assigning data into the above-mentioned objects is that it simplified a lot the code for the figure.
 
 
-## Assigning data to an object
+### Assigning data to an object
 
 To assign data to an object, type first the name you want to give it followed by the operator `<-` and the data to store. 
 In the following example, we will assign the result of the operation `sqrt(42)` in memory to the object named `result`: 
@@ -156,12 +195,13 @@ result
 ```
 
 You can also reuse the object for other operations:
+
 ```{r operations_result, echo=TRUE}
 result * 3
 result * result
 ```
 
-## Modifying object content
+### Modifying object content
 
 To modify the content of an object, you simply have to assign new data to it. 
 Here we modify the object `result`:
@@ -180,7 +220,7 @@ To restore the original value, you will have to go back to your script and rerun
 This is one of the many reasons why you should always work with a script and annotate it: it is your life line in case you make a mistake, lose objects, modify data elements, etc.
 
 
-## Concatenating data
+### Concatenating data
 
 If you want to assign more than one data element to an object, use the function `c()` which concatenates the elements given between parentheses. 
 By concatenating data elements and assigning them to an object, you create a *vector*, one of the simplest objects in R. 
@@ -201,7 +241,7 @@ one_two_three
 ```
 
 Note that you may concatenate data elements of various natures. 
-Here we concatenate and store both numbers and strings: 
+Here we concatenate and store both numbers and strings, but everything becomes a string: 
 
 ```{r concatenate3}
 one_2_three_4 <- c("one", 2, "three", 4)
@@ -211,7 +251,7 @@ one_2_three_4
 
 
 
-## Naming objects
+### Naming objects
 
 Naming an object sounds quite easy if you are creative, but there is a set of rules to respect:
 
@@ -228,31 +268,19 @@ Beside these rules, you may find the following recommendations useful:
 + have a look at the [tidyverse style guide](https://style.tidyverse.org/syntax.html#object-names){target="_blank"}
 
 
-We have prepared a tutorial that further describes the rules for naming objects, and gives you a chance to test how well you have understood. 
-This tutorial is available both in the form of a web app and a _learnr_-tutorial.  
+### Exercise {- .facta .toc-ignore}
 
-You can open the web app directly in your favorite net browser by clicking  [HERE](https://bioceed.shinyapps.io/naming_objects/){target="_blank"}.
+We have prepared a _learnr_-tutorial that further describes the rules for naming objects, and gives you a chance to test how well you have understood. 
+This tutorial is in the `biostats.tutorials` package.
 
-The _learnr_-tutorial runs directly in RStudio. 
-It is available after installing the package `biostats.tutorials` via the console. 
-To do so, use the following line of code:
-```{r install-the-tutorial, echo=TRUE, eval=FALSE}
-remotes::install_github("biostats-r/biostats.tutorials")
-```
-
-Then run the tutorial:
-```{r run-the-tutorial, echo=TRUE, eval=FALSE}
-learnr::run_tutorial("naming-objects", package = "biostats.tutorials")
-```
-
-Alternatively, go to the tab `Tutorial` in the top right quadrant of RStudio.
 The tutorial is called `Naming objects`. 
-Simply click on the button `Start Tutorial?` to the right to start it.
+Simply click on the button `Start Tutorial >` to the right to start it.
 
+See section \@ref(biostatstutorials) for how to install `biostats.tutorials` and run the tutorials.
 
-## Viewing object content
+### Viewing object content
 
-As introduced in [Getting Started with R](LINK){target="_blank"}, the `Environment` tab of RStudio lists all the objects stored in memory in a given project.
+As introduced in section \@ref(the-tab-environment), the `Environment` tab of RStudio lists all the objects stored in memory in a given project.
 This list comes with a quick summary of both the structure and the content of the objects.  
 
 The function `View()` applied to any object opens a new tab which displays the whole object in the form of a table. 
@@ -268,9 +296,9 @@ knitr::include_graphics("Pics/view.png")
 
 `View()` is particularly useful when you want to quickly check entries directly in the data set as it spares you from finding and opening the original data file on your disk via the explorer.
 
-## Deleting objects
+### Deleting objects
 
-When you are done with a particularly large object that takes a lot of memory and you do not have a use for it any longer, it may be relevant to get rid of it. 
+When you are done with a particularly large object that takes a lot of memory and you do not have a use for it any longer, it may be useful to get rid of it. 
 This is done by using the function `rm()`.
 Here we will delete `result` from the current environment.
 ```{r delete1}
@@ -290,13 +318,13 @@ rm(result, results)
 Again, once it is done, there is only one way back: go to your script and rerun the commands that originally created `result` and `results`.
 
 
-# Creating sequences and series
+## Creating sequences and series
 
 Throughout this website, we will use examples that include random series of numbers, sequences of characters or numbers, etc. 
 These sequences and series are often created by a bunch of functions or expressions, some of which are described below. 
 
 
-## Repetitions
+### Repetitions
 
 The function `rep()` comes handy when you wish to repeat data elements `n` times in a row, or to repeat a sequence of elements `n` times. 
 Using various arguments, you can decide how many times and/or in which manner the elements or sequences have to be repeated.
@@ -315,11 +343,11 @@ rep(c(1, 2, 3), each= 3)
 rep(c("One", "Two", "Three"), each= 3)
 ```
 
-## Sequences
+### Sequences
 
 The following section provides you with expressions or functions that build sequences of numerical or text values.
 
-### Using the colon operator
+#### Using the colon operator
 
 The colon separator `:` used in the expression `a:b` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
 
@@ -333,7 +361,7 @@ Note that `b` is not necessarily the last element of the series.
 14.5:24
 ```
 
-### The function seq()
+#### The function seq()
 
 Similar to `a:b`, `seq(a, b)` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
 ```{r seq, echo=TRUE}
@@ -347,18 +375,18 @@ seq(14.5, 24)
 ```
 
 You can use a set of additional arguments in `seq()` to adjust the output. 
-Adding `by=` allows to tune the incrementation to any value you want (including decimal values). `length.out=` (or `length=`) adjusts the incrementation to provide the desired number of elements ranging precisely from `a` to `b`.
+Adding `by=` allows to tune the incrementation to any value you want (including decimal values). `length.out=` adjusts the incrementation to provide the desired number of elements ranging precisely from `a` to `b`.
 
 ```{r seq3, echo=TRUE}
 seq(14, 24, by=2.5)
 seq(14, 24, length.out=7)
 ```
 
-## Random series
+### Random series
 
 The following section provides you with functions that build series of random, numerical values.
 
-### The function runif()
+#### The function runif()
 
 `runif(n)` returns a series of `n` random numbers between 0 and 1.
 
@@ -373,7 +401,7 @@ runif(7, min=10, max=100)
 ```
 
 
-### The function rnorm()
+#### The function rnorm()
 
 `rnorm(n)` creates a series of `n` numbers taken from a normal distribution. 
 
@@ -381,12 +409,12 @@ runif(7, min=10, max=100)
 rnorm(10)
 ```
 
-By default, the normally distributed population is set up with a mean of 0 and a standard deviation of 1, but this may be adjusted manually with `mean= ` and `sd= `.
+By default, the normally distributed population is set up with a mean of 0 and a standard deviation of 1, but this may be adjusted with `mean= ` and `sd= `.
 ```{r rnorm2, echo=TRUE}
 rnorm(10, mean=50, sd=3)
 ```
 
-### The function sample()
+#### The function sample()
 
 `sample(x, n, replace = TRUE/FALSE)` returns a sample of `n` integers randomly taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
 `replace=` followed by either TRUE or FALSE defines whether or not a data element can appear repeatedly in the sample.
@@ -403,7 +431,7 @@ sample(1:10)
 ```
 
 
-# Data types and objects
+## Data types and objects
 
 Objects may contain anything from a single numerical value to a fully developed data set with dozens of variables and thousands of observations. 
 When working in R, it is important to understand what kind of data you manipulate and what kind of object you build from it. 
@@ -411,14 +439,14 @@ When working in R, it is important to understand what kind of data you manipulat
 Here we will first review the primitive data types, then see a few useful data classes, and finally the object types that will be important in your studies. 
 
 
-## Primitive data types
+### Primitive data types
 
 R lets you manipulate 6 primitive data types: numeric, integer, character, logical (also called boolean), complex and raw. 
 Only the first four types are relevant in the scope of this website.
 
 NB: in the following sections, we will use the function `class()` to identify the nature of the data stored in objects.
 
-### numeric
+#### numeric
 
 Any number with a decimal value, whether positive or negative, is of type numeric. 
 The object `num` created below contains a single decimal value and is thus also numeric.
@@ -428,7 +456,7 @@ num <- -35.2
 class(num)
 ```
 
-### integer
+#### integer
 
 Integers are positive or negative numbers that do not contain a decimal value. 
 The object `int` below contains a single integer and is thus of type integer.
@@ -447,7 +475,7 @@ int <- 35
 class(int)
 ```
 
-### character
+#### character
 
 An object containing a string of letters combined (or not) with numbers, or even a single letter, is of type character. 
 The letters may be upper and/or lower case. 
@@ -460,7 +488,7 @@ class(char)
 
 Note that the strings of characters must be stored in objects using `"` `"`.
 
-### logical
+#### logical
 
 Logical (or boolean) defines binary objects which contain `TRUE` or `FALSE`. 
 This is the case of the object `logic` below.
@@ -470,9 +498,10 @@ logic <- TRUE
 class(logic)
 ```
 
-Note that `TRUE` and `FALSE` are sometimes replaced with "T" or "F". Be warned that this is bad coding practice, which may result in (or be the origin of) errors that may compromise your work and the validity of its output.
+Note that `TRUE` and `FALSE` are sometimes replaced with "T" or "F".
+Be warned that this is bad coding practice, which may result in (or be the origin of) errors that may compromise your work and the validity of its output.
 
-### Modifying data types
+#### Modifying data types
 
 It is possible to modify the type of an existing object with a series of simple functions like `as.numeric()`, `as.integer()`, `as.character()`, etc. 
 
@@ -508,12 +537,12 @@ class(integ_char)
 ```
 
 
-## Advanced data classes
+### Advanced data classes
 
 R allows to transform the format of an object from something simple like a number or a string of characters to something more advanced like a date or a factor. 
 Date and factor are not data types *per se*, but data classes.
 
-### Dates
+#### Dates
 
 The data element `1980-02-08` stored in the object `birthdate` below is nothing more than a string of characters.
 ```{r birthdate, echo = TRUE}
@@ -543,7 +572,7 @@ Such a calculation would not have been possible without the conversion from char
 ten_days_before_my_birthday <- birthday - 10
 ```
 
-### Factors
+#### Factors
 
 A factor is an object that only contains predefined values. 
 These predefined values are called the *levels* of the factor. 
@@ -571,11 +600,11 @@ scandinavian_kingdoms
 ```
 
 
-## Objects
+### Objects
 
 Data in R may be stored in a multitude of object types, but the most important ones are vector, matrix, list, data frame and tibble.
 
-### Vectors
+#### Vectors
 
 A vector is an object that contains one or several values of the *same* data type. 
 For example, the object `vec.char` described below is a vector that contains 3 data elements of the type character. 
@@ -602,7 +631,7 @@ Note that the data type of the whole vector is determined by the type of the ele
 class(temperature)
 ```
 
-#### Coercion
+##### Coercion
 
 If one tries to store data elements of different types in a single vector, all the elements in this vector will be coerced into the type that is the most informative.  
 The ranking is as follows: logical < integer < numeric < character.  
@@ -615,7 +644,7 @@ class(coercion)
 
 As you see here the type of `coercion` is character, in other words the type of the most informative data element.
 
-#### Accessing data elements
+##### Accessing data elements
 
 It is possible to extract specific data elements from a vector based on their position.
 To do so, we use brackets `[` `]`. 
@@ -625,7 +654,7 @@ Indicate first the vector name and then the element position(s) between the brac
 temperature[c(2, 6)] 
 ```
 
-### Matrices
+#### Matrices
 
 A matrix is a two-dimensional object that displays data of the *same* type (numeric, character, etc) in the form of a table. 
 It is built up with the function `matrix()` in which the data is imported either in the form of concatenated data elements (ex: `c(12, 54, 987, 5, ...)`), a series or sequence of data elements (ex: `1:25`), or a vector (ex: `temperature`). 
@@ -641,7 +670,7 @@ neo
 
 
 
-#### Accessing data elements
+##### Accessing data elements
 
 In a matrix, each row is numbered `[x, ]` and each column is numbered `[ , y]`.
 Any of the data elements may be retrieved by using its coordinates `[x, y]` preceded by the name of the matrix:
@@ -653,18 +682,18 @@ neo[2, 3]
 A full row or column may be retrieved with the same expression, but we leave empty the coordinate that is not needed:
 
 ```{r matrix3, echo=TRUE}
-neo[2,  ]
+neo[2, ]
 
 neo[ , 3]
 ```
 
-#### About the use of matrices
+##### About the use of matrices
 
 The use of matrices on this website is very limited.
 However, it is not unlikely that you meet matrices in other projects, so it is best to know about their existence.
 You can read more about matrices [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/matrix){target="_blank"}.
 
-### Lists
+#### Lists
 
 A list is an object that contains values of *one or several* data types. 
 It can not only contain single data elements, but also other objects such as vectors, matrices, etc.  
@@ -685,7 +714,7 @@ my_list <- list(string = "one",
 my_list 
 ```
 
-#### Retrieving list elements
+##### Retrieving list elements
 
 Naming elements is quite convenient as it allows you to retrieve them rapidly by the mean of the symbol `$`. 
 The syntax is as follows: `list_name$element_name`.  
@@ -695,7 +724,7 @@ Here we retrieve the element `matrix` in the list `my_list`:
 my_list$matrix
 ```
 
-#### Retrieving single data elements
+##### Retrieving single data elements
 
 Even better, you can retrieve a single data element contained in a list element. 
 Here you will have to write an expression that makes use of both the symbol `$` and the brackets `[` `]`in the proper order. 
@@ -716,7 +745,7 @@ my_list$matrix[2, 3]
 
 You may read more information about lists [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list){target="_blank"}.
 
-### Data frames and tibbles
+#### Data frames and tibbles
 
 A data frame is a two-dimensional object that stores data of *various* types in the form of a table. 
 Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
@@ -736,7 +765,7 @@ library(tidyverse)
 
 NB: if you have not installed the package yet, have a look at the section [Installing the tidyverse](LINK) in the chapter [Getting Started with R](LINK).
 
-#### Data frames vs. tibbles
+##### Data frames vs. tibbles
 
 The object `df` printed below is a data frame that stores the average temperature recorded monthly in 2017, 2018 and 2019 at Lygra (Vestland, Norway). It is created with the function `data.frame()`.
 
@@ -767,7 +796,7 @@ Here, you get a more convenient display of the same data:
 All in all, tibbles _print_ much better and give more information than data frames do! 
 
 
-#### Retrieving data elements
+##### Retrieving data elements
 
 Similarly to vectors, matrices and lists, one can extract single elements from data frames and tibbles.
 Here, we use brackets `[` `]` to do so:
@@ -792,8 +821,9 @@ df$Avg_temperature
 tbl$Avg_temperature
 ```
 
+In Chapter \@ref(working-with-single-tables-in-dplyr) you will see an alternative way of manipulating tibbles with the `dplyr` package.
 
-#### Transforming a data frame into a tibble
+##### Transforming a data frame into a tibble
 
 If you have been previously working with data frames, have been given a data frame to work with, or have imported data using functions that create data frames, you may convert them into tibbles by using `as_tibble()`. 
 Here we convert the data frame `df` into a tibble:
@@ -803,7 +833,7 @@ df_as_tibble <- as_tibble(df)
 df_as_tibble 
 ```
 
-#### Penguins as a recurrent example
+##### Penguins as a recurrent example
 
 Here is the tibble called `penguins` which is part of the package `palmerpenguins`, and which was used previously in section  \@ref(why-assigning-data). 
 You will certainly meet this tibble again and again on this website as it provides a convenient set of variables and observations well-suited for illustrating many purposes.

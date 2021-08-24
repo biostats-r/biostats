@@ -1,15 +1,5 @@
 # Working with single tables in `dplyr`
 
-```{r setup, include=FALSE}
-# continue knitting after errors
-knitr::opts_chunk$set(echo = TRUE, error = TRUE)
-options(tibble.print_min = 3)
-# packages
-library("tidyverse")
-
-source("../Templates/biostats_theme.R")
-```
-
 Data frames are usually the most convenient objects for storing, plotting or analysing data in R. 
 We also need to be able to manipulate data in data frames.
 
@@ -71,7 +61,7 @@ The names do not need quote marks.
 
 ```{r select1}
 #select species, bill_length_mm & bill_depth_mm
-penguins %>% 
+penguins |> 
   select(species, bill_length_mm, bill_depth_mm)
 ```
 
@@ -94,7 +84,7 @@ If you want to `select()` adjacent columns, you can use the notation `first:last
 
 ```{r select2}
 #select species to bill_depth_mm
-penguins %>% select(species:bill_depth_mm)
+penguins |> select(species:bill_depth_mm)
 ```
 
 Sometimes it is easier to remove the columns you don't want. 
@@ -102,7 +92,7 @@ You can do this by putting a `-` in front of the column name.
 
 ```{r select3}
 #select everything but year and sex
-penguins %>% select(-year, -sex)
+penguins |> select(-year, -sex)
 ```
 
 If there is a pattern to the column names that we want to select (or remove), there are some helper functions.
@@ -110,7 +100,7 @@ For example, to select columns that start with "bill", we can use `starts_with()
 
 ```{r select4}
 #select bill_length_mm & bill_depth_mm" 
-penguins %>% select(starts_with("bill"))
+penguins |> select(starts_with("bill"))
 ```
 
 Conversely, if we want to select all columns that end with "mm", we can use `ends_with()`.
@@ -120,7 +110,7 @@ Sometimes, you might want to select all the columns of a certain type.
 For example, to select all the numeric columns we can use the `is.numeric` function inside `select()` with the helper `where()`.
 
 ```{r select5}
-penguins %>% select(where(is.numeric)) # No brackets on the function
+penguins |> select(where(is.numeric)) # No brackets on the function
 ```
 
 Other `is.*` functions exist, for example, `is.character` for text, `lubridate::is.Date` for dates.
@@ -134,7 +124,7 @@ Which of these strategies works best is context dependent.
 You can use `rename()` to rename columns
 
 ```{r rename1}
-penguins %>% rename(Species = species)
+penguins |> rename(Species = species)
 ```
 
 The syntax is `new_name = current_name`.
@@ -143,7 +133,7 @@ You can also rename a column when selecting.
 This is convenient if you are using `select()` anyway.
 
 ```{r rename2}
-penguins %>% select(Species = species)
+penguins |> select(Species = species)
 ```
 
 
@@ -153,7 +143,7 @@ Sometimes it is useful to reorder the columns.
 This is never necessary for data analysis or plotting, but can be needed when making a table for presentation.
 
 ```{r relocate}
-penguins %>% relocate(island)
+penguins |> relocate(island)
 ```
 
 The default is to move the named column first, the `.before` and `.after` arguments let you move the column into any position. 
@@ -165,7 +155,7 @@ Filtering rows that meet some condition is a very common task.
 For example, to filter rows of `penguins` that have a bill length greater than 40 mm, we can use 
 
 ```{r filter1}
-penguins %>% filter(bill_length_mm > 40)
+penguins |> filter(bill_length_mm > 40)
 ```
 
 This will filter out each row where the condition is `TRUE`.
@@ -200,10 +190,10 @@ near(sqrt(2) ^ 2, 2) # safe alternative
 - `%in%` is used when you want to test if a value is in a vector
 
 ```{r filter-in}
-penguins %>% 
+penguins |> 
   filter(species %in% c("Adelie", "Chinstrap"))
 #equivalent to 
-penguins %>% 
+penguins |> 
   filter(species == "Adelie" | species == "Chinstrap") # with many alternatives, this gets long
 ```
 
@@ -214,14 +204,14 @@ If we want to filter on multiple criteria, we need to decide whether we want all
 If we want all criteria to be `TRUE`, we can separate them by a comma (or by an `&` if you want to be explicit).
 
 ```{r filter-AND}
-penguins %>% 
+penguins |> 
   filter(bill_length_mm > 40, bill_depth_mm > 18)
 ```
 
 If we want rows where any of the criteria is `TRUE`, we can separate them by a `|`.
 
 ```{r filter-OR}
-penguins %>% 
+penguins |> 
   filter(bill_length_mm > 40 | bill_depth_mm > 18)
 ```
 
@@ -229,7 +219,7 @@ We can negate a criterion by putting `!` in front of it.
 So to filter rows that do not have bills longer than 40 mm we can use
 
 ```{r filter-NOT}
-penguins %>% filter(!bill_length_mm > 40)
+penguins |> filter(!bill_length_mm > 40)
 ```
 
 Of course, in this example, we could also use `<=` as the test.
@@ -241,13 +231,13 @@ Only the latter is a test of equality.
 If you do this, the error message is quite helpful.
 
 ```{r filter-error, error=TRUE}
-penguins %>% filter(species = "Chinstrap")
+penguins |> filter(species = "Chinstrap")
 ```
 
 Another common error is to forget to quote any strings.
 
 ```{r filter-error2, error=TRUE}
-penguins %>% filter(species == Chinstrap)
+penguins |> filter(species == Chinstrap)
 ```
 
 ## Slicing the data with `slice()`
@@ -255,7 +245,7 @@ penguins %>% filter(species == Chinstrap)
 Sometimes it is useful to extract rows by row number. 
 
 ```{r slice}
-penguins %>% slice(3:7)
+penguins |> slice(3:7)
 ```
 
 You can use negative numbers to remove rows. 
@@ -268,13 +258,13 @@ If there are duplicates in the data, we can remove these with `distinct()`.
 `distinct()` with no extra arguments will remove duplicate rows. 
 
 ```{r}
-penguins %>% distinct()
+penguins |> distinct()
 ```
 
 If we are only interested in some of the columns, we can supply the names of these columns.
 
 ```{r}
-penguins %>% distinct(island)
+penguins |> distinct(island)
 ```
 
 Other columns will be removed unless the argument `.keep_all = TRUE` is used.
@@ -286,7 +276,7 @@ This can be done with `slice_sample()`.
 This can either sample a constant _n_ rows or constant fraction of the rows depending on whether the `n` or `prop` argument is used.
 
 ```{r sample-n}
-penguins %>% slice_sample(n = 10)
+penguins |> slice_sample(n = 10)
 ```
 
 ## Mutating and adding columns with `mutate`
@@ -296,7 +286,7 @@ The function `mutate()` can add an new column or replace an existing one.
 To make a new column called `body_mass_kg` we can use
 
 ```{r}
-penguins %>% 
+penguins |> 
   mutate(body_mass_kg = body_mass_g / 1000)
 ```
 
@@ -316,7 +306,7 @@ We can use it if we want to calculate a summary statistic of the data.
 Remember to separate arguments with a comma.
 
 ```{r summarise1}
-penguins %>% summarise(
+penguins |> summarise(
   flipper_len_mean = mean(flipper_length_mm, na.rm = TRUE), 
   flipper_len_sd = sd(flipper_length_mm, na.rm = TRUE)
   )
@@ -331,11 +321,11 @@ This can be done with the `across()` helper function.
 `across()` needs to be told which columns to process and what function or functions to use.
 
 ```{r across}
-penguins %>%
+penguins |>
    summarise(across(c(bill_length_mm, bill_depth_mm), .fns = mean, na.rm = TRUE))
 
 #using a list of functions
-penguins %>%
+penguins |>
   summarise(across(.cols = starts_with("bill"), .fns = list(sd = sd, mean = mean), na.rm = TRUE))
 ```
 
@@ -350,8 +340,8 @@ Instead of working on the entire dataset, they now work on each group in the dat
 To find the mean flipper length for each species, we need to `group_by()` species and then `summarise()`.
 
 ```{r group-by}
-penguins %>% 
-  group_by(species) %>% 
+penguins |> 
+  group_by(species) |> 
   summarise(mean_flipper_length = mean(flipper_length_mm))
 ```
 
@@ -365,14 +355,14 @@ This can help prevent surprises!
 To sort the data frame by one or more of the variables we can use `arrange()`.
 
 ```{r arrange1}
-penguins %>% arrange(bill_length_mm, bill_depth_mm)
+penguins |> arrange(bill_length_mm, bill_depth_mm)
 ```
 
 This will sort smallest first. 
 To reverse the sort order, use `desc()`
 
 ```{r arrange2}
-penguins %>% arrange(desc(bill_length_mm), desc(bill_depth_mm))
+penguins |> arrange(desc(bill_length_mm), desc(bill_depth_mm))
 ```
 
  
@@ -382,15 +372,15 @@ The function `n` can count how many rows there are in the each group (or the ent
 It can be used with either `mutate()` or `summarise()`.
 
 ```{r n}
-penguins %>% 
-  group_by(species) %>% 
+penguins |> 
+  group_by(species) |> 
   summarise(n = n())
 ```
 
 Or with `count()`
 
 ```{r count}
-penguins %>% 
+penguins |> 
   count(species)
 ```
 
@@ -408,7 +398,7 @@ If you need to refer to a column name that doesn't follow the rules, you need to
 ```{r non-standard-names}
 df <- tibble(`Region/Country` = "Norway", value = 42)
 df
-df %>% rename(region_country = `Region/Country`)
+df |> rename(region_country = `Region/Country`)
 ```
 It is sometimes best to rename these columns to make them easier to refer to. 
 `janitor::clean_names()` is very efficient for making easy-to-use names.

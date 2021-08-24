@@ -1,41 +1,25 @@
----
-title: "Importing data in R"
-output:
-  bookdown::html_document2:
-    highlight: tango
-    toc: true
-    toc_float: true
-    fig_caption: true
-css: ../css/style-chapters.css
----
-  
-``` {r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
-library(tidyverse)
+# Importing data in R
 
-data(penguins, package = 'palmerpenguins')
+R can import data from files in many different formats. 
+For example:
 
-source("../Templates/biostats_theme.R")
-
-```
+ - csv files with the `readr` package
+ - excel files with the `readxl` package
+ - xlm files with the `xml2` package
+ - netcdf files with the `ncdf4` package
+ - shapefiles with the `sf` package
+ 
+In this chapter, you will learn how to import tabular data from an external text file as a tibble.
+We will use functions from the package `readr` which is part of the `tidyverse` package, so make sure that you have activated it with `library(tidyverse)`. 
 
 ### Before we start {- .facta .toc-ignore}
 
 You must be familiar with tibbles and data types (such as numeric, character, etc).
 
-# {- .toc-ignore}
 
+## What are tabular data? 
 
-
-In this chapter, you will learn how to display tabular data from an external text file as a tibble.
-We will use functions from the package `readr` which is part of the `tidyverse` package, so make sure that you have activated it with `library(tidyverse)`.  
-
-# Tabular data
-
-## What is tabular data? 
-
-
-Tabular data is data that is organized in the form of a table with rows and columns. 
+Tabular data are data that is organized in the form of a table with rows and columns. 
 A table often has a header, i.e. an additional row that displays variable names.
 Here is an example of a formatted table with header:
 
@@ -67,6 +51,7 @@ Briefly, tidy data follows a short series of rules:
 + each cell at the intersection of a row and a column contains a single value.
 
 The following figure illustrates well these rules.
+
 ``` {r threerules, echo=FALSE, fig.cap='_In a tidy dataset, variables are in columns, observations are in rows, and values are in cells._ --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html) - [CC BY-NC-ND 3.0 US](https://creativecommons.org/licenses/by-nc-nd/3.0/us/)'}
 knitr::include_graphics("Pics/tidy1.png")
 ```
@@ -82,7 +67,7 @@ rmarkdown::paged_table(table2)
 Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).   
 
 Importing data from a file containing tidy data is a great way to start your work, but it is *not* a prerequisite to data import.
-As long as your data is tabular, you will be able to import it in R, and later you will have the chance to tidy it (see chapter [Data handling and transforming](link){target="_blank"}).
+As long as your data is tabular, you will be able to import it in R, and later you will have the chance to tidy it (see chapter \@ref(tidying-data-with-tidyr)).
 
 
 
@@ -146,7 +131,7 @@ cat(readLines('data/weather.csv'), sep = '\n')
 In this file, the decimal separator is `.` and the delimiter is `,`.
 
 
-# Import with readr
+## Import with readr
 
 `readr` comes with several functions that read data files. 
 Among them are:
@@ -159,7 +144,7 @@ We will focus essentially on `read_delim()` as it is a general function that can
 `read_csv()` and `read_csv2()` are more specific functions which are preset to import CSV-formatted files in which a comma `,` or a semi-colon `;` is defined as delimiter, respectively.
 
 
-## read_delim()
+### read_delim()
 
 `read_delim()` is a simple function that does several things at once. 
 First, it finds and reads the file to import. 
@@ -202,7 +187,7 @@ You can display the table as follows:
 weather
 ```
 
-### Choose the right delimiter
+#### Choose the right delimiter
 
 The example above is rather simple and straight forward, but you may experience some issues depending on the content of the CSV file.
 Relatively often, one tries to import CSV files wrongly assuming that `,` has been used as a delimiter.
@@ -236,12 +221,12 @@ Here, the message `Column specification` tells you that the content of the colum
 While `read_delim()` got things right about the number of variables, something went wrong with the variables as we could expect `Wind (m/s)` to be recognized as `double`.
 To find out about this issue we need to review the imported data in the object `weather2` and compare it to the original file `weather2.csv`.
 
-### Review the imported data
+#### Review the imported data
 
 The example above shows the importance of carefully verifying that the imported data in R matches the original data set.
 The following figure compares the content of the file `weather2.csv` (Fig. \@ref(fig:comp) left) to the content of the object `weather2` (Fig. \@ref(fig:comp) right):
 
-``` {r comp, echo=FALSE, fig.cap="_The data in the object does not match the data in the file._", out.width="100%"}
+``` {r comp-fig, echo=FALSE, fig.cap="_The data in the object does not match the data in the file._", out.width="100%"}
 knitr::include_graphics("Pics/comp.png")
 ```
 
@@ -261,7 +246,7 @@ knitr::include_graphics("Pics/comp2.png")
 ```
 
 
-## read_csv()
+### read_csv()
 
 As we have seen in the section above, `read_delim()` can read CSV files where `,` and `;` are used as delimiters.
 `readr` also comes with other functions such as `read_csv()` and its twin `read_csv2()`.
@@ -293,11 +278,11 @@ Note the message above `Column specification` that indicates which symbols `read
 weather_csv2
 ```
 
-## Useful arguments
+### Useful arguments
 
 Both `read_delim()`, `read_csv()` and `read_csv2()` have a multitude of arguments that allow for adjusting the way data is read and displayed. Here we review a handful of them.
 
-### n_max
+#### n_max
 
 `n_max` sets a limit to the number of *observations* to be read.
 Note that `n_max` does not consider the first row (header) of the data file as an observation. 
@@ -313,7 +298,7 @@ weather
 ```
 
 
-### skip
+#### skip
 
 The argument `skip` may be used to skip rows when reading the data file.  
 Be aware that:
@@ -336,7 +321,7 @@ weather
 As expected, the first row (with the header) is skipped, and the data from the observation `January` have become the header of the tibble.
 The argument `col_names()` introduced below will be useful for solving this issue.
 
-### col_names
+#### col_names
 
 The argument `col_names` may be used to define the name of the variables/columns of the tibble.
 If you use `col_names = TRUE`, the first row of the data file defines the name of the variables. 
@@ -346,6 +331,7 @@ weather <- read_delim(file = "data/weather.csv",
                       col_names = TRUE)
 weather
 ```
+
 If you use `col_names = FALSE`, the first row of the data file will be the first observation in the resulting tibble, and the variables will be named `X1`, `X2`, etc.
 
 ```{r col-namesF, echo=TRUE} 
@@ -374,7 +360,7 @@ weather
 ```
 
 
-### col_types 
+#### col_types 
 
 The argument `col_types` may be used to modify the data type of the variables.
 This is useful for example when you need to set a variable as `factor` whereas R has defined it as `character`.
