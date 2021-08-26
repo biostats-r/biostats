@@ -58,14 +58,11 @@ example_data2 <- example_data %>% group_by(group, response) %>%
 Before reading this page, you should be comfortable with basic statistical 
 theory, using R, continuous and categorical data, and **linear models**.
 
-You should also review the basics of the Binomial distribution [here](). ADD LINK.
+You should also review the basics of the Binomial distribution [here](). EGS: ADD LINK.
 
 </br>
 
 ## Introduction
-
-SEPARATION SHOULD BE ADDED SOMEWHERE BUT I'M NOT SURE WHERE - ANY IDEAS? AND
-HOW MUCH DETAIL?
 
 In this section, we will look at how we can use a Binomial Generalized Linear 
 Model (GLM) 
@@ -181,7 +178,7 @@ They have been monitored following a standardised protocol since 1985.
 Each year the sheep
 are caught, weighed, and the population size is counted. Information on the 
 project can be found [here](http://soaysheep.biology.ed.ac.uk/). These data are
-open source and can be found in the appendix of this [paper](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1600-0706.2012.00035.)CITE COULSON 2012.
+open source and can be found in the appendix of this [paper](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1600-0706.2012.00035.) EGS: CITE COULSON 2012.
 
 The data consists of five variables: 
 
@@ -205,19 +202,18 @@ has been imported. We do this by looking at the raw data and making a plot. It
 can be easier to see the data if we jitter it because many data points sit on 
 top of each other. 
 
-NEED TO ADD LINE TO READ IN DATA IF WE CAN DECIDE SOMEWHERE TO HOST IT. YOU
-CAN GET IT FROM THE PAPER BUT NOT SURE IF WE CAN HOST IT ELSEWHERE.
+EGS: NEED TO ADD LINE TO READ IN DATA YOU CAN GET IT FROM THE PAPER LINK ABOVE THEN HOST IT.
 
 ```{r sheep-data-plot, include = TRUE, echo = TRUE, fig.cap = "Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points"}
 
 plot1 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
- geom_point(colour = "grey70", size = 4)+
+ geom_point(colour = "grey70", size = 2, alpha = 0.25)+
  labs(x = "Weight of sheep (kg)",
       y = "Survival of sheep",
       tag = "a")
 
 plot2 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
- geom_jitter(colour = "grey70", size = 4, height = 0.1)+
+ geom_jitter(colour = "grey70", size = 2, height = 0.1, alpha = 0.25)+
  labs(x = "Weight of sheep (kg)",
       y = "Survival of sheep",
       tag = "b")
@@ -346,13 +342,14 @@ is specified within the `family` argument, but with an extra argument called
 </br>
 
 Using the logit link converts a probability to a log-odds. The log-odds is the 
-natural logarithm of the odds ratio: $$\frac{p}{1-p}$$. 
+natural logarithm of the odds ratio: $$\frac{p}{1-p}$$. Where $p$ = the 
+probability of an event occurring. 
 
 </br>
 
 The odds ratio
-is the probability of a event occurring over the probability it doesn't 
-occur. Odds are often used in the things like betting, e.g. to represent the 
+is the probability of a event occurring ($p$) over the probability it doesn't 
+occur ($1-p$). Odds are often used in the things like betting, e.g. to represent the 
 odds of a particular horse winning a race. An odds ratio of 10:1 means that the 
 companies assume that for every 10 successes (for the company i.e. a horse
 loses and they keep the money) there will be 1 failure (the horse wins and the
@@ -603,7 +600,8 @@ is a Binomial GLM on a set of single trials, or multiple trials.
 </br>
 
 This worked example demonstrates how to fit a GLM in $R$ 
-using the `glm()` function for the Soay sheep data example. 
+using the `glm()` function for the Soay sheep data example. This is an example
+of a single trial question. 
 
 In this example, we are asking:
 **Does body weight affect the survival probability of sheep?**
