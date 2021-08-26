@@ -1,27 +1,4 @@
----
-title: "A Bestiary of Brackets and other R notation"
-description: What does all the puntuation in R mean
-output:
-  bookdown::html_document2: 
-    highlight: tango
-    toc: yes
-    toc_float: yes
-    css: ../css/style-chapters.css
----
-
-``` {r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, rows.print = 3, message = FALSE)
-library("tidyverse")
-library("palmerpenguins")
-library("conflicted")
-conflict_prefer(name = "filter", winner = "dplyr")
-
-data("penguins")
-
-source("../Templates/biostats_theme.R")
-```
-
-# Introduction
+# Bestiary of Brackets and other R notation
 
 !#@%&?
 
@@ -30,13 +7,15 @@ What does that mean?
 This page is a guide to decoding what all the non-alphanumeric used in R mean. 
 It covers base R use and the most common uses within `tidyverse` and related packages.
 
-# Asignment arrows
+## Assignment arrows
 
 The usual way to assign an object to a name is to use a left-pointing arrow `<-`.
 
 ```{r left-assign}
 x <- 42 # This will assign the value 42 to the name x
 ```
+
+The keyboard short-cut for the assign arrow is <kbd>Alt</kbd>+<kbd>-</kbd>.
 
 It is also possible to use right-pointing arrows `->`.
 
@@ -48,7 +27,7 @@ This is not recommended for use in scripts because it makes the code difficult t
 
 
 
-# Backslash
+## Backslash
 
 Some characters cannot be directly represented in character strings so an escape sequence is used instead.
 Escape sequences always start with the backslash character `\`.
@@ -56,7 +35,7 @@ Escape sequences always start with the backslash character `\`.
 - `\n` new line
 - `\t` tab (very useful for importing tab-delimited files with `read_delim`)
 - `\\` backslash
-- `\U1F600` including unicode or emoji &#x1F600; 
+- `\U1F600` including Unicode or emoji &#x1F600; 
 
 If you want to use a literal backslash in a character string, it needs to be escaped with another backslash.
 Note that `print` shows the contents of the string, including the backslashes, while `cat` shows what would be shows by ggplot etc.
@@ -69,7 +48,7 @@ cat(x)
 ```
 
 
-# Brackets
+## Brackets
 
 Three different types of bracket are used in R.
 
@@ -87,7 +66,7 @@ Round brackets `()` are also used to force the order of operations in an calcula
 9 * (6 + 5) # 99
 ```
 
-Single square brackets `[]` are used for subsetting vectors, matrices and similar objects.
+Single square brackets `[]` are used for sub-setting vectors, matrices and similar objects.
 
 ```{r square-bracket}
 month.name[6:7] # extract the 6th and 7th element of month.name
@@ -134,11 +113,11 @@ paste("The penguins dataset has", nrow(penguins), "rows") # base R alternative g
 Double curly brackets `{{}}` are used programming with `tidyverse`.
 See the `dplyr` programming vignette for details.
 
-# Boolean operators
+## Boolean operators
 
 Boolean operators are used to combine logical tests. 
 
-If `a` and `b` are logical vectors (ie TRUE and FALSE). or vectors that can be coerced to logical vectors, then
+If `a` and `b` are logical vectors (i.e. TRUE and FALSE). or vectors that can be coerced to logical vectors, then
 
 - `!a` NOT a
 - `a & b` a AND b
@@ -160,7 +139,7 @@ You will also see doubled up `||` and `&&` operators.
 These are special Boolean operators that only return the first element of any vector of results. This is useful with `if` statements which want only a single TRUE or FALSE.
 
 
-# Colons
+## Colons
 
 A single colon `:` is used to get a sequence between two values with a step size of one.
 
@@ -188,7 +167,7 @@ Triple colons `:::` are used to access a package's internal functions.
 This can be useful to access the help file or to view the code, but you should not rely on the internal functions staying the same.
 
 
-# Commas
+## Commas
 
 Arguments in a function need to be separated by a comma.
 
@@ -206,7 +185,7 @@ x <- rnorm(n = 10, mean = 1 sd = 0.5)
 ![Rstudio puts a cross in the margin and underlines the unexpected text after the missing comma.](Pics/missing_comma.png)
 
 
-# Dot
+## Dot
 
 The dot `.` is used as the decimal separator in R, for example in `r pi`.
 
@@ -228,7 +207,7 @@ The three dots are often used by generic functions because the different version
 In `dplyr`, the dots are used for the column names of the data frame or tibble being processed.
 
 
-# Dollars
+## Dollars
 
 The dollar symbol `$` is used to subset lists. 
 Many objects in R, including data frames, are special types of lists.
@@ -240,7 +219,7 @@ penguins$species[1:3] # just the first few elements
 ```
 
 
-# Equals sign
+## Equals sign
 
 One equals sign `=` is used to assign a value to an argument in a function
 
@@ -266,11 +245,31 @@ It is a very common mistake to use one equals sign rather than two.
 penguins %>% filter(year = 2007)
 ```
 
+## File paths
+
+When you want to import data from or save a file to a, a directory (folder) other than the working directory (usually where you RStudio project .rproj file is), you need to specify the path.
+
+The directory name need to be separated from the file name by a forwards slash `/`.
+
+```{r path-file, eval = FALSE}
+"my_directory/my_file.csv"
+```
+
+If you use a backslash by mistake, you will get an error, because the [backslash](backslash) is the escape character.
+You will sometimes see a double backslash used as a path separator, but this is not recommended.
+
+You can also use the function `file.path()` to generate paths to files.
+
+```{r}
+file.path("my_directory", "my_file.csv")
+```
+
+If you want to read a file from the directory above the working directory, you can use `../my_file.csv`, where `..` means go up one, but you should probably use the `here` package.
 
 
-# Formula notation
+## Formula notation
 
-Formulae are mainly used in regression models, but also in plotting (base plot and `facet_wrap`) and some other functions.
+Formulae are mainly used in regression models, but also in plotting (base plot and `facet_wrap()`) and some other functions.
 
 Formula always have a tilde `~`. 
 The response (if any) goes to the left of the tilde, and the predictors to the right.
@@ -293,7 +292,7 @@ lm(bill_length_mm ~ (species + year) ^ 2, data = penguins)
 All give exactly the same result.
 
 
-# Greater than and less than
+## Greater than and less than
 
 The greater than `>` and less than `<` characters are used in logical tests.
 
@@ -304,9 +303,9 @@ pi > 22/7
 To express greater than or equal, use `>=`. 
 `<=`, for less than or equal.
 
-The greater than sign is also used in the `tidyverse` pipe `%>%` and the new base R (version 4.1 and later) pipe `|>`.
+The greater than sign is also used in the native pipe `|>` (and the `tidyverse` pipe `%>%`).
 
-# Hash
+## Hash
 
 Any text after a `#` is a comment.
 
@@ -353,7 +352,7 @@ ggplot(aes(x = x, y = 1, fill = I(x), label = x)) +
 If you want to make your own special colours, you can write 
 the hexadecimal string by hand.
 
-# Mathematical operators
+## Mathematical operators
 
 Mathematical operators have their usual meaning:
 
@@ -393,7 +392,7 @@ p_box + p_violin &
   theme(axis.text.x = element_text(angle = 45))
 ```
 
-# Percent signs
+## Percent signs
 
 Percent signs come in pairs and surround an infix operator.
 An infix operator is a special type of function that goes between two operands.
@@ -423,7 +422,7 @@ If you want to get help on any infix operator, you need to surround it in backti
 ```
 
 
-# Quote marks
+## Quote marks
 
 Strings in R need to be surrounded by quote marks.
 You can use single or double quote marks.
@@ -448,19 +447,19 @@ tibble(`Standard Deviation` = 2)
 
 
 
-# Question marks
+## Question marks
 
 Use a `?` to get help on a function, for example `?lm`, which is equivalent to `help(lm)`
 Or `??` to get help on a topic, for example `??"linear models"`, which is equivalent to `help.search("linear models")`. 
 
 If you want help on something that does not start with a letter or dot, you need to surround it in backticks, for example ``?`+``.
 
-# Regular expressions
+## Regular expressions
 
 Several characters take on a special meaning with regular expressions, including `^ $ ? * + () [] {} :`.
 Regular expressions are always enclosed in quote marks. See the tutorial on text manipulation for an introduction into regular expressions.
 
-# Semi-colon
+## Semi-colon
 
 The semi-colon `;` can optionally be used at the end of a line of code, but there is no advantage to doing this (in other languages it can be compulsory).
 It can be used to separate two R statements on the same line. 
@@ -476,19 +475,19 @@ print(i)
 ```
 
 
-# Underscore
+## Underscore
 
 The underscore `_` can be used in object names along with alphanumeric characters and dot.
 It cannot be the first character of the name.
 It is useful as a word separator in `snake_case`.
 
-# White space
+## White space
 
 White space is free and usually has no impact on how the code runs. 
 Use lots of it to make your code more readable.
 
 
-# @
+## @
 
 You will occasionally see an `@` in R code. 
 They are used to subset S4 class objects, analogous to the use of `$` to subset lists and data frames. 
