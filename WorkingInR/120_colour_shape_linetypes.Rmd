@@ -1,0 +1,114 @@
+# Shapes, colours and linetypes
+
+## Colours and fill
+
+The `colour` aesthetic give colour for points and lines, while the `fill` aesthetic gives colour to areas.
+It is very easy to forget this.
+
+```{r wrong-aes, fig.cap = "Use fill for areas.", fig.height= 3, fig.width = 3.5}
+ggplot(penguins, aes(x = bill_length_mm, colour = species)) +
+  geom_histogram()
+```
+
+
+### Qualitative
+
+Qualitative palettes have no natural order to the colours. Use them for categorical variables.
+
+```{r}
+RColorBrewer::display.brewer.all(type = "qual")
+```
+
+
+
+### Continuious
+
+Use continuous palettes for continuous variables
+
+```{r}
+RColorBrewer::display.brewer.all(type = "seq")
+```
+
+You can use `RColorBrewer` continuous palettes with `scale_fill_brewer` or `scale_colour_brewer`.
+
+### Diverging
+
+Use diverging palettes for continuous variables when there is a natural midpoint.
+Perhaps to indicate values above or below zero, or the mean of the data.
+Here are some divergent palettes from the `RColorBrewer` package.
+
+```{r}
+RColorBrewer::display.brewer.all(type = "div")
+```
+
+
+### Colour blind friendly colours
+
+About 1/8 men and 1/200 women are colour blind.
+We need to use colour and fill palettes that are colourblind friendly.
+Some popular scales are not. 
+For example, we can use the [`colorblindr` package](https://github.com/clauswilke/colorblindr) to simulate how this figure is percieved by people with different forms of colourblindness.
+
+```{r not-colourblind-friendly, fig.cap = "Default ggplot fill.", fig.height = 3, fig.width=3.5}
+p3 <- ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_discrete()
+p3
+```
+
+
+
+```{r colour-blindr-default, echo = TRUE, fig.cap = "How people with different types of colourblindness see the default colour scale."}
+library(colorblindr)
+cvd_grid(p3)
+```
+
+That was hopeless. 
+It won't even print well in black and white (shown by the Desaturated panel). 
+Let's try a different palette.
+
+```{r viridis-colourblind, fig.cap = "Viridis fill.", fig.height = 3, fig.width=3.5}
+p3_v <- p3 + scale_fill_viridis_d()
+p3_v
+```
+
+
+```{r viridis-colourblind2, echo = FALSE, fig.cap = "How people with different types of colourblindness see the viridis colour scale."}
+cvd_grid(p3_v)
+```
+
+Much better. 
+Always test that your colour palette is colourblind friendly, or use one known to be ok.
+
+ 
+## Shapes
+
+The `shape` aesthetic is used to get different shapes.
+These are the available shapes.
+
+```{r shapes, fig.cap = "Shapes", fig.height=2.5}
+step <- 9
+tibble(shape = 0:25, x = (shape) %% step, y = (shape) %/% step) %>% 
+  ggplot(aes(x = x, y = y, shape = I(shape), label = shape)) +
+  geom_point(size = 5, fill = "red") +
+  scale_y_reverse(expand = c(0.1, 0)) +
+  geom_text(nudge_y = 0.3) +
+  theme_void()
+```
+
+Shapes 21-24 take a `fill` and a `colour` aesthetic, whereas all the other shapes just take `colour`.
+
+Many of the shapes are difficult to distinguish when small, so usually best to use shape with colour to distinguish groups.
+
+## linetypes
+
+```{r linetypes}
+tibble(linetype = c("solid", "longdash", "dashed", "dotted", "blank"), y = 1:length(linetype)) %>% 
+  ggplot(aes(x = 0, xend = 1, y = y, yend = y, linetype = I(linetype))) +
+  geom_segment() +
+  geom_text(aes(label = linetype), x = 0.5, nudge_y = 0.3) +
+  theme_void()
+
+
+```
+

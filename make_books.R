@@ -20,3 +20,10 @@ withr::with_dir("writing_a_package/", {
 withr::with_dir("WorkingInR/", {
   bookdown::render_book('index.Rmd', 'bookdown::bs4_book', output_dir = "../docs/workingInR")
 })
+
+# Visualising with ggplot
+
+withr::with_dir("VizualizingData/", {
+  bookdown::render_book('index.Rmd', 'bookdown::bs4_book', output_dir = "../docs/visualising_ggplot")
+})
+
