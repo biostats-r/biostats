@@ -59,16 +59,14 @@ library(rnaturalearth)
 library(sf)
 
 # map data inset
-europe <- ne_countries(scale = 110, continent = "Europe", returnclass = "sf") %>% 
-  # crop map to Northern Europe
-  st_crop(c(xmin = -25, xmax = 40, ymin = 50, ymax = 90))
+europe <- ne_countries(scale = 110, continent = "Europe", returnclass = "sf")
 
 # map data main map
-svalbard <- ne_countries(scale = 50, country = "Norway", returnclass = "sf") %>% 
+svalbard <- ne_countries(scale = 50, country = "Norway", returnclass = "sf") |>  
    st_crop(c(xmin = 0, xmax = 34, ymin = 76, ymax = 81))
 
 # bounding box main map
-bb <- svalbard %>% 
+bb <- svalbard |> 
   st_bbox()
 
 #inset map
@@ -78,6 +76,7 @@ euro_map <- ggplot() +
   annotate(geom = "rect", 
            xmin = bb$xmin, xmax = bb$xmax, ymin = bb$ymin, ymax = bb$ymax, 
            fill = "red", alpha = 0.3) +
+  coord_sf(xlim = c(-25, 40), y = c(50, 82)) +
   ggthemes::theme_map() +
   theme(
   #give white background and black border

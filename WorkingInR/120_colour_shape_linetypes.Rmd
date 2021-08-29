@@ -5,41 +5,148 @@
 The `colour` aesthetic give colour for points and lines, while the `fill` aesthetic gives colour to areas.
 It is very easy to forget this.
 
-```{r wrong-aes, fig.cap = "Use fill for areas.", fig.height= 3, fig.width = 3.5}
+```{r wrong-aes, fig.cap = "Use fill for areas.", fig.height= 3, fig.width = 3.5, message=FALSE}
 ggplot(penguins, aes(x = bill_length_mm, colour = species)) +
   geom_histogram()
 ```
 
+You can set the colour of points or lines and the fill of areas by setting it in the `geom_*()` used.
+
+```{r fill-colour-set, fig.height = 3, fig.width = 3.5}
+ggplot(penguins, aes(x = flipper_length_mm)) +
+  geom_histogram(colour = "purple", fill = "pink")
+```
+
+
+If you map a variable to the `colour` aesthetic, for points and lines, or the `fill` aesthetics for areas, ggplot will give you different colours/fills for the different values in the variable.
+If you don't like the default colours/fills, and you shouldn't because they are not colour blind friendly, then you can change them with a `scale_colour_*()` or `scale_fill_*`.
+First you need to decide what type of colour/fill scale you need.
+
+The first decision is whether the scale should be continuous or discrete.
+
+
+
+```{r echo = FALSE, eval = FALSE}
+library(DiagrammeR)
+grViz("
+   digraph circo {   
+       graph [layout = dot,  rankdir = TB]
+       node [shape = ellipse, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = 'Palatino']
+   a [label = 'Continuous or Discrete variable?']
+   b [label = 'Continuous', shape = diamond, fillcolor = papayawhip]
+   c [label = 'Discrete', shape = diamond, fillcolor = papayawhip]
+   f2 [label = 'Categorical or Ordinal?']
+   g [label = 'Categorical', shape = diamond, fillcolor = papayawhip]
+   h [label = 'Ordinal', shape = diamond, fillcolor = papayawhip]
+   i [label = 'Qualitative', shape = box, fillcolor = gold]
+   j [label = 'Natural midpoint?']
+   k [label = 'Yes', shape = diamond, fillcolor = papayawhip]
+   l [label = 'No', shape = diamond, fillcolor = papayawhip]
+   m [label = 'Sequential', shape = box, fillcolor = gold]
+   n [label = 'Diverging', shape = box, fillcolor = gold]
+   a->b->j
+   a->c->f2->{g h}
+   g->i
+   h->j-> {k l}
+   k->n
+   l->m
+   subgraph { 
+     rank = same; b; c; 
+   } 
+   subgraph { 
+     rank = same; i; m; n; 
+   } 
+   subgraph { 
+     rank = same; g; h; 
+   } 
+   } 
+      ")
+```
+### Discrete colour/fill scales
+
+Discrete scales are automatically used when the variable mapped to colour or fill is a character or factor variable.
+If you want to use a discrete scale on a numeric variable, for example, if 0 represents Male and 1 represents Female (this is a bad idea), then you need to coerce it to a factor with `factor()`. 
+If you don't do this, you will get an error.
+
+There is a choice of three types of discrete colour/fill scales
+
+ - [Qualitative](qualitative) for categorical variables
+ - [Sequential](sequential) for ordinal variables
+ - [Diverging](diverging) for ordinal variables with a natural midpoint.
 
 ### Qualitative
 
-Qualitative palettes have no natural order to the colours. Use them for categorical variables.
+Qualitative palettes have no natural order to the colours. 
+Use them for categorical variables.
+In the `penguins` dataset, species, island, and sex are categorical variables.
 
 ```{r}
+ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_density()
+```
+
+You can change the default colours/fill by either picking your own colours with `scale_colour_manual()` or `scale_fill_manual()`.
+
+```{r, fig.width = 3.5, fig.height = 3}
+ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_density() +
+  scale_fill_manual(values = c(Adelie = "pink", Chinstrap = "purple", Gentoo = "green"))
+```
+
+Picking your own colours can be hard!
+
+Normally better to use some built in qualitative palettes, for example these from the `RColorBrewer` package.
+
+```{r, fig.height = 4}
 RColorBrewer::display.brewer.all(type = "qual")
 ```
+You can use these with `scale_colour_brewer()` or `scale_fill_brewer()`
 
+```{r, fig.width = 3.5, fig.height = 3}
+ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_density() +
+  scale_fill_brewer(palette = "Set1")
+```
 
+### Sequential
 
-### Continuious
+Sequential colour/fill scales are useful for ordinal variables - for example, high, medium, and low concentrations of a treatment drug.
 
-Use continuous palettes for continuous variables
+Here are some examples from the `RColorBrewer` package, which can be used as above.
 
-```{r}
+```{r, fig.height = 4}
 RColorBrewer::display.brewer.all(type = "seq")
 ```
+Another example of a sequential colour/fill palette is viridis, which can be used with `scale_fill_viridis_d()`. 
 
-You can use `RColorBrewer` continuous palettes with `scale_fill_brewer` or `scale_colour_brewer`.
 
-### Diverging
+### Diverging 
 
-Use diverging palettes for continuous variables when there is a natural midpoint.
-Perhaps to indicate values above or below zero, or the mean of the data.
-Here are some divergent palettes from the `RColorBrewer` package.
+Diverging colour/fill scales are useful for ordinal variables with a natural midpoint, which might be zero, or the mean of the data.
 
-```{r}
+Here are some examples from the `RColorBrewer` package, which can be used as above.
+
+```{r, fig.height = 4}
 RColorBrewer::display.brewer.all(type = "div")
 ```
+
+
+
+### Continuous colour/fill scales
+
+Continuous colour/fill scales are used for continuous variables. 
+They can be directional or diverging.
+
+You can make your own continuous colour/fill scales with `scale_colour_gradient()` with two colours of your choice.
+`scale_fill_gradient2()` will make a diverging scale by adding a mid-point colour.
+
+It can be better to use existing colour scales.
+`scale_fill_viridis_c()` is a popular continuous scale.
+You can also use interpolated versions of `RColorBrewer` palettes with `scale_fill_distiller()`.
+
+Continuous colour/fill scales also can be binned (just a a histogram bins the data on the x-axis) with `scale_fill_binned()`, `scale_fill_viridis_b()`for binned viridis palettes, or `scale_colour_fermenter()` for binned `RColorBrewer` palettes.
+
+Here are many examples of colour palettes in the `paletteer` package
 
 
 ### Colour blind friendly colours
@@ -67,7 +174,7 @@ That was hopeless.
 It won't even print well in black and white (shown by the Desaturated panel). 
 Let's try a different palette.
 
-```{r viridis-colourblind, fig.cap = "Viridis fill.", fig.height = 3, fig.width=3.5}
+```{r viridis-colourblind, fig.cap = "Viridis fill.", fig.height = 3, fig.width=3.5, message = FALSE}
 p3_v <- p3 + scale_fill_viridis_d()
 p3_v
 ```
@@ -83,12 +190,20 @@ Always test that your colour palette is colourblind friendly, or use one known t
  
 ## Shapes
 
-The `shape` aesthetic is used to get different shapes.
+You can change the shape of all the points made by, for example, `geom_point()` by setting the shape.
+
+```{r shape-set, fig.width = 3, fig.height=3}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(shape = 4)
+```
+
+If you map a discrete variable to the `shape` aesthetic, points made by `geom_point()`, `geom_pointrange()`, etc will have different shaped points for the different values in the variable.
+Many of the shapes are difficult to distinguish when small, so it is usually best to use shape with colour to distinguish groups.
 These are the available shapes.
 
-```{r shapes, fig.cap = "Shapes", fig.height=2.5}
+```{r shapes, fig.cap = "Shapes", fig.height=2.5, echo = FALSE}
 step <- 9
-tibble(shape = 0:25, x = (shape) %% step, y = (shape) %/% step) %>% 
+tibble(shape = 0:25, x = (shape) %% step, y = (shape) %/% step) |>  
   ggplot(aes(x = x, y = y, shape = I(shape), label = shape)) +
   geom_point(size = 5, fill = "red") +
   scale_y_reverse(expand = c(0.1, 0)) +
@@ -98,17 +213,47 @@ tibble(shape = 0:25, x = (shape) %% step, y = (shape) %/% step) %>%
 
 Shapes 21-24 take a `fill` and a `colour` aesthetic, whereas all the other shapes just take `colour`.
 
-Many of the shapes are difficult to distinguish when small, so usually best to use shape with colour to distinguish groups.
+If you want to change the shape from the default shapes, use `scale_shape_manual()`.
+
+```{r scale-shape-manual, fig.width = 3.5, fig.height = 3}
+ggplot(penguins, 
+       aes(x = body_mass_g, y = bill_length_mm, colour = species, shape = species)) +
+  geom_point() +
+  scale_shape_manual(values = c(Adelie = 17, Chinstrap = 6, Gentoo = 16))
+```
+
+
 
 ## linetypes
 
-```{r linetypes}
-tibble(linetype = c("solid", "longdash", "dashed", "dotted", "blank"), y = 1:length(linetype)) %>% 
-  ggplot(aes(x = 0, xend = 1, y = y, yend = y, linetype = I(linetype))) +
-  geom_segment() +
-  geom_text(aes(label = linetype), x = 0.5, nudge_y = 0.3) +
-  theme_void()
+You can change the line types of all the lines made by, for example, `geom_line()` by setting the linetype.
 
-
+```{r chickweight, fig.height = 3, fig.width = 3.5}
+ggplot(ChickWeight, aes(x = Time, y = weight, group = Chick, colour = Diet)) +
+  geom_line(linetype = "dashed")
 ```
 
+
+If you map a discrete variable to the `linetype` aesthetic, lines made by `geom_line`, `geom_path`, etc will have different line types or the different values in the variable.
+Line types can sometimes be used in addition to colour to make it easier to differentiate lines.
+
+```{r chickweight2, fig.height = 3, fig.width = 3.5}
+ggplot(ChickWeight, aes(x = Time, y = weight, group = Chick, colour = Diet, linetype = Diet)) +
+  geom_line()
+```
+
+If you need to change the linetypes assigned to each value, you can use `scale_linetype_manual` and specify them by name (Fig. \@ref(fig:linetypes)).
+
+```{r linetypes, fig.height=2.5, fig.width=3, fig.cap = "Some named linetypes", echo=FALSE}
+tibble(
+    label = c("blank", "dotted", "dashed", "longdash", "solid"),
+    y = 5:1
+  ) |>  
+  ggplot(aes(x = 0, xend = 1, y = y, yend = y, linetype = I(label))) +
+  geom_segment(show.legend = FALSE) +
+  geom_text(aes(label = label), x = 0.5, nudge_y = 0.3) +
+  theme_void()
+```
+
+Custom linetypes can also be made using of up to eight hexadecimal digits (1-9, A-F) that give the length of lines and gaps.
+`"1FFF"` would draw a dot followed by a long gap, a long line, and another long gap, and then the pattern would repeat.
