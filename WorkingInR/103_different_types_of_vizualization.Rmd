@@ -1,26 +1,3 @@
----
-title: ""
-output:
-  bookdown::html_document2:
-    highlight: tango
-    toc: true
-    toc_float: true
-    css: ../css/style-chapters.css
-
-bibliography: Biostats_biblio.bib
---- 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
-library("tidyverse")
-
-# load penguine data set
-data(penguins, package = 'palmerpenguins')
-
-# set biostats theem
-source("../Templates/biostats_theme.R")
-theme_set(theme_biostats)
-```
 
 ### Before we start {.facta .toc-ignore}
 Data types
@@ -31,12 +8,12 @@ Uncertainty things...
 # Types of vizualization
 
 The type of data will define what type of plot you can make. 
-For example with continous data you can make a scatter plot, but you will need categorical data to make a boxplot.
+For example with continuous data you can make a scatter plot, but you will need categorical data to make a boxplot.
 The next step is then to think about what you want to show with the figure.
-What are the important elements to vizalize.
+What are the important elements to vizualise.
 
 Here, we present a number of common plot types related to different types of data.
-The code to make each plot is alwys shown above or below the plot.
+The code to make each plot is always shown above or below the plot.
 
 If you are very uncertain, here is a guide to help you choose the plot type.
 
@@ -46,13 +23,13 @@ In the first example, we use `geom_point()`, which makes dots or is also called 
 ```{r simple-plot, eval=TRUE, echo=TRUE}
 ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species, shape = species)) +
   geom_point(size = 2) +
-  labs(title = "Iris data", x = "Bill Length  in mm", y = "Bill depth in mm") +
+  labs(title = "Penguin", x = "Bill Length  in mm", y = "Bill depth in mm") +
   scale_color_viridis_d()
 ```
 <br/><br/>
 
 ## Continous data {.tabset .tabset-fade}
-Continous data is often visualized using a scatterplot or boxplot.
+Continuous data is often visualized using a scatterplot or boxplot.
 A heatmap can also be used (see below).
 
 ```{r continous, echo=FALSE, out.width = '100%'}
@@ -173,13 +150,6 @@ ggplot(data = penguins, aes(x = bill_length_mm, fill = species)) +
   labs(x = "Bill Length  in mm")
 ```
 
-
-### Ridgeline
-...
-
-```{r ridgeline, eval=TRUE}
-
-```
 
 
 ### Violin
@@ -306,17 +276,17 @@ What is a correlation and how to calculate it...
 
 ```{r correlation, eval=TRUE}
 # Select only numeric variables and remove all NAs
-penguine_matrix <- penguins %>% 
-  select(bill_length_mm:body_mass_g) %>% 
+penguine_matrix <- penguins |> 
+  select(bill_length_mm:body_mass_g) |> 
   filter(!is.na(bill_length_mm))
 
 # Calculate the correlation between all variables and rearrange the table
 cor_matrix <- cor(penguine_matrix)
 
 # rearrange
-cor_long <- cor_matrix %>% 
-  as.data.frame() %>% 
-  rownames_to_column() %>% 
+cor_long <- cor_matrix |> 
+  as.data.frame() |> 
+  rownames_to_column() |> 
   pivot_longer(cols = -rowname, names_to = "colname", values_to = "cor")
 
 ```
@@ -376,14 +346,6 @@ knitr::include_graphics("Figures/Uncertainty.png")
 ## {.toc-ignore}
 <br/><br/>
 
-
-
-## Tables {.tabset .tabset-fade}
-
-
-
-## {.toc-ignore}
-<br/><br/>
 
 
 
