@@ -103,6 +103,8 @@ The help files are sometimes not the most user friendly.
 The `introverse` package has simplified help pages for many common base R and tidyverse functions.
 
 ```{r introverse, eval = FALSE}
+# install from github
+remotes::install_github("spielmanlab/introverse")
 library(introverse)
 get_help("length")
 ```
@@ -124,6 +126,28 @@ Very often, making the reproducible example is enough to identify and fix the pr
 ### Exercise {- .facta .toc-ignore}
 
 Look at the help file for `length()` and run the examples.
+
+### Built-in data sets
+
+There are many datasets and other objects built into R or R packages. 
+If the package is loaded, they can be used by typing their name.
+
+```{r pi}
+pi
+month.abb# abbreviated month names
+```
+
+To make objects in packages available you can either load the package with `library()` first, or use `data()`.
+
+```{r data, error = TRUE}
+penguins # not available
+data(penguins, package = "palmerpenguins")
+penguins
+```
+
+
+The `penguins` dataset contains morphological data on three species of penguin. 
+You will meet this dataset repeatedly as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
 
 
 ## Storing data in objects
@@ -619,7 +643,7 @@ Such a calculation would not have been possible without the conversion from char
 ten_days_before_my_birthday <- birthday - 10
 ```
 
-### Exercise {- .facta .toc-ignore}
+#### Exercise {- .facta .toc-ignore}
 
 There is a tutorial for handling dates with the `lubridate` package in `biostats.tutorials`. 
 
@@ -672,7 +696,7 @@ vec.char
 When conducting a statistical analysis, a vector is possibly the simplest object in which you may store entries for a single variable. 
 In the following example, 24 data points corresponding to the temperature for a specific location registered over a period of 24 hours have been stored in the vector `temperature`: 
 
-```{r temperature, echo=FALSE}
+```{r temperature, echo=TRUE}
 temperature <- c(8.7, 9.2, 9.4, 9.5, 9.7, 10.1, 10.3, 10.6, 10.7, 10.8, 11.3, 11.9, 12.2, 12.3, 11.7, 10.2, 10.3, 10.3, 10.4, 10.3, 10.1, 9.7, 9.5, 9.4)
 ``` 
 
@@ -711,7 +735,7 @@ temperature[c(2, 6)]
 
 Use negative indicies to remove an element.
 
-### Exercise {- .facta .toc-ignore}
+#### Exercise {- .facta .toc-ignore}
 
 From the vector `month.name`
 
@@ -752,7 +776,15 @@ neo[2, ]
 neo[ , 3]
 ```
 
-### Exercise {- .facta .toc-ignore}
+
+
+##### About the use of matrices
+
+The use of matrices on this website is very limited.
+However, you may meet matrices in other projects, so it is best to know about their existence.
+You can read more about matrices [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/matrix){target="_blank"}.
+
+##### Exercise {- .facta .toc-ignore}
 
 Make the matix neo as above, then
 
@@ -763,18 +795,12 @@ Make the matix neo as above, then
 
 
 
-##### About the use of matrices
-
-The use of matrices on this website is very limited.
-However, it is not unlikely that you meet matrices in other projects, so it is best to know about their existence.
-You can read more about matrices [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/matrix){target="_blank"}.
-
 #### Lists
 
 A list is an object that contains values of *one or several* data types. 
 It can not only contain single data elements, but also other objects such as vectors, matrices, etc.  
 
-Lists are created by the mean of the function `list()` that concatenates data elements and objects.
+Lists are created by the function `list()` that concatenates data elements and objects.
 `list()` conveniently allows for naming the elements by the mean of the symbol `=`.  
 
 In the example below, we will store 6 elements and name them `string`, `number`, `temp`, `boolean`, `words` and `matrix`. 
@@ -791,6 +817,12 @@ my_list
 ```
 
 ##### Retrieving list elements
+
+You can access list items by position with `[[` notation.
+
+```{r list-square}
+my_list[[1]] #get first element
+```
 
 Naming elements is quite convenient as it allows you to retrieve them rapidly by the mean of the symbol `$`. 
 The syntax is as follows: `list_name$element_name`.  
@@ -821,13 +853,20 @@ my_list$matrix[2, 3]
 
 You may read more information about lists [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list){target="_blank"}.
 
+##### Exercise {- .facta .toc-ignore}
+
+Make a list with three named elements of different types.
+
+ - use square bracket notation to extract the second element
+ - use `$` notation to extract an element by name.
+
 #### Data frames and tibbles
 
 A data frame is a two-dimensional object that stores data of *various* types in the form of a table. 
 Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
 
 Until recently, data frames were the main storage objects for research data. 
-Nowadays, tibbles (an evolution of the data frame that appeared in the tidyverse) replace data frames as they are viewed as more practical to handle data sets (you will understand why further below).
+Nowadays, tibbles (an evolution of the data frame that appeared in the tidyverse) replace data frames as they are more practical to handle data sets (you will understand why further below).
 Because of this trend, we will focus mainly on tibbles here in this section and further on this website.
 It is however likely that you will meet data frames in the course of your studies. 
 Do not worry as we will see how to transform data frames into tibbles.
@@ -839,7 +878,7 @@ Simply run this command first:
 library(tidyverse)
 ```
 
-NB: if you have not installed the package yet, have a look at the section [Installing the tidyverse](LINK) in the chapter [Getting Started with R](LINK).
+If you have not installed the package yet, have a look at the section \@ref(the-tidyverse).
 
 ##### Data frames vs. tibbles
 
@@ -869,7 +908,8 @@ Here, you get a more convenient display of the same data:
 + the dimensions of the tibble appear clearly in the header (`# A tibble: 36 x 3`),
 + the column names come along with a quick description of the data type (`<int>` for integer, `<chr>` for character, `<dbl>` for double, etc).
 
-All in all, tibbles _print_ much better and give more information than data frames do! 
+All in all, tibbles _print_ much better and give more information than data frames do!
+They also have more predictable behaviour when extracting data from them.
 
 
 ##### Retrieving data elements
@@ -909,19 +949,6 @@ df_as_tibble <- as_tibble(df)
 df_as_tibble 
 ```
 
-##### Penguins as a recurrent example
-
-Here is the tibble called `penguins` which is part of the package `palmerpenguins`, and which was used previously in section  \@ref(why-assigning-data). 
-You will certainly meet this tibble again and again on this website as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
-
-```{r penguins-tibble, echo=TRUE}
-penguins
-```
-
-Here is the citation for the corresponding package:
-```{r penguins-citation, echo=TRUE}
-citation("palmerpenguins")
-```
 
 You may read more about tibbles [here](https://tibble.tidyverse.org/){target="_blank"}.  
 You may read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame){target="_blank"}.
