@@ -98,7 +98,7 @@ Figure 8.2: Left join. The coloured column contains the identifiers.
 </div>
 <p>Left joins are implemented in <code>dplyr</code> with <code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code>.</p>
 <p>Let use <code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code> to add the location of each island to the penguin data set.</p>
-<div class="sourceCode" id="cb400"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb404"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># location of the three islands in the penguins dataset.</span>
 
 <span class="va">penguin_islands</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
@@ -119,13 +119,13 @@ Figure 8.2: Left join. The coloured column contains the identifiers.
 <p>The first two arguments to <code><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join()</a></code> are the data frames, the third is the <code>by</code> argument which tells the join which column to make the join by.
 Here, we are joining by a single column with the same name in both data frames.
 It is possible to join by multiple columns and where the columns have different names in each dataset.</p>
-<div class="sourceCode" id="cb402"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb406"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguin_small</span> <span class="op">&lt;-</span> <span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="co"># small version of data for easy viewing</span></code></pre></div>
 <pre><code>## group_by: one grouping variable (species)</code></pre>
 <pre><code>## slice (grouped): removed 338 rows (98%), 6 rows remaining</code></pre>
-<div class="sourceCode" id="cb405"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb409"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join</a></span><span class="op">(</span><span class="va">penguin_small</span>, <span class="va">penguin_islands</span>, by <span class="op">=</span> <span class="st">"island"</span><span class="op">)</span></code></pre></div>
 <pre><code>## left_join: added 2 columns (Latitude, Longitude)</code></pre>
 <pre><code>##            &gt; rows only in x   0</code></pre>
@@ -135,15 +135,16 @@ It is possible to join by multiple columns and where the columns have different 
 <pre><code>##            &gt; rows total       6</code></pre>
 <pre><code>## # A tibble: 6 × 10
 ## # Groups:   species [3]
-##   species  island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
-##   &lt;fct&gt;    &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
-## 1 Adelie   Torge…           39.1          18.7              181        3750 male 
-## 2 Adelie   Torge…           39.5          17.4              186        3800 fema…
-## 3 Chinstr… Dream            46.5          17.9              192        3500 fema…
-## 4 Chinstr… Dream            50            19.5              196        3900 male 
-## 5 Gentoo   Biscoe           46.1          13.2              211        4500 fema…
-## 6 Gentoo   Biscoe           50            16.3              230        5700 male 
-## # … with 3 more variables: year &lt;int&gt;, Latitude &lt;dbl&gt;, Longitude &lt;dbl&gt;</code></pre>
+##   species   island    bill_length_mm bill_depth_mm flipper_length_mm
+##   &lt;fct&gt;     &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;
+## 1 Adelie    Torgersen           39.1          18.7               181
+## 2 Adelie    Torgersen           39.5          17.4               186
+## 3 Chinstrap Dream               46.5          17.9               192
+## 4 Chinstrap Dream               50            19.5               196
+## 5 Gentoo    Biscoe              46.1          13.2               211
+## 6 Gentoo    Biscoe              50            16.3               230
+## # … with 5 more variables: body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;,
+## #   Latitude &lt;dbl&gt;, Longitude &lt;dbl&gt;</code></pre>
 <p>Only three of the four islands in <code>penguin_islands</code> have data in the <code>penguins</code> data set.
 Different variants of mutating joins will treat this in different ways.</p>
 <ul>
@@ -166,7 +167,7 @@ Different variants of mutating joins will treat this in different ways.</p>
 Sometimes you want all possible combinations of rows.
 This is known as the Cartesian product and can be generated with <code>crosing()</code>.
 <code>crosing()</code> works with data frames as well as vectors as shown here.</p>
-<div class="sourceCode" id="cb413"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb417"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html">crossing</a></span><span class="op">(</span>a <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 2
 ##   a         b
@@ -190,7 +191,7 @@ This is known as the Cartesian product and can be generated with <code>crosing()
 Figure 8.3: Left join. The coloured column contains the identifiers.
 </p>
 </div>
-<div class="sourceCode" id="cb415"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb419"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguin_islands</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/semi_join.html">semi_join</a></span><span class="op">(</span><span class="va">penguins</span>, by <span class="op">=</span> <span class="st">"island"</span><span class="op">)</span></code></pre></div>
 <pre><code>## semi_join: added no columns</code></pre>
@@ -212,7 +213,7 @@ Figure 8.3: Left join. The coloured column contains the identifiers.
 Figure 8.4: Left join. The coloured column contains the identifiers.
 </p>
 </div>
-<div class="sourceCode" id="cb423"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb427"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguin_islands</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/anti_join.html">anti_join</a></span><span class="op">(</span><span class="va">penguins</span>, by <span class="op">=</span> <span class="st">"island"</span><span class="op">)</span></code></pre></div>
 <pre><code>## anti_join: added no columns</code></pre>
@@ -238,7 +239,7 @@ Figure 8.4: Left join. The coloured column contains the identifiers.
 </h3>
 <p>If the data frames contain information about the same observations, they can be combined with <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols()</a></code>.</p>
 <p>So data1, data2, and data3 can be combined to make one data frame with many columns</p>
-<div class="sourceCode" id="cb431"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb435"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">data1</span>, <span class="va">data2</span>, <span class="va">data3</span><span class="op">)</span></code></pre></div>
 <p><code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols()</a></code> expects that the row order is the same in both datasets, but cannot check this.
 It only checks that the number of rows is the same in each data frame.
@@ -251,7 +252,7 @@ If possible, use a join instead.</p>
 <p>If the data frame contain more observations (rows), and typically at least some of the same columns, they can be combined with <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code>.
 This is useful if, for example, there are data from two years that need combining.</p>
 <p>One feature of <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code> that I find useful is the <code>.id</code> argument that makes an extra column for an identifier.</p>
-<div class="sourceCode" id="cb432"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb436"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">svalbard_islands</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span> <span class="op">~</span> <span class="va">island</span>, <span class="op">~</span> <span class="va">Latitude</span>, <span class="op">~</span> <span class="va">Longitude</span>,
    <span class="st">"Nordaustlandet"</span>, <span class="fl">79.558405</span>, <span class="fl">24.017351</span>,
  <span class="st">"Prins Karls Forland"</span>, <span class="fl">78.554090</span>, <span class="fl">11.256545</span><span class="op">)</span>
@@ -312,7 +313,7 @@ This is useful if, for example, there are data from two years that need combinin
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-01.</p>
+    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
