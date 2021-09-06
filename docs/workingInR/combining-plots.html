@@ -59,9 +59,10 @@
 <li><a class="" href="themes-1.html"><span class="header-section-number">13</span> Themes</a></li>
 <li><a class="" href="shapes-colours-and-linetypes.html"><span class="header-section-number">14</span> Shapes, colours and linetypes</a></li>
 <li><a class="active" href="combining-plots.html"><span class="header-section-number">15</span> Combining plots</a></li>
+<li><a class="" href="using-functions-and-packages.html"><span class="header-section-number">16</span> Using functions and packages</a></li>
 <li class="book-part">Other topics</li>
-<li><a class="" href="handling-missing-values.html"><span class="header-section-number">16</span> Handling missing values</a></li>
-<li><a class="" href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">17</span> Bestiary of Brackets and other R notation</a></li>
+<li><a class="" href="handling-missing-values.html"><span class="header-section-number">17</span> Handling missing values</a></li>
+<li><a class="" href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">18</span> Bestiary of Brackets and other R notation</a></li>
 </ul>
 
         <div class="book-extra">
@@ -77,10 +78,10 @@
 <p>First, check you actually need to combine plots and cannot use facets instead.
 Typically, use facets if the x-axis variable is the same for all plots and the plots use the same geoms.</p>
 <p>Plots can be combined using the <code>patchwork</code> package.</p>
-<div class="sourceCode" id="cb509"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb514"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></code></pre></div>
 <p>Start by making some plots</p>
-<div class="sourceCode" id="cb510"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb515"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">species</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span>, colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -92,30 +93,31 @@ Typically, use facets if the x-axis variable is the same for all plots and the p
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>The simplest way to use <code>patchwork</code> is to <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code> to combine the plots.
 <code>patchwork</code> will try to make the combined figure square.</p>
-<div class="sourceCode" id="cb511"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb516"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span></code></pre></div>
 <p><img src="working-in-R-bookdown_files/figure-html/patchwork1-1.png" width="672">
 With <code><a href="https://rdrr.io/r/base/Logic.html">|</a></code> (side by side) <code>\</code> (over under), you can have more control.</p>
-<div class="sourceCode" id="cb512"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb517"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span>  <span class="op">|</span> <span class="va">p4</span><span class="op">)</span> <span class="op">/</span> <span class="va">p3</span></code></pre></div>
 <div class="inline-figure"><img src="working-in-R-bookdown_files/figure-html/patchwork2-1.png" width="672"></div>
 <p><code>plot_layout</code> gives you control over the relative size of the plot and whether the legends should be combined if possible.</p>
-<div class="sourceCode" id="cb513"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb518"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span>  <span class="op">|</span> <span class="va">p4</span><span class="op">)</span> <span class="op">/</span> <span class="va">p3</span> <span class="op">+</span> 
   <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="working-in-R-bookdown_files/figure-html/patchwork-layout-1.png" width="672"></div>
 <p>If you want to change all the plots in the combined figure, you can add a ggplot2 function with <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code>.</p>
-<div class="sourceCode" id="cb514"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb519"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span>  <span class="op">|</span> <span class="va">p4</span><span class="op">)</span> <span class="op">/</span> <span class="va">p3</span> <span class="op">+</span> 
   <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span> <span class="op">&amp;</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="working-in-R-bookdown_files/figure-html/patchwork-ampersand-1.png" width="672"></div>
 <p>You can also overlay figures, which might be useful to show an inset map.</p>
-<div class="sourceCode" id="cb515"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb520"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
-
-<span class="co"># map data inset</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></code></pre></div>
+<pre><code>## Linking to GEOS 3.6.2, GDAL 2.2.3, PROJ 4.9.3</code></pre>
+<div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># map data inset</span>
 <span class="va">europe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_countries.html">ne_countries</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>, continent <span class="op">=</span> <span class="st">"Europe"</span>, returnclass <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span>
 
 <span class="co"># map data main map</span>
@@ -165,12 +167,9 @@ With <code><a href="https://rdrr.io/r/base/Logic.html">|</a></code> (side by sid
 
 </div>
 </div>
-
-
-
   <div class="chapter-nav">
 <div class="prev"><a href="shapes-colours-and-linetypes.html"><span class="header-section-number">14</span> Shapes, colours and linetypes</a></div>
-<div class="next"><a href="handling-missing-values.html"><span class="header-section-number">16</span> Handling missing values</a></div>
+<div class="next"><a href="using-functions-and-packages.html"><span class="header-section-number">16</span> Using functions and packages</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav"><li>
@@ -194,7 +193,7 @@ With <code><a href="https://rdrr.io/r/base/Logic.html">|</a></code> (side by sid
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-01.</p>
+    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-06.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

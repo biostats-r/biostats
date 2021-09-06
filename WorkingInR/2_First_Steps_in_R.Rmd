@@ -441,11 +441,25 @@ seq(14, 24, length.out=7)
 
 ### Random series
 
-The following section provides you with functions that build series of random, numerical values.
+The following section provides you with functions that build series of random, numerical values. 
+It demonstrates functions to make sequences from uniform and normal distributions, but there are many more distributions available in R.
+
+```{r distr, echo = FALSE, fig.cap = "Different distributions of 1000 random numbers, with default options", fig.height=3, fig.width=5, message=FALSE}
+n <- 1000
+tibble(
+  dist = rep(c("runif", "rnorm"), each = n),
+  value = c(runif(n), rnorm(n))) |>
+  mutate(dist  = factor(dist, levels = c("runif", "rnorm"))) |> 
+  ggplot(aes(x = value)) +
+  geom_histogram(boundary = 0, binwidth = 0.2) +
+  facet_wrap(~ dist)
+
+```
+
 
 #### The function runif()
 
-`runif(n)` returns a series of `n` random numbers between 0 and 1.
+`runif(n)` returns a series of `n` random numbers from a uniform distribution between 0 and 1.
 
 ```{r runif, echo=TRUE}
 runif(7)
@@ -487,11 +501,24 @@ In the following example, `sample()` shuffles and returns all the values in `1:1
 sample(1:10)
 ```
 
+#### `set.seed()`
+
+The sequences are not strictly random but pseudo random.
+The sequences repeat with a very long period (2^19937^ - 1 for the default Mersenne-Twister algorithm).
+If you want to get exactly the same sequence again (for reproducibility), you can set the seed for the random numbers with `set.seed()`.
+
+```{r set-seed}
+set.seed(300)
+rnorm(5)
+set.seed(300)
+rnorm(5)
+```
+
 
 ### Exercise {- .facta .toc-ignore}
 
-- Generate 10 pseudo random numbers from a uniform distribution between 10 and 20
-- Generate 10 pseudo random numbers from a normal distribution with a mean of 4 and a standard deviation of 2
+- Generate 10 random numbers from a uniform distribution between 10 and 20
+- Generate 10 random numbers from a normal distribution with a mean of 4 and a standard deviation of 2
 - sample 10 values from the sequence 1:10 with replacement
 
 ## Data types and objects

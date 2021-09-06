@@ -359,10 +359,6 @@ If you want to install a package published on [GitHub](https://github.com/){targ
 First you need to install the package `remotes`.
 Type first the name of the repository, then `\` and the name of the package.
 Here also, you must add quotation marks `"` `"`.
-Here is an example with the package `biostats.tutorials`, located  in the repo `biostats-r`:
-```{r install-github, echo=TRUE, eval=FALSE}
-remotes::install_github("biostats-r/biostats.tutorials")
-```
 
 ### Recommended packages
 
@@ -390,21 +386,6 @@ install.packages("tidyverse")
 library(tidyverse)
 ``` 
 
-
-#### biostats.tutorials {#biostatstutorials}
-
-Along with the present website, our team has developed a package with tutorials called `biostats.tutorials`.
-This package will help you learn and practice R functions and concepts. 
-Several of the upcoming chapters refer to this package.
-Install `biostats.tutorials` with this code:
-
-```{r install-the-tutorial, echo=TRUE, eval=FALSE}
-remotes::install_github("biostats-r/biostats.tutorials")
-```
-
-Now load the package with `library(biostats.tutorials)` and the tutorials should appear in the tab `Tutorial` (see section \@ref(the-tutorial-tab)).
-Click the "Start Tutorial" button to start the tutorial (this may take a few seconds to start and install some extra packages).
-
 #### palmerpenguins
 
 `palmerpenguins` is a package that provides you with two *real* data sets. 
@@ -425,9 +406,52 @@ Type this following line in the console if you want to know more about `palmerpe
 citation("palmerpenguins")
 ```
 
+#### biostats.tutorials {#biostatstutorials}
+
+Along with the present website, our team has developed a package with tutorials called `biostats.tutorials`.
+This package will help you learn and practice R functions and concepts. 
+Several of the upcoming chapters refer to this package.
+Install `biostats.tutorials` with this code:
+
+```{r install-the-tutorial, echo=TRUE, eval=FALSE}
+remotes::install_github("biostats-r/biostats.tutorials")
+```
+
+Now load the package with `library(biostats.tutorials)` and the tutorials should appear in the tab `Tutorial` (see section \@ref(the-tutorial-tab)).
+Exercises will tell you when to run a tutorial.
+Click the "Start Tutorial" button to start the tutorial (this may take a few seconds to start the first time).
+
+
 ### Exercise {- .facta .toc-ignore}
 
 Install the `tidyverse`, `palmerpenguins` from CRAN and `biostats.tutorials` from GitHub using the code above.
+
+If your R version is < 4.1, follow these instructions
+
+<details>
+<summary>Using R < 4.1?</summary>
+Ideally upgrade R to the latest version. 
+If you cannot, run this code to modify `biostats.tutorials` so that it can run on your computer.
+```{r old-pipes, eval = FALSE}
+library(tidyverse)
+old_pipes <- function(){
+  if(R.version >= 4.1){return()}
+  #find Rmd files in tutorial directory
+  list.files(system.file("tutorials", 
+                         package = "biostats.tutorials"), 
+             recursive = TRUE, 
+             pattern = "\\.Rmd", 
+             full.names = TRUE) %>%
+    #iterate over files and read them
+    map(~{read_lines(.x) %>%
+        #replace new pipes with old
+    str_replace_all(pattern = fixed("|>"), replacement = "%>%") %>%
+        #write file
+    write_lines(file = .x)})
+  }
+old_pipes()
+```
+</details>
 
 ## Working with a project
 
