@@ -1,12 +1,7 @@
+# Introduction
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(palmerpenguins)
-library(tidyverse)
-library(flair)
-source("../Templates/biostats_theme.R")
-```
-
+R markdown lets you write reproducible documents with interwoven code and text.
+This book is written in R markdown.
 
 ### Before you start {- .facta .toc-ignore}
 
@@ -431,7 +426,7 @@ Equations are embedded in a pair of dollar symbols.
 RStudio will show a preview of the equation as you type it.
 Equations are written with [LaTeX notation](https://en.wikibooks.org/wiki/LaTeX/Mathematics).
 
-```{r equations, echo = FALSE}
+```{r equations, echo = FALSE, message = FALSE}
 read_csv('
 What, How, Output         
 "Lower-case Greek letters", "`$\\sigma$`", "$\\sigma$"
@@ -464,9 +459,9 @@ $$SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}$$
 
 When making a complex formula, build one element at a time, often starting in the middle, rather than trying to get it all working at once.
 
-# Towards a manuscript
+# (PART\*) Towards a manuscript{-}
 
-## Citations and bibliographies
+# Citations and bibliographies
 
 R markdown can add citations and a bibliography to a document.
 Use the bibliography field in the YAML to point to the bibliography file.
@@ -487,7 +482,7 @@ decorate("bibliography", eval = FALSE) %>%
 The bibliography file can be in one of several formats, including bibTeX (\*.bib) and endnote (\*.enl).
 Any reference manager should be able to export to a bibTeX file.
 
-### Bibliography placement
+## Bibliography placement
 
 By default, the bibliography is placed at the end of the document.
 It is a good idea to end the R markdown file with an appropriate header.
@@ -527,7 +522,7 @@ decorate("bib-move", eval = FALSE) %>%
   flair_lines(7)
 ```
 
-### Citations
+## Citations
 
 Use the citation keys from the bibliography to cite the reference in the text.
 So to cite the reference with the citation key "Cooper2017" we would use.
@@ -549,7 +544,7 @@ Reproducible code [@Cooper2017] ...\
 
 The `citr` package [install from [GitHub](https://github.com/crsh/citr)] makes an RStudio add-in for adding citations to the text from the bibliograpy.
 
-### Citation style
+## Citation style
 
 If you don't like the default citation style, or you want to submit a manuscript to a journal with an overly pedantic editor, you can change the citation style by specifying a csl file in the YAML.
 
@@ -570,13 +565,13 @@ decorate("csl", eval = FALSE) %>%
 The csl (Citation Style Language) file defines the citation style.
 There are many citation style available from <http://zotero.org/styles>.
 
-### Citation problems
+## Citation problems
 
 Unfortunately, there can be problems with the bibliography and citation.
 Most can be solved by googling the error message.
 A few common problems are addressed here.
 
-##### Incorrect capitalisation
+### Incorrect capitalisation
 
 Many CLS styles convert the title to title case (i.e. only first letter of the first word is capitalised).
 This can be annoying as names (people, countries, species) can be given in the wrong case.
@@ -593,7 +588,7 @@ This can be fixed by editing the bibtex file, putting braces around the word wit
 
 `Population ecology of polar bears at {Svalbard}, {Norway}.`
 
-##### Accents and other special characters
+### Accents and other special characters
 
 The tool-chain that processes R markdown files can sometimes fall over with accented characters or other diacritic marks in the references. 
 The error message will look something like this
@@ -606,7 +601,7 @@ The error message will look something like this
 One solution is to edit the bibtex file to replace the accented character with an [escaped code](https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes).
 For example, the "í" in "Martínez" could be replaced by "\\'{i}".  
 
-## Cross-referencing
+# Cross-referencing
 
 Cross-referencing lets you refer to figures and tables in your document.
 Once set up, this happens automatically, so you don't need to re-number all the figures when you add or delete one.
@@ -625,31 +620,33 @@ decorate("bookdown", eval = FALSE) %>%
   flair_lines(3)
 ```
 
-### Cross-referencing figures and tables
+## Cross-referencing figures and tables
 
 The chunk that made the figure or table needs to have a name (no underscores!) and a caption.
 
 ````
-```{r penguin-hist, fig.cap = "Histogram of penguin body mass"}`r ''`
-penguins %>% 
-  ggplot(aes(x = body_mass_g, fill = species)) +
-  geom_histogram()
+```{r penguin-dens, fig.cap = "Histogram of penguin body mass"}`r ''`
+penguins |> 
+  ggplot(aes(x = flipper_length_mm, fill = species)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Set1")
 ```
 ````
 
-```{r penguin-hist, echo = FALSE, fig.cap = "Histogram of penguin body mass", fig.height=3, fig.width=5, message=FALSE, warning = FALSE}
+```{r penguin-dens, echo = FALSE, fig.cap = "Boxplot of penguin body mass", fig.height=3, fig.width=5, message=FALSE, warning = FALSE}
 penguins %>% 
-  ggplot(aes(x = body_mass_g, fill = species)) +
-  geom_histogram()
+  ggplot(aes(x = flipper_length_mm, fill = species)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Set1")
 ```
 
 To cross-reference the figure made by the above chunk, we need to use this notation.
 
 ```
-Penguins are cool (Fig. \@ref(fig:penguin-hist))
+Penguins are cool (Fig. \@ref(fig:penguin-dens))
 ```
 
-<span style="background-color: Beige;">Penguins are cool (Fig. \@ref(fig:penguin-hist))</span>
+<span style="background-color: Beige;">Penguins are cool (Fig. \@ref(fig:penguin-dens))</span>
 
 To refer to a table made by a chunk called `penguin-results`, you would use
 
@@ -666,7 +663,7 @@ Figure \@ref(fig:no-exist)) does not exist
 ```
 <span style="background-color: Beige;">Non-existing figure (Fig. \@ref(fig:no-exist))</span>
 
-### Cross-referencing equations
+## Cross-referencing equations
 
 To cross-reference an equation, we need to give it a label.
 
@@ -693,7 +690,7 @@ $$
 
 
 
-### Cross-referencing document sections
+## Cross-referencing document sections
 
 You can also refer to other sections of the document using the title/subtitle.
 For example, to refer to this section, you would use
@@ -705,6 +702,8 @@ Cross-referencing (Section \@ref(cross-referencing-document-sections))
 
 Note that the reference must be written in lower case and spaces must be replaced by hyphens.
 Punctuation is deleted.
+
+# Formatting for a journal
 
 ## Journal-specific formatting
 
@@ -739,24 +738,6 @@ Other LaTeX packages can be added in a similar way to add extra functionality, f
 
 # Other topics
 
-## Child documents
-
-If a document becomes very long, it might be worth moving sections to a separate R markdown document known as a child document.
-When the parent R markdown file is knitted, the child file will be included in the output.
-The child file can also be knitted separately.
-
-Child documents can be included in the parent document by using the child option in a code chunk with the file's name and path.
-
-```` 
-```{r child = "discussion.Rmd"}`r ''`
-```
-````
-
-**Important**
-
--   The chunk must be empty.
--   Chunk names in the child R markdown file(s) must be unique and different from the names in the parent file.
--   Any call to `knitr::opts_chunk$set` in a child document will set the chunk option defaults for the rest of the document.
 
 ## Too much or too slow code
 
@@ -771,6 +752,7 @@ If you need a template for many reports, for example, showing results for a spec
 [Paramertised reports](https://bookdown.org/yihui/rmarkdown/parameterized-reports.html)
 which allow you to pass a variable into an R markdown document when it is knitted.
 
+# (PART\*) Troubleshooting{-}
 # Troubleshooting
 
 It is normal to have errors when working with R and R markdown.

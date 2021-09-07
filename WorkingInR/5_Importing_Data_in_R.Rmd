@@ -52,7 +52,7 @@ Briefly, tidy data follows a short series of rules:
 
 The following figure illustrates well these rules.
 
-``` {r threerules, echo=FALSE, fig.cap='_In a tidy dataset, variables are in columns, observations are in rows, and values are in cells._ --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html) - [CC BY-NC-ND 3.0 US](https://creativecommons.org/licenses/by-nc-nd/3.0/us/)'}
+``` {r threerules, echo=FALSE, fig.cap='_In a tidy dataset, variables are in columns, observations are in rows, and values are in cells._ --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html) - [CC BY-NC-ND 3.0 US](https://creativecommons.org/licenses/by-nc-nd/3.0/us/)', out.width = "100%"}
 knitr::include_graphics("Pics/tidy1.png")
 ```
 
@@ -68,8 +68,6 @@ Indeed, at least one of the rules is broken since columns display data matching 
 
 Importing data from a file containing tidy data is a great way to start your work, but it is *not* a prerequisite to data import.
 As long as your data is tabular, you will be able to import it in R, and later you will have the chance to tidy it (see chapter \@ref(tidying-data-with-tidyr)).
-
-
 
 
 ## File formats
@@ -119,14 +117,15 @@ Among these reasons are:
 
 It is thus very important to know what your CSV file is made of.
 We therefore recommend to systematically inspect your data file before importing in R.
-One way to do it is to open the file with `cat(readLines('file.txt'), sep = '\n')` and define:
+One way to do it is to open the file with `read_lines('file.txt')` (the `n_max` argument is useful if there is lots of data) and determine:
 
-+ which symbol is used as decimal separator (`,` or `.`),
-+ which symbol is used as delimiter (`,` or `;`).  
++ which symbol is used as decimal separator (`,` or `.`)
++ which symbol is used as delimiter (`,` or `;`)
++ any extra lines of data that need removing
 
 Here is our previous example:
 ```{r readLines, echo = TRUE}
-cat(readLines('data/weather.csv'), sep = '\n')
+read_lines('data/weather.csv')
 ```
 In this file, the decimal separator is `.` and the delimiter is `,`.
 
@@ -151,7 +150,7 @@ First, it finds and reads the file to import.
 Then it looks at the first 1000 rows of the file and guesses the number of variables and rows, and the data type for each variable. 
 Finally, it displays the data as a tibble keeping track of the order of both the columns and rows, and the nature of the data.
 
-NB: the function does not automatically *store* the data after reading the file. 
+The function does not automatically *store* the data after reading the file. 
 This is why the tibble produced by `read_delim()` must be assigned to an object using `<-`.  
 
 `read_delim()` has two main mandatory arguments:
@@ -162,7 +161,7 @@ This is why the tibble produced by `read_delim()` must be assigned to an object 
 When searching for the file, R/RStudio uses the location of the current RStudio project as a root. 
 As a consequence, you may simply write the file name if the file is in the same folder as your `.Rproj` file. 
 Alternatively, write `[subfolder]/[filename]` if the file is in a subfolder.
-For more info about projects, read section 5 of the chapter [Getting started with R](LINK){target="_blank"}.
+For more info about RStudio projects, read section \@ref(working-with-a-project).
 
 In the following example, we import the file `weather.csv` located in the subfolder `data` of the current RStudio project into the object `weather`. 
 In `weather.csv`, the delimiter is `,` and the decimal separator is `.`
@@ -189,7 +188,7 @@ weather
 
 #### Choose the right delimiter
 
-The example above is rather simple and straight forward, but you may experience some issues depending on the content of the CSV file.
+The example above is rather straight forward, but you may experience some issues depending on the content of the CSV file.
 Relatively often, one tries to import CSV files wrongly assuming that `,` has been used as a delimiter.
 Here is what happens when doing this assumption for a file (`weather2.csv`) where `;` was in fact used as delimiter:
 
@@ -211,7 +210,7 @@ weather2
 
 
 This shows how important it is to review the data before importing it. 
-A quick check with `cat(readLines('data/weather2.csv'), sep = '\n')` would have revealed the use of `;` as delimiter in `weather2.csv`, and you would have certainly used the follow code to import it. 
+A quick check with `read_lines('data/weather2.csv')` would have revealed the use of `;` as delimiter in `weather2.csv`, and you would have certainly used the follow code to import it. 
 
 ```{r delim-csv2bis, echo=TRUE} 
 weather2 <- read_delim(file = "data/weather2.csv", 
@@ -320,6 +319,17 @@ weather
 
 As expected, the first row (with the header) is skipped, and the data from the observation `January` have become the header of the tibble.
 The argument `col_names()` introduced below will be useful for solving this issue.
+
+### Exercise {- .facta .toc-ignore}
+
+Download the Mt Gonga [plant biomass data](https://raw.githubusercontent.com/biostats-r/biostats/main/WorkingInR/data/biomass2015_H.csv) and import it.
+
+ <details>
+  <summary>Hint</summary>
+`read_delim`
+</details> 
+
+
 
 #### col_names
 
@@ -433,6 +443,15 @@ countsdates
 
 You will find the whole list of `cols()` parameters for `col_types`  [here](https://readr.tidyverse.org/reference/cols.html){target="_blank"}.  
 
+### Exercise {- .facta .toc-ignore}
+
+Download the midge data from [https://www.ncei.noaa.gov/pub/data/paleo/insecta/chironomidae/northamerica/usa/alaska/alaska2011midge-t.txt](https://www.ncei.noaa.gov/pub/data/paleo/insecta/chironomidae/northamerica/usa/alaska/alaska2011midge-t.txt) and import part "3a. Clegg et al. 2011 Hudson Lake Midge Temperature Data"
+
+ <details>
+  <summary>Hint</summary>
+`skip` and 
+`n_max` arguments to `read_delim` can be useful.
+</details> 
 
 ### Further Reading {- .literature .toc-ignore}
 
