@@ -85,10 +85,10 @@ The <code>dplyr</code> solution is usually easier to write and understand, and c
 <span class="header-section-number">7.0.1</span> Load the package<a class="anchor" aria-label="anchor" href="#load-the-package"><i class="fas fa-link"></i></a>
 </h3>
 <p>You can load <code>dplyr</code> with</p>
-<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://dplyr.tidyverse.org">"dplyr"</a></span><span class="op">)</span></code></pre></div>
 <p>But is is usually more convenient to load <code>tidyverse</code> so that you get <code>ggplot2</code>, <code>dplyr</code>, <code>readr</code> and other useful packages with one command.</p>
-<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://tidyverse.tidyverse.org">"tidyverse"</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div id="more-feedback-tidylog" class="section level3" number="7.0.2">
@@ -96,7 +96,7 @@ The <code>dplyr</code> solution is usually easier to write and understand, and c
 <span class="header-section-number">7.0.2</span> More feedback <code>tidylog</code><a class="anchor" aria-label="anchor" href="#more-feedback-tidylog"><i class="fas fa-link"></i></a>
 </h3>
 <p>We can get more feedback on what <code>dplyr</code> functions have done to the data by loading the <code>tidylog</code> package.</p>
-<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/elbersb/tidylog/">"tidylog"</a></span><span class="op">)</span>
 <span class="co"># if you are using conflicted, you will need to set conflict_prefer() for all dplyr function</span>
 <span class="co"># use purrr::map to iterate over tidylog functions </span>
@@ -110,7 +110,7 @@ The <code>dplyr</code> solution is usually easier to write and understand, and c
 </h2>
 <p>This tutorial will use the <code>penguins</code> dataset from the <a href="https://github.com/allisonhorst/palmerpenguins"><code>palmerpenguins</code> package</a>.
 This dataset includes measurements of three species of penguin.</p>
-<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load the data</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"penguins"</span>, package <span class="op">=</span> <span class="st">"palmerpenguins"</span><span class="op">)</span>
 <span class="co"># Show the data</span>
@@ -131,11 +131,10 @@ This dataset includes measurements of three species of penguin.</p>
 <p>You can choose which columns of the data frame you want with <code><a href="https://rdrr.io/pkg/tidylog/man/select.html">select()</a></code>.</p>
 <p>The first argument is the data, which is supplied by the pipe <code>|&gt;</code>, the next arguments are the names of the columns you want.
 The names do not need quote marks.</p>
-<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#select species, bill_length_mm &amp; bill_depth_mm</span>
 <span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span></code></pre></div>
-<pre><code>## select: dropped 5 variables (island, flipper_length_mm, body_mass_g, sex, year)</code></pre>
 <pre><code>## # A tibble: 344 × 3
 ##   species bill_length_mm bill_depth_mm
 ##   &lt;fct&gt;            &lt;dbl&gt;         &lt;dbl&gt;
@@ -144,7 +143,7 @@ The names do not need quote marks.</p>
 ## 3 Adelie            40.3          18  
 ## # … with 341 more rows</code></pre>
 <p>This is equivalent to the base R code</p>
-<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#select species, bill_length_mm &amp; bill_depth_mm</span>
 <span class="va">penguins</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"species"</span>, <span class="st">"bill_length_mm"</span>, <span class="st">"bill_depth_mm"</span><span class="op">)</span><span class="op">]</span> </code></pre></div>
 <pre><code>## # A tibble: 344 × 3
@@ -168,8 +167,8 @@ The names do not need quote marks.</p>
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="working-with-single-tables-in-dplyr.html#cb300-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb300-2"><a href="working-with-single-tables-in-dplyr.html#cb300-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(___, ___)</span></code></pre></div>
+</summary><div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="working-with-single-tables-in-dplyr.html#cb306-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb306-2"><a href="working-with-single-tables-in-dplyr.html#cb306-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(___, ___)</span></code></pre></div>
 </details>
 </div>
 <div id="select-helpers" class="section level3" number="7.2.1">
@@ -180,10 +179,9 @@ Hint
 We might not even know them all in advance.
 Fortunately there are some helper functions.</p>
 <p>If you want to <code><a href="https://rdrr.io/pkg/tidylog/man/select.html">select()</a></code> adjacent columns, you can use the notation <code>first:last</code>.</p>
-<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#select species to bill_depth_mm</span>
 <span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="va">species</span><span class="op">:</span><span class="va">bill_depth_mm</span><span class="op">)</span></code></pre></div>
-<pre><code>## select: dropped 4 variables (flipper_length_mm, body_mass_g, sex, year)</code></pre>
 <pre><code>## # A tibble: 344 × 4
 ##   species island    bill_length_mm bill_depth_mm
 ##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;
@@ -193,10 +191,9 @@ Fortunately there are some helper functions.</p>
 ## # … with 341 more rows</code></pre>
 <p>Sometimes it is easier to remove the columns you don’t want.
 You can do this by putting a <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> in front of the column name.</p>
-<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#select everything but year and sex</span>
 <span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">year</span>, <span class="op">-</span><span class="va">sex</span><span class="op">)</span></code></pre></div>
-<pre><code>## select: dropped 2 variables (sex, year)</code></pre>
 <pre><code>## # A tibble: 344 × 6
 ##   species island    bill_length_mm bill_depth_mm flipper_length_…
 ##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
@@ -207,10 +204,9 @@ You can do this by putting a <code><a href="https://rdrr.io/r/base/Arithmetic.ht
 ## #   body_mass_g &lt;int&gt;</code></pre>
 <p>If there is a pattern to the column names that we want to select (or remove), there are some helper functions.
 For example, to select columns that start with “bill”, we can use <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code>.</p>
-<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb311"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#select bill_length_mm &amp; bill_depth_mm" </span>
 <span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"bill"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## select: dropped 6 variables (species, island, flipper_length_mm, body_mass_g, sex, …)</code></pre>
 <pre><code>## # A tibble: 344 × 2
 ##   bill_length_mm bill_depth_mm
 ##            &lt;dbl&gt;         &lt;dbl&gt;
@@ -222,9 +218,8 @@ For example, to select columns that start with “bill”, we can use <code><a h
 <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains()</a></code> is more flexible and <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches()</a></code> is the most powerful of the helper functions, using regular expressions to identify the columns (see the regular expression tutorial).</p>
 <p>Sometimes, you might want to select all the columns of a certain type.
 For example, to select all the numeric columns we can use the <code>is.numeric</code> function inside <code><a href="https://rdrr.io/pkg/tidylog/man/select.html">select()</a></code> with the helper <code>where()</code>.</p>
-<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb313"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="co"># No brackets on the function</span></code></pre></div>
-<pre><code>## select: dropped 3 variables (species, island, sex)</code></pre>
 <pre><code>## # A tibble: 344 × 5
 ##   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
 ##            &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
@@ -248,15 +243,15 @@ For example, to select all the numeric columns we can use the <code>is.numeric</
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="working-with-single-tables-in-dplyr.html#cb313-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 1</span></span>
-<span id="cb313-2"><a href="working-with-single-tables-in-dplyr.html#cb313-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb313-3"><a href="working-with-single-tables-in-dplyr.html#cb313-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>___)</span>
-<span id="cb313-4"><a href="working-with-single-tables-in-dplyr.html#cb313-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb313-5"><a href="working-with-single-tables-in-dplyr.html#cb313-5" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 2</span></span>
-<span id="cb313-6"><a href="working-with-single-tables-in-dplyr.html#cb313-6" aria-hidden="true" tabindex="-1"></a>?where</span>
-<span id="cb313-7"><a href="working-with-single-tables-in-dplyr.html#cb313-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb313-8"><a href="working-with-single-tables-in-dplyr.html#cb313-8" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 3</span></span>
-<span id="cb313-9"><a href="working-with-single-tables-in-dplyr.html#cb313-9" aria-hidden="true" tabindex="-1"></a>?ends_with</span></code></pre></div>
+</summary><div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="working-with-single-tables-in-dplyr.html#cb315-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 1</span></span>
+<span id="cb315-2"><a href="working-with-single-tables-in-dplyr.html#cb315-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb315-3"><a href="working-with-single-tables-in-dplyr.html#cb315-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>___)</span>
+<span id="cb315-4"><a href="working-with-single-tables-in-dplyr.html#cb315-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb315-5"><a href="working-with-single-tables-in-dplyr.html#cb315-5" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 2</span></span>
+<span id="cb315-6"><a href="working-with-single-tables-in-dplyr.html#cb315-6" aria-hidden="true" tabindex="-1"></a>?where</span>
+<span id="cb315-7"><a href="working-with-single-tables-in-dplyr.html#cb315-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb315-8"><a href="working-with-single-tables-in-dplyr.html#cb315-8" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 3</span></span>
+<span id="cb315-9"><a href="working-with-single-tables-in-dplyr.html#cb315-9" aria-hidden="true" tabindex="-1"></a>?ends_with</span></code></pre></div>
 </details>
 </div>
 </div>
@@ -265,23 +260,20 @@ Hint
 <span class="header-section-number">7.3</span> Renaming columns with <code>rename</code><a class="anchor" aria-label="anchor" href="#renaming-columns-with-rename"><i class="fas fa-link"></i></a>
 </h2>
 <p>You can use <code><a href="https://rdrr.io/pkg/tidylog/man/rename.html">rename()</a></code> to rename columns</p>
-<div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb316"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/rename.html">rename</a></span><span class="op">(</span>Species <span class="op">=</span> <span class="va">species</span><span class="op">)</span></code></pre></div>
-<pre><code>## rename: renamed one variable (Species)</code></pre>
-<pre><code>## # A tibble: 344 × 8
-##   Species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181
-## 2 Adelie  Torgersen           39.5          17.4              186
-## 3 Adelie  Torgersen           40.3          18                195
-## # … with 341 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `rename` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::rename
+## * dplyr::rename
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("rename", "tidylog")
+## * conflict_prefer("rename", "dplyr")</code></pre>
 <p>The syntax is <code>new_name = current_name</code>.</p>
 <p>You can also rename a column when selecting.
 This is convenient if you are using <code><a href="https://rdrr.io/pkg/tidylog/man/select.html">select()</a></code> anyway.</p>
-<div class="sourceCode" id="cb317"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb318"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span>Species <span class="op">=</span> <span class="va">species</span><span class="op">)</span></code></pre></div>
-<pre><code>## select: renamed one variable (Species) and dropped 7 variables</code></pre>
 <pre><code>## # A tibble: 344 × 1
 ##   Species
 ##   &lt;fct&gt;  
@@ -298,15 +290,13 @@ This is convenient if you are using <code><a href="https://rdrr.io/pkg/tidylog/m
 This is never necessary for data analysis or plotting, but can be needed when making a table for presentation.</p>
 <div class="sourceCode" id="cb320"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/relocate.html">relocate</a></span><span class="op">(</span><span class="va">island</span><span class="op">)</span></code></pre></div>
-<pre><code>## relocate: columns reordered (island, species, bill_length_mm, bill_depth_mm, flipper_length_mm, …)</code></pre>
-<pre><code>## # A tibble: 344 × 8
-##   island    species bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;     &lt;fct&gt;            &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Torgersen Adelie            39.1          18.7              181
-## 2 Torgersen Adelie            39.5          17.4              186
-## 3 Torgersen Adelie            40.3          18                195
-## # … with 341 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `relocate` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::relocate
+## * dplyr::relocate
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("relocate", "tidylog")
+## * conflict_prefer("relocate", "dplyr")</code></pre>
 <p>The default is to move the named column first, the <code>.before</code> and <code>.after</code> arguments let you move the column into any position.</p>
 </div>
 <div id="filtering-rows-with-filter" class="section level2" number="7.5">
@@ -315,20 +305,18 @@ This is never necessary for data analysis or plotting, but can be needed when ma
 </h2>
 <p>Filtering rows that meet some condition is a very common task.</p>
 <p>For example, to filter rows of <code>penguins</code> that have a bill length greater than 40 mm, we can use</p>
-<div class="sourceCode" id="cb323"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb322"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
-<pre><code>## filter: removed 102 rows (30%), 242 rows remaining</code></pre>
-<pre><code>## # A tibble: 242 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           40.3          18                195
-## 2 Adelie  Torgersen           42            20.2              190
-## 3 Adelie  Torgersen           41.1          17.6              182
-## # … with 239 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
 <p>This will filter out each row where the condition is <code>TRUE</code>.</p>
 <p>The base R equivalent of this is</p>
-<div class="sourceCode" id="cb326"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb324"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span><span class="op">[</span><span class="va">penguins</span><span class="op">$</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span>, <span class="op">]</span></code></pre></div>
 <pre><code>## # A tibble: 244 × 8
 ##   species island    bill_length_mm bill_depth_mm flipper_length_…
@@ -346,13 +334,13 @@ This is never necessary for data analysis or plotting, but can be needed when ma
 <li>
 <code>near</code> safe function for testing equality of numeric data as it has a tolerance for rounding errors.</li>
 </ul>
-<div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb326"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">2</span> <span class="co"># should be true, but rounding errors </span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span> <span class="co"># the difference</span></code></pre></div>
 <pre><code>## [1] 4.440892e-16</code></pre>
-<div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/near.html">near</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span> <span class="co"># safe alternative</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <ul>
@@ -373,75 +361,65 @@ This is never necessary for data analysis or plotting, but can be needed when ma
 <li>
 <code><a href="https://rdrr.io/r/base/match.html">%in%</a></code> is used when you want to test if a value is in a vector</li>
 </ul>
-<div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Adelie"</span>, <span class="st">"Chinstrap"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## filter: removed 124 rows (36%), 220 rows remaining</code></pre>
-<pre><code>## # A tibble: 220 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181
-## 2 Adelie  Torgersen           39.5          17.4              186
-## 3 Adelie  Torgersen           40.3          18                195
-## # … with 217 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
-<div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
+<div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#equivalent to </span>
 <span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="st">"Adelie"</span> <span class="op">|</span> <span class="va">species</span> <span class="op">==</span> <span class="st">"Chinstrap"</span><span class="op">)</span> <span class="co"># with many alternatives, this gets long</span></code></pre></div>
-<pre><code>## filter: removed 124 rows (36%), 220 rows remaining</code></pre>
-<pre><code>## # A tibble: 220 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181
-## 2 Adelie  Torgersen           39.5          17.4              186
-## 3 Adelie  Torgersen           40.3          18                195
-## # … with 217 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
 <div id="filtering-on-multiple-criteria" class="section level3" number="7.5.1">
 <h3>
 <span class="header-section-number">7.5.1</span> Filtering on multiple criteria<a class="anchor" aria-label="anchor" href="#filtering-on-multiple-criteria"><i class="fas fa-link"></i></a>
 </h3>
 <p>If we want to filter on multiple criteria, we need to decide whether we want all criteria to be <code>TRUE</code> (AND in Boolean logic), or for one or more to be <code>TRUE</code> (OR in Boolean logic).</p>
 <p>If we want all criteria to be <code>TRUE</code>, we can separate them by a comma (or by an <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code> if you want to be explicit).</p>
-<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb336"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span>, <span class="va">bill_depth_mm</span> <span class="op">&gt;</span> <span class="fl">18</span><span class="op">)</span></code></pre></div>
-<pre><code>## filter: removed 263 rows (76%), 81 rows remaining</code></pre>
-<pre><code>## # A tibble: 81 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           42            20.2              190
-## 2 Adelie  Torgersen           42.5          20.7              197
-## 3 Adelie  Torgersen           46            21.5              194
-## # … with 78 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
 <p>If we want rows where any of the criteria is <code>TRUE</code>, we can separate them by a <code><a href="https://rdrr.io/r/base/Logic.html">|</a></code>.</p>
-<div class="sourceCode" id="cb343"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span> <span class="op">|</span> <span class="va">bill_depth_mm</span> <span class="op">&gt;</span> <span class="fl">18</span><span class="op">)</span></code></pre></div>
-<pre><code>## filter: removed 53 rows (15%), 291 rows remaining</code></pre>
-<pre><code>## # A tibble: 291 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181
-## 2 Adelie  Torgersen           40.3          18                195
-## 3 Adelie  Torgersen           36.7          19.3              193
-## # … with 288 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
 <p>We can negate a criterion by putting <code><a href="https://rdrr.io/r/base/Logic.html">!</a></code> in front of it.
 So to filter rows that do not have bills longer than 40 mm we can use</p>
-<div class="sourceCode" id="cb346"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
-<pre><code>## filter: removed 244 rows (71%), 100 rows remaining</code></pre>
-<pre><code>## # A tibble: 100 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181
-## 2 Adelie  Torgersen           39.5          17.4              186
-## 3 Adelie  Torgersen           36.7          19.3              193
-## # … with 97 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
 <p>Of course, in this example, we could also use <code><a href="https://rdrr.io/r/base/Comparison.html">&lt;=</a></code> as the test.</p>
 </div>
 <div id="common-errors" class="section level3" number="7.5.2">
@@ -451,18 +429,25 @@ So to filter rows that do not have bills longer than 40 mm we can use</p>
 <p>The commonest error is to use a single <code><a href="https://rdrr.io/r/base/assignOps.html">=</a></code> rather than <code><a href="https://rdrr.io/r/base/Comparison.html">==</a></code>.
 Only the latter is a test of equality.
 If you do this, the error message is quite helpful.</p>
-<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb342"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Chinstrap"</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: Problem with `filter()` input `..1`.
-## x Input `..1` is named.
-## ℹ This usually means that you've used `=` instead of `==`.
-## ℹ Did you mean `species == "Chinstrap"`?</code></pre>
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
 <p>Another common error is to forget to quote any strings.</p>
-<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb344"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="va">Chinstrap</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: Problem with `filter()` input `..1`.
-## ℹ Input `..1` is `species == Chinstrap`.
-## x object 'Chinstrap' not found</code></pre>
+<pre><code>## Error: [conflicted] `filter` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::filter
+## * dplyr::filter
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("filter", "tidylog")
+## * conflict_prefer("filter", "dplyr")</code></pre>
 </div>
 <div id="exercise-24" class="section level3 unnumbered facta toc-ignore">
 <h3>Exercise<a class="anchor" aria-label="anchor" href="#exercise-24"><i class="fas fa-link"></i></a>
@@ -477,20 +462,20 @@ If you do this, the error message is quite helpful.</p>
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="working-with-single-tables-in-dplyr.html#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 1</span></span>
-<span id="cb353-2"><a href="working-with-single-tables-in-dplyr.html#cb353-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="at">___ =</span> ___)</span>
-<span id="cb353-3"><a href="working-with-single-tables-in-dplyr.html#cb353-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb353-4"><a href="working-with-single-tables-in-dplyr.html#cb353-4" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 2</span></span>
-<span id="cb353-5"><a href="working-with-single-tables-in-dplyr.html#cb353-5" aria-hidden="true" tabindex="-1"></a>?<span class="st">`</span><span class="at">%in%</span><span class="st">`</span></span>
-<span id="cb353-6"><a href="working-with-single-tables-in-dplyr.html#cb353-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb353-7"><a href="working-with-single-tables-in-dplyr.html#cb353-7" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 3</span></span>
-<span id="cb353-8"><a href="working-with-single-tables-in-dplyr.html#cb353-8" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(___ <span class="sc">&gt;=</span> ___)</span>
-<span id="cb353-9"><a href="working-with-single-tables-in-dplyr.html#cb353-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb353-10"><a href="working-with-single-tables-in-dplyr.html#cb353-10" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 4</span></span>
-<span id="cb353-11"><a href="working-with-single-tables-in-dplyr.html#cb353-11" aria-hidden="true" tabindex="-1"></a>?between</span>
-<span id="cb353-12"><a href="working-with-single-tables-in-dplyr.html#cb353-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb353-13"><a href="working-with-single-tables-in-dplyr.html#cb353-13" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 5</span></span>
-<span id="cb353-14"><a href="working-with-single-tables-in-dplyr.html#cb353-14" aria-hidden="true" tabindex="-1"></a>?<span class="st">`</span><span class="at">!</span><span class="st">`</span></span></code></pre></div>
+</summary><div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="working-with-single-tables-in-dplyr.html#cb346-1" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 1</span></span>
+<span id="cb346-2"><a href="working-with-single-tables-in-dplyr.html#cb346-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="at">___ =</span> ___)</span>
+<span id="cb346-3"><a href="working-with-single-tables-in-dplyr.html#cb346-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-4"><a href="working-with-single-tables-in-dplyr.html#cb346-4" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 2</span></span>
+<span id="cb346-5"><a href="working-with-single-tables-in-dplyr.html#cb346-5" aria-hidden="true" tabindex="-1"></a>?<span class="st">`</span><span class="at">%in%</span><span class="st">`</span></span>
+<span id="cb346-6"><a href="working-with-single-tables-in-dplyr.html#cb346-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-7"><a href="working-with-single-tables-in-dplyr.html#cb346-7" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 3</span></span>
+<span id="cb346-8"><a href="working-with-single-tables-in-dplyr.html#cb346-8" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(___ <span class="sc">&gt;=</span> ___)</span>
+<span id="cb346-9"><a href="working-with-single-tables-in-dplyr.html#cb346-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-10"><a href="working-with-single-tables-in-dplyr.html#cb346-10" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 4</span></span>
+<span id="cb346-11"><a href="working-with-single-tables-in-dplyr.html#cb346-11" aria-hidden="true" tabindex="-1"></a>?between</span>
+<span id="cb346-12"><a href="working-with-single-tables-in-dplyr.html#cb346-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-13"><a href="working-with-single-tables-in-dplyr.html#cb346-13" aria-hidden="true" tabindex="-1"></a><span class="co">#hint 5</span></span>
+<span id="cb346-14"><a href="working-with-single-tables-in-dplyr.html#cb346-14" aria-hidden="true" tabindex="-1"></a>?<span class="st">`</span><span class="at">!</span><span class="st">`</span></span></code></pre></div>
 </details>
 </div>
 </div>
@@ -499,19 +484,15 @@ Hint
 <span class="header-section-number">7.6</span> Slicing the data with <code>slice()</code><a class="anchor" aria-label="anchor" href="#slicing-the-data-with-slice"><i class="fas fa-link"></i></a>
 </h2>
 <p>Sometimes it is useful to extract rows by row number.</p>
-<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb347"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/slice.html">slice</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></code></pre></div>
-<pre><code>## slice: removed 339 rows (99%), 5 rows remaining</code></pre>
-<pre><code>## # A tibble: 5 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           40.3          18                195
-## 2 Adelie  Torgersen           NA            NA                 NA
-## 3 Adelie  Torgersen           36.7          19.3              193
-## 4 Adelie  Torgersen           39.3          20.6              190
-## 5 Adelie  Torgersen           38.9          17.8              181
-## # … with 3 more variables: body_mass_g &lt;int&gt;, sex &lt;fct&gt;,
-## #   year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `slice` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::slice
+## * dplyr::slice
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("slice", "tidylog")
+## * conflict_prefer("slice", "dplyr")</code></pre>
 <p>You can use negative numbers to remove rows.
 Be careful using <code><a href="https://rdrr.io/pkg/tidylog/man/slice.html">slice()</a></code> as if the data change, different rows may be returned.</p>
 </div>
@@ -521,27 +502,25 @@ Be careful using <code><a href="https://rdrr.io/pkg/tidylog/man/slice.html">slic
 </h2>
 <p>If there are duplicates in the data, we can remove these with <code><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct()</a></code>.
 <code><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct()</a></code> with no extra arguments will remove duplicate rows.</p>
-<div class="sourceCode" id="cb357"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## distinct: no rows removed</code></pre>
-<pre><code>## # A tibble: 344 × 8
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181
-## 2 Adelie  Torgersen           39.5          17.4              186
-## 3 Adelie  Torgersen           40.3          18                195
-## # … with 341 more rows, and 3 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `distinct` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::distinct
+## * dplyr::distinct
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("distinct", "tidylog")
+## * conflict_prefer("distinct", "dplyr")</code></pre>
 <p>If we are only interested in some of the columns, we can supply the names of these columns.</p>
-<div class="sourceCode" id="cb360"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">island</span><span class="op">)</span></code></pre></div>
-<pre><code>## distinct: removed 341 rows (99%), 3 rows remaining</code></pre>
-<pre><code>## # A tibble: 3 × 1
-##   island   
-##   &lt;fct&gt;    
-## 1 Torgersen
-## 2 Biscoe   
-## 3 Dream</code></pre>
+<pre><code>## Error: [conflicted] `distinct` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::distinct
+## * dplyr::distinct
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("distinct", "tidylog")
+## * conflict_prefer("distinct", "dplyr")</code></pre>
 <p>Other columns will be removed unless the argument <code>.keep_all = TRUE</code> is used.</p>
 <div id="exercise-25" class="section level3 unnumbered facta toc-ignore">
 <h3>Exercise<a class="anchor" aria-label="anchor" href="#exercise-25"><i class="fas fa-link"></i></a>
@@ -553,7 +532,7 @@ Be careful using <code><a href="https://rdrr.io/pkg/tidylog/man/slice.html">slic
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="working-with-single-tables-in-dplyr.html#cb363-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">distinct</span>(___, ___)</span></code></pre></div>
+</summary><div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="working-with-single-tables-in-dplyr.html#cb353-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">distinct</span>(___, ___)</span></code></pre></div>
 </details>
 </div>
 </div>
@@ -564,24 +543,15 @@ Hint
 <p>Sometimes you want to sample rows at random from a data.frame.
 This can be done with <code><a href="https://rdrr.io/pkg/tidylog/man/slice_sample.html">slice_sample()</a></code>.
 This can either sample a constant <em>n</em> rows or constant fraction of the rows depending on whether the <code>n</code> or <code>prop</code> argument is used.</p>
-<div class="sourceCode" id="cb364"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/slice_sample.html">slice_sample</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<pre><code>## slice_sample: removed 334 rows (97%), 10 rows remaining</code></pre>
-<pre><code>## # A tibble: 10 × 8
-##    species   island    bill_length_mm bill_depth_mm
-##    &lt;fct&gt;     &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;
-##  1 Gentoo    Biscoe              NA            NA  
-##  2 Gentoo    Biscoe              55.1          16  
-##  3 Chinstrap Dream               52.2          18.8
-##  4 Adelie    Torgersen           36.7          18.8
-##  5 Chinstrap Dream               50.6          19.4
-##  6 Adelie    Torgersen           39            17.1
-##  7 Adelie    Dream               37.8          18.1
-##  8 Adelie    Biscoe              37.7          16  
-##  9 Gentoo    Biscoe              50.5          15.9
-## 10 Adelie    Torgersen           38.7          19  
-## # … with 4 more variables: flipper_length_mm &lt;int&gt;,
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+<pre><code>## Error: [conflicted] `slice_sample` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::slice_sample
+## * dplyr::slice_sample
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("slice_sample", "tidylog")
+## * conflict_prefer("slice_sample", "dplyr")</code></pre>
 </div>
 <div id="mutating-and-adding-columns-with-mutate" class="section level2" number="7.9">
 <h2>
@@ -589,19 +559,16 @@ This can either sample a constant <em>n</em> rows or constant fraction of the ro
 </h2>
 <p>The function <code><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate()</a></code> can add an new column or replace an existing one.</p>
 <p>To make a new column called <code>body_mass_kg</code> we can use</p>
-<div class="sourceCode" id="cb367"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb356"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>body_mass_kg <span class="op">=</span> <span class="va">body_mass_g</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
-<pre><code>## mutate: new variable 'body_mass_kg' (double) with 95 unique values and 1% NA</code></pre>
-<pre><code>## # A tibble: 344 × 9
-##   species island    bill_length_mm bill_depth_mm flipper_length_…
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181
-## 2 Adelie  Torgersen           39.5          17.4              186
-## 3 Adelie  Torgersen           40.3          18                195
-## # … with 341 more rows, and 4 more variables:
-## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;,
-## #   body_mass_kg &lt;dbl&gt;</code></pre>
+<pre><code>## Error: [conflicted] `mutate` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::mutate
+## * dplyr::mutate
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("mutate", "tidylog")
+## * conflict_prefer("mutate", "dplyr")</code></pre>
 <p>There are lots of functions that are useful to use with mutate.
 Any function that returns either a single value or as many values as are in the data can be used.</p>
 <p><code><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate()</a></code> is very useful when cleaning data.</p>
@@ -619,9 +586,9 @@ Any function that returns either a single value or as many values as are in the 
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="working-with-single-tables-in-dplyr.html#cb370-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 1</span></span>
-<span id="cb370-2"><a href="working-with-single-tables-in-dplyr.html#cb370-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb370-3"><a href="working-with-single-tables-in-dplyr.html#cb370-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">___ =</span> ___)</span></code></pre></div>
+</summary><div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="working-with-single-tables-in-dplyr.html#cb358-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 1</span></span>
+<span id="cb358-2"><a href="working-with-single-tables-in-dplyr.html#cb358-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb358-3"><a href="working-with-single-tables-in-dplyr.html#cb358-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">___ =</span> ___)</span></code></pre></div>
 </details>
 </div>
 </div>
@@ -632,16 +599,18 @@ Hint
 <p><code><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise()</a></code> lets us summarise data.
 We can use it if we want to calculate a summary statistic of the data.
 Remember to separate arguments with a comma.</p>
-<div class="sourceCode" id="cb371"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb359"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise</a></span><span class="op">(</span>
   flipper_len_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">flipper_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, 
   flipper_len_sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">flipper_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<pre><code>## summarise: now one row and 2 columns, ungrouped</code></pre>
-<pre><code>## # A tibble: 1 × 2
-##   flipper_len_mean flipper_len_sd
-##              &lt;dbl&gt;          &lt;dbl&gt;
-## 1             201.           14.1</code></pre>
+<pre><code>## Error: [conflicted] `summarise` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::summarise
+## * dplyr::summarise
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("summarise", "tidylog")
+## * conflict_prefer("summarise", "dplyr")</code></pre>
 <p>Only the columns created in the <code><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise()</a></code> and any grouping columns (see below) will be kept.</p>
 <div id="exercise-27" class="section level3 unnumbered facta toc-ignore">
 <h3>Exercise<a class="anchor" aria-label="anchor" href="#exercise-27"><i class="fas fa-link"></i></a>
@@ -652,8 +621,8 @@ Remember to separate arguments with a comma.</p>
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="working-with-single-tables-in-dplyr.html#cb374-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb374-2"><a href="working-with-single-tables-in-dplyr.html#cb374-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">___ =</span> <span class="fu">___</span>(___))</span></code></pre></div>
+</summary><div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="working-with-single-tables-in-dplyr.html#cb361-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb361-2"><a href="working-with-single-tables-in-dplyr.html#cb361-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">___ =</span> <span class="fu">___</span>(___))</span></code></pre></div>
 </details>
 </div>
 <div id="summarising-multiple-columns" class="section level3" number="7.10.1">
@@ -663,24 +632,27 @@ Hint
 <p>Sometimes you want to summarise multiple columns at the same time.
 This can be done with the <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> helper function.
 <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> needs to be told which columns to process and what function or functions to use.</p>
-<div class="sourceCode" id="cb375"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb362"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt;
    <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span>, .fns <span class="op">=</span> <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## summarise: now one row and 2 columns, ungrouped</code></pre>
-<pre><code>## # A tibble: 1 × 2
-##   bill_length_mm bill_depth_mm
-##            &lt;dbl&gt;         &lt;dbl&gt;
-## 1           43.9          17.2</code></pre>
-<div class="sourceCode" id="cb378"><pre class="downlit sourceCode r">
+<pre><code>## Error: [conflicted] `summarise` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::summarise
+## * dplyr::summarise
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("summarise", "tidylog")
+## * conflict_prefer("summarise", "dplyr")</code></pre>
+<div class="sourceCode" id="cb364"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#using a list of functions</span>
 <span class="va">penguins</span> |&gt;
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span>.cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"bill"</span><span class="op">)</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="va">sd</span>, mean <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## summarise: now one row and 4 columns, ungrouped</code></pre>
-<pre><code>## # A tibble: 1 × 4
-##   bill_length_mm_sd bill_length_mm_mean bill_depth_mm_sd
-##               &lt;dbl&gt;               &lt;dbl&gt;            &lt;dbl&gt;
-## 1              5.46                43.9             1.97
-## # … with 1 more variable: bill_depth_mm_mean &lt;dbl&gt;</code></pre>
+<pre><code>## Error: [conflicted] `summarise` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::summarise
+## * dplyr::summarise
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("summarise", "tidylog")
+## * conflict_prefer("summarise", "dplyr")</code></pre>
 <p>You can also use <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> with <code><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate()</a></code> to mutate several columns at the same time.</p>
 </div>
 </div>
@@ -691,18 +663,17 @@ This can be done with the <code><a href="https://dplyr.tidyverse.org/reference/a
 <p><code><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by()</a></code> changes the way that many of the <code>dplyr</code> functions work.
 Instead of working on the entire dataset, they now work on each group in the data</p>
 <p>To find the mean flipper length for each species, we need to <code><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by()</a></code> species and then <code><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise()</a></code>.</p>
-<div class="sourceCode" id="cb381"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb366"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise</a></span><span class="op">(</span>mean_flipper_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">flipper_length_mm</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## group_by: one grouping variable (species)</code></pre>
-<pre><code>## summarise: now 3 rows and 2 columns, ungrouped</code></pre>
-<pre><code>## # A tibble: 3 × 2
-##   species   mean_flipper_length
-##   &lt;fct&gt;                   &lt;dbl&gt;
-## 1 Adelie                    NA 
-## 2 Chinstrap                196.
-## 3 Gentoo                    NA</code></pre>
+<pre><code>## Error: [conflicted] `summarise` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::summarise
+## * dplyr::summarise
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("summarise", "tidylog")
+## * conflict_prefer("summarise", "dplyr")</code></pre>
 <p>Grouped data can be ungrouped with <code><a href="https://rdrr.io/pkg/tidylog/man/ungroup.html">ungroup()</a></code>.
 This can help prevent surprises!</p>
 <div id="exercise-28" class="section level3 unnumbered facta toc-ignore">
@@ -714,9 +685,9 @@ This can help prevent surprises!</p>
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="working-with-single-tables-in-dplyr.html#cb385-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb385-2"><a href="working-with-single-tables-in-dplyr.html#cb385-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(___)</span>
-<span id="cb385-3"><a href="working-with-single-tables-in-dplyr.html#cb385-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">___ =</span>  <span class="fu">___</span>(___))</span></code></pre></div>
+</summary><div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="working-with-single-tables-in-dplyr.html#cb368-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb368-2"><a href="working-with-single-tables-in-dplyr.html#cb368-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(___)</span>
+<span id="cb368-3"><a href="working-with-single-tables-in-dplyr.html#cb368-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">___ =</span>  <span class="fu">___</span>(___))</span></code></pre></div>
 </details>
 </div>
 </div>
@@ -725,7 +696,7 @@ Hint
 <span class="header-section-number">7.12</span> Sorting with <code>arrange()</code><a class="anchor" aria-label="anchor" href="#sorting-with-arrange"><i class="fas fa-link"></i></a>
 </h2>
 <p>To sort the data frame by one or more of the variables we can use <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code>.</p>
-<div class="sourceCode" id="cb386"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb369"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 344 × 8
 ##   species island    bill_length_mm bill_depth_mm flipper_length_…
@@ -737,7 +708,7 @@ Hint
 ## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 <p>This will sort smallest first.
 To reverse the sort order, use <code><a href="https://dplyr.tidyverse.org/reference/desc.html">desc()</a></code></p>
-<div class="sourceCode" id="cb388"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb371"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">bill_depth_mm</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 344 × 8
 ##   species   island bill_length_mm bill_depth_mm flipper_length_…
@@ -757,12 +728,12 @@ To reverse the sort order, use <code><a href="https://dplyr.tidyverse.org/refere
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="working-with-single-tables-in-dplyr.html#cb390-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 1</span></span>
-<span id="cb390-2"><a href="working-with-single-tables-in-dplyr.html#cb390-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb390-3"><a href="working-with-single-tables-in-dplyr.html#cb390-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(___, ___)</span>
-<span id="cb390-4"><a href="working-with-single-tables-in-dplyr.html#cb390-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb390-5"><a href="working-with-single-tables-in-dplyr.html#cb390-5" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 2</span></span>
-<span id="cb390-6"><a href="working-with-single-tables-in-dplyr.html#cb390-6" aria-hidden="true" tabindex="-1"></a>?desc</span></code></pre></div>
+</summary><div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="working-with-single-tables-in-dplyr.html#cb373-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 1</span></span>
+<span id="cb373-2"><a href="working-with-single-tables-in-dplyr.html#cb373-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb373-3"><a href="working-with-single-tables-in-dplyr.html#cb373-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(___, ___)</span>
+<span id="cb373-4"><a href="working-with-single-tables-in-dplyr.html#cb373-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb373-5"><a href="working-with-single-tables-in-dplyr.html#cb373-5" aria-hidden="true" tabindex="-1"></a><span class="co"># hint 2</span></span>
+<span id="cb373-6"><a href="working-with-single-tables-in-dplyr.html#cb373-6" aria-hidden="true" tabindex="-1"></a>?desc</span></code></pre></div>
 </details>
 </div>
 </div>
@@ -772,29 +743,28 @@ Hint
 </h2>
 <p>The function <code>n</code> can count how many rows there are in the each group (or the entire data frame if it is not grouped).
 It can be used with either <code><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate()</a></code> or <code><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise()</a></code>.</p>
-<div class="sourceCode" id="cb391"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb374"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## group_by: one grouping variable (species)</code></pre>
-<pre><code>## summarise: now 3 rows and 2 columns, ungrouped</code></pre>
-<pre><code>## # A tibble: 3 × 2
-##   species       n
-##   &lt;fct&gt;     &lt;int&gt;
-## 1 Adelie      152
-## 2 Chinstrap    68
-## 3 Gentoo      124</code></pre>
+<pre><code>## Error: [conflicted] `summarise` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::summarise
+## * dplyr::summarise
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("summarise", "tidylog")
+## * conflict_prefer("summarise", "dplyr")</code></pre>
 <p>Or with <code><a href="https://rdrr.io/pkg/tidylog/man/count.html">count()</a></code></p>
-<div class="sourceCode" id="cb395"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb376"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/count.html">count</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span></code></pre></div>
-<pre><code>## count: now 3 rows and 2 columns, ungrouped</code></pre>
-<pre><code>## # A tibble: 3 × 2
-##   species       n
-##   &lt;fct&gt;     &lt;int&gt;
-## 1 Adelie      152
-## 2 Chinstrap    68
-## 3 Gentoo      124</code></pre>
+<pre><code>## Error: [conflicted] `count` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::count
+## * dplyr::count
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("count", "tidylog")
+## * conflict_prefer("count", "dplyr")</code></pre>
 <p><code><a href="https://rdrr.io/pkg/tidylog/man/count.html">count()</a></code> is more concise, but <code><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by()</a></code> and <code><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise()</a></code> is useful when you need to calculate more variables (for example mean and standard deviation).</p>
 <div id="exercise-30" class="section level3 unnumbered facta toc-ignore">
 <h3>Exercise<a class="anchor" aria-label="anchor" href="#exercise-30"><i class="fas fa-link"></i></a>
@@ -806,13 +776,13 @@ It can be used with either <code><a href="https://rdrr.io/pkg/tidylog/man/mutate
 </ul>
 <details><summary>
 Hint
-</summary><div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="working-with-single-tables-in-dplyr.html#cb398-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb398-2"><a href="working-with-single-tables-in-dplyr.html#cb398-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(___, ___)</span>
-<span id="cb398-3"><a href="working-with-single-tables-in-dplyr.html#cb398-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb398-4"><a href="working-with-single-tables-in-dplyr.html#cb398-4" aria-hidden="true" tabindex="-1"></a><span class="co"># or</span></span>
-<span id="cb398-5"><a href="working-with-single-tables-in-dplyr.html#cb398-5" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb398-6"><a href="working-with-single-tables-in-dplyr.html#cb398-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(___) <span class="sc">|&gt;</span> </span>
-<span id="cb398-7"><a href="working-with-single-tables-in-dplyr.html#cb398-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">___ =</span> <span class="fu">n</span>())</span></code></pre></div>
+</summary><div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="working-with-single-tables-in-dplyr.html#cb378-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb378-2"><a href="working-with-single-tables-in-dplyr.html#cb378-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(___, ___)</span>
+<span id="cb378-3"><a href="working-with-single-tables-in-dplyr.html#cb378-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb378-4"><a href="working-with-single-tables-in-dplyr.html#cb378-4" aria-hidden="true" tabindex="-1"></a><span class="co"># or</span></span>
+<span id="cb378-5"><a href="working-with-single-tables-in-dplyr.html#cb378-5" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb378-6"><a href="working-with-single-tables-in-dplyr.html#cb378-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(___) <span class="sc">|&gt;</span> </span>
+<span id="cb378-7"><a href="working-with-single-tables-in-dplyr.html#cb378-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">___ =</span> <span class="fu">n</span>())</span></code></pre></div>
 </details>
 </div>
 </div>
@@ -827,20 +797,22 @@ Hint
 <p>Ideally column names should follow the standard rules for naming objects in R - UPPER and lower case letters, numbers, “.” and "_" with the first character being a letter (or a dot if you want an invisible object).
 Sometimes when you import data, it has non-standard names with spaces or extra characters.
 If you need to refer to a column name that doesn’t follow the rules, you need to enclose it with back-ticks.</p>
-<div class="sourceCode" id="cb399"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb379"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>`Region/Country` <span class="op">=</span> <span class="st">"Norway"</span>, value <span class="op">=</span> <span class="fl">42</span><span class="op">)</span>
 <span class="va">df</span></code></pre></div>
 <pre><code>## # A tibble: 1 × 2
 ##   `Region/Country` value
 ##   &lt;chr&gt;            &lt;dbl&gt;
 ## 1 Norway              42</code></pre>
-<div class="sourceCode" id="cb401"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb381"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/rename.html">rename</a></span><span class="op">(</span>region_country <span class="op">=</span> <span class="va">`Region/Country`</span><span class="op">)</span></code></pre></div>
-<pre><code>## rename: renamed one variable (region_country)</code></pre>
-<pre><code>## # A tibble: 1 × 2
-##   region_country value
-##   &lt;chr&gt;          &lt;dbl&gt;
-## 1 Norway            42</code></pre>
+<pre><code>## Error: [conflicted] `rename` found in 2 packages.
+## Either pick the one you want with `::` 
+## * tidylog::rename
+## * dplyr::rename
+## Or declare a preference with `conflict_prefer()`
+## * conflict_prefer("rename", "tidylog")
+## * conflict_prefer("rename", "dplyr")</code></pre>
 <p>It is sometimes best to rename these columns to make them easier to refer to.
 <code>janitor::clean_names()</code> is very efficient for making easy-to-use names.</p>
 </div>
