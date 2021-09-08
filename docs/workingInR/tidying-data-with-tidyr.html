@@ -53,16 +53,15 @@
 <li><a class="" href="working-with-single-tables-in-dplyr.html"><span class="header-section-number">7</span> Working with single tables in dplyr</a></li>
 <li><a class="" href="working-with-multiple-tables-in-dplyr.html"><span class="header-section-number">8</span> Working with multiple tables in dplyr</a></li>
 <li class="book-part">Data visualisation</li>
-<li><a class="" href="why-is-data-visualization-important.html"><span class="header-section-number">10</span> Why is data visualization important?</a></li>
-<li><a class="" href="getting-started-with-ggplot.html"><span class="header-section-number">11</span> Getting started with ggplot</a></li>
-<li><a class="" href="types-of-vizualization.html"><span class="header-section-number">12</span> Types of vizualization</a></li>
-<li><a class="" href="themes-1.html"><span class="header-section-number">13</span> Themes</a></li>
-<li><a class="" href="shapes-colours-and-linetypes.html"><span class="header-section-number">14</span> Shapes, colours and linetypes</a></li>
-<li><a class="" href="combining-plots.html"><span class="header-section-number">15</span> Combining plots</a></li>
-<li><a class="" href="using-functions-and-packages.html"><span class="header-section-number">16</span> Using functions and packages</a></li>
+<li><a class="" href="why-is-data-visualization-important.html"><span class="header-section-number">9</span> Why is data visualization important?</a></li>
+<li><a class="" href="getting-started-with-ggplot.html"><span class="header-section-number">10</span> Getting started with ggplot</a></li>
+<li><a class="" href="types-of-vizualization.html"><span class="header-section-number">11</span> Types of vizualization</a></li>
+<li><a class="" href="themes-1.html"><span class="header-section-number">12</span> Themes</a></li>
+<li><a class="" href="shapes-colours-and-linetypes.html"><span class="header-section-number">13</span> Shapes, colours and linetypes</a></li>
+<li><a class="" href="combining-plots.html"><span class="header-section-number">14</span> Combining plots</a></li>
 <li class="book-part">Other topics</li>
-<li><a class="" href="handling-missing-values.html"><span class="header-section-number">17</span> Handling missing values</a></li>
-<li><a class="" href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">18</span> Bestiary of Brackets and other R notation</a></li>
+<li><a class="" href="handling-missing-values.html"><span class="header-section-number">15</span> Handling missing values</a></li>
+<li><a class="" href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">16</span> Bestiary of Brackets and other R notation</a></li>
 </ul>
 
         <div class="book-extra">
@@ -81,7 +80,7 @@
 <p>Before you can start analysing or plotting data, you often need to tidy it.
 <a href="https://tidyr.tidyverse.org/articles/tidy-data.html">Tidy data</a> is a standardised way to structure a dataset which makes it much easier to process, analyse and plot the data.
 Functions in the <code>tidyr</code> and <code>dplyr</code> packages, both part of tidyverse, can be very useful for tidying data.</p>
-<div class="sourceCode" id="cb277"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span></code></pre></div>
 <p>In tidy data</p>
 <ul>
@@ -97,7 +96,7 @@ Functions in the <code>tidyr</code> and <code>dplyr</code> packages, both part o
 </h2>
 <p>If a cell contains multiple values, we can use <code><a href="https://tidyr.tidyverse.org/reference/separate.html">tidyr::separate()</a></code>.</p>
 <p>For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.</p>
-<div class="sourceCode" id="cb278"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">id</span>, <span class="op">~</span><span class="va">value</span>,
        <span class="st">"A-1"</span>, <span class="fl">1</span>,
        <span class="st">"A-2"</span>, <span class="fl">2</span>,
@@ -113,7 +112,7 @@ Functions in the <code>tidyr</code> and <code>dplyr</code> packages, both part o
 <p>We can use <code><a href="https://tidyr.tidyverse.org/reference/separate.html">separate()</a></code> to split site and plot into separate columns.
 By default, <code><a href="https://tidyr.tidyverse.org/reference/separate.html">separate()</a></code> splits the data at non-alphanumeric values.
 This behaviour can be controlled with the <code>sep</code> argument.</p>
-<div class="sourceCode" id="cb280"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dat</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">id</span>, into <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"plot"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 3
 ##   site  plot  value
@@ -130,7 +129,7 @@ This behaviour can be controlled with the <code>sep</code> argument.</p>
 This can be done with the <code>pivot_*</code> functions.</p>
 <div class="figure">
 <span style="display:block;" id="fig:pivot-anim"></span>
-<img src="Pics/tidyr-pivot_longer_wider.gif" alt="Wide data to long data with `pivot_longer()` and `pivot_wider()` ." width="400px"><p class="caption">
+<img src="figures/tidyr-pivot_longer_wider.gif" alt="Wide data to long data with `pivot_longer()` and `pivot_wider()` ." width="400px"><p class="caption">
 Figure 6.1: Wide data to long data with <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> and <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> .
 </p>
 </div>
@@ -155,10 +154,12 @@ Figure 6.1: Wide data to long data with <code><a href="https://tidyr.tidyverse.o
 each row is not an observation; each column is not a variable.</p>
 <p>We can use <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> to reshape the data.
 The months, selected by the <code>cols</code> argument in the column names (see section <a href="working-with-single-tables-in-dplyr.html#select-helpers">7.2.1</a> for more on the syntax used here) will become a new variable with a name set by the <code>names_to</code>, and the data values get put into a column named by the <code>values_to</code> argument.</p>
-<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bergen_klima_long</span> <span class="op">&lt;-</span> <span class="va">bergen_klima</span> |&gt; 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">Jan</span><span class="op">:</span><span class="va">Des</span>, names_to <span class="op">=</span> <span class="st">"Month"</span>, values_to <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span>
-<span class="va">bergen_klima_long</span></code></pre></div>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">Jan</span><span class="op">:</span><span class="va">Des</span>, names_to <span class="op">=</span> <span class="st">"Month"</span>, values_to <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span></code></pre></div>
+<pre><code>## pivot_longer: reorganized (Jan, Feb, Mar, Apr, Mai, …) into (Month, value) [was 4x13, now 48x3]</code></pre>
+<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">bergen_klima_long</span></code></pre></div>
 <pre><code>## # A tibble: 48 × 3
 ##   Måned                 Month value
 ##   &lt;chr&gt;                 &lt;chr&gt; &lt;dbl&gt;
@@ -174,11 +175,12 @@ We can do this <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.
 <span class="header-section-number">6.4</span> Reshaping data - long to wide<a class="anchor" aria-label="anchor" href="#reshaping-data---long-to-wide"><i class="fas fa-link"></i></a>
 </h2>
 <p>We can tell <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> which column contains what will become the column names and the data with the <code>names_from</code> and <code>values_from</code>, respectively.</p>
-<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bergen_klima_wider</span> <span class="op">&lt;-</span> <span class="va">bergen_klima_long</span> |&gt; 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="st">"Måned"</span>, values_from <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span>
-
-<span class="va">bergen_klima_wider</span></code></pre></div>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="st">"Måned"</span>, values_from <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span></code></pre></div>
+<pre><code>## pivot_wider: reorganized (Måned, value) into (Normal maks. temp. °C, Døgnmiddeltemp. °C, Normal min. temp. °C, Nedbør (mm)) [was 48x3, now 12x5]</code></pre>
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">bergen_klima_wider</span></code></pre></div>
 <pre><code>## # A tibble: 12 × 5
 ##    Month `Normal maks. tem… `Døgnmiddeltemp… `Normal min. tem…
 ##    &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;             &lt;dbl&gt;
@@ -248,7 +250,7 @@ Hint
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-07.</p>
+    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-09.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
