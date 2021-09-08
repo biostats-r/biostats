@@ -4,15 +4,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>17 Handling missing values | Working in R</title>
+<title>15 Handling missing values | Working in R</title>
 <meta name="author" content="Jonathan Soulé, Aud Halbritter and Richard J Telford">
 <meta name="description" content="Many datasets have missing values. These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m...">
 <meta name="generator" content="bookdown 0.23 with bs4_book()">
-<meta property="og:title" content="17 Handling missing values | Working in R">
+<meta property="og:title" content="15 Handling missing values | Working in R">
 <meta property="og:type" content="book">
 <meta property="og:description" content="Many datasets have missing values. These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="17 Handling missing values | Working in R">
+<meta name="twitter:title" content="15 Handling missing values | Working in R">
 <meta name="twitter:description" content="Many datasets have missing values. These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
@@ -53,16 +53,15 @@
 <li><a class="" href="working-with-single-tables-in-dplyr.html"><span class="header-section-number">7</span> Working with single tables in dplyr</a></li>
 <li><a class="" href="working-with-multiple-tables-in-dplyr.html"><span class="header-section-number">8</span> Working with multiple tables in dplyr</a></li>
 <li class="book-part">Data visualisation</li>
-<li><a class="" href="why-is-data-visualization-important.html"><span class="header-section-number">10</span> Why is data visualization important?</a></li>
-<li><a class="" href="getting-started-with-ggplot.html"><span class="header-section-number">11</span> Getting started with ggplot</a></li>
-<li><a class="" href="types-of-vizualization.html"><span class="header-section-number">12</span> Types of vizualization</a></li>
-<li><a class="" href="themes-1.html"><span class="header-section-number">13</span> Themes</a></li>
-<li><a class="" href="shapes-colours-and-linetypes.html"><span class="header-section-number">14</span> Shapes, colours and linetypes</a></li>
-<li><a class="" href="combining-plots.html"><span class="header-section-number">15</span> Combining plots</a></li>
-<li><a class="" href="using-functions-and-packages.html"><span class="header-section-number">16</span> Using functions and packages</a></li>
+<li><a class="" href="why-is-data-visualization-important.html"><span class="header-section-number">9</span> Why is data visualization important?</a></li>
+<li><a class="" href="getting-started-with-ggplot.html"><span class="header-section-number">10</span> Getting started with ggplot</a></li>
+<li><a class="" href="types-of-vizualization.html"><span class="header-section-number">11</span> Types of vizualization</a></li>
+<li><a class="" href="themes-1.html"><span class="header-section-number">12</span> Themes</a></li>
+<li><a class="" href="shapes-colours-and-linetypes.html"><span class="header-section-number">13</span> Shapes, colours and linetypes</a></li>
+<li><a class="" href="combining-plots.html"><span class="header-section-number">14</span> Combining plots</a></li>
 <li class="book-part">Other topics</li>
-<li><a class="active" href="handling-missing-values.html"><span class="header-section-number">17</span> Handling missing values</a></li>
-<li><a class="" href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">18</span> Bestiary of Brackets and other R notation</a></li>
+<li><a class="active" href="handling-missing-values.html"><span class="header-section-number">15</span> Handling missing values</a></li>
+<li><a class="" href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">16</span> Bestiary of Brackets and other R notation</a></li>
 </ul>
 
         <div class="book-extra">
@@ -70,146 +69,154 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="handling-missing-values" class="section level1" number="17">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="handling-missing-values" class="section level1" number="15">
 <h1>
-<span class="header-section-number">17</span> Handling missing values<a class="anchor" aria-label="anchor" href="#handling-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15</span> Handling missing values<a class="anchor" aria-label="anchor" href="#handling-missing-values"><i class="fas fa-link"></i></a>
 </h1>
 <p>Many datasets have missing values.
 These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m where the sea is only 100m deep.</p>
 <p>Missing values in R are represented by <code>NA</code>.</p>
-<div class="sourceCode" id="cb515"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb528"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="cn">NA</span><span class="op">)</span>
 <span class="va">x</span></code></pre></div>
 <pre><code>## [1]  0  5 NA</code></pre>
 <p>This tutorial shows you how to cope with missing values in R, focusing on manipulating data with the <code>tidyverse</code> package, running statistical analyses, and making figures with <code>ggplot2</code>.</p>
 <p>The <code>penguins</code> dataset from <code>palmerpenguins</code> is used as an example.</p>
-<div id="data-handling-with-missing-values" class="section level2" number="17.1">
+<div id="data-handling-with-missing-values" class="section level2" number="15.1">
 <h2>
-<span class="header-section-number">17.1</span> Data handling with missing values<a class="anchor" aria-label="anchor" href="#data-handling-with-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1</span> Data handling with missing values<a class="anchor" aria-label="anchor" href="#data-handling-with-missing-values"><i class="fas fa-link"></i></a>
 </h2>
-<div id="detecting-missing-values" class="section level3" number="17.1.1">
+<div id="detecting-missing-values" class="section level3" number="15.1.1">
 <h3>
-<span class="header-section-number">17.1.1</span> Detecting missing values<a class="anchor" aria-label="anchor" href="#detecting-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.1</span> Detecting missing values<a class="anchor" aria-label="anchor" href="#detecting-missing-values"><i class="fas fa-link"></i></a>
 </h3>
 <p><code>NA</code> values can be detected with the function <code>is.na</code> (NB lower case).</p>
-<div class="sourceCode" id="cb517"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb530"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span>, <span class="cn">NA</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] FALSE FALSE  TRUE</code></pre>
 <p>We could use this, for example, to find the number of missing values in a column of the <code>penguins</code> data.</p>
-<div class="sourceCode" id="cb519"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb532"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>n_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `summarise` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::summarise
-## * dplyr::summarise
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("summarise", "tidylog")
-## * conflict_prefer("summarise", "dplyr")</code></pre>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tidyverse.html">summarise</a></span><span class="op">(</span>n_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## summarise: now one row and one column, ungrouped</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   n_missing
+##       &lt;int&gt;
+## 1         2</code></pre>
 </div>
-<div id="importing-data-with-missing-values" class="section level3" number="17.1.2">
+<div id="importing-data-with-missing-values" class="section level3" number="15.1.2">
 <h3>
-<span class="header-section-number">17.1.2</span> Importing data with missing values<a class="anchor" aria-label="anchor" href="#importing-data-with-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.2</span> Importing data with missing values<a class="anchor" aria-label="anchor" href="#importing-data-with-missing-values"><i class="fas fa-link"></i></a>
 </h3>
 <p>When you import a text file (e.g., a csv file) any blank cells, or cells with “NA” will be treated as <code>NA</code>.
 If you have coded missing values as something else, you can use the <code>na</code> argument to <code>read_delim</code></p>
-<div class="sourceCode" id="cb521"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb535"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># set blank cells, "NA" or "missing" to NA  </span>
 <span class="fu">read_delim</span><span class="op">(</span>file <span class="op">=</span> <span class="st">"my_file.csv"</span>, na <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"NA"</span>, <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>In <code><a href="https://readxl.tidyverse.org/reference/read_excel.html">readxl::read_excel</a></code>, the default for the <code>na</code> argument is just for blank cells to be made <code>NA</code>, but other values can be added in the same way as in <code>read_delim</code>.</p>
 </div>
-<div id="removing-rows-with-missing-values" class="section level3" number="17.1.3">
+<div id="removing-rows-with-missing-values" class="section level3" number="15.1.3">
 <h3>
-<span class="header-section-number">17.1.3</span> Removing rows with missing values<a class="anchor" aria-label="anchor" href="#removing-rows-with-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.3</span> Removing rows with missing values<a class="anchor" aria-label="anchor" href="#removing-rows-with-missing-values"><i class="fas fa-link"></i></a>
 </h3>
 <p>We can remove rows with <code>NA</code> in particular columns from a data frame using <code>drop_na</code>.
 For example, to remove rows in the <code>penguins</code> data set with an <code>NA</code> in the <code>bill_length_mm</code> or <code>bill_depth_mm</code> columns, we could use</p>
-<div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb536"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `drop_na` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::drop_na
-## * tidyr::drop_na
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("drop_na", "tidylog")
-## * conflict_prefer("drop_na", "tidyr")</code></pre>
+<pre><code>## drop_na: removed 2 rows (1%), 342 rows remaining</code></pre>
+<pre><code>## # A tibble: 342 × 8
+##   species island    bill_length_mm bill_depth_mm flipper_length_…
+##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
+## 1 Adelie  Torgersen           39.1          18.7              181
+## 2 Adelie  Torgersen           39.5          17.4              186
+## 3 Adelie  Torgersen           40.3          18                195
+## # … with 339 more rows, and 3 more variables:
+## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 <p>Alternatively, we can use <code>filter</code> and <code>is.na</code>.
 This is most useful when removing <code>NA</code> is one of several arguments to <code>filter</code>.</p>
-<div class="sourceCode" id="cb524"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb539"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="st">"Gentoo"</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `filter` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::filter
-## * dplyr::filter
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("filter", "tidylog")
-## * conflict_prefer("filter", "dplyr")</code></pre>
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="st">"Gentoo"</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## filter: removed 221 rows (64%), 123 rows remaining</code></pre>
+<pre><code>## # A tibble: 123 × 8
+##   species island bill_length_mm bill_depth_mm flipper_length_…
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
+## 1 Gentoo  Biscoe           46.1          13.2              211
+## 2 Gentoo  Biscoe           50            16.3              230
+## 3 Gentoo  Biscoe           48.7          14.1              210
+## # … with 120 more rows, and 3 more variables:
+## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 <p>You might see some code using <code>na.omit</code> to remove rows with missing values from a data frame.
 This can be dangerous as it will remove rows with an <code>NA</code> in any column, not just the columns you are interested in.</p>
 </div>
-<div id="replacing-missing-values" class="section level3" number="17.1.4">
+<div id="replacing-missing-values" class="section level3" number="15.1.4">
 <h3>
-<span class="header-section-number">17.1.4</span> Replacing missing values<a class="anchor" aria-label="anchor" href="#replacing-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.4</span> Replacing missing values<a class="anchor" aria-label="anchor" href="#replacing-missing-values"><i class="fas fa-link"></i></a>
 </h3>
 <p>Sometimes you want to replace <code>NA</code> with another value.
 Perhaps you want to make a plot where <code>NA</code> values are labelled unknown, or you know that the <code>NA</code> values are actually zeros, or the <code>NA</code> are values below the detection limit of an instrument and you want to replace these with half the detection limit.</p>
 <p>You can use <code><a href="https://tidyr.tidyverse.org/reference/replace_na.html">tidyr::replace_na</a></code> to do this.</p>
 <p>Here, the code replaces missing values for bill length with the mean value for bill length.</p>
-<div class="sourceCode" id="cb526"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb542"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>
     bill_length_mm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/replace_na.html">replace_na</a></span><span class="op">(</span>
       data <span class="op">=</span> <span class="va">bill_length_mm</span>, 
       replace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `mutate` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::mutate
-## * dplyr::mutate
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("mutate", "tidylog")
-## * conflict_prefer("mutate", "dplyr")</code></pre>
+<pre><code>## mutate: changed 2 values (1%) of 'bill_length_mm' (2 fewer NA)</code></pre>
+<pre><code>## # A tibble: 344 × 8
+##   species island    bill_length_mm bill_depth_mm flipper_length_…
+##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
+## 1 Adelie  Torgersen           39.1          18.7              181
+## 2 Adelie  Torgersen           39.5          17.4              186
+## 3 Adelie  Torgersen           40.3          18                195
+## # … with 341 more rows, and 3 more variables:
+## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 </div>
-<div id="replacing-na-in-factors" class="section level3" number="17.1.5">
+<div id="replacing-na-in-factors" class="section level3" number="15.1.5">
 <h3>
-<span class="header-section-number">17.1.5</span> Replacing <code>NA</code> in factors<a class="anchor" aria-label="anchor" href="#replacing-na-in-factors"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.5</span> Replacing <code>NA</code> in factors<a class="anchor" aria-label="anchor" href="#replacing-na-in-factors"><i class="fas fa-link"></i></a>
 </h3>
 <p>The code in the previous section won’t work if we try to replace an <code>NA</code> in a factor.</p>
-<div class="sourceCode" id="cb528"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb545"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/replace_na.html">replace_na</a></span><span class="op">(</span><span class="va">sex</span>, <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `distinct` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::distinct
-## * dplyr::distinct
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("distinct", "tidylog")
-## * conflict_prefer("distinct", "dplyr")</code></pre>
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/replace_na.html">replace_na</a></span><span class="op">(</span><span class="va">sex</span>, <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></code></pre></div>
+<pre><code>## Warning in `[&lt;-.factor`(`*tmp*`, !is_complete(data), value =
+## "missing"): invalid factor level, NA generated</code></pre>
+<pre><code>## mutate: no changes</code></pre>
+<pre><code>## distinct: removed 341 rows (99%), 3 rows remaining</code></pre>
+<pre><code>## # A tibble: 3 × 1
+##   sex   
+##   &lt;fct&gt; 
+## 1 male  
+## 2 female
+## 3 &lt;NA&gt;</code></pre>
 <p>As the warning indicates, the problem is that “missing” is not one of the levels of the factor sex.</p>
 <p>Instead we need to use the function <code><a href="https://forcats.tidyverse.org/reference/fct_explicit_na.html">forcats::fct_explicit_na</a></code> (the <code>forcats</code> package is part of <code>tidyverse</code> for manipulating factors).</p>
-<div class="sourceCode" id="cb530"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb550"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu">fct_explicit_na</span><span class="op">(</span><span class="va">sex</span>, na_level <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `count` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::count
-## * dplyr::count
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("count", "tidylog")
-## * conflict_prefer("count", "dplyr")</code></pre>
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu">fct_explicit_na</span><span class="op">(</span><span class="va">sex</span>, na_level <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/count.html">count</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></code></pre></div>
+<pre><code>## mutate: changed 11 values (3%) of 'sex' (11 fewer NA)</code></pre>
+<pre><code>## count: now 3 rows and 2 columns, ungrouped</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   sex         n
+##   &lt;fct&gt;   &lt;int&gt;
+## 1 female    165
+## 2 male      168
+## 3 missing    11</code></pre>
 </div>
-<div id="replacing-na-with-values-from-another-vector" class="section level3" number="17.1.6">
+<div id="replacing-na-with-values-from-another-vector" class="section level3" number="15.1.6">
 <h3>
-<span class="header-section-number">17.1.6</span> Replacing <code>NA</code> with values from another vector<a class="anchor" aria-label="anchor" href="#replacing-na-with-values-from-another-vector"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.6</span> Replacing <code>NA</code> with values from another vector<a class="anchor" aria-label="anchor" href="#replacing-na-with-values-from-another-vector"><i class="fas fa-link"></i></a>
 </h3>
 <p>Sometimes you have a vector with <code>NA</code> and you want to replace the missing values with values from a second vector.
 The <code>coalesce</code> can do this.</p>
-<div class="sourceCode" id="cb532"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb554"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="cn">NA</span><span class="op">)</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">3</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/coalesce.html">coalesce</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></code></pre></div>
@@ -218,48 +225,58 @@ The <code>coalesce</code> can do this.</p>
 The second value of <code>x</code> is not <code>NA</code>, and so can be used.
 And so on.</p>
 </div>
-<div id="setting-mising-values" class="section level3" number="17.1.7">
+<div id="setting-mising-values" class="section level3" number="15.1.7">
 <h3>
-<span class="header-section-number">17.1.7</span> Setting mising values<a class="anchor" aria-label="anchor" href="#setting-mising-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.7</span> Setting mising values<a class="anchor" aria-label="anchor" href="#setting-mising-values"><i class="fas fa-link"></i></a>
 </h3>
 <p>Some data sets use a number to represent a missing value, for example -9999.
 Obviously, if you do any calculations with a data set containing -9999 as a missing value, the results could be seriously wrong.
 Instead we need to replace these values with <code>NA</code>.
 We can do this with <code><a href="https://dplyr.tidyverse.org/reference/na_if.html">dplyr::na_if</a></code>.</p>
-<div class="sourceCode" id="cb534"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb556"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span>, <span class="op">-</span><span class="fl">9999</span><span class="op">)</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/na_if.html">na_if</a></span><span class="op">(</span><span class="va">x</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">9999</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1]  1  7 NA</code></pre>
 </div>
-<div id="missing-values-and-dplyr-filter" class="section level3" number="17.1.8">
+<div id="missing-values-and-dplyr-filter" class="section level3" number="15.1.8">
 <h3>
-<span class="header-section-number">17.1.8</span> Missing values and dplyr <code>filter</code><a class="anchor" aria-label="anchor" href="#missing-values-and-dplyr-filter"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.8</span> Missing values and dplyr <code>filter</code><a class="anchor" aria-label="anchor" href="#missing-values-and-dplyr-filter"><i class="fas fa-link"></i></a>
 </h3>
 <p><code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter</a></code> returns rows where the condition is strictly TRUE.
 This is usually what you want: if we want to filter penguins with long bills from the penguins dataset we don’t want the birds with unknown bill length.</p>
 <p>Occasionally we do want to keep the rows with <code>NA</code>.
 Perhaps we have a column of comments, many of which are <code>NA</code>, and we only want to remove rows where the non-<code>NA</code> values meet some criterion.</p>
-<div class="sourceCode" id="cb536"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb558"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `filter` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::filter
-## * dplyr::filter
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("filter", "tidylog")
-## * conflict_prefer("filter", "dplyr")</code></pre>
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## filter: removed 333 rows (97%), 11 rows remaining</code></pre>
+<pre><code>## # A tibble: 11 × 8
+##    species island    bill_length_mm bill_depth_mm
+##    &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Adelie  Torgersen           NA            NA  
+##  2 Adelie  Torgersen           34.1          18.1
+##  3 Adelie  Torgersen           42            20.2
+##  4 Adelie  Torgersen           37.8          17.1
+##  5 Adelie  Torgersen           37.8          17.3
+##  6 Adelie  Dream               37.5          18.9
+##  7 Gentoo  Biscoe              44.5          14.3
+##  8 Gentoo  Biscoe              46.2          14.4
+##  9 Gentoo  Biscoe              47.3          13.8
+## 10 Gentoo  Biscoe              44.5          15.7
+## 11 Gentoo  Biscoe              NA            NA  
+## # … with 4 more variables: flipper_length_mm &lt;int&gt;,
+## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 <p>Here the <code><a href="https://rdrr.io/r/base/Logic.html">|</a></code> means OR in Boolean logic.</p>
 </div>
-<div id="missing-values-and-dplyr-if_else-and-case_when" class="section level3" number="17.1.9">
+<div id="missing-values-and-dplyr-if_else-and-case_when" class="section level3" number="15.1.9">
 <h3>
-<span class="header-section-number">17.1.9</span> Missing values and dplyr <code>if_else</code> and <code>case_when</code><a class="anchor" aria-label="anchor" href="#missing-values-and-dplyr-if_else-and-case_when"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.9</span> Missing values and dplyr <code>if_else</code> and <code>case_when</code><a class="anchor" aria-label="anchor" href="#missing-values-and-dplyr-if_else-and-case_when"><i class="fas fa-link"></i></a>
 </h3>
 <p>Sometimes is it useful to set values to <code>NA</code> with <code>if_else</code> (when there is a choice of two outcomes) or <code>case_when</code> (when there is a choice of two or more outcomes).</p>
 <p>All possible values returned by <code>if_else</code> and <code>case_when</code> need to be of the same type (character, numeric, integer, logical).
 If the types are inconsistent, an error is produced.
 This is useful as forcing consistency helps avoid unexpected behaviour.</p>
-<div class="sourceCode" id="cb538"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb561"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span>
   <span class="va">x</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="cn">NA</span>,
@@ -269,7 +286,7 @@ This is useful as forcing consistency helps avoid unexpected behaviour.</p>
 <pre><code>## Error: must be a logical vector, not a character vector.</code></pre>
 <p>The problem occurs here because <code>NA</code> is treated as a logical vector, while the other values are characters.
 The solution is to use <code>NA_character_</code> which is an <code>NA</code> with the correct type.</p>
-<div class="sourceCode" id="cb540"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb563"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span>
   <span class="va">x</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="cn">NA_character_</span>,
@@ -280,60 +297,61 @@ The solution is to use <code>NA_character_</code> which is an <code>NA</code> wi
 <p>Other typed <code>NA</code> include <code>NA_real_</code> for numeric values and <code>NA_integer</code> for integer values.</p>
 </div>
 </div>
-<div id="statistics-with-missing-values" class="section level2" number="17.2">
+<div id="statistics-with-missing-values" class="section level2" number="15.2">
 <h2>
-<span class="header-section-number">17.2</span> Statistics with missing values<a class="anchor" aria-label="anchor" href="#statistics-with-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.2</span> Statistics with missing values<a class="anchor" aria-label="anchor" href="#statistics-with-missing-values"><i class="fas fa-link"></i></a>
 </h2>
-<div id="na-arithemetic" class="section level3" number="17.2.1">
+<div id="na-arithemetic" class="section level3" number="15.2.1">
 <h3>
-<span class="header-section-number">17.2.1</span> <code>NA</code> arithemetic<a class="anchor" aria-label="anchor" href="#na-arithemetic"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.2.1</span> <code>NA</code> arithemetic<a class="anchor" aria-label="anchor" href="#na-arithemetic"><i class="fas fa-link"></i></a>
 </h3>
 <p>What is five plus an unknown number?
 The answer is, of course, unknown.</p>
-<div class="sourceCode" id="cb542"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb565"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fl">5</span> <span class="op">+</span> <span class="cn">NA</span></code></pre></div>
 <pre><code>## [1] NA</code></pre>
 <p>NA are contagious in calculations: if one value is <code>NA</code> the result is <code>NA</code>.
 This effects many descriptive statistics.</p>
-<div class="sourceCode" id="cb544"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb567"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span>, <span class="cn">NA</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] NA</code></pre>
-<div class="sourceCode" id="cb546"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb569"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] NA</code></pre>
-<div class="sourceCode" id="cb548"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb571"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] NA</code></pre>
 <p>The solution is to use the <code>na.rm</code> argument to these functions to exclude the <code>NA</code> from the calculation.</p>
-<div class="sourceCode" id="cb550"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb573"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 8</code></pre>
-<div class="sourceCode" id="cb552"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb575"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 4</code></pre>
-<div class="sourceCode" id="cb554"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb577"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 </div>
-<div id="na-in-correlations-and-covariances" class="section level3" number="17.2.2">
+<div id="na-in-correlations-and-covariances" class="section level3" number="15.2.2">
 <h3>
-<span class="header-section-number">17.2.2</span> <code>NA</code> in correlations and covariances<a class="anchor" aria-label="anchor" href="#na-in-correlations-and-covariances"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.2.2</span> <code>NA</code> in correlations and covariances<a class="anchor" aria-label="anchor" href="#na-in-correlations-and-covariances"><i class="fas fa-link"></i></a>
 </h3>
 <p>The functions for calculating correlation, <code>cor</code>, and covariance, <code>cov</code>, work a little differently as these functions can work on two vectors or on a matrix or data frame.
 The <code>use</code> argument is used to control how <code>NA</code> are treated.</p>
 <p>By default, if any values are <code>NA</code> in either vector, the result is also <code>NA</code>.
 If you want to find the correlation between two vectors without the <code>NA</code>, then use</p>
-<div class="sourceCode" id="cb556"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb579"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penguins</span><span class="op">$</span><span class="va">bill_length_mm</span>,
     y <span class="op">=</span> <span class="va">penguins</span><span class="op">$</span><span class="va">bill_depth_mm</span>, 
     use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] -0.2350529</code></pre>
 <p>If you have a matrix (or data frame), and want to calculate a correlation matrix, then <code>use = "complete.obs"</code> will calculate this using just the rows that have no <code>NA</code>, and <code>use = "pairwise.complete.obs"</code> will calculate the correlation between each pair of variables using all complete pairs of observations on those variables.</p>
-<div class="sourceCode" id="cb558"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb581"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span>, <span class="va">flipper_length_mm</span>, <span class="va">body_mass_g</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span>, <span class="va">flipper_length_mm</span>, <span class="va">body_mass_g</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span>use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span><span class="op">)</span> </code></pre></div>
+<pre><code>## select: dropped 4 variables (species, island, sex, year)</code></pre>
 <pre><code>##                   bill_length_mm bill_depth_mm
 ## bill_length_mm         1.0000000    -0.2350529
 ## bill_depth_mm         -0.2350529     1.0000000
@@ -345,50 +363,48 @@ If you want to find the correlation between two vectors without the <code>NA</co
 ## flipper_length_mm         1.0000000   0.8712018
 ## body_mass_g               0.8712018   1.0000000</code></pre>
 </div>
-<div id="missing-values-and-regession-models" class="section level3" number="17.2.3">
+<div id="missing-values-and-regession-models" class="section level3" number="15.2.3">
 <h3>
-<span class="header-section-number">17.2.3</span> Missing values and regession models<a class="anchor" aria-label="anchor" href="#missing-values-and-regession-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.2.3</span> Missing values and regession models<a class="anchor" aria-label="anchor" href="#missing-values-and-regession-models"><i class="fas fa-link"></i></a>
 </h3>
 <p>By default regression models such as <code>lm</code>, <code>glm</code>, and <code>lmer</code> remove any case that has an <code>NA</code> in either the response or predictors.
 This behaviour is controlled by the <code>na.action</code> argument.
 This is great if we are interested in the model coefficients, but it can cause problems if there are <code>NA</code> in the data and we want to add the residuals, fitted values, or predictions into the original data frame for plotting.</p>
-<div class="sourceCode" id="cb560"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb584"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span>, data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span>
 
-<span class="va">penguins</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `mutate` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::mutate
-## * dplyr::mutate
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("mutate", "tidylog")
-## * conflict_prefer("mutate", "dplyr")</code></pre>
+<span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## Error: Problem with `mutate()` column `fit`.
+## ℹ `fit = fitted(mod)`.
+## ℹ `fit` must be size 344 or 1, not 342.</code></pre>
 <p>The problem is that there are fewer observation in the model (which omitted the <code>NA</code>) than the original data frame (which still has them).</p>
 <p>We can make this work by using <code>na.action = na.exclude</code> which will pad the fitted values with <code>NA</code> so that it is the same length as the original data.</p>
-<div class="sourceCode" id="cb562"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb586"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span>, data <span class="op">=</span> <span class="va">penguins</span>, na.action <span class="op">=</span> <span class="va">na.exclude</span><span class="op">)</span>
 
-<span class="va">penguins</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Error: [conflicted] `mutate` found in 2 packages.
-## Either pick the one you want with `::` 
-## * tidylog::mutate
-## * dplyr::mutate
-## Or declare a preference with `conflict_prefer()`
-## * conflict_prefer("mutate", "tidylog")
-## * conflict_prefer("mutate", "dplyr")</code></pre>
+<span class="va">penguins</span> |&gt; <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## mutate: new variable 'fit' (double) with 99 unique values and 1% NA</code></pre>
+<pre><code>## # A tibble: 344 × 9
+##   species island    bill_length_mm bill_depth_mm flipper_length_…
+##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;
+## 1 Adelie  Torgersen           39.1          18.7              181
+## 2 Adelie  Torgersen           39.5          17.4              186
+## 3 Adelie  Torgersen           40.3          18                195
+## # … with 341 more rows, and 4 more variables:
+## #   body_mass_g &lt;int&gt;, sex &lt;fct&gt;, year &lt;int&gt;, fit &lt;dbl&gt;</code></pre>
 <p>With <code>na.exclude</code> the <code>NA</code> are still excluded from the model fitting - most models do not allow <code>NA</code> values.</p>
 <p>When comparing models, for example with <code>anova</code>, all models need to have been fit to the same dataset.
 This can cause problems if <code>NA</code> have caused different numbers of observations to be removed.</p>
-<div class="sourceCode" id="cb564"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb589"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span> <span class="op">+</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">penguins</span>, na.action <span class="op">=</span> <span class="va">na.exclude</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">mod2</span><span class="op">)</span></code></pre></div>
 <pre><code>## Error in anova.lmlist(object, ...): models were not all fitted to the same size of dataset</code></pre>
 <p>The easiest solution is to remove rows with <code>NA</code> in any predictor before fitting any of the models.</p>
 </div>
-<div id="imputing-missing-values" class="section level3" number="17.2.4">
+<div id="imputing-missing-values" class="section level3" number="15.2.4">
 <h3>
-<span class="header-section-number">17.2.4</span> Imputing missing values<a class="anchor" aria-label="anchor" href="#imputing-missing-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.2.4</span> Imputing missing values<a class="anchor" aria-label="anchor" href="#imputing-missing-values"><i class="fas fa-link"></i></a>
 </h3>
 <p>As shown above, observations with missing values are omitted from the model.
 If a predictor has many missing values, it may be better to exclude the predictor from the model to avoid losing too many observations.</p>
@@ -396,21 +412,21 @@ If a predictor has many missing values, it may be better to exclude the predicto
 This should be done with caution as it can bias the results, especially if a substantial proportion of the data are imputed.
 On the other hand, if missing data are not randomly distributed, omitting observations with missing data can also bias the results.</p>
 <p>There are several ways that can be used to impute missing values.</p>
-<p>The simplest is to replace a the missing value with the mean or median of the variable as shown in section <a href="handling-missing-values.html#replacing-missing-values">17.1.4</a>.</p>
+<p>The simplest is to replace a the missing value with the mean or median of the variable as shown in section <a href="handling-missing-values.html#replacing-missing-values">15.1.4</a>.</p>
 <p>More complex methods use the multivariate relationship between predictors to estimate the missing values.
 Several R packages can help with this, e.g., <code>mice</code>.
 <a href="https://doi.org/10.1016/j.knosys.2018.06.012">Yadav and Roychoudhury (2018)</a> compare the performance of some popular methods.</p>
 </div>
 </div>
-<div id="missing-values-and-ggplot2" class="section level2" number="17.3">
+<div id="missing-values-and-ggplot2" class="section level2" number="15.3">
 <h2>
-<span class="header-section-number">17.3</span> Missing values and <code>ggplot2</code><a class="anchor" aria-label="anchor" href="#missing-values-and-ggplot2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.3</span> Missing values and <code>ggplot2</code><a class="anchor" aria-label="anchor" href="#missing-values-and-ggplot2"><i class="fas fa-link"></i></a>
 </h2>
 <p>By default, missing values in the <code>x</code> or <code>y</code> aesthetics are dropped by <code>ggplot</code> with a warning, whereas missing values in the <code>colour</code> or <code>fill</code> aesthetics are shown in grey.
 This behaviour can be controlled with the <code>na.value</code> argument to the relevant <code>scale_*_*</code> function.</p>
-<div class="sourceCode" id="cb566"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb591"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#x or y NA</span>
-<span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>
+<span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>
   x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, 
   y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,
   colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="cn">NA</span><span class="op">)</span>
@@ -422,47 +438,47 @@ This behaviour can be controlled with the <code>na.value</code> argument to the 
 <pre><code>## Warning: Removed 1 rows containing missing values
 ## (geom_point).</code></pre>
 <div class="inline-figure"><img src="working-in-R-bookdown_files/figure-html/ggplot2-1.png" width="288"></div>
-<div class="sourceCode" id="cb568"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb593"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># change defaults</span>
 <span class="va">p</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>na.value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html">scale_colour_continuous</a></span><span class="op">(</span>na.value <span class="op">=</span> <span class="st">"hotpink"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="working-in-R-bookdown_files/figure-html/ggplot2-2.png" width="288"></div>
 </div>
-<div id="related-concepts" class="section level2" number="17.4">
+<div id="related-concepts" class="section level2" number="15.4">
 <h2>
-<span class="header-section-number">17.4</span> Related concepts<a class="anchor" aria-label="anchor" href="#related-concepts"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4</span> Related concepts<a class="anchor" aria-label="anchor" href="#related-concepts"><i class="fas fa-link"></i></a>
 </h2>
 <p><code>NaN</code> and <code>Inf</code> are related to <code>NA</code>.</p>
-<div id="nan" class="section level3" number="17.4.1">
+<div id="nan" class="section level3" number="15.4.1">
 <h3>
-<span class="header-section-number">17.4.1</span> <code>NaN</code><a class="anchor" aria-label="anchor" href="#nan"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4.1</span> <code>NaN</code><a class="anchor" aria-label="anchor" href="#nan"><i class="fas fa-link"></i></a>
 </h3>
 <p><code>NaN</code> represents Not a Number.
 <code>NaN</code> can be generated, for example, by taking the log of a negative number.
 They can be tested for with <code><a href="https://rdrr.io/r/base/is.finite.html">is.nan()</a></code></p>
-<div class="sourceCode" id="cb569"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb594"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span>
 <span class="va">x</span></code></pre></div>
 <pre><code>## [1]   0 NaN  NA</code></pre>
-<div class="sourceCode" id="cb571"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb596"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.nan</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] FALSE  TRUE FALSE</code></pre>
 </div>
-<div id="inf" class="section level3" number="17.4.2">
+<div id="inf" class="section level3" number="15.4.2">
 <h3>
-<span class="header-section-number">17.4.2</span> Inf<a class="anchor" aria-label="anchor" href="#inf"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4.2</span> Inf<a class="anchor" aria-label="anchor" href="#inf"><i class="fas fa-link"></i></a>
 </h3>
 <p><code>Inf</code> and <code>-Inf</code> represent positive and negative infinite numbers respectively.
 These can be generated, for example, by dividing by zero, and tested for with <code><a href="https://rdrr.io/r/base/is.finite.html">is.infinite()</a></code></p>
-<div class="sourceCode" id="cb573"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb598"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.infinite</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1]  TRUE FALSE  TRUE</code></pre>
 </div>
-<div id="comparison-of-tests" class="section level3" number="17.4.3">
+<div id="comparison-of-tests" class="section level3" number="15.4.3">
 <h3>
-<span class="header-section-number">17.4.3</span> Comparison of tests<a class="anchor" aria-label="anchor" href="#comparison-of-tests"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4.3</span> Comparison of tests<a class="anchor" aria-label="anchor" href="#comparison-of-tests"><i class="fas fa-link"></i></a>
 </h3>
 <p>The test <code><a href="https://rdrr.io/r/base/is.finite.html">is.finite()</a></code> it <code>TRUE</code> if the value is numeric and not <code>NA</code>, <code>NaN</code>, <code>Inf</code> or <code>-Inf</code>.</p>
 <div class="inline-table"><table class="table table-sm">
@@ -521,39 +537,39 @@ These can be generated, for example, by dividing by zero, and tested for with <c
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="using-functions-and-packages.html"><span class="header-section-number">16</span> Using functions and packages</a></div>
-<div class="next"><a href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">18</span> Bestiary of Brackets and other R notation</a></div>
+<div class="prev"><a href="combining-plots.html"><span class="header-section-number">14</span> Combining plots</a></div>
+<div class="next"><a href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">16</span> Bestiary of Brackets and other R notation</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#handling-missing-values"><span class="header-section-number">17</span> Handling missing values</a></li>
+<li><a class="nav-link" href="#handling-missing-values"><span class="header-section-number">15</span> Handling missing values</a></li>
 <li>
-<a class="nav-link" href="#data-handling-with-missing-values"><span class="header-section-number">17.1</span> Data handling with missing values</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#detecting-missing-values"><span class="header-section-number">17.1.1</span> Detecting missing values</a></li>
-<li><a class="nav-link" href="#importing-data-with-missing-values"><span class="header-section-number">17.1.2</span> Importing data with missing values</a></li>
-<li><a class="nav-link" href="#removing-rows-with-missing-values"><span class="header-section-number">17.1.3</span> Removing rows with missing values</a></li>
-<li><a class="nav-link" href="#replacing-missing-values"><span class="header-section-number">17.1.4</span> Replacing missing values</a></li>
-<li><a class="nav-link" href="#replacing-na-in-factors"><span class="header-section-number">17.1.5</span> Replacing NA in factors</a></li>
-<li><a class="nav-link" href="#replacing-na-with-values-from-another-vector"><span class="header-section-number">17.1.6</span> Replacing NA with values from another vector</a></li>
-<li><a class="nav-link" href="#setting-mising-values"><span class="header-section-number">17.1.7</span> Setting mising values</a></li>
-<li><a class="nav-link" href="#missing-values-and-dplyr-filter"><span class="header-section-number">17.1.8</span> Missing values and dplyr filter</a></li>
-<li><a class="nav-link" href="#missing-values-and-dplyr-if_else-and-case_when"><span class="header-section-number">17.1.9</span> Missing values and dplyr if_else and case_when</a></li>
+<a class="nav-link" href="#data-handling-with-missing-values"><span class="header-section-number">15.1</span> Data handling with missing values</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#detecting-missing-values"><span class="header-section-number">15.1.1</span> Detecting missing values</a></li>
+<li><a class="nav-link" href="#importing-data-with-missing-values"><span class="header-section-number">15.1.2</span> Importing data with missing values</a></li>
+<li><a class="nav-link" href="#removing-rows-with-missing-values"><span class="header-section-number">15.1.3</span> Removing rows with missing values</a></li>
+<li><a class="nav-link" href="#replacing-missing-values"><span class="header-section-number">15.1.4</span> Replacing missing values</a></li>
+<li><a class="nav-link" href="#replacing-na-in-factors"><span class="header-section-number">15.1.5</span> Replacing NA in factors</a></li>
+<li><a class="nav-link" href="#replacing-na-with-values-from-another-vector"><span class="header-section-number">15.1.6</span> Replacing NA with values from another vector</a></li>
+<li><a class="nav-link" href="#setting-mising-values"><span class="header-section-number">15.1.7</span> Setting mising values</a></li>
+<li><a class="nav-link" href="#missing-values-and-dplyr-filter"><span class="header-section-number">15.1.8</span> Missing values and dplyr filter</a></li>
+<li><a class="nav-link" href="#missing-values-and-dplyr-if_else-and-case_when"><span class="header-section-number">15.1.9</span> Missing values and dplyr if_else and case_when</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#statistics-with-missing-values"><span class="header-section-number">17.2</span> Statistics with missing values</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#na-arithemetic"><span class="header-section-number">17.2.1</span> NA arithemetic</a></li>
-<li><a class="nav-link" href="#na-in-correlations-and-covariances"><span class="header-section-number">17.2.2</span> NA in correlations and covariances</a></li>
-<li><a class="nav-link" href="#missing-values-and-regession-models"><span class="header-section-number">17.2.3</span> Missing values and regession models</a></li>
-<li><a class="nav-link" href="#imputing-missing-values"><span class="header-section-number">17.2.4</span> Imputing missing values</a></li>
+<a class="nav-link" href="#statistics-with-missing-values"><span class="header-section-number">15.2</span> Statistics with missing values</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#na-arithemetic"><span class="header-section-number">15.2.1</span> NA arithemetic</a></li>
+<li><a class="nav-link" href="#na-in-correlations-and-covariances"><span class="header-section-number">15.2.2</span> NA in correlations and covariances</a></li>
+<li><a class="nav-link" href="#missing-values-and-regession-models"><span class="header-section-number">15.2.3</span> Missing values and regession models</a></li>
+<li><a class="nav-link" href="#imputing-missing-values"><span class="header-section-number">15.2.4</span> Imputing missing values</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#missing-values-and-ggplot2"><span class="header-section-number">17.3</span> Missing values and ggplot2</a></li>
+<li><a class="nav-link" href="#missing-values-and-ggplot2"><span class="header-section-number">15.3</span> Missing values and ggplot2</a></li>
 <li>
-<a class="nav-link" href="#related-concepts"><span class="header-section-number">17.4</span> Related concepts</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#nan"><span class="header-section-number">17.4.1</span> NaN</a></li>
-<li><a class="nav-link" href="#inf"><span class="header-section-number">17.4.2</span> Inf</a></li>
-<li><a class="nav-link" href="#comparison-of-tests"><span class="header-section-number">17.4.3</span> Comparison of tests</a></li>
+<a class="nav-link" href="#related-concepts"><span class="header-section-number">15.4</span> Related concepts</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#nan"><span class="header-section-number">15.4.1</span> NaN</a></li>
+<li><a class="nav-link" href="#inf"><span class="header-section-number">15.4.2</span> Inf</a></li>
+<li><a class="nav-link" href="#comparison-of-tests"><span class="header-section-number">15.4.3</span> Comparison of tests</a></li>
 <li><a class="nav-link" href="#contributors-9">Contributors</a></li>
 </ul>
 </li>
@@ -573,7 +589,7 @@ These can be generated, for example, by dividing by zero, and tested for with <c
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-08.</p>
+    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-09-09.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

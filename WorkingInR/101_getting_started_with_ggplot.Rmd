@@ -23,20 +23,20 @@ But most of the time you can use `library(tidyverse)`.
 
 ## The basics
 
-ggplot is based on the **grammar of graphics**, a terminology describing the components of a figure.
+`ggplot` is based on the **grammar of graphics**, a terminology describing the components of a figure.
 
 Let us have a look at these terms.
 
 To produce a figure or plot, we take data values and use elements like dots, squares, lines, and colour to convert the data into a visual graphic.
 There are many different ways to make a figure, but there are some rules that apply in general.
-A plot is always built on data, and a number of other components called aestetics, geometry and scales.
+A plot is always built on data, and a number of other components called aesthetics, geometry and scales.
 These different components combined make up a figure
 
 
 
 ## The code
 
-The code for a scatterplot looks something like this:
+The code for to make a scatterplot with the `penguins` dataset from the [`palmerpenguins` package](getting-started-with-r.html#palmerpenguins) looks something like this:
 
 ```{r ggplot2-1, fig.height = 3, fig.width=3.5}
 ggplot(data = penguins,
@@ -49,10 +49,10 @@ ggplot(data = penguins,
 
 The main function is `ggplot()` and is used to define the data and the aesthetics.
 The `data` is a data frame or tibble containing the variables to produce the figure.
-The `mapping` uses `aes()` to describe how the variables should be mapped onto the **aes**tetics, such as x and y location or colour.
+The `mapping` uses `aes()` to describe how the variables should be mapped onto the **aes**tetics, such as x and y position or colour.
 Every other component of the plot is added with `+`.
 It makes the code easier to read if you put a new line after each `+` (the `+` must go at the end of a line, not at the start).
-These other elements include the graphical elements that display the data, usually created with a `geom_*()` function, labels created with `labs()`, and [themes](themes) that change the non-data elements of the plot with `themes()`.
+These other elements include the graphical elements that display the data, usually created with a `geom_*()` function, labels created with `labs()`, and [themes](themes-1.html) that change the non-data elements of the plot with `themes()`.
 
 You can think of it as different layers that are put on top of each other see \@ref(fig:ggplot-hierarchy).
 
@@ -61,10 +61,6 @@ knitr::include_graphics("figures/ggplot_setup.png")
 ```
 
 
-## The Palmer Penguin Example
-
-We will mostly work with the [Palmer Penguin](palmerpenguins) data set.
-
 ## Building a ggplot figure
 
 Now we will describe the different components a ggplot is made of.
@@ -72,22 +68,17 @@ Now we will describe the different components a ggplot is made of.
 ### Data
 
 To make a figure we use the function `ggplot()`.
-The first element in this function is the **data object** containing all the variables that you need to make a figure
+The first argument in this function is for the **data object** containing all the variables that you need to make a figure
 Generally, it is advisable to have the data in a long format.
-
-For the penguin example this is how it will look like:
 
 ```{r data1, echo = TRUE, eval = TRUE, fig.height = 3, fig.width = 3}
 ggplot(data = penguins)
 
 ```
 
-The ggplot function will produce an empty plot, but not show any data.
+The ggplot function will produce an empty plot.
 
-
-<br/><br/>
-
-### Aestetics
+### Aesthetics
 
 The second argument in the `ggplot()` function, `mapping`, is where we define the plot's **aesthetics** with the function `aes()`.
 The different elements from the aesthetics are used to display the data.
@@ -103,10 +94,9 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
 
 One thing that might be confusing about the argument colour is that it only allows to be a variable, for example `colour = species` or `colour = island`. 
 So for example `colour = "red"` does not work.
-If you want to choose a specific colour, this has to be done in geom or in scales.
+If you want to choose a specific colour, this has to be done in geom or in scales (see section \@ref(colours-and-fill).
 
 Now the ggplot function has added the x and y axis to the plot.
-<br/><br/>
 
 ### Geoms
 
@@ -114,22 +104,29 @@ To plot the actual data, you need a **geom function**.
 There are many different geom functions that you can choose.
 See chapter \@ref(types-of-vizualization) for an overview.
 
-Here, we will use `geom_point()`, which displays the data as points (scatterplot).
-The legend is automatically plotted on the right side.
+Here, we will use four different geoms to display aspects of the penguins data in different ways.
+The legend is automatically plotted on the right side when needed.
 
 ```{r add-geom, eval = TRUE, fig.height=3, fig.width=3}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+p1 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point()
+p2 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_density2d()
+p3 <- ggplot(penguins, aes(x = species, fill = island)) +
+  geom_bar()
+p4 <- ggplot(penguins, aes(x = species, y = bill_depth_mm, fill = species)) +
+  geom_boxplot()
+
 ```
 
-To come back to the previous point, if you want to make all the points red this can be done in `geom_point()` by setting `colour = "red".
-Note that this time we chose `shape = species`, another aesthetics to use different symbols for the three species.
-
-```{r red, eval = TRUE, fig.height = 3, fig.width = 3.5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, shape = species)) +
-  geom_point(colour = "red")
+```{r four-geoms, echo = FALSE}
+library(patchwork)
+p1 + labs(title = "geom_point()") + 
+  p2 + labs(title = "geom_density2d()") + 
+  p3 + labs(title = "geom_bar()") + 
+  p4 + labs(title = "geom_boxplot()")
 ```
-<br/><br/>
+
 
 
 ### Scales
@@ -162,6 +159,8 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   labs(x = "Bill depth in mm", y = "Bill length in mm", title = "Bill length vs. depth in penguins", tag = "A")
 ```
 
+Titles can be useful for presentations, but generally not useful for manuscripts, where you can put the information into the caption. 
+Tags are useful when building a multipart figure (see \@ref(combining-plots)).
 
 ### Stats
 
@@ -173,7 +172,6 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
   stat_summary(fun = "mean", colour = "red", size = 1)
 ```
-<br/><br/>
 
 
 ### Facets
@@ -187,7 +185,6 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
   facet_wrap(~ island)
 ```
-<br/><br/>
 
 
 ### Themes
@@ -206,8 +203,6 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
         axis.text = element_text(colour = "purple"))
 
 ```
-
-<br/><br/>
 
 
 ### A ggplots are built with layers
@@ -236,7 +231,6 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 In the beginning you will make mistakes which will result in error messages, warnings or incomplete plots.
 These mistakes often occur when one of the layers is missing, because a `+` is forgotten at the end of a line, due to a typo, or the data or other elements are forgotten.
 Let us look at some common mistakes and how the ggplot is displayed or not.
-<br><br>
 
 
 ### No data
