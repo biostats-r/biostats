@@ -26,42 +26,6 @@ The first decision is whether the scale should be continuous or discrete.
 
 
 
-```{r echo = FALSE, eval = FALSE}
-library(DiagrammeR)
-grViz("
-   digraph circo {   
-       graph [layout = dot,  rankdir = TB]
-       node [shape = ellipse, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = 'Palatino']
-   a [label = 'Continuous or Discrete variable?']
-   b [label = 'Continuous', shape = diamond, fillcolor = papayawhip]
-   c [label = 'Discrete', shape = diamond, fillcolor = papayawhip]
-   f2 [label = 'Categorical or Ordinal?']
-   g [label = 'Categorical', shape = diamond, fillcolor = papayawhip]
-   h [label = 'Ordinal', shape = diamond, fillcolor = papayawhip]
-   i [label = 'Qualitative', shape = box, fillcolor = gold]
-   j [label = 'Natural midpoint?']
-   k [label = 'Yes', shape = diamond, fillcolor = papayawhip]
-   l [label = 'No', shape = diamond, fillcolor = papayawhip]
-   m [label = 'Sequential', shape = box, fillcolor = gold]
-   n [label = 'Diverging', shape = box, fillcolor = gold]
-   a->b->j
-   a->c->f2->{g h}
-   g->i
-   h->j-> {k l}
-   k->n
-   l->m
-   subgraph { 
-     rank = same; b; c; 
-   } 
-   subgraph { 
-     rank = same; i; m; n; 
-   } 
-   subgraph { 
-     rank = same; g; h; 
-   } 
-   } 
-      ")
-```
 ### Discrete colour/fill scales
 
 Discrete scales are automatically used when the variable mapped to colour or fill is a character or factor variable.
@@ -80,14 +44,14 @@ Qualitative palettes have no natural order to the colours.
 Use them for categorical variables.
 In the `penguins` dataset, species, island, and sex are categorical variables.
 
-```{r}
+```{r qual-fills}
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density()
 ```
 
 You can change the default colours/fill by either picking your own colours with `scale_colour_manual()` or `scale_fill_manual()`.
 
-```{r, fig.width = 3.5, fig.height = 3}
+```{r qual-manual, fig.width = 3.5, fig.height = 3}
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density() +
   scale_fill_manual(values = c(Adelie = "pink", Chinstrap = "purple", Gentoo = "green"))
@@ -97,12 +61,12 @@ Picking your own colours can be hard!
 
 Normally better to use some built in qualitative palettes, for example these from the `RColorBrewer` package.
 
-```{r, fig.height = 4}
+```{r qual-brewer, fig.height = 4}
 RColorBrewer::display.brewer.all(type = "qual")
 ```
 You can use these with `scale_colour_brewer()` or `scale_fill_brewer()`
 
-```{r, fig.width = 3.5, fig.height = 3}
+```{r qual-set1, fig.width = 3.5, fig.height = 3}
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density() +
   scale_fill_brewer(palette = "Set1")
@@ -114,7 +78,7 @@ Sequential colour/fill scales are useful for ordinal variables - for example, hi
 
 Here are some examples from the `RColorBrewer` package, which can be used as above.
 
-```{r, fig.height = 4}
+```{r seq-brewer, fig.height = 4}
 RColorBrewer::display.brewer.all(type = "seq")
 ```
 Another example of a sequential colour/fill palette is viridis, which can be used with `scale_fill_viridis_d()`. 
@@ -126,7 +90,7 @@ Diverging colour/fill scales are useful for ordinal variables with a natural mid
 
 Here are some examples from the `RColorBrewer` package, which can be used as above.
 
-```{r, fig.height = 4}
+```{r div-brewer, fig.height = 4}
 RColorBrewer::display.brewer.all(type = "div")
 ```
 
