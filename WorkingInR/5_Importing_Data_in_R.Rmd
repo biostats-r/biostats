@@ -103,7 +103,7 @@ Here is the same data set as above, this time in the European format:
 knitr::include_graphics("Pics/csv2.png")
 ```
 
-Finally, you should know that there exist other delimiter-separated formats, in which delimiters like `|` or tabs replace commas. 
+Finally, you should know that there exist other delimiter-separated formats, in which delimiters like `|` or tabs (coded as `\t`) replace commas. 
 
 
 ## Know your data!
@@ -277,9 +277,39 @@ Note the message above `Column specification` that indicates which symbols `read
 weather_csv2
 ```
 
+### White space delimited files
+
+Some files have white space separating the columns. 
+If a single tab is used then `read_delim()` will work with `delim = "\t"`.
+Sometimes multiple spaces are used so the columns line up, making the text file easy for humans to read.
+`read_delim()` will not work with these files as it expects a single delimiter. 
+Instead we can use `read_table()`.
+
+```{r}
+read_table(" Species   Value
+            Navicula       1
+            Cymbella       2")
+```
+Another type of data you will sometimes see is the fixed width format.
+There are no delimiters, but each field has the same position in each row. 
+These files can be imported with `read_fwf()`.
+Determining the position of each column can be painful unless you have good metadata.
+
+### Exercise {- .facta .toc-ignore}
+
+Download the Mt Gonga [plant biomass data](https://raw.githubusercontent.com/biostats-r/biostats/main/WorkingInR/data/biomass2015_H.csv) and import it.
+
+ <details>
+  <summary>Hint</summary>
+`read_delim`
+</details> 
+
+
+
 ### Useful arguments
 
-Both `read_delim()`, `read_csv()` and `read_csv2()` have a multitude of arguments that allow for adjusting the way data is read and displayed. Here we review a handful of them.
+`read_delim()` and the other functions discussed above have a multitude of arguments that allow for adjusting the way data is read and displayed. 
+Here we review a handful of them.
 
 #### n_max
 
@@ -319,15 +349,6 @@ weather
 
 As expected, the first row (with the header) is skipped, and the data from the observation `January` have become the header of the tibble.
 The argument `col_names()` introduced below will be useful for solving this issue.
-
-### Exercise {- .facta .toc-ignore}
-
-Download the Mt Gonga [plant biomass data](https://raw.githubusercontent.com/biostats-r/biostats/main/WorkingInR/data/biomass2015_H.csv) and import it.
-
- <details>
-  <summary>Hint</summary>
-`read_delim`
-</details> 
 
 
 
@@ -449,8 +470,10 @@ Download the midge data from [https://www.ncei.noaa.gov/pub/data/paleo/insecta/c
 
  <details>
   <summary>Hint</summary>
+What is the delimiter? 
+Choose an suitable `read_*()` function
 `skip` and 
-`n_max` arguments to `read_delim` can be useful.
+`n_max` argument can be useful.
 </details> 
 
 ### Further Reading {- .literature .toc-ignore}
