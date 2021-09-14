@@ -12,7 +12,7 @@ You need to be
 - able to handle tibbles
 - know how to install a package
 
-## Install the `ggplot2` package
+## The `ggplot2` package
 
 `ggplot2` is part of `tidyverse` so if you have already installed `tidyverse`, you already have `ggplot2` installed.
 If not, see the section \@ref(the-tidyverse).
@@ -23,7 +23,7 @@ To activate `ggplot2`, you can use
 library(ggplot2)
 ```
 
-But most of the time you can use `library(tidyverse)`.
+But most of the time you should use `library(tidyverse)`.
 
 ## The basics
 
@@ -106,12 +106,12 @@ Now the ggplot function has added the x and y axis to the plot.
 
 To plot the actual data, you need a **geom function**.
 There are many different geom functions that you can choose.
-See chapter \@ref(types-of-vizualization) for an overview.
+See chapter \@ref(choosing-your-visualisation) for an overview.
 
 Here, we will use four different geoms to display aspects of the penguins data in different ways.
 The legend is automatically plotted on the right side when needed.
 
-```{r add-geom, eval = TRUE, fig.height=3, fig.width=3}
+```{r add-geom, fig.keep = 'none', eval = TRUE, fig.height=3, fig.width=3}
 p1 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point()
 p2 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
@@ -121,6 +121,10 @@ p3 <- ggplot(penguins, aes(x = species, fill = island)) +
 p4 <- ggplot(penguins, aes(x = species, y = bill_depth_mm, fill = species)) +
   geom_boxplot()
 
+p1
+p2
+p3
+p4
 ```
 
 ```{r four-geoms, echo = FALSE}
@@ -131,24 +135,91 @@ p1 + labs(title = "geom_point()") +
   p4 + labs(title = "geom_boxplot()")
 ```
 
+### Exercise {- .facta .toc-ignore}
 
+- Make a histogram of the penguins bill length.
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+ggplot(data = ___, mapping = aes(x = ___)) +
+  geom____()
+
+```
+</details> 
+- Make the histogram red.
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+ggplot(data = ___, mapping = aes(x = ___)) +
+  geom____(fill = "red")
+
+```
+</details> 
+
+- Make a violin plot of the penguins bill length by species.
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+ggplot(data = ___, mapping = aes(x = ___, y = ___)) +
+  geom____()
+
+```
+</details> 
+
+
+- Make a scatterplot of penguin bill length against flipper length.
+
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+ggplot(data = ___, mapping = aes(x = ___, y = ___)) +
+  geom____()
+
+```
+</details> 
+
+- Make the points in the scatterplot different colours and shapes by species
+
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+ggplot(data = ___, mapping = aes(x = ___, y = ___, colour = ___, shape = ___)) +
+  geom____()
+
+```
+</details> 
 
 ### Scales
 
 **Scales** as the name says is for scaling, converting, inverting.
 With scales you can manipulate the labels, breaks, transformations and palettes.
-In other words you can manually change the axis text, labels, ticks, add breaks, make transformations, and manipulate aesthetics like colour, shape, linetype.
+In other words you can manually change the axis text, labels, ticks, add breaks, make transformations, and manipulate aesthetics like colour, shape, linetype (see section \@ref( colours-shapes-and-linetypes)).
 
 Here is just a small selection to show what is possible.
-We can log transform the y axis, change the axis titles, and manipulate the colours.
+We can log transform the y axis, change the axis titles, and change the colours.
 
 ```{r scales, eval = TRUE, fig.height = 3, fig.width=3.5}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
-  scale_y_log10(name = "Log bill length in mm") +
-  scale_x_continuous(name = "Bill depth in mm") +
+  scale_y_log10() +
+  scale_x_continuous() +
   scale_color_viridis_d()
 ```
+
+### Exercise {- .facta .toc-ignore}
+
+- Give your violin plot a colour-blind friendly fill.
+
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+ggplot(data = ___, mapping = aes(x = ___, y = ___, fill = ___)) +
+  geom____() +
+  scale________()
+ 
+```
+</details> 
+
 
 
 ### Labs
@@ -160,35 +231,61 @@ The axis titles can be renamed, and a title and tag can be added.
 ```{r labs, eval = TRUE, fig.height = 3, fig.width = 3.5}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
-  labs(x = "Bill depth in mm", y = "Bill length in mm", title = "Bill length vs. depth in penguins", tag = "A")
+  labs(
+    x = "Bill depth in mm", 
+    y = "Bill length in mm", 
+    title = "Bill length vs. depth in penguins", 
+    tag = "A")
 ```
 
 Titles can be useful for presentations, but generally not useful for manuscripts, where you can put the information into the caption. 
 Tags are useful when building a multipart figure (see \@ref(combining-plots)).
 
-### Stats
+### Exercise {- .facta .toc-ignore}
 
-**Stats** are statistical transformations to summarize objects in the data in different ways.
-You can add means or confidence intervals on top of your data.
+- Add axis & legend labels to your violin plot
 
-```{r stats, eval = TRUE, fig.height = 3, fig.width=3.5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
-  geom_point() +
-  stat_summary(fun = "mean", colour = "red", size = 1)
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+violin_plot + 
+  labs(x = ___, y = ___, fill = ___)
+ 
 ```
-
+</details> 
 
 ### Facets
+
 **Facets** can be used to divide the data into different subplots, which can enhance readability of a figure.
 
-In the penguin example we can show 3 different panels for each island.
-This way of plotting makes it easy to see which penguin species occurs on each island.
+In the next example, we use `facet_wrap()` to split the penguin data into 3 panels, one for each island.
 
 ```{r facets, eval = TRUE, fig.height = 3, fig.width=5}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
   facet_wrap(~ island)
 ```
+
+If you want to split the data by two variables, `facet_grid()` can be useful.
+
+```{r facets-grid, eval = TRUE, fig.height = 3, fig.width=5}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_point() +
+  facet_grid(island ~ sex)
+```
+
+### Exercise {- .facta .toc-ignore}
+
+- split your scatterplot into facets by sex.
+
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+scatter_plot +
+  facet_wrap(~___)
+ 
+```
+</details> 
 
 
 ### Themes
@@ -197,6 +294,8 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 In themes you can change, remove and add the background, gridlines, ticks, text, text size and much more.
 
 In our example, we will change the axis tile text size, the colour of the axis text and change the theme to `theme_minimal()`.
+
+See chapter \@ref(themes) for more about using themes.
 
 ```{r theme, eval = TRUE, , fig.height = 3, fig.width=5}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
@@ -208,36 +307,86 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 
 ```
 
+### Exercise {- .facta .toc-ignore}
+
+- Change the theme of your scatterplot
+
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+scatter_plot +
+  theme___()
+ 
+```
+</details> 
 
 ### A ggplots are built with layers
+
 As you can see, there are almost no limits to what you can do in a ggplot.
 The trick is to know which element changes what and to remember all the names (i.e. what is axis.text and axis.ticks etc.).
 
-The order in which you code the different components of a plot often does not matter  (although there are discussions around that topic, see here).
+The order in which you code the different components of a plot often does not matter, except that the `ggplot()` needs to come first, and geoms are plotted in the order they are in the code.
 You can imagine the different components (geom, scale, stats) of the plot as different layers that are plotted on top of each other.
-Usually, the order is not so important, unless something needs to be plotted on top of something else.
-But this is easy to spot once you see the plot.
 
-For example, you want to plot the data below and the mean values on top, and not the other way round.
-See below, the red points showing the means have disappeared. 
-So, the things you want on top are plotted after.
+For example, you want to plot the data below and the smoother on top, and not the other way round.
 
-```{r wrong-order, eval = TRUE, fig.height = 3, fig.width=3.5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
-  stat_summary(fun = "mean", colour = "red", size = 2) +
-  geom_boxplot()
+```{r wrong-order, fig.keep='none', eval = TRUE, fig.height = 3, fig.width=3.5}
+points_on_top <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_smooth() +
+  geom_point()
+
+smooth_on_top <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_point() +
+  geom_smooth() 
+
+points_on_top
+smooth_on_top
+```
+```{r wrong-order-plot, echo = FALSE, message = FALSE, fig.height = 3, fig.width=6}
+points_on_top + labs(title = "Points on top") +
+  smooth_on_top + labs(title = "Smooth on top") & theme(legend.position = "none")
+
+```
+
+### Exercise {- .facta .toc-ignore}
+
+- Make a boxplot of bill length by species on top of the jittered bill length data
+
+ <details>
+  <summary>Hint</summary>
+```{r, eval = FALSE}
+ggplot(data = ___, mapping = aes(x = ___, y = ___)) +
+  geom____() +
+  geom____()
+ 
+```
+</details> 
+
+## Trouble shooting {.tabset}
+
+In the beginning you will make mistakes which will result in error messages, warnings or incomplete plots.
+These mistakes often occur when one of the layers is missing, because a `+` is forgotten at the end of a line, due to a typo, or the data or other elements are forgotten.
+
+To debug `ggplot` errors and other problems, we need to find where the error is.
+Run the first line (excluding with `+` at the end) and see what happens.
+If it does what you expect that line to run, then run the first two lines.
+You can also comment lines out (by putting a `#` in front of them).
+I recommend typing `NULL` on the line after the plot code so that if there is a extra `+` after removing a line, the plot won't give a strange error by adding the next line of code.
+
+
+```{r bad-code, eval = FALSE}
+ggplot(penguins, aes(x = species, y = bill_length_mm)) +
+  geom_violin() + # extra + after commenting out labs()
+#  labs(x = "Species", y = Bill length)
+NULL #This will end the plot code
 
 ```
 
 
-## Common mistakes {.tabset}
-
-In the beginning you will make mistakes which will result in error messages, warnings or incomplete plots.
-These mistakes often occur when one of the layers is missing, because a `+` is forgotten at the end of a line, due to a typo, or the data or other elements are forgotten.
 Let us look at some common mistakes and how the ggplot is displayed or not.
 
-
 ### No data
+
 If you forget to specify the data ggplot will not be able to make a plot and you will get the following error message:
 
 ```{r no-data, echo=TRUE, error=TRUE, fig.height = 3, fig.width=3.5}
@@ -247,6 +396,7 @@ ggplot(aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 
 
 ### Missing aesthetics
+
 If you forget to define the aesthetics `aes()` you will also get an error message and a empty image:
 ```{r no-aestetics, echo=TRUE, error=TRUE, eval=TRUE, fig.height = 3, fig.width=3.5}
 ggplot(data = penguins) +
@@ -254,15 +404,62 @@ ggplot(data = penguins) +
 ```
 
 ### Missing geometry
+
 If the geometry is missing `geom_point()`, ggplot will draw a empty plot, with axis labels, but show not data, because you have not defined how to plot the data.
 
 ```{r no-geom, fig.height = 3, fig.width=3.5}
 ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
 ```
 
+### Exercise {- .facta .toc-ignore}
+
+I make lots of mistakes and my plots don't work. 
+Please fix them.
+
+```{r, eval = FALSE}
+ggplot(penguins, aes(x = bill_length, y = bill_depth)) |> 
+  geom_point() + 
+  labs(x = "Bill length", y = "Bill width")
+
+```
+
+
+ <details>
+  <summary>Hint</summary>
+ Use `+` not pipes to add plot elements
+</details> 
+
+```{r, eval = FALSE}
+ggplot(penguins, aes(x = bill_length, y = bill_depth))  
++  geom_point() 
++  labs(x = "Bill length", y = "Bill width")
+
+```
+
+
+ <details>
+  <summary>Hint</summary>
+ `+` must be at the end of the line not the beginning
+</details> 
+
+Why is this plot without colour?
+```{r, eval = FALSE}
+ggplot(penguins, aes(x = bill_length, y = bill_depth, fill = species)) +  
+  geom_point() + 
+  scale_fill_viridis_c() +
+  labs(x = "Bill length", y = "Bill width")
+
+```
+
+
+ <details>
+  <summary>Hint</summary>
+Use `colour = species` and `scale_colour_viridis_c()`, not `fill`
+</details> 
+
 
 
 ### What's next? {.facta}
 
 Next, we will show the [essential elements]() of a plot (title, axes, legend, ...) and you can learn how to change and adapt each of these elements.
-Further you can learn the most common [plots types]() that are commonly used.
+Further you can learn the most common plots types that are commonly used  (\@ref(choosing-your-visualisation)).
