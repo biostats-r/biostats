@@ -2,7 +2,7 @@
 source("R/setup.R")
 ```
 
-# Shapes, colours and linetypes
+# Colours, shapes and linetypes
 
 ## Colours and fill
 
@@ -36,13 +36,14 @@ Discrete scales are automatically used when the variable mapped to colour or fil
 If you want to use a discrete scale on a numeric variable, for example, if 0 represents Male and 1 represents Female (this is a bad idea), then you need to coerce it to a factor with `factor()`. 
 If you don't do this, you will get an error.
 
-There is a choice of three types of discrete colour/fill scales
+There is a choice of four types of discrete colour/fill scales
 
- - [Qualitative](qualitative) for categorical variables
- - [Sequential](sequential) for ordinal variables
- - [Diverging](diverging) for ordinal variables with a natural midpoint.
+ - Qualitative for categorical variables
+ - Sequential for ordinal variables
+ - Diverging for ordinal variables with a natural midpoint.
+ - Highlights when you want to focus on only some of the data.
 
-### Qualitative
+#### Qualitative
 
 Qualitative palettes have no natural order to the colours. 
 Use them for categorical variables.
@@ -76,7 +77,7 @@ ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   scale_fill_brewer(palette = "Set1")
 ```
 
-### Sequential
+#### Sequential
 
 Sequential colour/fill scales are useful for ordinal variables - for example, high, medium, and low concentrations of a treatment drug.
 
@@ -88,7 +89,7 @@ RColorBrewer::display.brewer.all(type = "seq")
 Another example of a sequential colour/fill palette is viridis, which can be used with `scale_fill_viridis_d()`. 
 
 
-### Diverging 
+#### Diverging 
 
 Diverging colour/fill scales are useful for ordinal variables with a natural midpoint, which might be zero, or the mean of the data.
 
@@ -97,6 +98,22 @@ Here are some examples from the `RColorBrewer` package, which can be used as abo
 ```{r div-brewer, fig.height = 4}
 RColorBrewer::display.brewer.all(type = "div")
 ```
+
+#### Highlights
+
+Highlights are useful when you want to focus on some of the data by showing it in colour and setting the remainder to grey.
+You can do this in several ways, but the easiest is to use the `gghighlight` package.
+
+`gghighlight` takes a logical statement which determines which points or lines get coloured. 
+This plot focuses on the Adelie penguins.
+
+```{r highlights, fig.height = 3.5, fig.width = 3.5, message=FALSE}
+library(gghighlight)
+ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
+  geom_point() +
+  gghighlight(species == "Adelie")
+```
+
 
 
 
