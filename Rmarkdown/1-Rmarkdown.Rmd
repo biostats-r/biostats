@@ -58,6 +58,12 @@ knitr::include_graphics("Pics/rmarkdown.png")
 
 You will learn about the elements of this file in section \@ref(elements-of-an-r-markdown-file).
 
+### Exercise {- .facta .toc-ignore}
+
+Create an R markdown document with output format HTML.
+We are going to analyse droughts in Bergen (which raises the fire risk on the coastal heathland (lynghei)). 
+Give the document a suitable title and save it in your R studio project.
+
 ## Knitting the R markdown file
 
 You can see the rendered R markdown document by knitting it.
@@ -67,6 +73,11 @@ Click the blue "Knit" button which is above the document.
 knitr::include_graphics("Pics/knit.png")
 ```
 The first time you knit the document, you need to save it.
+
+
+### Exercise {- .facta .toc-ignore}
+
+Knit your R markdown document and examine the output.
 
 # Elements of an R markdown file
 
@@ -92,11 +103,16 @@ date:'`r format(Sys.Date(), "%d %B %Y")`'
 ```
 
 ```{r r-yaml-flair, echo=FALSE}
-decorate("r-yaml", eval = FALSE) %>% 
-  flair_lines(4)
+decorate("r-yaml", eval = FALSE) |> 
+  flair_lines(4) |> 
+  knit_print.with_flair()
 ```
 
 See the data-time tutorial for more about the codes in `"%d %B %Y"`.
+
+### Exercise {- .facta .toc-ignore}
+
+Make your R markdown document show today's date when knitted.
 
 ### Output formats
 
@@ -107,7 +123,7 @@ R markdown documents can be rendered in many different output formats, including
 - books (with [`bookdown`](https://bookdown.org/yihui/bookdown/)).
 - theses (with [`thesisdown`](https://github.com/ismayc/thesisdown))
 
-This tutorial focuses on documents like reports.
+This tutorial focuses on document-like reports.
 
 There is a choice of output format for documents. 
 This can be specified when the R markdown file is created in RStudio or by editing the YAML.
@@ -123,14 +139,15 @@ output: html_document
 ```
 
 ```{r html-flair, echo=FALSE}
-decorate("html", eval = FALSE) %>% 
-  flair_lines(3)
+decorate("html", eval = FALSE) |> 
+  flair_lines(3) |> 
+  knit_print.with_flair()
 ```
 
 Word documents are also easy; just change the output to `word_document`.
 This can be very useful if you have a supervisor or collaborators who cannot cope with R markdown directly, but consider using the [`redoc`](https://noamross.github.io/redoc/index.html) package which lets you convert an edited word document back into R markdown.
 
-Rendering the R markdown file as a PDF requires some external tools (LaTeX) to be installed. 
+Rendering the R markdown file as a PDF requires some external tools (LaTeX) to be installed (you don't need to learn any LaTeX). 
 This can be done with the `tinytxt package`.
 
 ```{r tinytxt, eval = FALSE, echo = TRUE}
@@ -140,6 +157,7 @@ tinytex::install_tinytex()
 ```
 
 Then the output format in the YAML can be changed to `pdf_document`.
+With PDF documents, it can be tricky to control exactly where the figures are positioned, so I recommend working with html as long as possible.
 
 
 ## Text
@@ -153,19 +171,38 @@ It is good practice to write one sentence per line.
 The extra line breaks will be removed when the document in knitted.
 If you want to force a line break, put two spaces at the end of the line.
 
+
+
+<div style="float: right;margin-right: 7px;margin-top: 7px;">
+
+```{r formatting2, out.width= "100%", echo=FALSE}
+#, out.extra='style="float:right; padding:10px"'
+system("pdftoppm -png -x 130 -y 130 -W 220 -H 300 formatting.pdf > formatting.png")
+#system("convert formatting.pdf -trim formatting.png")
+knitr::include_graphics("formatting.png")
+```
+
+</div>
+
 Formatting is generated with some special characters.
 For example:
 
--   \# Title
--   \#\# Subtitle
--   \*italic\* or \_italics\_ = *italic*
--   \*\* bold\*\* or \_\_bold\_\_ = **bold**
--   Superscript m\^2\^ = m^2^
--   Subscript CO\~2\~ = CO~2~
+```{r formatting, results='asis', echo = FALSE}
+read_lines("formatting.Rmd", skip_empty_rows = TRUE) %>% 
+  paste(., "  ") |> 
+  str_replace_all(pattern = "([#\\*\\^\\_~])", "\\\\\\1") |> 
+  cat(sep = "\n")
+```
+
+If you actually want a \#\*\_\^\~ in the text, you need to escape it by putting a backslash \\ before it, e.g. \\#.  
 
 If you don't like formatting the document by hand, you can use the RStudio visual editor by clicking on the grey [Å]{style="color:grey"} above the document.
 
-A more complete list is given in the [R markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf).
+A more complete list is given in the [R markdown cheat sheet](https://github.com/rstudio/cheatsheets/blob/master/rmarkdown-2.0.pdf).
+
+### Exercise {- .facta .toc-ignore}
+
+Write a section titled "Introduction" followed by two short paragraphs of text about _Calluna vulgaris_ and drought (or anything else) to try the different types of formatting.
 
 ## Code chunks
 
@@ -275,6 +312,37 @@ The working directory for the new R session used when knitting the R markdown fi
 If the file is in the root directory of an RStudio project, relative paths will work the same way in the R markdown document as from the console.
 If the file is in a sub-directory, use `here::here()` to form paths relative to the project root.
 
+### Exercise {- .facta .toc-ignore}
+
+Download file [https://raw.githubusercontent.com/biostats-r/biostats/main/Rmarkdown/data/Florida-precip.csv](https://raw.githubusercontent.com/biostats-r/biostats/main/Rmarkdown/data/Florida-precip.csv) and save it into your RStudio project folder.
+The file gives monthly precipitation data from Florida, Bergen since 1983, extracted from [https://seklima.met.no/](https://seklima.met.no/). 
+Earlier data are available from a weather station on Nordnes.
+Make an R chunk in your R markdown document and use it to import the file into R.
+ 
+ <details>
+  <summary>Hint</summary>
+Check the delimiter and decimal separator.
+Make sure the Rmarkdown document loads tidyverse.
+</details>
+
+Change the column headers so they are easier to work with.
+
+ <details>
+  <summary>Hint</summary>
+- Use the `col_names` argument to `read_delim()` 
+- OR use `rename(new_name = \`Old Name\`)`
+- OR use `janitor::clean_names()`
+</details>
+
+Convert the date column to date format
+
+ <details>
+  <summary>Hint</summary>
+- Use the `col_types` argument to `read_delim()` 
+- OR use `lubridate::dmy()` (check help file to see the `truncated` argument)
+</details>
+
+
 ## Inline code
 
 In addition to the output from chunks of code, you can insert code directly into text.
@@ -285,8 +353,9 @@ Seven times six is `r 7 * 6`
 ```
 
 ```{r inline1-flair, echo=FALSE}
-decorate("inline1", eval = FALSE) %>% 
-  flair_rx("`.*`")
+decorate("inline1", eval = FALSE) |> 
+  flair_rx("`.*`") |> 
+  knit_print.with_flair()
 ```
 
 <span style="background-color: Beige;">Seven times six is `r 7 * 6`</span>
@@ -298,8 +367,9 @@ Seven times six is `r english::words(7 * 6)`
 ```
 
 ```{r inline-english-flair, echo=FALSE}
-decorate("inline-english", eval = FALSE) %>% 
-  flair_rx("`.*`")
+decorate("inline-english", eval = FALSE) |> 
+  flair_rx("`.*`") |> 
+  knit_print.with_flair()
 ```
 
 <span style="background-color: Beige;">Seven times six is `r english::words(7 * 6)`</span>
@@ -334,12 +404,22 @@ r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).
 ```
 
 ```{r inline-list-flair, echo=FALSE}
-decorate("inline-list", eval = FALSE) %>% 
-  flair_rx("`r [a-z_\\$]*`")
+decorate("inline-list", eval = FALSE) |> 
+  flair_rx("`r [a-z_\\$]*`") |> 
+  knit_print.with_flair()
 ```
 
 
 <span style="background-color: Beige;">Bill length and body mass in Adelie penguins are positively correlated, r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).</span>
+
+### Exercise {- .facta .toc-ignore}
+
+Use some inline R code to report the maximum monthly precipitation in Bergen.  
+
+ <details>
+  <summary>Hint</summary>
+`max()`
+</details>
 
 
 # Figures, tables and equations
@@ -382,12 +462,25 @@ knitr::include_graphics("my_image.png")
 
 Use the `out.width` and `out.height` chunk options to set the size of the figure.
 
+### Exercise {- .facta .toc-ignore}
+
+Write a chunk to make a figure showing the annual precipitation cycle.
+Give the figure a caption.
+
+ <details>
+  <summary>Hint</summary>
+`lubridate::month()` might be useful for extracting the month from the date.
+</details>
+
+Make a second chunk to make a figure that shows how the summer of 2021 compares to previous years.
+Give the figure a caption.
+
 ## Tables
 
 You can make tables in markdown by hand, but it is so much easier to use R.
 
 Simple tables can be made with the function `knitr::kable`.
-Several packages, including `kableExtra` and [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) can make beautiful tables.
+Several packages, including `kableExtra` and `gt` can make beautiful tables.
 
 ### kable
 
@@ -402,24 +495,54 @@ knitr::kable(x = slice(penguins, 1:5), #the data for the table
 
 `kableExtra` extends `knitr::kable`, letting you add extra rows of headers, repeating headers if the table spans multiple pages and many other features.
 
-```{r, message = FALSE}
+```{r kableExtra, message = FALSE}
 library(kableExtra)
-penguins %>% 
+penguins |> 
   #rename some columns
-  rename(length_mm = bill_length_mm, depth_mm = bill_depth_mm) %>% 
+  rename(length_mm = bill_length_mm, depth_mm = bill_depth_mm) |> 
   #replace "_" with spaces
-  rename_with(str_replace_all,  pattern = "_", replacement = " ") %>% 
+  rename_with(str_replace_all,  pattern = "_", replacement = " ") |> 
   #capitalise first letter
-  rename_with(str_to_sentence) %>% 
+  rename_with(str_to_sentence) |> 
   #get first five rows
-  slice(1:5) %>% 
-kbl(booktabs = TRUE, caption = "The top penguins") %>% 
-  kable_styling(full_width = TRUE) %>%
+  slice(1:5) |> 
+  kbl(booktabs = TRUE, caption = "The top penguins") |> 
+  kable_styling(full_width = TRUE) |>
   add_header_above(c(" ", " ", "Bill" = 2, "Body" = 2, " ", " "))
-  
 ```
 
 Further reading on [kableExtra](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf).
+
+### gt
+
+[`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) is an alternative to `kableExtra`.
+
+```{r gt}
+library(gt)
+penguins |>
+  slice(1:5) |> 
+  gt(caption = "Basic gt table")
+
+penguins |>
+  slice(1:5) |> 
+  rename_with(str_to_sentence) |>
+  gt(caption = "gt table with more features") |> 
+  cols_label(Bill_length_mm = "Length mm",
+             Bill_depth_mm  = "Depth mm",
+             Flipper_length_mm = "Flipper length mm", 
+             Body_mass_g = "Body mass g") |> 
+  tab_spanner(label = "Bill", columns = c(Bill_length_mm, Bill_depth_mm)) |> 
+  tab_spanner(label = "Body", columns = c(Flipper_length_mm, Body_mass_g)) 
+```
+
+### Exercise {- .facta .toc-ignore}
+
+Write a chunk to make a table showing the mean precipitation and its standard deviation for each month.
+
+ <details>
+  <summary>Hint</summary>
+`group_by()` and `summarise()` then use any of the table making functions.
+</details>
 
 ## Equations
 
@@ -435,8 +558,8 @@ What, How, Output
 "Subscript", "`$\\beta_{0}$`", "$\\beta_{0}$"
 "Superscript", "`$\\chi^{2}$`", "$\\chi^{2}$"
 "Fractions", "`$\\frac{1}{2}$`", "$\\frac{1}{2}$"
-"Roots", "`$\\sqrt{4} = 2$`", "$\\sqrt{4} = 2$"') %>% 
-  kbl(booktabs = TRUE) %>% 
+"Roots", "`$\\sqrt{4} = 2$`", "$\\sqrt{4} = 2$"') |> 
+  kbl(booktabs = TRUE) |> 
   kable_styling(full_width = TRUE)
 ```
 
@@ -489,8 +612,9 @@ bibliography: reproducibility.bib
 ```
 
 ```{r bibliography-flair, echo=FALSE}
-decorate("bibliography", eval = FALSE) %>% 
-  flair_lines(4)
+decorate("bibliography", eval = FALSE) |> 
+  flair_lines(4) |> 
+  knit_print.with_flair()
 ```
 
 The bibliography file can be in one of several formats, including bibTeX (\*.bib) and endnote (\*.enl).
@@ -510,8 +634,9 @@ R markdown is cool.
 ```
 
 ```{r bib-pos-flair, echo=FALSE}
-decorate("bib-pos", eval = FALSE) %>% 
-  flair_lines(5)
+decorate("bib-pos", eval = FALSE) |> 
+  flair_lines(5) |> 
+  knit_print.with_flair()
 ```
 
 The `{-}` stops R markdown from numbering the reference section header.
@@ -532,8 +657,9 @@ R markdown is very cool.
 ```
 
 ```{r bib-move-flair, echo=FALSE}
-decorate("bib-move", eval = FALSE) %>% 
-  flair_lines(7)
+decorate("bib-move", eval = FALSE) |> 
+  flair_lines(7) |> 
+  knit_print.with_flair()
 ```
 
 ## Citations
@@ -572,8 +698,9 @@ csl: plos-one.csl
 ```
 
 ```{r csl-flair, echo=FALSE}
-decorate("csl", eval = FALSE) %>% 
-  flair_lines(5)
+decorate("csl", eval = FALSE) |> 
+  flair_lines(5) |> 
+  knit_print.with_flair()
 ```
 
 The csl (Citation Style Language) file defines the citation style.
@@ -630,8 +757,9 @@ output: bookdown::html_document2
 ```
 
 ```{r bookdown-flair, echo=FALSE}
-decorate("bookdown", eval = FALSE) %>% 
-  flair_lines(3)
+decorate("bookdown", eval = FALSE) |> 
+  flair_lines(3) |> 
+  knit_print.with_flair()
 ```
 
 ## Cross-referencing figures and tables
@@ -648,7 +776,7 @@ penguins |>
 ````
 
 ```{r penguin-dens, echo = FALSE, fig.cap = "Boxplot of penguin body mass", fig.height=3, fig.width=5, message=FALSE, warning = FALSE}
-penguins %>% 
+penguins |> 
   ggplot(aes(x = flipper_length_mm, fill = species)) +
   geom_density(alpha = 0.7) +
   scale_fill_brewer(palette = "Set1")
@@ -744,8 +872,9 @@ header-includes:
 ```
 
 ```{r line-page-numbers-flair, echo=FALSE}
-decorate("line-page-numbers", eval = FALSE) %>% 
-  flair_lines(4:6)
+decorate("line-page-numbers", eval = FALSE) |> 
+  flair_lines(4:6) |> 
+  knit_print.with_flair()
 ```
 
 Other LaTeX packages can be added in a similar way to add extra functionality, for example, pages in [landscape](https://stackoverflow.com/questions/25849814/rstudio-rmarkdown-both-portrait-and-landscape-layout-in-a-single-pdf).  
@@ -810,7 +939,7 @@ Tell me what you find difficult.
 
 ### Further reading {- .facta .toc-ignore}
 
-- [R markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+- [R markdown cheat sheet](https://github.com/rstudio/cheatsheets/blob/master/rmarkdown-2.0.pdf)
 - [R markdown from RStudio](https://rmarkdown.rstudio.com/index.html)
 - [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
 
