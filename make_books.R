@@ -1,3 +1,5 @@
+# Front page
+bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "docs")
 
 # Git and GitHub
 withr::with_dir("DataManagement/", {
