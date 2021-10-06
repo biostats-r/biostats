@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>14 Regression and ggplot | Working in R</title>
+<meta name="author" content="Jonathan Soulé, Aud Halbritter and Richard J Telford">
+<meta name="description" content="14.1 Regression lines with geom_smooth() geom_smooth() adds a regression line to a plot. By default it uses a loess smooth when there are fewer than 1000 observations, and a GAM when there are...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="14 Regression and ggplot | Working in R">
+<meta property="og:type" content="book">
+<meta property="og:description" content="14.1 Regression lines with geom_smooth() geom_smooth() adds a regression line to a plot. By default it uses a loess smooth when there are fewer than 1000 observations, and a GAM when there are...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="14 Regression and ggplot | Working in R">
+<meta name="twitter:description" content="14.1 Regression lines with geom_smooth() geom_smooth() adds a regression line to a plot. By default it uses a loess smooth when there are fewer than 1000 observations, and a GAM when there are...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet">
+<script src="libs/panelset-0.2.6/panelset.js"></script><link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="css/style-chapters.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Working in R</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html"><span class="header-section-number">1</span> Introduction</a></li>
+<li class="book-part">Setting up R and RStudio</li>
+<li><a class="" href="getting-started-with-r.html"><span class="header-section-number">2</span> Getting started with R</a></li>
+<li class="book-part">First steps in R</li>
+<li><a class="" href="first-steps-in-r.html"><span class="header-section-number">3</span> First steps in R</a></li>
+<li><a class="" href="importing-data-in-r.html"><span class="header-section-number">4</span> Importing data in R</a></li>
+<li class="book-part">Data manipulation with the tidyverse</li>
+<li><a class="" href="pipes.html"><span class="header-section-number">5</span> Pipes</a></li>
+<li><a class="" href="tidying-data-with-tidyr.html"><span class="header-section-number">6</span> Tidying data with tidyr</a></li>
+<li><a class="" href="working-with-single-tables-in-dplyr.html"><span class="header-section-number">7</span> Working with single tables in dplyr</a></li>
+<li><a class="" href="working-with-multiple-tables-in-dplyr.html"><span class="header-section-number">8</span> Working with multiple tables in dplyr</a></li>
+<li class="book-part">Data visualisation</li>
+<li><a class="" href="why-is-data-visualization-important.html"><span class="header-section-number">9</span> Why is data visualization important?</a></li>
+<li><a class="" href="getting-started-with-ggplot.html"><span class="header-section-number">10</span> Getting started with ggplot</a></li>
+<li><a class="" href="choosing-your-visualisation.html"><span class="header-section-number">11</span> Choosing your visualisation</a></li>
+<li><a class="" href="themes-1.html"><span class="header-section-number">12</span> Themes</a></li>
+<li><a class="" href="colours-shapes-and-linetypes.html"><span class="header-section-number">13</span> Colours, shapes and linetypes</a></li>
+<li><a class="active" href="regression-and-ggplot.html"><span class="header-section-number">14</span> Regression and ggplot</a></li>
+<li><a class="" href="combining-plots.html"><span class="header-section-number">15</span> Combining plots</a></li>
+<li class="book-part">Other topics</li>
+<li><a class="" href="using-functions-and-packages.html"><span class="header-section-number">16</span> Using functions and packages</a></li>
+<li><a class="" href="handling-missing-values.html"><span class="header-section-number">17</span> Handling missing values</a></li>
+<li><a class="" href="bestiary-of-brackets-and-other-r-notation.html"><span class="header-section-number">18</span> Bestiary of Brackets and other R notation</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="regression-and-ggplot" class="section level1" number="14">
+<h1>
+<span class="header-section-number">14</span> Regression and ggplot<a class="anchor" aria-label="anchor" href="#regression-and-ggplot"><i class="fas fa-link"></i></a>
+</h1>
+<div id="regression-lines-with-geom_smooth" class="section level2" number="14.1">
+<h2>
+<span class="header-section-number">14.1</span> Regression lines with <code>geom_smooth()</code><a class="anchor" aria-label="anchor" href="#regression-lines-with-geom_smooth"><i class="fas fa-link"></i></a>
+</h2>
+<p><code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth()</a></code> adds a regression line to a plot.
+By default it uses a loess smooth when there are fewer than 1000 observations, and a GAM when there are more.
+The grey band around the regression line is the confidence interval.
+It can be turned off with <code>se = FALSE</code>, and changed from the default 95% with the level argument.</p>
+<div class="sourceCode" id="cb497"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = 'loess' and formula 'y ~ x'</code></pre>
+<div class="inline-figure"><img src="125_ggplot_regression_files/figure-html/smo-default-1.png" width="672"></div>
+<p>You can change they type of regression model used by <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth()</a></code> with the <code>method</code> argument.
+So to show a linear model, use <code>method = "lm"</code>.</p>
+<div class="sourceCode" id="cb499"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
+<div class="inline-figure"><img src="125_ggplot_regression_files/figure-html/smo-lm-1.png" width="672"></div>
+<p>To show a glm, we need to <code>method = "glm"</code> and set the family in the <code>method.args</code> argument.</p>
+<div class="sourceCode" id="cb501"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">SWAP</span>, package<span class="op">=</span> <span class="st">"rioja"</span><span class="op">)</span>
+<span class="va">swap_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span>pH <span class="op">=</span> <span class="va">SWAP</span><span class="op">$</span><span class="va">pH</span>, <span class="va">SWAP</span><span class="op">$</span><span class="va">spec</span><span class="op">)</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">swap_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pH</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># sign converts data to presence absence</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0</span>, height <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>
+    method <span class="op">=</span> <span class="st">"glm"</span>, 
+    method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/plotmath.html">italic</a></span><span class="op">(</span><span class="va">Tabellaria</span><span class="op">~</span><span class="va">binalis</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<pre><code>## `geom_smooth()` using formula 'y ~ x'</code></pre>
+<div class="inline-figure"><img src="125_ggplot_regression_files/figure-html/smo-glm-1.png" width="672"></div>
+</div>
+<div id="manual-plotting-of-a-linear-model" class="section level2" number="14.2">
+<h2>
+<span class="header-section-number">14.2</span> Manual plotting of a linear model<a class="anchor" aria-label="anchor" href="#manual-plotting-of-a-linear-model"><i class="fas fa-link"></i></a>
+</h2>
+<p>We can also fit a regression model and make predictions.
+This is most useful for more complex models.
+For example, if we want to fit a model for the relationship between penguin body mass and bill length with species as a second predictor, we can only do it this way.</p>
+<p>First fit the model</p>
+<div class="sourceCode" id="cb503"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span> <span class="op">+</span> <span class="va">species</span>, 
+          data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span></code></pre></div>
+<p>Now we need to make predictions.
+We could do this with <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code>, but it is often easier to use <code>augment()</code> from the <code>broom</code> package as it takes care of missing values better.</p>
+<div class="sourceCode" id="cb504"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#preds &lt;- predict(mod, interval = "confidence", conf.level = 0.95)</span>
+
+<span class="co"># augment with a lm model</span>
+<span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="va">mod</span>, interval <span class="op">=</span> <span class="st">"confidence"</span>,  conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></code></pre></div>
+<p>Now we can plot them, using geom_ribbon() and <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line()</a></code> to recreate what <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth()</a></code> produces.</p>
+<div class="sourceCode" id="cb505"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span>, fill <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">.lower</span>, ymax <span class="op">=</span> <span class="va">.upper</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">preds</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">.fitted</span>, colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">preds</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Body mass g"</span>, y <span class="op">=</span> <span class="st">"Bill length mm"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="125_ggplot_regression_files/figure-html/smo-lm-manual-1.png" width="672"></div>
+</div>
+<div id="manual-plotting-of-generalised-linear-models" class="section level2" number="14.3">
+<h2>
+<span class="header-section-number">14.3</span> Manual plotting of generalised linear models<a class="anchor" aria-label="anchor" href="#manual-plotting-of-generalised-linear-models"><i class="fas fa-link"></i></a>
+</h2>
+<p>With a generalised linear model, it is a little more complex as we can get the predictions on the response scale or the transformed link scale.
+If we want confidence intervals, we need to calculate them on the link scale and then transform them back to the response scale.</p>
+<p>With a poisson model, we can transform the predictions from the link scale to the response scale with the exponential function <code><a href="https://rdrr.io/r/base/Log.html">exp()</a></code>.</p>
+<p>With a binomial model, we need to reverse the logit function.
+The easiest way to do this is with <code><a href="https://rdrr.io/r/stats/Logistic.html">plogis()</a></code>.</p>
+<div class="sourceCode" id="cb506"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod_glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span> <span class="op">~</span> <span class="va">pH</span>, data <span class="op">=</span> <span class="va">swap_data</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span>
+
+<span class="va">preds_glm</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="va">mod_glm</span>, type.predict <span class="op">=</span> <span class="st">"link"</span>, se_fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>
+    fitted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="va">.fitted</span><span class="op">)</span>, 
+    lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="va">.fitted</span> <span class="op">+</span> <span class="va">.se.fit</span> <span class="op">*</span> <span class="fl">1.96</span><span class="op">)</span>,
+    upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="va">.fitted</span> <span class="op">-</span> <span class="va">.se.fit</span> <span class="op">*</span> <span class="fl">1.96</span><span class="op">)</span>,
+  <span class="op">)</span></code></pre></div>
+<p>Now we can plot the predictions.</p>
+<div class="sourceCode" id="cb507"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">swap_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pH</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># sign converts data to presence absence</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0</span>, height <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymax <span class="op">=</span> <span class="va">upper</span>, ymin <span class="op">=</span> <span class="va">lower</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,
+              data <span class="op">=</span> <span class="va">preds_glm</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">fitted</span><span class="op">)</span>,
+              data <span class="op">=</span> <span class="va">preds_glm</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/plotmath.html">italic</a></span><span class="op">(</span><span class="va">Tabellaria</span><span class="op">~</span><span class="va">binalis</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<div class="inline-figure"><img src="125_ggplot_regression_files/figure-html/smo_glm_manual-1.png" width="672"></div>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="colours-shapes-and-linetypes.html"><span class="header-section-number">13</span> Colours, shapes and linetypes</a></div>
+<div class="next"><a href="combining-plots.html"><span class="header-section-number">15</span> Combining plots</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#regression-and-ggplot"><span class="header-section-number">14</span> Regression and ggplot</a></li>
+<li><a class="nav-link" href="#regression-lines-with-geom_smooth"><span class="header-section-number">14.1</span> Regression lines with geom_smooth()</a></li>
+<li><a class="nav-link" href="#manual-plotting-of-a-linear-model"><span class="header-section-number">14.2</span> Manual plotting of a linear model</a></li>
+<li><a class="nav-link" href="#manual-plotting-of-generalised-linear-models"><span class="header-section-number">14.3</span> Manual plotting of generalised linear models</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2021-10-03.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
