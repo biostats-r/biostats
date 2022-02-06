@@ -172,6 +172,29 @@ cvd_grid(p3_v)
 Much better. 
 Always test that your colour palette is colourblind friendly, or use one known to be ok.
 
+## Transparency
+
+Transparency is set by the `alpha` aesthetic, where 0 is completely transparent and 1 is opaque.
+The overlap between partially transparent objects is more opaque. 
+
+```{r alpha, fig.width=5, fig.height=2, fig.cap = "Alpha values", echo = FALSE}
+tibble(x0 = 0:5, r = 0.5, alpha = x0/5) |> 
+  crossing(y0 = c(0, 0.4)) |> 
+  ggplot(aes(x0 = x0, y0 = y0, r = r, alpha = I(alpha))) +
+  ggforce::geom_circle(fill = "black",show.legend = FALSE) + 
+  coord_equal() +
+  labs(x = "Alpha") +
+  scale_x_continuous(expand = c(0.01, 0), breaks = 0:5, labels = 0:5/5) +
+  theme_bw() +
+  theme(axis.title.y = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        panel.grid  = element_blank())
+```
+You can map a variable to `alpha` in `aes()`, but it is probably more common to set `alpha`.
+This is very useful, for example, when there are many overlapping points in a scatterplot, or you want to see the data behind the confidence interval of a regression line (section \ref(manual-plotting-of-a-linear-model)). 
+Be careful using transparency when different colours overlap, as it can appear to make a third colour.
+
  
 ## Shapes
 
