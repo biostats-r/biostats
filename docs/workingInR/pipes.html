@@ -78,7 +78,7 @@
 <p>If we want to run several functions in turn, for example, if we wanted to find the mean bill length for each penguin species with <code>group_by</code> and <code>summarise</code> (you will find out more about these functions in Chapter <a href="working-with-single-tables-in-dplyr.html#working-with-single-tables-in-dplyr">7</a>).
 You could nest one function inside the other.</p>
 <div class="sourceCode" id="cb267"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="va">species</span><span class="op">)</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">summarise</span><span class="op">(</span><span class="fu">group_by</span><span class="op">(</span><span class="va">penguins</span>, <span class="va">species</span><span class="op">)</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 2
 ##   species    mean
 ##   &lt;fct&gt;     &lt;dbl&gt;
@@ -88,8 +88,8 @@ You could nest one function inside the other.</p>
 <p>With more larger problems using more function, this solution becomes almost impossible to read and it is very easy to make mistakes and forget which brackets belong to which function.</p>
 <p>Another strategy is to make and use intermediate objects</p>
 <div class="sourceCode" id="cb269"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">penguins_grouped</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="va">species</span><span class="op">)</span>
-<span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="va">penguins_grouped</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">penguins_grouped</span> <span class="op">&lt;-</span> <span class="fu">group_by</span><span class="op">(</span><span class="va">penguins</span>, <span class="va">species</span><span class="op">)</span>
+<span class="fu">summarise</span><span class="op">(</span><span class="va">penguins_grouped</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 2
 ##   species    mean
 ##   &lt;fct&gt;     &lt;dbl&gt;
@@ -102,8 +102,8 @@ The R code for a pipe is <code>|&gt;</code>
 Pipes pass the results from one function directly into the next function.</p>
 <div class="sourceCode" id="cb271"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penguins</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> |&gt;
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">species</span><span class="op">)</span> |&gt;
+  <span class="fu">summarise</span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 2
 ##   species    mean
 ##   &lt;fct&gt;     &lt;dbl&gt;
@@ -187,8 +187,14 @@ To make your code readable, put a line break after each pipe.</p>
 <div class="prev"><a href="importing-data-in-r.html"><span class="header-section-number">4</span> Importing data in R</a></div>
 <div class="next"><a href="tidying-data-with-tidyr.html"><span class="header-section-number">6</span> Tidying data with tidyr</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
-<p><a href = "https://biostats.w.uib.no/">Biost@ts Homepage</a></p>
-<p><a href = "https://biostats-r.github.io/biostats/">All BioCeed Biost@ts  Books</a></p>
+<style>
+               img.site-logo {
+  height: auto;
+  width: 95%;
+}
+      </style>
+<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>   </p>
+<p><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li>
@@ -215,7 +221,7 @@ To make your code readable, put a line break after each pipe.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2022-02-06.</p>
+    <p>"<strong>Working in R</strong>" was written by Jonathan Soulé, Aud Halbritter and Richard J Telford. It was last built on 2022-03-10.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

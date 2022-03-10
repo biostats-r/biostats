@@ -3,7 +3,7 @@ title: "Git and GitHub"
 author: "Aud Halbritter and Richard J Telford"
 site: bookdown::bookdown_site
 documentclass: book
-date: "2021-08-30"
+date: "2022-03-10"
 github-repo: biostats-r/biostats
 output:
   bookdown::bs4_book:
