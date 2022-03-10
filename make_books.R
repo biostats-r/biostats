@@ -19,7 +19,7 @@ bioceed_links <- function(dir, front_page = FALSE){
 }
       </style>',
                '<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>   </p>',
-               ifelse(isFALSE(front_page), '<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/bioceed_books_logo.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>', ''), 
+               ifelse(isFALSE(front_page), '<p><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>', ''), 
                f[p2:length(f)])
       }  
     }
@@ -35,7 +35,7 @@ bioceed_links("docs/", front_page = TRUE)
 # Git and GitHub
 withr::with_dir("DataManagement/", {
   bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "../docs/github")
-  
+  bioceed_links("../docs/github")
 })
 
 
@@ -49,6 +49,7 @@ withr::with_dir("Rmarkdown/", {
 # R packages
 withr::with_dir("writing_a_package/", {
   bookdown::render_book('index.Rmd', 'bookdown::bs4_book', output_dir = "../docs/package")
+  bioceed_links("../docs/package")
 })
 
 #working in R
