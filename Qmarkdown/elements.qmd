@@ -1,0 +1,434 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+library(palmerpenguins)
+library(tidyverse)
+source("../Templates/biostats_theme.R")
+```
+
+# Elements of an quarto file
+
+## YAML
+
+The YAML is metadata for the document that goes right at the top of the file between two sets of three dashes.
+The YAML consists of key-values pairs separated by a colon and a space.
+Rstudio will autocomplete the keys.
+
+``` yaml
+---
+title: "My Manuscript"
+format: html
+date: 2022-04-03
+---
+```
+
+The YAML can set the document author and title, the output format and many other things.
+
+::: callout-warning
+## White space
+
+YAML is sensitive to white space.
+For example, you must have the space after the colon.
+:::
+
+You can use an RStudio Addin from the package `ymlthis` to help write the YAML.
+
+::: callout-tip
+## Today's date
+
+With the keyword `today`, you can make the document report the date it was rendered.
+
+``` yaml
+---
+title: "My Manuscript"
+format: html
+date: 2022-04-03
+---
+```
+:::
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Make your quarto document show today's date when rendered.
+
+### Output formats
+
+Quarto documents can be rendered in about 40 formats!
+The format can be specified when the quarto file is created in RStudio or by editing the YAML.
+
+Producing an html file to view in a browser is the simplest, as no extra software needs installing.
+The YAML should look something like this.
+
+``` yaml
+---
+title: "My Manuscript"
+format: html
+---
+```
+
+Word documents are also easy; just change the format to `docx`.
+This can be very useful if you have a supervisor or collaborators who cannot cope with markdown directly.
+
+Rendering the quarto file as a PDF requires some external tools (LaTeX) to be installed (you don't need to learn any LaTeX).
+This can be done with the `tinytxt package`.
+
+```{r tinytxt, eval = FALSE, echo = TRUE}
+# run this only once
+install.packages('tinytex')
+tinytex::install_tinytex()
+```
+
+Then the format in the YAML can be changed to `pdf`.
+With PDF documents, it can be tricky to control exactly where the figures are positioned, so I recommend working with html as long as possible.
+
+::: callout-note
+## Coauthoring with quarto
+
+Perhaps the best way to collaborate with coauthors on a quarto document is to use version control for example with [GitHub](https://biostats-r.github.io/biostats/github/index.html "Git and GitHub book").
+
+An alternative is to use the `trackdown` package to upload markdown files to Google Drive where they can be edited and then downloaded again.
+(`trackdown` currently only works with rmd files not qmd, but I hope this will change soon).
+:::
+
+## Text
+
+Type to make text!
+In the visual editor, you can format the text in much the same way you would work in MS word or Libra Office.
+RStudio has a built-in spell checker that will underline words it doesn't recognise in red.
+Go to "Tools" \>\> "Global Options..." \>\> "Spelling" to change the language.
+
+### Source editor
+
+Sometimes it is useful to be able to write in markdown directly, rather than using the visual editor, for example if you are writing a question for [stackoverflow.com](stackoverflow.com) or an issue on [github.com](github.com).
+You can see this mode by clicking on "Source" above the document
+
+```{r}
+#| fig-show: hide
+#| echo: false
+knitr::include_graphics("Pics/source-editor.png")
+knitr::include_graphics("Pics/visual-editor.png")
+```
+
+```{r}
+#| echo: false
+#| label: fig-editors
+#| fig-cap: "The Source code and Visual editors"
+#| out-height: "680px"
+#remotes::install_github("xvrdm/ricv")
+ricv::ricv(img1 = "Pics/source-editor.png", img2 = "Pics/visual-editor.png",
+     options = list(addCircle = TRUE, hoverStart = TRUE))
+```
+
+Paragraphs have a blank line between them.
+It is good practice to write one sentence per line.
+The extra line breaks will be removed when the document in knitted.
+If you want to force a line break, put two spaces at the end of the line.
+
+Formatting is generated with some special characters.
+For example:
+
+```{=html}
+<style type="text/css">
+.heading-output {
+  border-bottom: none;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+</style>
+```
++------------------------------+--------------------------------+
+| Markdown Syntax              | Output                         |
++==============================+================================+
+|     # Header 1               | # Header 1 {.heading-output}   |
++------------------------------+--------------------------------+
+|     ## Header 2              | ## Header 2 {.heading-output}  |
++------------------------------+--------------------------------+
+|     ### Header 3             | ### Header 3 {.heading-output} |
++------------------------------+--------------------------------+
+| \*italics\* and \*\*bold\*\* | *italics* and **bold**         |
++------------------------------+--------------------------------+
+| superscript m\^2\^           | superscript m^2^               |
++------------------------------+--------------------------------+
+| subscript CO\~2\~            | subscript CO~2~                |
++------------------------------+--------------------------------+
+| \`verbatim code\`            | `verbatim code`                |
++------------------------------+--------------------------------+
+
+::: callout-note
+## Escaping characters
+
+If you actually want a \*\_\^\~ in the text, you need to escape it by putting a backslash \\ before it, e.g. \\\*.
+:::
+
+A more complete list of formatting is given in the [R markdown cheat sheet](https://github.com/rstudio/cheatsheets/blob/master/rmarkdown-2.0.pdf), and in the [quarto documentation](https://quarto.org/docs/authoring/markdown-basics.html).
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Write a section titled "Introduction" followed by two short paragraphs of text about *Calluna vulgaris* and drought (or anything else) to try the different types of formatting.
+
+## Code blocks
+
+Code in an R markdown document is contained in code blocks.
+
+This is a code chunk that loads the penguin data from the `palmerpenguins` package.
+
+```{r}
+#| echo: fenced
+data(penguins, package = "palmerpenguins")
+```
+
+It starts with three back-ticks, followed by braces.
+Inside the braces, the "r" indicates that this block is in the R language.
+Then on a new line is the body of the code block.
+The block ends with three back-ticks on their own line.
+In the visual editor, you won't see the back-ticks, but the code block will start with `{r}` and have a grey background.
+
+### Making a block
+
+You can type the back-ticks and braces needed to make a block, but, when using the visual editor, it is easier to get RStudio to insert the block with the insert tool.
+Type a forwards slash "/" on a blank line and choose "R code chunk".
+
+### Block language
+
+We will just work with R code blocks, but it is possible to run block in other languages, including Python and Julia.
+
+### Block options
+
+Code block options control how the blocks work and how any output is treated.
+Options are given in special comments at the top of the block.
+
+```{r}
+#| echo: fenced
+#| label: penguins-bill-body
+#| warning: false
+#| fig-cap: "The figure caption"
+
+library(ggplot2)
+ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
+  geom_point()
+```
+
+::: callout-important
+## Options format
+
+The white space in the block options is critical.
+
+-   If you don't have the space after the `#|` then the option becomes a regular comment and is ignored.
+
+-   If you don't have a space after the colon, you get "[ERROR: Render failed due to invalid YAML]{style="color: red"}."
+
+`true` and `false` are written in lower case (in R they are upper case).
+:::
+
+There are lots of block options, but only a few that you will need to use frequently.
+Here are some and their default.
+
+-   `echo` (`true`) Show the chunk's code in the output.
+-   `eval` (`true`) Run the chunk code.
+-   `include` (`true`) Include the output of the chunk in the document.
+-   `message` (`true`) Include messages from R.
+-   `warning`(`true`) Include warnings from R.
+-   `error` (`false`) If `true`, includes any error message and carries on. If `false`, stops knitting when there is an error in R code.
+
+I leave `message` and `warning` as `true` while I am writing the document, so I can see any possible problems, and set them to `false` when I render the final version.
+
+I sometimes find it useful to set `error` to `true` as can make it easier to debug any errors in the code.
+
+Chunk options for figures are shown in section \@figure-chunk-options.
+
+For more options see <https://quarto.org/docs/computations/execution-options.html>
+
+### Setting global block options
+
+Global code block options can be set for all code blocks by including `execute` with the option in the YAML at the top of the file.
+
+For example, this YAML would set echo to be false for the entire document (options for individual blocks could override this).
+
+``` yaml
+---
+title: "My Manuscript"
+format: html
+execute:
+  echo: false
+---
+```
+
+### Block labels
+
+It is a good idea to give code blocks labels which you can do with the `label` option.
+If you don't, they will automatically be called "unnamed-chunk-n" where "n" is a incrementing number.
+This is inconvenient for debugging (you need to work out which chunk is "unnamed-chunk-38") and for working with any image files generated by the document.
+In section @cross-referencing you will see how to use chunk names to cross-reference figures and tables in your document.
+
+#### Rules for block labels
+
+Block labels should be informative and can contain letters and numbers.
+Words should be separated by hyphens ("-").
+
+::: callout-warning
+## Special characters in labels
+
+Avoid spaces, underscores, periods and other special characters in code block labels.
+They will cause all sorts of strange problems.
+:::
+
+### Running a code block
+
+Code in blocks will be run when the document is rendered (unless `eval: false`), but it is also useful to run the code interactively to check that it works.
+You can do this by clicking on the green play buttons at the top-right of the block (@fig-run-pic) or from the Run button above the document.
+If the code depends on previous block, the grey/green icon will run them all.
+
+```{r}
+#| label: fig-run-pic
+#| fig-cap: "The green run block icon and the grey/green icon to run all previous code blocks"
+#| out.width: "220px"
+#| echo: false
+knitr::include_graphics("Pics/run-chunk.png")
+```
+
+### Hiding a block
+
+If a block has a lot of code, it can be useful to hide it to make it easier to navigate the document.
+The grey arrow next to the line numbers will do this.
+Sections of text can also be hidden.
+
+### Environments and working directory
+
+R renders quarto documents in a new R session.
+The environment is empty: the quarto document does not have access to any objects in your current environment (this is a good thing for reproducible analyses), or the packages you have loaded.
+This means that any data or packages you want to use in the document needs to be imported by the code in the document.
+
+The working directory for the new R session used when rendering the quarto file is the directory where the quarto file is.
+If the file is in the root directory of an RStudio project, relative paths will work the same way in the quarto document as from the console.
+If the quarto file is in a sub-directory, use `here::here()` to form paths relative to the project root.
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Download file <https://raw.githubusercontent.com/biostats-r/biostats/main/Rmarkdown/data/Florida-precip.csv> and save it into your RStudio project folder.
+The file gives monthly precipitation data from Florida, Bergen since 1983, extracted from <https://seklima.met.no/>.
+Earlier data are available from a weather station on Nordnes.
+Make an R chunk in your R markdown document and use it to import the file into R.
+
+<details>
+
+<summary>
+
+Hint
+
+</summary>
+
+-   Re-read the [importing data chapter](https://biostats-r.github.io/biostats/workingInR/importing-data-in-r.html) of the working in R book.
+-   Check the delimiter and decimal separator.
+-   Make sure the Rmarkdown document loads tidyverse.
+
+</details>
+
+Change the column headers so they are easier to work with.
+
+<details>
+
+<summary>
+
+Hint
+
+</summary>
+
+See Working in R book section on [non-standard names](https://biostats-r.github.io/biostats/workingInR/working-with-single-tables-in-dplyr.html#non-standard-names) for suggestions on what names are good.
+
+-   Use the `col_names` argument to `read_delim()` (remember to skip the old column names)
+-   OR use `` rename(new_name = `Old Name`) ``
+-   OR use `janitor::clean_names()`
+
+</details>
+
+Convert the date column to date format
+
+<details>
+
+<summary>
+
+Hint
+
+</summary>
+
+-   Use the `col_types` argument to `read_delim()`
+-   OR use `lubridate::dmy()` (check help file to see the `truncated` argument)
+
+</details>
+
+## Inline code
+
+In addition to the output from code blocks, you can insert code directly into text.
+Inline code is enclosed by back-ticks and starts with an `r`.
+
+```{r}
+#| echo: false
+cat("Seven times six is `r 7 * 6`")
+```
+
+[Seven times six is `r 7 * 6`]{style="background-color: Beige;"}
+
+::: callout-tip
+## Numbers in words
+
+If you want numbers written as words, for example at the start of a sentence, use the package `english`.
+
+```{r}
+#| echo: false
+cat("Seven times six is `r english::words(7 * 6)`")
+```
+
+[Seven times six is `r english::words(7 * 6)`]{style="background-color: Beige;"}
+:::
+
+It is best to keep inline code short to keep the text readable.
+One trick is to do all necessary calculation in a previous code block, so only the name of the object with the result needs to be in the inline code.
+If there are many results to report, consider storing them in a list as in the following example.
+
+```{r penguin-stats}
+cor_adelie <- cor.test(
+  ~ bill_length_mm + body_mass_g,
+  data = penguins,
+  subset = species == "Adelie")
+
+adelie_list <- list(
+  #degrees of freedom
+  df = cor_adelie$parameter,
+  # extract correlation and round
+  est = round(cor_adelie$estimate, 2),
+  #format p.value with an "=" is the first character is not "<".
+  #See the characters tutorial for more on the stringr package and regular expressions.
+  p_val = str_replace(
+    string = format.pval(cor_adelie$p.value, eps = 0.001),
+    pattern = "^(?!<)",
+    replacement = "= ")
+)
+```
+
+```{r}
+#| echo : false
+cat("Bill length and body mass in Adelie penguins are positively correlated,
+r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).")
+```
+
+[Bill length and body mass in Adelie penguins are positively correlated, r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).]{style="background-color: Beige;"}
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Use some inline R code to report the maximum monthly precipitation in Bergen.
+
+<details>
+
+<summary>
+
+Hint
+
+</summary>
+
+`max()`
+
+</details>

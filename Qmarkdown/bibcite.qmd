@@ -1,0 +1,115 @@
+---
+suppress-bibliography: true
+---
+
+```{r setup, include=FALSE}
+library(palmerpenguins)
+library(tidyverse)
+source("../Templates/biostats_theme.R")
+```
+
+# Citations and bibliographies
+
+Quarto can add citations and a bibliography to a document. Use the bibliography field in the YAML to point to the bibliography file.
+
+``` yaml
+---
+title: "My Manuscript"
+output: html_document
+bibliography: reproducibility.bib
+---
+```
+
+The bibliography file can be in one of several formats, including bibTeX (\*.bib) and endnote (\*.enl). Any reference manager should be able to export to a bibTeX file.
+
+## Bibliography placement
+
+By default, the bibliography is placed at the end of the document. It will be given the header "References". If you want a different header, end the document with it.
+
+``` markdown
+# Conclusions
+
+Quarto is cool.
+
+# Bibliography {-}
+```
+
+The `{-}` stops quarto from numbering the reference section header.
+
+If you want to move the bibliography, for example because you need to finish with an appendix, you need to use this bit of magic.
+
+``` markdown
+# Conclusions
+
+Quarto is very cool.
+
+# References {-}
+
+::: {#refs}
+:::
+
+# Appendix A
+```
+
+## Citations
+
+Use the citation keys from the bibliography to cite the reference in the text. So to cite the reference with the citation key "Cooper2017" we would use.
+
+    Reproducible code [@Cooper2017] ...
+    @Cooper2017 discuss ...
+
+The output depends on the csl file. Using the default author-date style gives
+
+<hr>
+
+[Reproducible code [@Cooper2017] ...\
+@Cooper2017 discuss ...\
+]{style="background-color: Beige;"}
+
+<hr>
+
+If you type a `@` the visual editor will give suggestions from the bibliography. This is not so useful if you have many references. Alternatively, summon the import anything tool by typing "/" on a blank line and opening the citation menu, which lets you search for references in the bibliography or add new ones. You can then move the reference to where you want it.
+
+## Citation style
+
+If you don't like the default citation style, or you want to submit a manuscript to a journal with an overly pedantic editor, you can change the citation style by specifying a csl file in the YAML.
+
+``` yaml
+---
+title: "My Manuscript"
+output: html_document
+bibliography: reproducibility.bib
+csl: plos-one.csl
+---
+```
+
+The csl (Citation Style Language) file defines the citation style. There are many citation style available from <http://zotero.org/styles>.
+
+## Citation problems
+
+Unfortunately, there can be problems with the bibliography and citation. Most can be solved by googling the error message. A few common problems are addressed here.
+
+### Incorrect capitalisation
+
+Many CLS styles convert the title to title case (i.e. only first letter of the first word is capitalised). This can be annoying as names (people, countries, species) can be given in the wrong case.
+
+A paper with the title
+
+`Population ecology of polar bears at Svalbard, Norway.`
+
+may appear as
+
+`Population ecology of polar bears at svalbard, norway.`
+
+This can be fixed by editing the bibtex file, putting braces around the word with capitals that need to be kept.
+
+`Population ecology of polar bears at {Svalbard}, {Norway}.`
+
+### Accents and other special characters
+
+The tool-chain that processes quarto files can sometimes fall over with accented characters or other diacritic marks in the references. The error message will look something like this
+
+    ! Package inputenc Error: Unicode character ́ (U+0301)
+    (inputenc)                not set up for use with LaTeX.
+
+One solution is to edit the bibtex file to replace the accented character with an [escaped code](https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes). For example, the "í" in "Martínez" could be replaced by "\\'{i}".
