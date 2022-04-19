@@ -1,0 +1,107 @@
+```{r setup, include=FALSE}
+library(palmerpenguins)
+library(tidyverse)
+source("../Templates/biostats_theme.R")
+```
+
+# Cross-referencing {#sec-cross-referencing}
+
+Cross-referencing lets you refer to figures and tables in your document. Once set up, this happens automatically, so you don't need to re-number all the figures when you add or delete one.
+
+## Cross-referencing figures and tables
+
+The block that made the figure or table needs to have a label that starts with `fig-` or `tbl-`, respectively. The figure or table also need a caption.
+
+```{r}
+#| echo: fenced
+#| label: fig-penguin-dens
+#| fig-cap: Histogram of penguin body mass
+#| fig-alt: Histogram of penguin body mass made with ggplot2
+#| warning: false
+
+penguins |>
+  ggplot(aes(x = flipper_length_mm, fill = species)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Set1")
+```
+
+To cross-reference the figure made by the above chunk, we need to use this notation.
+
+``` markdown
+Penguins are cool (@fig-penguin-dens)
+```
+
+[Penguins are cool (@fig-penguin-dens)]{style="background-color: Beige;"}
+
+If you type an <kbd>\@</kbd> in the visual editor it will make suggestion. If, in the visual editor, it does not show up in a smaller blue font, something has gone wrong. Delete it and make sure there is a space before the <kbd>\@</kbd>.
+
+To refer to a table made by a block labelled `tbl-penguin-results`, you would use
+
+``` markdown
+Penguins are cool (@tbl-penguin-results))
+```
+
+If you get the chunk name wrong, there will be a warning when the document in knitted, and question marks shown where the reference should be.
+
+``` markdown
+Figure @fig-no-exist) does not exist
+```
+
+[Non-existing figure (@fig-no-exist))]{style="background-color: Beige;"}
+
+## Cross-referencing equations
+
+To cross-reference an equation, we need to give it a label.
+
+``` markdown
+$$
+\frac{\sum_{i=1}^{n}{x_i}}{n}
+$${#eq-mean}
+```
+
+Now the label can be used.
+
+``` markdown
+The mean (equation @eq-mean).
+```
+
+$$
+\frac{\sum_{i=1}^{n}{x_i}}{n}
+$$ {#eq-mean}
+
+[The mean (equation @eq-mean).]{style="background-color: Beige;"}
+
+## Cross-referencing document sections {#sec-cross-referencing-document-sections}
+
+You can also make cross-references to other sections of the document. First, you need to set up a identifier for the section you want to link to. In the visual editor, this can be done by clicking on the three dots to the right of the header ( @fig-three-dots) . The ID should start with `#sec-` and be in lower case ( @fig-edit-attributes). Now you can use this ID to make a link by typing <kbd>\@</kbd>.
+
+```{r}
+#| label: fig-three-dots
+#| echo: false
+#| out-width: "80%"
+#| fig-cap: Click on the three dots to get the Edit Attributes menu
+#| fig-alt: Screenshot of the three dots that get the Edit Attributes menu
+
+knitr::include_graphics("Pics/three-dots.png")
+
+```
+
+```{r}
+#| label: fig-edit-attributes
+#| echo: false
+#| out-width: "50%"
+#| fig-cap: The Edit Attributes menu
+#| fig-alt: Screenshot of the Edit Attributes menu
+
+knitr::include_graphics("Pics/edit-attributes.png")
+```
+
+``` markdown
+## Cross-referencing document sections {#sec-cross-referencing-document-sections}
+
+Cross-referencing (@sec-cross-referencing-document-sections)
+```
+
+[Cross-referencing (@sec-cross-referencing-document-sections)]{style="background-color: Beige;"}
+
+Note that the reference must be written in lower case and spaces must be replaced by hyphens. Punctuation is deleted.
