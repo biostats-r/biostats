@@ -15,7 +15,8 @@ source("../Templates/biostats_theme.R")
 ## YAML
 
 The YAML is metadata for the document that goes right at the top of the file between two sets of three dashes.
-The YAML consists of key-values pairs separated by a colon and a space.
+The YAML consists of `key: values` pairs.
+The colon and space are required.
 Rstudio will autocomplete the keys.
 
 ``` yaml
@@ -46,14 +47,14 @@ With the keyword `today`, you can make the document report the date it was rende
 ---
 title: "My Manuscript"
 format: html
-date: 2022-04-03
+date: today
 ---
 ```
 :::
 
 ### Exercise {.unnumbered .facta .toc-ignore}
 
-Make your quarto document show today's date when rendered.
+Add date and author to the YAML of your BergenClimate quarto document so it shows today's date and your name when rendered.
 
 ### Output formats
 
@@ -96,7 +97,7 @@ An alternative is to use the `trackdown` package to upload markdown files to Goo
 ::: callout-tip
 ## Comments
 
-A comment in an R code block starts with a `#`, just as in an ordinary script.
+A comment in an R code block starts with a `#`, just as in an ordinary R script.
 
 A comment in the text is enclosed an html comment mark
 
@@ -106,7 +107,7 @@ A comment in the text is enclosed an html comment mark
 
 Type <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> to get this comment mark.
 
-In the source editor, you can select text you want to hide and use the same keyboard short-cut to comment it out.
+In the source editor, you can select text you want to hide and use this keyboard short-cut to comment it out.
 :::
 
 ## Text
@@ -191,7 +192,8 @@ Se [denne](https://quarto.org/docs/authoring/language.html) siden om hvordan man
 
 ### Exercise {.unnumbered .facta .toc-ignore}
 
-Write a section titled "Introduction" followed by two short paragraphs of text about *Calluna vulgaris* and drought (or anything else) to try the different types of formatting.
+The Results section of the Bergen Climate document should be in Header 1 style.
+Fix this and render the document to check the formatting has worked.
 
 ## Code blocks
 
@@ -210,6 +212,13 @@ Then on a new line is the body of the code block.
 The block ends with three back-ticks on their own line.
 In the visual editor, you won't see the back-ticks, but the code block will start with `{r}` and have a grey background.
 
+```{r}
+#| echo: false
+#| label: fig-visual-code
+#| fig-cap: A code block in the visual editor
+knitr::include_graphics("Pics/r-code-block.png")
+```
+
 ### Making a block
 
 You can type the back-ticks and braces needed to make a block, but, when using the visual editor, it is easier to get RStudio to insert the block with the insert tool.
@@ -218,6 +227,22 @@ Type a forwards slash <kbd>/</kbd> on a blank line and choose "R code chunk".
 ### Block language
 
 We will just work with R code blocks, but it is possible to run block in other languages, including Python and Julia.
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Make a new code block (or blocks) that make a plot showing annual precipitation for Bergen.
+
+<details>
+
+<summary>
+
+Hint
+
+</summary>
+
+You can copy and modify some of the existing code rather than writing from scratch.
+
+</details>
 
 ### Block options
 
@@ -266,6 +291,13 @@ Chunk options for figures are shown in section \@figure-chunk-options.
 
 For more options see <https://quarto.org/docs/computations/execution-options.html>
 
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Importing packages produces lots of output that we don't need to see in the final report Use block options to hide the output of this block.
+
+The plot of temperature against year is giving a message about the formula for `geom_smooth`.
+Use block options to make this message go away.
+
 ### Setting global block options
 
 Global code block options can be set for all code blocks by including `execute` with the option in the YAML at the top of the file.
@@ -280,6 +312,10 @@ execute:
   echo: false
 ---
 ```
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Use global block options to stop the code from showing in the report.
 
 ### Block labels
 
@@ -331,63 +367,10 @@ The working directory for the new R session used when rendering the quarto file 
 If the file is in the root directory of an RStudio project, relative paths will work the same way in the quarto document as from the console.
 If the quarto file is in a sub-directory, use `here::here()` to form paths relative to the project root.
 
-### Exercise {.unnumbered .facta .toc-ignore}
-
-Download file <https://raw.githubusercontent.com/biostats-r/biostats/main/Rmarkdown/data/Florida-precip.csv> and save it into your RStudio project folder.
-The file gives monthly precipitation data from Florida, Bergen since 1983, extracted from <https://seklima.met.no/>.
-Earlier data are available from a weather station on Nordnes.
-Make an R chunk in your R markdown document and use it to import the file into R.
-
-<details>
-
-<summary>
-
-Hint
-
-</summary>
-
--   Re-read the [importing data chapter](https://biostats-r.github.io/biostats/workingInR/importing-data-in-r.html) of the working in R book.
--   Check the delimiter and decimal separator.
--   Make sure the Rmarkdown document loads tidyverse.
-
-</details>
-
-Change the column headers so they are easier to work with.
-
-<details>
-
-<summary>
-
-Hint
-
-</summary>
-
-See Working in R book section on [non-standard names](https://biostats-r.github.io/biostats/workingInR/working-with-single-tables-in-dplyr.html#non-standard-names) for suggestions on what names are good.
-
--   Use the `col_names` argument to `read_delim()` (remember to skip the old column names)
--   OR use `` rename(new_name = `Old Name`) ``
--   OR use `janitor::clean_names()`
-
-</details>
-
-Convert the date column to date format
-
-<details>
-
-<summary>
-
-Hint
-
-</summary>
-
--   Use the `col_types` argument to `read_delim()`
--   OR use `lubridate::dmy()` (check help file to see the `truncated` argument)
-
-</details>
-
 ## Inline code
 
 In addition to the output from code blocks, you can insert code directly into text.
+This lets you avoid copying and pasting numbers from the output.
 Inline code is enclosed by back-ticks and starts with an `r`.
 
 ```{r}
@@ -396,6 +379,8 @@ cat("Seven times six is `r 7 * 6`")
 ```
 
 [Seven times six is `r 7 * 6`]{style="background-color: Beige;"}
+
+In the visual editor, you can make inline code by clicking on the `</>` icon.
 
 ::: callout-tip
 ## Numbers in words
@@ -444,7 +429,7 @@ r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).")
 
 ### Exercise {.unnumbered .facta .toc-ignore}
 
-Use some inline R code to report the maximum monthly precipitation in Bergen.
+Use some inline R code to report the maximum monthly temperatures in Bergen.
 
 <details>
 
