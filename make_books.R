@@ -1,14 +1,24 @@
-bioceed_links <- function(dir, front_page = FALSE){
+bioceed_links <- function(dir, front_page = FALSE, quarto = FALSE){
   files <- list.files(dir, pattern = "html", full.names = TRUE, recursive = !front_page)
   print(files)
   map(files, ~{
     f <- readLines(.x)
-    p1 <- grep(
-      pattern = '</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">',
-      x = f)
-    p2 <- grep(
-      pattern= '<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>',
-      x = f)
+    if(isTRUE(quarto)){
+      p1 <- grep(
+        pattern = '</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">',
+        x = f)
+      p2 <- grep(
+        pattern= '<nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>',
+        x = f)
+    }
+    else {
+      p1 <- grep(
+        pattern = '</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">',
+        x = f)
+      p2 <- grep(
+        pattern= '<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>',
+        x = f)
+    }
     if (length(p1) == 1 & length(p2) == 1) {
       if (p2 - p1 == 1) {
         f <- c(f[1:p1], 
@@ -18,8 +28,8 @@ bioceed_links <- function(dir, front_page = FALSE){
   width: 95%;
 }
       </style>',
-               '<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>   </p>',
-               ifelse(isFALSE(front_page), '<p><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>', ''), 
+               '<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  ',
+               ifelse(isFALSE(front_page), '<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>', ' </p>'), 
                f[p2:length(f)])
       }  
     }
@@ -58,4 +68,9 @@ withr::with_dir("WorkingInR/", {
   bookdown::render_book('index.Rmd', 'bookdown::bs4_book', output_dir = "../docs/workingInR")
   bioceed_links("../docs/workingInR")
 })
+
+# quarto markdown
+
+quarto::quarto_render("quarto")
+bioceed_links("docs/quarto", quarto = TRUE)
 
