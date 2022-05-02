@@ -1,3 +1,5 @@
+library(tidyverse)
+
 bioceed_links <- function(dir, front_page = FALSE, quarto = FALSE){
   files <- list.files(dir, pattern = "html", full.names = TRUE, recursive = !front_page)
   print(files)
