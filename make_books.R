@@ -45,10 +45,8 @@ bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "docs")
 bioceed_links("docs/", front_page = TRUE)
 
 # Git and GitHub
-withr::with_dir("DataManagement/", {
-  bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "../docs/github")
-  bioceed_links("../docs/github")
-})
+quarto::quarto_render("DataManagement")
+bioceed_links("docs/github", quarto = TRUE)
 
 
 # R markdown
