@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.414">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Version Control with Git and GitHub - 2&nbsp; Version control with GitHub and RStudio</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script><script src="site_libs/quarto-nav/headroom.min.js"></script><script src="site_libs/clipboard/clipboard.min.js"></script><meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script><script src="site_libs/quarto-search/fuse.min.js"></script><script src="site_libs/quarto-search/quarto-search.js"></script><link href="./2_Branch_Tutorials.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script><script src="site_libs/quarto-html/popper.min.js"></script><script src="site_libs/quarto-html/tippy.umd.min.js"></script><script src="site_libs/quarto-html/anchor.min.js"></script><link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script><link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><link rel="stylesheet" href="css/style-chapters.css">
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">
+<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version control with GitHub and RStudio</span>
+</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Version Control with Git and GitHub</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+<li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1_Git_Tutorial.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version control with GitHub and RStudio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2_Branch_Tutorials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Working with branches</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./3_Fork_Tutorial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Collaborating with forks</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<style>
+               img.site-logo {
+  height: auto;
+  width: 95%;
+}
+      </style>
+<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
+<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
+        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#basic-workflow" id="toc-basic-workflow" class="nav-link active" data-scroll-target="#basic-workflow"> <span class="header-section-number">2.1</span> Basic workflow</a>
+  <ul class="collapse">
+<li><a href="#the-workflow" id="toc-the-workflow" class="nav-link" data-scroll-target="#the-workflow"> <span class="header-section-number">2.1.1</span> The workflow</a></li>
+  </ul>
+</li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation"> <span class="header-section-number">2.2</span> Installation</a></li>
+  <li><a href="#set-up" id="toc-set-up" class="nav-link" data-scroll-target="#set-up"> <span class="header-section-number">2.3</span> Set-up</a></li>
+  <li><a href="#connect-rstudio-and-github" id="toc-connect-rstudio-and-github" class="nav-link" data-scroll-target="#connect-rstudio-and-github"> <span class="header-section-number">2.4</span> Connect RStudio and GitHub</a></li>
+  <li>
+<a href="#making-a-repo" id="toc-making-a-repo" class="nav-link" data-scroll-target="#making-a-repo"> <span class="header-section-number">2.5</span> Making a repo</a>
+  <ul class="collapse">
+<li><a href="#sec-local-first" id="toc-sec-local-first" class="nav-link" data-scroll-target="#sec-local-first"> <span class="header-section-number">2.5.1</span> Local first</a></li>
+  <li><a href="#sec-github-first" id="toc-sec-github-first" class="nav-link" data-scroll-target="#sec-github-first"> <span class="header-section-number">2.5.2</span> GitHub first</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-stage-commit-push" id="toc-sec-stage-commit-push" class="nav-link" data-scroll-target="#sec-stage-commit-push"> <span class="header-section-number">2.6</span> Stage, commit and push</a>
+  <ul class="collapse">
+<li><a href="#some-rules" id="toc-some-rules" class="nav-link" data-scroll-target="#some-rules"> <span class="header-section-number">2.6.1</span> Some rules</a></li>
+  <li><a href="#push-and-pull" id="toc-push-and-pull" class="nav-link" data-scroll-target="#push-and-pull"> <span class="header-section-number">2.6.2</span> Push and pull</a></li>
+  </ul>
+</li>
+  <li><a href="#share-a-repository" id="toc-share-a-repository" class="nav-link" data-scroll-target="#share-a-repository"> <span class="header-section-number">2.7</span> Share a repository</a></li>
+  <li><a href="#sec-gitignore" id="toc-sec-gitignore" class="nav-link" data-scroll-target="#sec-gitignore"> <span class="header-section-number">2.8</span> .gitignore file</a></li>
+  <li><a href="#useful-terminal-commands" id="toc-useful-terminal-commands" class="nav-link" data-scroll-target="#useful-terminal-commands"> <span class="header-section-number">2.9</span> Useful terminal commands</a></li>
+  <li>
+<a href="#trouble-shooting" id="toc-trouble-shooting" class="nav-link" data-scroll-target="#trouble-shooting"> <span class="header-section-number">2.10</span> Trouble shooting</a>
+  <ul class="collapse">
+<li><a href="#useful-resources" id="toc-useful-resources" class="nav-link" data-scroll-target="#useful-resources">Useful resources</a></li>
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next"> <span class="header-section-number">2.10.1</span> What’s next</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/biostats-r/biostats/blob/main/1_Git_Tutorial.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">
+<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version control with GitHub and RStudio</span>
+</h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header><section id="basic-workflow" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="basic-workflow">
+<span class="header-section-number">2.1</span> Basic workflow</h2>
+<p>Let’s start with explaining the basic workflow briefly. On GitHub you can make <strong>repositories</strong>, which is a kind of project. Your online repository, or short repo, is called <strong>remote</strong>. To use your repository, you need to <strong>clone</strong> it locally onto your computer and it is then called <strong>local</strong>. You can write and edit R code locally on your computer. The new code is then <strong>committed</strong> and <strong>pushed</strong> back to the <strong>remote</strong>. If you follow this workflow consistently, GitHub will keep track of all the changes you make.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definitions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>
+<strong>git</strong> - version control software</li>
+<li>
+<strong>version control</strong> - a system for keeping snapshots of your work</li>
+<li>
+<strong>GitHub</strong> - one of several cloud-based systems for working with git</li>
+<li>
+<strong>repo</strong> - short for repository</li>
+<li>
+<strong>repository</strong> - the directory or folder that is under version control</li>
+<li>
+<strong>local</strong> - the repository on your computer</li>
+<li>
+<strong>remote</strong> - the repository on GitHub</li>
+<li>
+<strong>commit</strong> - take a snapshot of one or more files in the repository</li>
+<li>
+<strong>push</strong> - send commits from the local repo to the remote repo</li>
+<li>
+<strong>pull</strong> - retrieve commits from the remote repo to the local repo</li>
+<li>
+<strong>.gitignore</strong> a file that tells git which files or types of files you don’t want to commit</li>
+</ul>
+</div>
+</div>
+<section id="the-workflow" class="level3" data-number="2.1.1"><h3 data-number="2.1.1" class="anchored" data-anchor-id="the-workflow">
+<span class="header-section-number">2.1.1</span> The workflow</h3>
+<p>For the sake of this tutorial, Kingsley and Angelina will show us the workflow with RStudio and GitHub.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-kinsley-angelina" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/Angelina%20and%20Kingsley.png" class="img-fluid figure-img" alt="Cartoon of Kinsley and Angelina"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.1: Our protagonists</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The general <strong>workflow</strong> looks like <a href="#fig-workflow">Figure&nbsp;<span>2.2</span></a>: Kingsley has a repo on GitHub. He <strong>clones</strong> the repo on his computer (1). He develops code and makes <strong>commits</strong> (2). Then he <strong>pushes</strong> the changes back to the remote repo on GitHub (3). In this tutorial, we will explain each of these steps in detail.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-workflow" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/0_workflow_git.png" class="img-fluid figure-img" alt="Schematic showing the GitHub workflow with local and remote repos."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.2: GitHub workflow</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="installation" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="installation">
+<span class="header-section-number">2.2</span> Installation</h2>
+<p>Download and install git: <a href="https://git-scm.com/" class="uri">https://git-scm.com/</a></p>
+<p>(For UiB users, you can find Git in the Software Center; Mac users need the software xcode)</p>
+<p>Get a GitHub account on <a href="https://github.com/" class="uri">https://github.com/</a>: sign up and follow the instructions.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-signup" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/1_sign_up.png" class="img-fluid figure-img" alt="Screenshot of github.com, sign-up for a GitHub account"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.3: Sign-up for a GitHub account</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="set-up" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="set-up">
+<span class="header-section-number">2.3</span> Set-up</h2>
+<p>Now you have to configure your name and email associated with your GitHub account. Go to RStudio and, using your own identification, type:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># install if needed (do this exactly once):</span>
+<span class="co"># install.packages("usethis")</span>
+
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org">usethis</a></span><span class="op">)</span>
+<span class="fu"><a href="https://usethis.r-lib.org/reference/use_git_config.html">use_git_config</a></span><span class="op">(</span>
+  user.name <span class="op">=</span> <span class="st">"kingsleyshaklebolt"</span>, 
+  user.email <span class="op">=</span> <span class="st">"kingsleyshaklebolt@ministryofmagic.com"</span>
+  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The next step is to connect RStudio and GitHub. There are several ways to do this. The easiest is to use the <code>usethis</code> package (version 2.0.0 or higher).</p>
+</section><section id="connect-rstudio-and-github" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="connect-rstudio-and-github">
+<span class="header-section-number">2.4</span> Connect RStudio and GitHub</h2>
+<p>GitHub needs to validate who you are before you can connect it and RStudio. We can do this by generating and saving a Personal Access Token (PAT). You need to do this once for every RStudio project.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://usethis.r-lib.org/reference/github-token.html">create_github_token</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This function will open GitHub. After confirming your password, you will be shown a page to make a new PAT. You don’t need to change any of the options. Just click the green “Generate token” button at the bottom of the page.</p>
+<p>The next page will show you your PAT. Copy it by clicking on the clipboard icon and return to R.</p>
+<p>Now run</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">gitcreds</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gitcreds/man/gitcreds_get.html">gitcreds_set</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>this will ask you for your PAT: paste it at the prompt and press return. This will save the PAT so that it can be used to access GitHub. Treat your PAT as a password - never save it in a script.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+git vaccinate
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code><a href="https://usethis.r-lib.org/reference/git_vaccinate.html">git_vaccinate()</a></code> will add various files to your global .gitignore file (<a href="#sec-gitignore"><span>Section&nbsp;2.8</span></a>) to reduce the chance of you leaking passwords, making git safer to use.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://usethis.r-lib.org/reference/git_vaccinate.html">git_vaccinate</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section><section id="making-a-repo" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="making-a-repo">
+<span class="header-section-number">2.5</span> Making a repo</h2>
+<p>Now you are ready to start using RStudio and GitHub. There are two main workflows:</p>
+<ol type="1">
+<li>Make a new local repo and push it to GitHub (section <a href="#sec-local-first"><span>Section&nbsp;2.5.1</span></a>)</li>
+<li>Clone an existing repo from GitHub onto your computer (section <a href="#sec-github-first"><span>Section&nbsp;2.5.2</span></a>)</li>
+</ol>
+<p>We will cover these in turn: choose the best one your your circumstances.</p>
+<section id="sec-local-first" class="level3" data-number="2.5.1"><h3 data-number="2.5.1" class="anchored" data-anchor-id="sec-local-first">
+<span class="header-section-number">2.5.1</span> Local first</h3>
+<p>This workflow is useful if you already have an RStudio project on your computer or are starting a new project.</p>
+<p>In RStudio, start by creating a git repo for your project with</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://usethis.r-lib.org/reference/use_git.html">use_git</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After creating the repo, the function will ask whether you want to commit some files.</p>
+<ul>
+<li>If it is a new project, this is safe to agree to.</li>
+<li>If it is an existing project there might be some files that you don’t want to commit, for example very large files or files with sensitive information such as passwords. In this case, don’t let R commit everything, instead pick which files you want committed (see <a href="#sec-stage-commit-push"><span>Section&nbsp;2.6</span></a>) and improve the <code>.gitignore</code> (see <a href="#sec-gitignore"><span>Section&nbsp;2.8</span></a>) so they cannot be committed by accident.</li>
+</ul>
+<p>Then let RStudio restart so that the git panel is activated.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Renaming the default branch
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Git repos typically have a default branch. The traditional name for this branch is “master”, but “main” is now preferred as it is more inclusive. GitHub uses “main” but git still uses “master” (this might change).</p>
+<p>On <a href="https://stackoverflow.com/questions/tagged/git">stackoverflow</a> and other help sites, you will see both branch names. The code will work if you use the name you have.</p>
+<p>You can change the name of the default branch of your repo to “main” with this code from the <code>usethis</code> package</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://usethis.r-lib.org/reference/git-default-branch.html">git_default_branch_rename</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can set the default for all future git repos made on your computer by running.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://usethis.r-lib.org/reference/git-default-branch.html">git_default_branch_configure</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<p>Once you have committed at least one file, you can create a repo on GitHub.</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://usethis.r-lib.org/reference/use_github.html">use_github</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>By default, the repo name on GitHub will match the RStudio project name, and the repo will be public.</p>
+<p>Now go to GitHub, find your repo and check the files you committed have been uploaded.</p>
+<p>This is how your new repo looks like.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-new-repo" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/10_new_repo.png" class="img-fluid figure-img" alt="Screenshot of github.com showing new repo"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.4: New repo on GitHub</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="sec-github-first" class="level3" data-number="2.5.2"><h3 data-number="2.5.2" class="anchored" data-anchor-id="sec-github-first">
+<span class="header-section-number">2.5.2</span> GitHub first</h3>
+<p>Cloning your GitHub repository means that you are making a copy of your <strong>remote</strong> repository on Github, <strong>locally</strong> on your computer. You can clone any repository on GitHub, whether it is your own or belongs to somebody else, as long as it is public. This also means that all your repositories that are public can be seen by everybody, but do not worry too much about this, GitHub has millions of repos. But make sure you do not commit sensitive information such as passwords.</p>
+<p>Go to the GitHub repository you that you want to clone and find the names of the owner and the repo.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Pics/gittutorial/11a_clone.png" class="img-fluid figure-img" alt="Screenshot of github.com showing owner and repo name"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">The owner and repo names</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To clone the “kingsleyshacklebolt/dragon_study” repo, use</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://usethis.r-lib.org/reference/create_from_github.html">create_from_github</a></span><span class="op">(</span><span class="st">"kingsleyshacklebolt/dragon_study"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the repo you are trying to clone is not your own, the function will first make a <strong>fork</strong> (see forking tutorial <a href="3_Fork_Tutorial.html"><span>Chapter&nbsp;4</span></a>) on GitHub into your account. The function will clone the repo onto your desktop by default. You can copy the entire directory from there to somewhere more appropriate.</p>
+<p>Now it is time to commit and push.</p>
+</section></section><section id="sec-stage-commit-push" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="sec-stage-commit-push">
+<span class="header-section-number">2.6</span> Stage, commit and push</h2>
+<p>If you create or edit a file in your repository and save the changes the file will appear in the <strong>Git</strong> panel. There will be two yellow boxes with <strong>question marks</strong> if you add a file, a blue box with a <strong>M</strong> if you edit a file that has already been committed. And a red box with a <strong>D</strong> if you delete a file. You can also move files and they will show up as deleted <strong>and</strong> added in the new place. Once you have staged (ticking the box by the file name) both the deleted and new file, it will become a purple <strong>R</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-changed-files" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/18_changed_files.png" class="img-fluid figure-img" alt="Screenshot of the git panel in Rstudio showing changed and new files."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.5: The git panel in Rstudio showing changed and new files.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Once you have written a chunk of code, save it and click on the <strong>Commit</strong> button. A new window will appear.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-git-window" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/19_commit_window.png" class="img-fluid figure-img" alt="Screenshot of the git commit window"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.6: The git commit window</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>All the changes in the file are shown in green and red color. Green is code that you have <strong>added</strong> to the file. Red is code that has been <strong>deleted</strong>. This makes it very easy to see all the changes that haven been made.</p>
+<p><strong>Stage the changes</strong> you made by ticking the box by the file name and add a <strong>Commit message</strong> (top right). The <strong>commit message</strong> should contain all the changes you have done. It can be short, but should be complete. It will help you later if you are searching for a specific <strong>commit</strong>.</p>
+<p>Note that you need to tick all files that you want to <strong>commit</strong>.</p>
+<p>Click <strong>Commit</strong> to save the changes which creates a permanent snapshot of the file in the Git directory along with a message that describe the changes you made in this file.</p>
+<section id="some-rules" class="level3" data-number="2.6.1"><h3 data-number="2.6.1" class="anchored" data-anchor-id="some-rules">
+<span class="header-section-number">2.6.1</span> Some rules</h3>
+<p><strong>Commits</strong> are cheap. It does not take much time to click on <strong>Commit</strong>, stage the file(s) and write a few words about the <strong>commit</strong> (aim for max 50 characters). A good rule is if you want to use the word <em>and</em> then it should probably have been two <strong>commits</strong>. Therefore, <strong>commit</strong> often and provide useful messages so you can keep track of what you are doing.</p>
+<p>This is an example of useless <strong>commit messages</strong>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-useless-commit" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/20_git_commit.png" class="img-fluid figure-img" alt="Cartoon of useless commit messages from xkcd"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.7: Useless commit messages from <a href="https://xkcd.com/1296/">xkcd</a></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="push-and-pull" class="level3" data-number="2.6.2"><h3 data-number="2.6.2" class="anchored" data-anchor-id="push-and-pull">
+<span class="header-section-number">2.6.2</span> Push and pull</h3>
+<p>So far you are still working <strong>locally</strong> on your computer and you have not changed the <strong>remote</strong> repository on GitHub. All the new code is still <strong>locally</strong> on your computer. To upload your commits to your <strong>remote</strong> GitHub repository you need to <strong>Push</strong> (green arrow in the <strong>Git</strong> tab) these changes to your <strong>remote</strong> repository on GitHub.</p>
+<p>RStudio tells you the status of your local repo compared with the remote. For example, in <a href="#fig-git-push">Figure&nbsp;<span>2.8</span></a> the local repo is 2 commits ahead of the remote.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-git-push" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/21_push.png" class="img-fluid figure-img" alt="Screenshot of the git push button in Rstudio."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.8: The green push button</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="share-a-repository" class="level2" data-number="2.7"><h2 data-number="2.7" class="anchored" data-anchor-id="share-a-repository">
+<span class="header-section-number">2.7</span> Share a repository</h2>
+<p>It is possible to share a repository on GitHub.</p>
+<p>Let’s say that Kingsley has a repo on GitHub and wants to collaborate with Angelina on a project (<a href="#fig-workflow2">Figure&nbsp;<span>2.9</span></a>). Both Angelina and Kingsley can <strong>clone</strong> the repo locally on their computer (1), develop code (2) and <strong>push</strong> the changes to the remote repo on GitHub (3). To get the changes the other person has made to the repo, they need to <strong>pull</strong> from GitHub (4).</p>
+<p>There are a few things to consider when using this workflow. If you are working with other people in a shared repository on GitHub, you will need to <strong>pull</strong> (blue arrow in the <strong>Git</strong> tab) to bring the modifications your collaborator(s) have made into your local copy of the repository. Do this every time before you start to work and also push your changes regularly to make sure everybody is working on the latest version.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-workflow2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/22_workflow2.png" class="img-fluid figure-img" alt="Schematic diagram of the workflow when collabotating on a single repo."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2.9: The workflow when sharing a GitHub repo</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Regular <strong>pulling</strong> and <strong>pushing</strong> is very important if you are working on the same files to avoid <strong>merge conflicts</strong>. A <strong>merge conflict</strong> occurs when two people are modifying the same file at the same time. Such a conflict can be resolved, but it is tedious and best avoid. We strongly suggest to use forks and branches when collaborating on a project (see <a href="3_Fork_Tutorial.html"><span>Chapter&nbsp;4</span></a> Collaborating with forks tutorial for more details).</p>
+</section><section id="sec-gitignore" class="level2" data-number="2.8"><h2 data-number="2.8" class="anchored" data-anchor-id="sec-gitignore">
+<span class="header-section-number">2.8</span> .gitignore file</h2>
+<p>When creating a new GitHub repository you can add a <code>.gitignore</code> text file, which tells git all the files that should be ignored. In general, data or output files should not be <strong>committed</strong>, but exceptions can be useful for relatively small and unchanging files.</p>
+<p>Every change you are making to a file in your R project and <strong>commit</strong> to GitHub, will be tracked. <strong>Commit</strong> files, code and output to GitHub, where you want to track changes. Do not <strong>commit</strong> all files, for example output files like figures which can easily be recreated with code.</p>
+<p>Here is an example of a <code>.gitignore</code> file:</p>
+<pre><code># History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+
+# RStudio files
+.Rproj.user/
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+.Rproj.user
+
+#data (excludes everything in the folder data)
+data/*
+
+# you can make exceptions for specific files
+!data/dragon_taxonomy.csv
+
+#figures &amp; output (excludes all figure files)
+*.png
+*.pdf
+*.jpeg</code></pre>
+</section><section id="useful-terminal-commands" class="level2" data-number="2.9"><h2 data-number="2.9" class="anchored" data-anchor-id="useful-terminal-commands">
+<span class="header-section-number">2.9</span> Useful terminal commands</h2>
+<p>RStudio has a range of possibilities to work with Git and GitHub as shown in this tutorial. The <strong>Terminal</strong> has more commands and options and will be handy for trouble shooting. In this tutorial we only explain a limited selection of things that can go wrong.</p>
+</section><section id="trouble-shooting" class="level2" data-number="2.10"><h2 data-number="2.10" class="anchored" data-anchor-id="trouble-shooting">
+<span class="header-section-number">2.10</span> Trouble shooting</h2>
+<p><strong>Git not found</strong></p>
+<p>Sometimes, RStudio will complain that is cannot find git even after you install it.</p>
+<p>In RStudio click on Tools &gt; Global Options, select Git/SVN tab.</p>
+<p>Ensure that the path to the Git executable is correct. This is particularly important in Windows where it may not default correctly (e.g.&nbsp;C:/Program Files (x86)/Git/bin/git.exe).</p>
+<p><strong>Git not working</strong></p>
+<p>If you use a university Windows computer, it might default to using a path like</p>
+<p><code>\\helix\user_name\..</code></p>
+<p>This is a UNC path. Git does not work with UNC paths. Make sure you start RStudio from, for example, <code>O:\</code>.</p>
+<p><strong>Undo last commit</strong></p>
+<p>If you have committed something that you do not want to, you can undo the last commit. This only works if you have <strong>not pushed</strong> yet. Go to the terminal and type:</p>
+<pre><code>git reset --soft HEAD@{1}</code></pre>
+<p>For more help with trouble shooting, the <a href="git%20flight%20rules%20is%20a%20good%20source">https://github.com/k88hudson/git-flight-rules git</a>.</p>
+<section id="useful-resources" class="level3 unnumbered literature toc-ignore"><h3 class="unnumbered literature toc-ignore anchored" data-anchor-id="useful-resources">Useful resources</h3>
+<p><a href="https://happygitwithr.com/"><strong>Happy Git</strong></a> provides instructions for how to get started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong.</p>
+<p>The <a href="https://github.com/k88hudson/git-flight-rules"><strong>Git flight rules</strong></a> are an exhaustive resource for what to do when things go wrong.</p>
+</section><section id="whats-next" class="level3 facta toc-ignore" data-number="2.10.1"><h3 class="facta toc-ignore anchored" data-number="2.10.1" data-anchor-id="whats-next">
+<span class="header-section-number">2.10.1</span> What’s next</h3>
+<p>For more advanced workflows using branches see the chapter <strong>Working with branches</strong></p>
+<p>For collaborating with others on the same project see chapter <strong>Collaborating with forks and branches</strong></p>
+
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./2_Branch_Tutorials.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Working with branches</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
