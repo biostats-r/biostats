@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.414">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Version Control with Git and GitHub - 4&nbsp; Collaborating with forks</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script><script src="site_libs/quarto-nav/headroom.min.js"></script><script src="site_libs/clipboard/clipboard.min.js"></script><meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script><script src="site_libs/quarto-search/fuse.min.js"></script><script src="site_libs/quarto-search/quarto-search.js"></script><link href="./2_Branch_Tutorials.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script><script src="site_libs/quarto-html/popper.min.js"></script><script src="site_libs/quarto-html/tippy.umd.min.js"></script><script src="site_libs/quarto-html/anchor.min.js"></script><link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script><link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><link rel="stylesheet" href="css/style-chapters.css">
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Collaborating with forks</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Version Control with Git and GitHub</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+<li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1_Git_Tutorial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version control with GitHub and RStudio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2_Branch_Tutorials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Working with branches</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./3_Fork_Tutorial.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Collaborating with forks</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<style>
+               img.site-logo {
+  height: auto;
+  width: 95%;
+}
+      </style>
+<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
+<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
+        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#what-is-a-fork" id="toc-what-is-a-fork" class="nav-link active" data-scroll-target="#what-is-a-fork"> <span class="header-section-number">4.1</span> What is a fork?</a>
+  <ul class="collapse">
+<li><a href="#the-workflow" id="toc-the-workflow" class="nav-link" data-scroll-target="#the-workflow"> <span class="header-section-number">4.1.1</span> The workflow</a></li>
+  <li><a href="#forking-with-usethis" id="toc-forking-with-usethis" class="nav-link" data-scroll-target="#forking-with-usethis"> <span class="header-section-number">4.1.2</span> Forking with <code>usethis</code></a></li>
+  <li><a href="#fork-a-repo-on-github" id="toc-fork-a-repo-on-github" class="nav-link" data-scroll-target="#fork-a-repo-on-github"> <span class="header-section-number">4.1.3</span> Fork a repo on GitHub</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#what-is-a-branch" id="toc-what-is-a-branch" class="nav-link" data-scroll-target="#what-is-a-branch"> <span class="header-section-number">4.2</span> What is a branch?</a>
+  <ul class="collapse">
+<li><a href="#code-commit-and-push-to-origin-in-rstudio" id="toc-code-commit-and-push-to-origin-in-rstudio" class="nav-link" data-scroll-target="#code-commit-and-push-to-origin-in-rstudio"> <span class="header-section-number">4.2.1</span> Code, commit and push to origin in RStudio</a></li>
+  <li><a href="#make-a-pull-request-on-github" id="toc-make-a-pull-request-on-github" class="nav-link" data-scroll-target="#make-a-pull-request-on-github"> <span class="header-section-number">4.2.2</span> Make a pull request on GitHub</a></li>
+  <li><a href="#repo-maintainer-accepts-pull-request-or-not" id="toc-repo-maintainer-accepts-pull-request-or-not" class="nav-link" data-scroll-target="#repo-maintainer-accepts-pull-request-or-not"> <span class="header-section-number">4.2.3</span> Repo maintainer accepts pull request (or not)</a></li>
+  <li><a href="#update-your-fork" id="toc-update-your-fork" class="nav-link" data-scroll-target="#update-your-fork"> <span class="header-section-number">4.2.4</span> Update your fork</a></li>
+  <li><a href="#delete-branches" id="toc-delete-branches" class="nav-link" data-scroll-target="#delete-branches"> <span class="header-section-number">4.2.5</span> Delete branches</a></li>
+  <li><a href="#trouble-shooting" id="toc-trouble-shooting" class="nav-link" data-scroll-target="#trouble-shooting"> <span class="header-section-number">4.2.6</span> Trouble shooting</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next"> <span class="header-section-number">4.2.7</span> What’s next</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/biostats-r/biostats/blob/main/3_Fork_Tutorial.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-collaborating-with-forks" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Collaborating with forks</span></span></h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header><div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/0_forks_branches.jpg" class="img-fluid"></p>
+</div>
+</div>
+<section id="what-is-a-fork" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="what-is-a-fork">
+<span class="header-section-number">4.1</span> What is a fork?</h2>
+<p>GitHub is useful for developing your own code, but at some point you might want to collaborate with other people on a project. Or you might come across a GitHub repository that you want to use as a starting point for your own work. In both cases <strong>forks</strong> are the way to go.</p>
+<p>A fork is a copy of somebody’s GitHub repository. You can fork a repo and work independently of the original project. Or if you are collaborating with other people you can stay connected with the original repository via <strong>pull requests</strong>.</p>
+<p>However, you cannot directly affect (or damage) the original project, which is somewhat less scary, right?</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definitions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>
+<strong>fork</strong> - a copy of a repo on GitHub that is connected to the original</li>
+<li>
+<strong>pull request</strong> - a system for suggesting edits and additions to the owner of the original repo from your fork</li>
+<li>
+<strong>origin</strong> - conventional name for the remote of your fork</li>
+<li>
+<strong>upstream</strong> - conventional name for the remote of the original repo</li>
+</ul>
+</div>
+</div>
+<section id="the-workflow" class="level3" data-number="4.1.1"><h3 data-number="4.1.1" class="anchored" data-anchor-id="the-workflow">
+<span class="header-section-number">4.1.1</span> The workflow</h3>
+<p>To understand the <strong>workflow</strong>, let’s see how Angelina and Kingsley collaborate using GitHub (<a href="#fig-github-fork">Figure&nbsp;<span>4.1</span></a>).</p>
+<p>Kingsley owns a GitHub repo. Angelina <strong>forks</strong> this repo (1) and then <strong>clones</strong> is to her computer (2). Angelina develops code using <strong>branches</strong> and makes <strong>commits</strong> (3). Then she <strong>pushes</strong> these changes to her <strong>remote repo</strong> on GitHub (4) and makes a <strong>pull request</strong> to the original repo, which Kingsley <strong>merges</strong> (5).</p>
+<p>From now on Angelina will <strong>fetch</strong> (6) and <strong>merge</strong> (7) the newest changes from <strong>upstream</strong> into her local repo and continue the workflow (3-5).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-github-fork" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/fork_branch_tutorial/1_workflow3.png" class="img-fluid figure-img" alt="Schematic diagram showing how the GitHub workflow is used to collaborate with forks"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.1: GitHub workflow using a fork.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="forking-with-usethis" class="level3" data-number="4.1.2"><h3 data-number="4.1.2" class="anchored" data-anchor-id="forking-with-usethis">
+<span class="header-section-number">4.1.2</span> Forking with <code>usethis</code>
+</h3>
+<p>The easiest way to fork a repo on GitHub and clone it to your computer is with the <code>usethis</code> package. Find the user name and repo name of the repo you want to fork. To fork and clone the “kingsleyshacklebolt/dragon_study” repo, use</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org">usethis</a></span><span class="op">)</span>
+<span class="fu"><a href="https://usethis.r-lib.org/reference/create_from_github.html">create_from_github</a></span><span class="op">(</span><span class="st">"kingsleyshacklebolt/dragon_study"</span>, fork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This will</p>
+<ul>
+<li>fork the repo, creating a copy in your own GitHub account.</li>
+<li>clone your fork of the repo onto your computer. By default, the clone will be put on your desktop. You can copy the entire folder to somewhere more convenient, or set the <code>destdir</code> argument.</li>
+<li>set up the connections between the clone, your fork and the original repo. You can see these connections in the terminal with the command</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote <span class="at">-v</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="fork-a-repo-on-github" class="level3" data-number="4.1.3"><h3 data-number="4.1.3" class="anchored" data-anchor-id="fork-a-repo-on-github">
+<span class="header-section-number">4.1.3</span> Fork a repo on GitHub</h3>
+<p>Sometimes if you only want to make a small change to a repo, it might be more convenient to make a <strong>fork</strong> on GitHub and make all the edits directly on GitHub.</p>
+<p>To do this, go to GitHub, log into your account and go to the repository you want to <strong>fork</strong>.</p>
+<p>Let us assume that Angelina wants to fork the magic_dragon repo from biostats. Click on the <strong>fork</strong> button on the top right of the webpage and wait until the repo is forked.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-fork-repo" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/fork_branch_tutorial/2_fork_repo.png" class="img-fluid figure-img" alt="Screenshot of github.com showing location of the fork button."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.2: The fork button is in the top right of the screen on GitHub.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="what-is-a-branch" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="what-is-a-branch">
+<span class="header-section-number">4.2</span> What is a branch?</h2>
+<p>You have forked a repository and are ready to start working on the project.</p>
+<p>But first we need to make a branch. Bad things happen if you work on the main branch of fork. For example, it becomes difficult to keep the repo in sync with the upstream repo without many <strong>merge conflicts</strong>. See <a href="2_Branch_Tutorials.html#sec-new-branch"><span>Section&nbsp;3.1.2</span></a> for how to make a new branch in RStudio.</p>
+<section id="code-commit-and-push-to-origin-in-rstudio" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="code-commit-and-push-to-origin-in-rstudio">
+<span class="header-section-number">4.2.1</span> Code, commit and push to origin in RStudio</h3>
+<p>Now is the time to work in a new or edit an existing file on the project. You can work the way it is described in section <a href="1_Git_Tutorial.html#sec-stage-commit-push"><span>Section&nbsp;2.6</span></a>. Write or edit code, test it, <strong>commit</strong> regularly, add a useful commit message.</p>
+<p>Once you are done with the task in this <strong>branch</strong>, and tested it, it is time to send it to GitHub so it can be included in the original, <strong>upstream</strong> repo.</p>
+</section><section id="make-a-pull-request-on-github" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="make-a-pull-request-on-github">
+<span class="header-section-number">4.2.2</span> Make a pull request on GitHub</h3>
+<p>Once you have <strong>pushed</strong> your branch back to your <strong>fork</strong> on GitHub, you can make a <strong>pull request</strong>. A <strong>pull request</strong> is a request to the maintainer of the <strong>upstream</strong> repository to pull your code into the original repository.</p>
+<p>Go to your fork on GitHub (not the upstream repo). Click on the green box <strong>Compare &amp; pull request</strong> which has appear at the top of the page.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pull-request-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/fork_branch_tutorial/8_pull_request.png" class="img-fluid figure-img" alt="Screenshot of GitHub showing button to create pull request."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.3: Click the green botton to start creating a pull request.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Add a comment about your pull request and click <strong>Create pull request</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pull-request-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/fork_branch_tutorial/9_create_pull_request.png" class="img-fluid figure-img" alt="Screenshot of GitHub showing form to create a pull request."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.4: Click the green button to create a pull request.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Once you have created your <strong>pull request</strong>, GitHub will check if there are any <strong>merge conflict</strong>. A <strong>merge conflict</strong> can occur when two people are changing the same line in one file differently. See <a href="2_Branch_Tutorials.html#sec-merge-conflicts"><span>Section&nbsp;3.1.5.2</span></a> for how to deal with a <strong>merge conflict</strong>.</p>
+<p>If no <strong>merge conflict</strong> occurs, GitHub will give green light for merging. If there is a merge conflict, it has to be resolved before the file can be merged .</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pull-request-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/fork_branch_tutorial/10_merge_pull_request.png" class="img-fluid figure-img" alt="Screenshot of GitHub showing that there are no conflicts with this pull request."></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.5: Hopefully there won’t be any conflicts between your pull request and the existing code.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now it’s time for you to relax, wait for the response of the repo maintainer and have some cake 🍰, you have earned it!</p>
+<section id="exercise-make-pull-request" class="level4" data-number="4.2.2.1"><h4 data-number="4.2.2.1" class="anchored" data-anchor-id="exercise-make-pull-request">
+<span class="header-section-number">4.2.2.1</span> Exercise: make pull request</h4>
+<p>Let’s make a pull request together. Go to the magic_dragons repo that you forked above, or fork it now. Open the file called <strong>successfully forked</strong>.</p>
+<p>Click on the <strong>main</strong> button to create a new <strong>branch</strong>. Type a name and click <strong>Create branch: new_name</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/10.1_successful_file.png" class="img-fluid"></p>
+</div>
+</div>
+<p>You are now working on the <strong>new branch</strong>. Click on the pencil symbol on the right side to edit the file. Add your name and scroll all the way to the bottom of the page.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/10.2_add_your_name.png" class="img-fluid" style="width:60.0%"></p>
+</div>
+</div>
+<p>Type a commit message and make sure you commit to the <strong>new branch</strong> you just made.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/10.3_commit_to_new_branch.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Go to the your fork of the magic_dragons repo on GitHub and click on the green button <strong>Compare &amp; pull request</strong> and on the next page <strong>Create pull request</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/10.4_another_pull_request.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Now it’s time for you to relax, wait for the response of the repo maintainer and have some cake 🍰, you have earned it!</p>
+</section></section><section id="repo-maintainer-accepts-pull-request-or-not" class="level3" data-number="4.2.3"><h3 data-number="4.2.3" class="anchored" data-anchor-id="repo-maintainer-accepts-pull-request-or-not">
+<span class="header-section-number">4.2.3</span> Repo maintainer accepts pull request (or not)</h3>
+<p>The <strong>maintainer</strong> of the original repository will then get notified about your <strong>pull request</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/11_maintainer_view.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The <strong>maintainer</strong> has to evaluate your changes to the project and can make comments to specific parts of the code, or even <strong>start a review</strong>. You will get a notification if changes are required and this can go forth and back for a while.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/12_comment.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Eventually, (hopefully), the <strong>maintainer</strong> will <strong>merge</strong> the <strong>pull request</strong> and you will get a notification.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Pics/fork_branch_tutorial/13_confirm_merge.png" class="img-fluid"></p>
+</div>
+</div>
+<section id="excercise-make-pull-request-continues" class="level4" data-number="4.2.3.1"><h4 data-number="4.2.3.1" class="anchored" data-anchor-id="excercise-make-pull-request-continues">
+<span class="header-section-number">4.2.3.1</span> Excercise: make pull request continues</h4>
+<p>Maybe you got a request from Kingsley Shackelbolt about your pull request. Go ahead and fix it.</p>
+<p>If everything was ok, then you are done.</p>
+</section></section><section id="update-your-fork" class="level3" data-number="4.2.4"><h3 data-number="4.2.4" class="anchored" data-anchor-id="update-your-fork">
+<span class="header-section-number">4.2.4</span> Update your fork</h3>
+<p>Once your <strong>pull request</strong> has been accepted, you have to update your fork to get the latest changes from <strong>upstream</strong>.</p>
+<p>You can do this either on GitHub or in the terminal</p>
+<section id="on-github" class="level4" data-number="4.2.4.1"><h4 data-number="4.2.4.1" class="anchored" data-anchor-id="on-github">
+<span class="header-section-number">4.2.4.1</span> On GitHub</h4>
+<p>Go to your fork on GitHub. Click the “Fetch upstream” link beneath the green “Code” button, then press “Fetch and Merge” in the popup.</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+</p>
+<p>Is your fork behind? You can now sync from the parent repo with just a single click! 🖱💥 <a href="https://t.co/4Zx6OwVTxO">pic.twitter.com/4Zx6OwVTxO</a></p>
+
+<p>— GitHub (<span class="citation" data-cites="github">@github</span>) <a href="https://twitter.com/github/status/1390382527588798477?ref_src=twsrc%5Etfw">May 6, 2021</a></p>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><p>Now go to RStudio and <strong>pull</strong> the updates to your computer. Unless you want to continue working on the same branch, you should now return to the main branch.</p>
+</section><section id="in-the-terminal" class="level4" data-number="4.2.4.2"><h4 data-number="4.2.4.2" class="anchored" data-anchor-id="in-the-terminal">
+<span class="header-section-number">4.2.4.2</span> In the terminal</h4>
+<p>Go to RStudio and the <strong>Terminal</strong> tab.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-terminal-request" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/gittutorial/16_terminal.png" class="img-fluid figure-img" alt="Screenshot of the terminal in RStudio"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.6: The terminal in RStudio is usually next to the Console tab</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>And type:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> fetch upstream</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge upstream/main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Fetch</strong> downloads all the changes from <strong>upstream</strong>. <strong>Checkout main</strong> makes sure your <strong>main branch</strong> is active. And the last line <strong>merges</strong> the changes with your local repository.</p>
+</section></section><section id="delete-branches" class="level3" data-number="4.2.5"><h3 data-number="4.2.5" class="anchored" data-anchor-id="delete-branches">
+<span class="header-section-number">4.2.5</span> Delete branches</h3>
+<p>If you have finished with the branch you used to make the pull request, you can delete it (see <a href="2_Branch_Tutorials.html#sec-delete-branch"><span>Section&nbsp;3.1.4</span></a>).</p>
+</section><section id="trouble-shooting" class="level3" data-number="4.2.6"><h3 data-number="4.2.6" class="anchored" data-anchor-id="trouble-shooting">
+<span class="header-section-number">4.2.6</span> Trouble shooting</h3>
+<section id="check-configurations-in-the-terminal" class="level4" data-number="4.2.6.1"><h4 data-number="4.2.6.1" class="anchored" data-anchor-id="check-configurations-in-the-terminal">
+<span class="header-section-number">4.2.6.1</span> Check configurations in the Terminal</h4>
+<p>You might want to check the configurations of your repository. In the <strong>Terminal</strong> you can check the <strong>origin</strong> of your repo, which is from where you <strong>push</strong> and <strong>pull</strong>. If you have forked a repo it will also show you the <strong>upstream</strong> repo (see <a href="#sec-collaborating-with-forks"><span>Chapter&nbsp;4</span></a>) Collaborating with forks and branches tutorial for more details). This will also show you if your <strong>origin</strong> is wrong or the <strong>upstream</strong> repo has not been set.</p>
+<p>Go to the <strong>Terminal</strong> tab and type repo type:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote <span class="at">-v</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The output will look like this:</p>
+<pre><code>origin  git@github.com:angelinajohnson/magic_dragons.git (fetch)
+origin  git@github.com:angelinajohnson/magic_dragons.git (push)
+upstream        git@github.com:biostats-r/magic_dragons.git (fetch)
+upstream        git@github.com:biostats-r/magic_dragons.git (push)</code></pre>
+</section><section id="handle-a-merge-conflict" class="level4" data-number="4.2.6.2"><h4 data-number="4.2.6.2" class="anchored" data-anchor-id="handle-a-merge-conflict">
+<span class="header-section-number">4.2.6.2</span> Handle a merge conflict</h4>
+<p>A <strong>merge conflict</strong> can occur when two people are changing the same line in one file differently.</p>
+<p>The goal is to avoid such conflicts and a good strategy fo this is to commit often, work in small steps, push and pull/fetch regular and communicate with the people you are collaborating with. <strong>Merge conflicts</strong> can easily be avoided if you do not work in the same files.</p>
+<p>But <strong>merge conflicts</strong> cannot always be avoided and should it happen that you have one in your pull request, you will get a message to resolve this conflict before the changes can be merge. First, do not panic and find the files that are conflicting.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-merge-conflict" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/fork_branch_tutorial/14_merge_conflict.png" class="img-fluid figure-img" alt="Screenshot of GitHub showing a pull request that has a merge conflict"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.7: A merge conflict that needs resolving</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The conflicting file is called dragon_analysis. Most likely somebody has changed the file in the meantime and you do not have the most recent version of code. Check the status of this file on the upstream repo. Fix the changes, so that they are not conflicting anymore, <strong>commit</strong>, <strong>push</strong> and make the <strong>pull request</strong> again. Now everything should work.</p>
+</section><section id="prevent-commits-to-main" class="level4" data-number="4.2.6.3"><h4 data-number="4.2.6.3" class="anchored" data-anchor-id="prevent-commits-to-main">
+<span class="header-section-number">4.2.6.3</span> Prevent commits to main</h4>
+<p>We have already established that when you collaborate on a repo using a fork, you never make changes to the <strong>main branch</strong>. This can be difficult to remember. Fortunately, there is a way to prevent from committing to <em>main</em> using a git hook. Hooks are rules to only allow commits when certain conditions are met.</p>
+<p>This R code makes a hook that stops you committing to the main branch.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_git_hook.html">use_git_hook</a></span><span class="op">(</span>
+  hook <span class="op">=</span> <span class="st">"pre-commit"</span>,
+  script <span class="op">=</span> <span class="st">'#!/bin/sh
+  branch="$(git rev-parse --abbrev-ref HEAD)"
+  if [ "$branch" = "main" ]; then
+  echo "You cannot commit directly to main branch"
+  exit 1
+  fi'</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From now on if you are trying to commit changes to main it will give you a warning message. If this happens, make a <strong>new branch</strong>, <strong>commit</strong> the changes and <strong>push</strong>.</p>
+</section></section><section id="further-reading" class="level3 unnumbered literature toc-ignore"><h3 class="unnumbered literature toc-ignore anchored" data-anchor-id="further-reading">Further reading</h3>
+<p><strong>Happy Git</strong> provides instructions for how to getting started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong. https://happygitwithr.com/</p>
+<p>The <strong>Git flight rules</strong> are an exhaustive resource for what to do when things go wrong. https://github.com/k88hudson/git-flight-rules</p>
+</section><section id="whats-next" class="level3 facta toc-ignore" data-number="4.2.7"><h3 class="facta toc-ignore anchored" data-number="4.2.7" data-anchor-id="whats-next">
+<span class="header-section-number">4.2.7</span> What’s next</h3>
+<p>Nothing yet. Go and eat more cake 🍰</p>
+
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./2_Branch_Tutorials.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Working with branches</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
