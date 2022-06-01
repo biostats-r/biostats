@@ -1,5 +1,5 @@
 ---
-editor_options: 
+editor_options:
   markdown: 
     wrap: sentence
 ---
@@ -55,11 +55,11 @@ knitr::include_graphics("Pics/gittutorial/0_workflow_git.png")
 
 ## Installation
 
-Download and install git: <https://git-scm.com/>
+You can download and install git from <https://git-scm.com/>
 
-(For UiB users, you can find Git in the Software Center; Mac users need the software xcode)
+(For UiB users, you can find git in the Software Center; Mac users need the software xcode)
 
-Get a GitHub account on <https://github.com/>: sign up and follow the instructions.
+You can get a GitHub account at <https://github.com/>: sign up and follow the instructions.
 
 ```{r}
 #| label: fig-signup
@@ -71,13 +71,20 @@ knitr::include_graphics("Pics/gittutorial/1_sign_up.png")
 ## `usethis` package
 
 The `usethis` package makes working with git and GitHub from R and RStudio much easier.
-Install it now if you don't already have it.
 
 ```{r}
 #| echo: true
 #| eval: false
 install.packages("usethis")
 ```
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+- Install git. 
+- Once you have done this you will need to restart RStudio if it is open.
+You should now have a git tab in RStudio. 
+- Create a GitHub account.
+- Install the `usethis` R package.
 
 ## Set-up
 
@@ -98,6 +105,10 @@ use_git_config(
 
 The next step is to connect RStudio and GitHub.
 
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Configure git with your user name and email.
+
 ## Connect RStudio and GitHub
 
 GitHub needs to validate who you are before you can connect it and RStudio.
@@ -108,7 +119,7 @@ You need to do this once for every RStudio project.
 #| label: PAT
 #| eval: false
 #| echo: true
-create_github_token()
+usethis::create_github_token()
 ```
 
 This function will open GitHub.
@@ -132,6 +143,8 @@ this will ask you for your PAT: paste it at the prompt and press return.
 This will save the PAT so that it can be used to access GitHub.
 Treat your PAT as a password - never save it in a script.
 
+Depending on your operating system, you might only have to do this once (at least until the PAT expires) or you might need to do it again for every RStudio project.
+
 ::: callout-tip
 ## git vaccinate
 
@@ -151,13 +164,18 @@ git_vaccinate()
 If you do accidentally commit a password or other token or key, you should assume that it has been compromised (bots search GitHub for these), and immediately replace the password.
 :::
 
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Generate a GitHub PAT and store it with `gitcreds::gitcreds_set()`.
+Then vaccinate git on you computer.
+
 ## Making a repo
 
 Now you are ready to start using RStudio and GitHub.
 There are two main workflows:
 
-1.  Make a new local repo and push it to GitHub (section @sec-local-first)
-2.  Clone an existing repo from GitHub onto your computer (section @sec-github-first)
+1.  Make a new local repo and push it to GitHub (@sec-local-first)
+2.  Clone an existing repo from GitHub onto your computer (@sec-github-first)
 
 We will cover these in turn: choose the best one for your circumstances.
 
@@ -168,10 +186,12 @@ They can be made private if necessary.
 
 This workflow is useful if you already have an RStudio project on your computer or are starting a new project.
 
-In RStudio, start by creating a git repo for your project with
+If you are making a new RStudio project, tick the "Create a git repository" box in the New Project Wizard.
+
+Otherwise, in RStudio, create a git repo for your project with
 
 ```{r init, eval = FALSE, echo = TRUE}
-use_git()
+usethis::use_git()
 ```
 
 After creating the repo, the function will ask whether you want to commit some files.
@@ -184,7 +204,7 @@ Then let RStudio restart so that the git panel is activated.
 ::: callout-tip
 ## Renaming the default branch
 
-Git repos typically have a default branch.
+Git repos typically have a default branch (you will learn more about branches in @sec-working-branches).
 The traditional name for this branch is "master", but "main" is now preferred as it is more inclusive.
 GitHub uses "main" but git still uses "master" (this might change).
 
@@ -227,6 +247,13 @@ This is how your new repo looks like.
 knitr::include_graphics("Pics/gittutorial/10_new_repo.png")
 ```
 
+### Exercise {.unnumbered .facta .toc-ignore}
+
+- Create a new RStudio project, set up git on it and agree to commit the files. 
+- Rename the default branch to "main".
+- Set up the project to use GitHub, and push the committed files, and view them on GitHub.
+
+
 ### GitHub first {#sec-github-first}
 
 Cloning your GitHub repository means that you are making a copy of your **remote** repository on Github, **locally** on your computer.
@@ -237,7 +264,7 @@ But make sure you do not commit sensitive information such as passwords.
 Go to the GitHub repository you that you want to clone and find the names of the owner and the repo.
 
 ```{r clone}
-#| label: clone
+#| label: fig-clone
 #| fig-cap: The owner and repo names
 #| fig-alt: Screenshot of github.com showing owner and repo name
 knitr::include_graphics("Pics/gittutorial/11a_clone.png")
@@ -278,13 +305,13 @@ A new window will appear.
 
 ```{r}
 #| label: fig-git-window
-#| fig-cap: The git commit window
+#| fig-cap: The git commit window showing files that can be committed and the diff of one file.
 #| fig-alt: Screenshot of the git commit window
 
 knitr::include_graphics("Pics/gittutorial/19_commit_window.png")
 ```
 
-All the changes in the file are shown in green and red color.
+All the changes in the file are shown in green and red colour.
 Green is code that you have **added** to the file.
 Red is code that has been **deleted**.
 This makes it very easy to see all the changes that haven been made.
@@ -330,6 +357,14 @@ For example, in @fig-git-push the local repo is 2 commits ahead of the remote.
 knitr::include_graphics("Pics/gittutorial/21_push.png")
 ```
 
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Add a short script, perhaps to make a plot of the `palmerpenguins::penguins` data, to your RStudio project. It should appear in the git tab. Commit it.
+Now edit the file, and see how the git tab changes. Look at the diffs then commit the file again.
+Now rename the file and again see how the git tab changes. Commit the changes.
+
+
+
 ## Share a repository
 
 It is possible to share a repository on GitHub.
@@ -339,7 +374,7 @@ Both Angelina and Kingsley can **clone** the repo locally on their computer (1),
 To get the changes the other person has made to the repo, they need to **pull** from GitHub (4).
 
 There are a few things to consider when using this workflow.
-If you are working with other people in a shared repository on GitHub, you will need to **pull** (blue arrow in the **Git** tab) to bring the modifications your collaborator(s) have made into your local copy of the repository.
+If you are working with other people in a shared repository on GitHub, you will need to **pull** (green arrow in the **Git** tab) to bring the modifications your collaborator(s) have made into your local copy of the repository.
 Do this every time before you start to work and also push your changes regularly to make sure everybody is working on the latest version.
 
 ```{r}
@@ -426,6 +461,14 @@ Go to the terminal and type:
     git reset --soft HEAD@{1}
 
 For more help with trouble shooting, try the [git flight rules](https://github.com/k88hudson/git-flight-rules%20git).
+
+::: callout-caution
+## Serious git surgery
+
+If you need to do serious git surgery, for example to remove a large file committed accidentally, it is a cunning plan to copy your local repo first and practice on the copy before trying to fix the original repo.
+
+If things get very messy, it can be worth making a new clone of the repo from GitHub, copying edited files to the new repo, and deleting the old repo.
+:::
 
 ### Useful resources {.unnumbered .literature .toc-ignore}
 
