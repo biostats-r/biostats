@@ -10,6 +10,36 @@ See this [demonstration project](https://github.com/richardjtelford/neotomaTarge
 ## Paramertised reports
 
 If you need a template for many reports, for example, showing results for a specific location or time period, consider using
-[Paramertised reports](https://bookdown.org/yihui/rmarkdown/parameterized-reports.html)
-which allow you to pass a variable into an R markdown document when it is knitted.
+[Paramertised reports](https://quarto.org/docs/computations/parameters.html)
+which allow you to pass a variable into an quarto document when it is rendered.
+
+This is done by declaring one or more parameters in the YAML. 
+For example, to make a report about just one of the species in the penguins dataset, we might use this YAML, which sets the default value of species to Adelie.
+
+``` yaml
+---
+title: "Penguin Report"
+params:
+  species: Adelie
+---
+```
+
+We can now access this parameter with `param$species`. 
+Perhaps in a chunk like this 
+
+``` r
+library(tidyverse)
+palmerpenguins::penguins |> 
+  filter(species == params$species) |> 
+  summarise(mean_bill_length = mean(bill_length_mm, na.rm = TRUE))
+```
+
+If we wanted to make the report for a different species, we would have to run `quarto_render` in the console.
+
+``` r
+quarto::render(
+    input = "penguin_report.qmd", 
+    execute_params = list(species = "Gentoo")
+  )
+```
 
