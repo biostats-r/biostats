@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.414">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Writing an R package - 4&nbsp; Package Contents</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script><script src="site_libs/quarto-nav/headroom.min.js"></script><script src="site_libs/clipboard/clipboard.min.js"></script><meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script><script src="site_libs/quarto-search/fuse.min.js"></script><script src="site_libs/quarto-search/quarto-search.js"></script><link href="./04-more-documentation.html" rel="next">
+<link href="./02-package-infrastructure.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script><script src="site_libs/quarto-html/popper.min.js"></script><script src="site_libs/quarto-html/tippy.umd.min.js"></script><script src="site_libs/quarto-html/anchor.min.js"></script><link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script><link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><link rel="stylesheet" href="../css/style-chapters.css">
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Package Contents</span>
+</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Writing an R package</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+<li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-system-setup.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">System setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-package-infrastructure.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Creating the package infrastructure</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-package-contents.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Package Contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-more-documentation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">More documentation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-distributing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributing your package</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-troubleshooting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#basic-workflow" id="toc-basic-workflow" class="nav-link active" data-scroll-target="#basic-workflow"> <span class="header-section-number">4.1</span> Basic workflow</a></li>
+  <li><a href="#sec-tests" id="toc-sec-tests" class="nav-link" data-scroll-target="#sec-tests"> <span class="header-section-number">4.2</span> Tests</a></li>
+  <li>
+<a href="#sec-functions" id="toc-sec-functions" class="nav-link" data-scroll-target="#sec-functions"> <span class="header-section-number">4.3</span> Functions</a>
+  <ul class="collapse">
+<li><a href="#well-behaved-functions" id="toc-well-behaved-functions" class="nav-link" data-scroll-target="#well-behaved-functions"> <span class="header-section-number">4.3.1</span> Well behaved functions</a></li>
+  <li><a href="#data-validation---expect-the-unexpected." id="toc-data-validation---expect-the-unexpected." class="nav-link" data-scroll-target="#data-validation---expect-the-unexpected."> <span class="header-section-number">4.3.2</span> Data validation - expect the unexpected.</a></li>
+  <li><a href="#s3-classes-in-r" id="toc-s3-classes-in-r" class="nav-link" data-scroll-target="#s3-classes-in-r"> <span class="header-section-number">4.3.3</span> S3 classes in R</a></li>
+  <li><a href="#ellipses" id="toc-ellipses" class="nav-link" data-scroll-target="#ellipses"> <span class="header-section-number">4.3.4</span> Ellipses …</a></li>
+  <li><a href="#sec-tidyverse" id="toc-sec-tidyverse" class="nav-link" data-scroll-target="#sec-tidyverse"> <span class="header-section-number">4.3.5</span> Using <code>dplyr</code>, <code>ggplot2</code> etc</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-documentation-with-roxygen2" id="toc-sec-documentation-with-roxygen2" class="nav-link" data-scroll-target="#sec-documentation-with-roxygen2"> <span class="header-section-number">4.4</span> Documentation with Roxygen2</a>
+  <ul class="collapse">
+<li><a href="#sec-importing-exporting-functions" id="toc-sec-importing-exporting-functions" class="nav-link" data-scroll-target="#sec-importing-exporting-functions"> <span class="header-section-number">4.4.1</span> Importing and exporting functions</a></li>
+  <li><a href="#generate-the-.rd-files" id="toc-generate-the-.rd-files" class="nav-link" data-scroll-target="#generate-the-.rd-files"> <span class="header-section-number">4.4.2</span> Generate the .Rd files</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"> <span class="header-section-number">4.5</span> Data</a>
+  <ul class="collapse">
+<li><a href="#documenting-data" id="toc-documenting-data" class="nav-link" data-scroll-target="#documenting-data"> <span class="header-section-number">4.5.1</span> Documenting data</a></li>
+  </ul>
+</li>
+  <li><a href="#adding-other-files" id="toc-adding-other-files" class="nav-link" data-scroll-target="#adding-other-files"> <span class="header-section-number">4.6</span> Adding other files</a></li>
+  <li><a href="#sec-checking" id="toc-sec-checking" class="nav-link" data-scroll-target="#sec-checking"> <span class="header-section-number">4.7</span> Checking</a></li>
+  <li><a href="#sec-build-and-install" id="toc-sec-build-and-install" class="nav-link" data-scroll-target="#sec-build-and-install"> <span class="header-section-number">4.8</span> Build and install</a></li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/biostats-r/biostats/blob/main/03-package-contents.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Package Contents</span>
+</h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header><section id="basic-workflow" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="basic-workflow">
+<span class="header-section-number">4.1</span> Basic workflow</h2>
+<ol type="1">
+<li>Write tests (<a href="#sec-tests"><span>Section&nbsp;4.2</span></a>)</li>
+<li>Write functions (<a href="#sec-functions"><span>Section&nbsp;4.3</span></a>) and documentation (<a href="#sec-documentation-with-roxygen2"><span>Section&nbsp;4.4</span></a>)</li>
+<li>Check package (<a href="#sec-checking"><span>Section&nbsp;4.7</span></a>)</li>
+<li>Fix errors goto 3</li>
+<li>Test drive with <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code>
+</li>
+<li>Build and install (<a href="#sec-build-and-install"><span>Section&nbsp;4.8</span></a>)</li>
+</ol>
+<p>Because there are usually lots of errors to fix, it is sensible to build the package slowly, testing with Check frequently.</p>
+</section><section id="sec-tests" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="sec-tests">
+<span class="header-section-number">4.2</span> Tests</h2>
+<p>You need to write tests for your package to ensure your functions do what they are supposed. They protect you against breaking your package when you edit your code. Tests are run when the package is checked</p>
+<p>You can, ideally should, write tests before you write your functions. We can use the <code>testthat</code> package for the tests.</p>
+<p>Set up the testing infrastructure with</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_testthat.html">use_testthat</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now set up a test file for one or more related functions with <code>use_test()</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_r.html">use_test</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"import"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This will create and open a file called <code>test-import.R</code> which looks like</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">test_that</span><span class="op">(</span><span class="st">"multiplication works"</span>, <span class="op">{</span>
+  <span class="fu">expect_equal</span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>
+<span class="op">}</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The first argument of <code>test_that()</code> is a description, second argument is an expression which contains the test. More complex tests might need some additional set-up code in the expression. There are several <code>expect_*()</code> functions to test different aspects of the function, including that errors and warnings are thrown as expected. Each <code>test_that()</code> call can test multiple expectations. You can have multiple <code>test_that()</code> calls per file.</p>
+<p>Look for examples of tests on GitHub if you need inspiration.</p>
+<p>Functions are much easier to test the functions do one job. This is also best practice when writing functions. For example, if you were writing a package to import, process, and plot logger data, you would make at least three functions to do this, not one function that does everything.</p>
+</section><section id="sec-functions" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="sec-functions">
+<span class="header-section-number">4.3</span> Functions</h2>
+<p>Functions are made with the keyword function, can have one or more arguments separated by commas, and needs assigning to a name.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arg1</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">arg2</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">arg1</span> <span class="op">*</span> <span class="va">arg2</span>
+<span class="op">}</span>
+
+<span class="fu">my_function</span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Functions need to be saved in <code>R/</code>. Related functions can be saved in the same file.</p>
+<section id="well-behaved-functions" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="well-behaved-functions">
+<span class="header-section-number">4.3.1</span> Well behaved functions</h3>
+<p>Try not to alter the state of the users R session. Don’t include calls to <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> or <code><a href="https://rdrr.io/r/base/library.html">require()</a></code> in functions (see <a href="#sec-importing-exporting-functions"><span>Section&nbsp;4.4.1</span></a>). If you need to change the state, then revert it with when the function finishes. You can do this with <code><a href="https://withr.r-lib.org/reference/defer.html">withr::defer()</a></code>. This is better behaved than the base R equivalent <code><a href="https://rdrr.io/r/base/on.exit.html">on.exit()</a></code>. Even if the function throws an error, the state of <code>options</code> will be reverted to its original state.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># set options</span>
+  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/defer.html">defer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span><span class="op">)</span> <span class="co">#next line</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="data-validation---expect-the-unexpected." class="level3" data-number="4.3.2"><h3 data-number="4.3.2" class="anchored" data-anchor-id="data-validation---expect-the-unexpected.">
+<span class="header-section-number">4.3.2</span> Data validation - expect the unexpected.</h3>
+<p>If you are going to release your package, you need to try to make it idiot proof. Assume users will make mistakes with their data input. Use code to validate that the data are correct, or else throw an error. <code>if</code> statements and <code><a href="https://rdrr.io/r/base/stop.html">stop()</a></code> are useful here.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arg1</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">arg2</span><span class="op">)</span><span class="op">{</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">arg1</span><span class="op">)</span> <span class="op">||</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">arg2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Arguments arg1 and arg2 must be numeric"</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">arg1</span> <span class="op">*</span> <span class="va">arg2</span>
+<span class="op">}</span>
+
+<span class="fu">my_function</span><span class="op">(</span><span class="fl">3</span>, <span class="st">"4"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in my_function(3, "4"): Arguments arg1 and arg2 must be numeric</code></pre>
+</div>
+</div>
+</section><section id="s3-classes-in-r" class="level3" data-number="4.3.3"><h3 data-number="4.3.3" class="anchored" data-anchor-id="s3-classes-in-r">
+<span class="header-section-number">4.3.3</span> S3 classes in R</h3>
+<p>When you use a generic function in R such as <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>, <code><a href="https://rdrr.io/r/base/print.html">print()</a></code>, <code>autoplot()</code> or <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>, what happens is that the class of the object in determined and dispatched to the appropriate function, which will have the name of the generic followed by the name of the class, separated by a dot.</p>
+<p>So a call to <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> with an object of class <code>cca</code> will be dispatched to <code>plot.cca</code>.</p>
+<p>You can find out the class of an object with <code><a href="https://rdrr.io/r/base/class.html">class()</a></code></p>
+<p>The class of an object can be set with <code><a href="https://rdrr.io/r/base/class.html">class()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">complex_logic</span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"my_class"</span>
+  <span class="va">result</span>
+  <span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the object already has a class and you want to keep it, you need something like</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R">  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"my_class"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To make a <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> method for <code>my_class</code>, we simply make a function called <code>print.my_class</code> or <code>plot.my_class</code>. The method will be declared automatically when the documentation (<a href="#sec-documentation-with-roxygen2"><span>Section&nbsp;4.4</span></a>) is made.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Going further with classes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Make your <a href="https://adv-r.hadley.nz/s3.html#s3-methods">own generics</a>
+</li>
+<li>Use the more formal <a href="https://adv-r.hadley.nz/oo.html">S4 or R6 class</a> systems</li>
+</ul>
+</div>
+</div>
+</section><section id="ellipses" class="level3" data-number="4.3.4"><h3 data-number="4.3.4" class="anchored" data-anchor-id="ellipses">
+<span class="header-section-number">4.3.4</span> Ellipses …</h3>
+<p>Ellipses can be used in two ways when writing functions.</p>
+<p>The first is to pass unknown arguments to a second function (e.g., <code>plot.cca()</code>).</p>
+<p>If we make a <code>plot.my_class()</code> function we can use the ellipses so we don’t need to specify all the possible arguments in plot.</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">plot.my_class</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">obj</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
+  <span class="co">#logic to prepare data for plotting</span>
+  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">$</span><span class="va">x</span>
+  <span class="va">y</span> <span class="op">&lt;-</span><span class="va">obj</span><span class="op">$</span><span class="va">y</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span>
+<span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now all of arguments to <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot.default()</a></code> can be used.</p>
+<p>The second way to use ellipses is when there are a variable number of arguments. We can capture the <code>...</code> using <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>, and then process it further.</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dot_to_list</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">dot_to_list</span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="st">"c"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] 1
+
+[[2]]
+[1] 2
+
+[[3]]
+[1] "c"</code></pre>
+</div>
+</div>
+</section><section id="sec-tidyverse" class="level3" data-number="4.3.5"><h3 data-number="4.3.5" class="anchored" data-anchor-id="sec-tidyverse">
+<span class="header-section-number">4.3.5</span> Using <code>dplyr</code>, <code>ggplot2</code> etc</h3>
+<p>Tidyverse packages such as <code>dplyr</code> and <code>ggplot2</code> which use Non-Standard Evaluation (NSE) are great for using in a script but a little challenging to use in functions.</p>
+<p>We cannot just do something like this as we get an error</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">my_select</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu">select</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">my_select</span><span class="op">(</span><span class="va">penguins</span>, col <span class="op">=</span> <span class="va">species</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `select()`:
+! object 'species' not found</code></pre>
+</div>
+</div>
+<p>One solution is to use the curly-curly notation</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#select</span>
+<span class="va">my_select2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu">select</span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span><span class="va">col</span><span class="op">}</span><span class="op">}</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">my_select2</span><span class="op">(</span><span class="va">penguins</span>, col <span class="op">=</span> <span class="va">species</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 1
+   species
+   &lt;fct&gt;  
+ 1 Adelie 
+ 2 Adelie 
+ 3 Adelie 
+ 4 Adelie 
+ 5 Adelie 
+ 6 Adelie 
+ 7 Adelie 
+ 8 Adelie 
+ 9 Adelie 
+10 Adelie 
+# … with 334 more rows</code></pre>
+</div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># filter</span>
+<span class="va">my_filter</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span>, <span class="va">`%test%`</span>, <span class="va">value</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span><span class="va">col</span><span class="op">}</span><span class="op">}</span> <span class="op">%test%</span> <span class="va">value</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">my_filter</span><span class="op">(</span><span class="va">penguins</span>, col <span class="op">=</span> <span class="va">species</span>, `%test%` <span class="op">=</span> <span class="va">`==`</span>, value <span class="op">=</span> <span class="st">"Adelie"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 152 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+ 1 Adelie  Torgersen           39.1          18.7               181        3750
+ 2 Adelie  Torgersen           39.5          17.4               186        3800
+ 3 Adelie  Torgersen           40.3          18                 195        3250
+ 4 Adelie  Torgersen           NA            NA                  NA          NA
+ 5 Adelie  Torgersen           36.7          19.3               193        3450
+ 6 Adelie  Torgersen           39.3          20.6               190        3650
+ 7 Adelie  Torgersen           38.9          17.8               181        3625
+ 8 Adelie  Torgersen           39.2          19.6               195        4675
+ 9 Adelie  Torgersen           34.1          18.1               193        3475
+10 Adelie  Torgersen           42            20.2               190        4250
+# … with 142 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#mutate Note the := operator.</span>
+<span class="va">my_mutate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col1</span>, <span class="va">col2</span>, <span class="va">sum_col</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu">mutate</span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span><span class="va">sum_col</span><span class="op">}</span><span class="op">}</span> <span class="op">:=</span> <span class="op">{</span><span class="op">{</span><span class="va">col1</span><span class="op">}</span><span class="op">}</span> <span class="op">+</span> <span class="op">{</span><span class="op">{</span><span class="va">col2</span><span class="op">}</span><span class="op">}</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">my_mutate</span><span class="op">(</span><span class="va">penguins</span>, <span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span>, sum_col <span class="op">=</span> <span class="va">bill</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 9
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+ 1 Adelie  Torgersen           39.1          18.7               181        3750
+ 2 Adelie  Torgersen           39.5          17.4               186        3800
+ 3 Adelie  Torgersen           40.3          18                 195        3250
+ 4 Adelie  Torgersen           NA            NA                  NA          NA
+ 5 Adelie  Torgersen           36.7          19.3               193        3450
+ 6 Adelie  Torgersen           39.3          20.6               190        3650
+ 7 Adelie  Torgersen           38.9          17.8               181        3625
+ 8 Adelie  Torgersen           39.2          19.6               195        4675
+ 9 Adelie  Torgersen           34.1          18.1               193        3475
+10 Adelie  Torgersen           42            20.2               190        4250
+# … with 334 more rows, and 3 more variables: sex &lt;fct&gt;, year &lt;int&gt;, bill &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#ggplot</span>
+<span class="va">my_plot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu">ggplot</span><span class="op">(</span><span class="va">data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="op">{</span><span class="op">{</span><span class="va">x</span><span class="op">}</span><span class="op">}</span>, y <span class="op">=</span> <span class="op">{</span><span class="op">{</span><span class="va">y</span><span class="op">}</span><span class="op">}</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">my_plot</span><span class="op">(</span><span class="va">penguins</span>, x <span class="op">=</span> <span class="va">bill_length_mm</span>, y <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="03-package-contents_files/figure-html/tidyselect-working-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Another is to have the arguments as strings and use the <code>.data</code> pronoun from <code>rlang</code> (don’t forget to import <code>rlang</code> (see <a href="#sec-importing-exporting-functions"><span>Section&nbsp;4.4.1</span></a>).</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">my_select3</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu">select</span><span class="op">(</span><span class="va">data</span>, <span class="va">.data</span><span class="op">[[</span><span class="va">col</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">my_select3</span><span class="op">(</span><span class="va">penguins</span>, col <span class="op">=</span> <span class="st">"species"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 1
+   species
+   &lt;fct&gt;  
+ 1 Adelie 
+ 2 Adelie 
+ 3 Adelie 
+ 4 Adelie 
+ 5 Adelie 
+ 6 Adelie 
+ 7 Adelie 
+ 8 Adelie 
+ 9 Adelie 
+10 Adelie 
+# … with 334 more rows</code></pre>
+</div>
+</div>
+<p>NSE can also be a problem for functions that don’t take column names as arguments.</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">process_penguin_type_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">data</span> <span class="op">%&gt;%</span> 
+    <span class="fu">group_by</span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+    <span class="fu">summarise</span><span class="op">(</span>bill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The next function should work, but will generate a note in the checking stage. as the check does not recognise <code>or</code>.</p>
+<pre><code>&gt; checking R code for possible problems ... NOTE
+  process_penguin_type_data: no visible binding for global variable
+    ‘species’
+  process_penguin_type_data: no visible binding for global variable
+    ‘bill_length_mm’
+  Undefined global functions or variables:
+    bill_length_mm species</code></pre>
+<p>To fix this, either declare these variables as global with this line added to the file (outside the function).</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/globalVariables.html">globalVariables</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'bill_length_mm'</span>, <span class="st">'species'</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Or, perhaps better, use the <code>.data</code> pronoun.</p>
+<div class="cell">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">process_penguin_type_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">data</span> <span class="op">%&gt;%</span> 
+    <span class="fu">group_by</span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">species</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+    <span class="fu">summarise</span><span class="op">(</span>bill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="sec-documentation-with-roxygen2" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="sec-documentation-with-roxygen2">
+<span class="header-section-number">4.4</span> Documentation with Roxygen2</h2>
+<p>The documentation for the package lives in <code>man/</code> in .Rd files. The files are written in a LaTeX like language, that is quite hard to get to right. Fortunately, the <a href="https://roxygen2.r-lib.org/index.html"><code>roxygen2</code> package</a> takes most of the pain away as the format is much simpler. Also, some parts of the documentation are automatically generated by inspecting the code, and it is easier to keep the documentation and code in sync because the are in the same file.</p>
+<p>The roxygen2 comments sit above the function, and start with <code>#'</code> to distinguish them from ordinary comments.</p>
+<p>The first sentence of the roxygen becomes the title of the help file. Then we can use roxygen tags for the rest of the documentation. Roxygen tags all start with an <code>@</code>. Once you type this, RStudio gives you suggestions.</p>
+<p><code>@description</code> One paragraph description of what the function does.</p>
+<p><code>@param</code> argument_name followed by a description of the argument All parameters must be documented.</p>
+<p><code>@details</code> All the gory details. Possibly several paragraphs (separate with a blank line).</p>
+<p><code>@return</code> A description of the object returned by the function (if any)</p>
+<p><code>@examples</code> Working examples which will be run when the package is tested. Examples should run relatively quickly or they become tedious. They need to use <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> to load any packages needed other than the package being developed. Any packages loaded by <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> need to be declared in the DESCRIPTION file (see <a href="#sec-importing-exporting-functions"><span>Section&nbsp;4.4.1</span></a>)</p>
+<p>You can use <a href="https://roxygen2.r-lib.org/articles/markdown.html">markdown</a> to enhance the documentation, including links etc.</p>
+<section id="sec-importing-exporting-functions" class="level3" data-number="4.4.1"><h3 data-number="4.4.1" class="anchored" data-anchor-id="sec-importing-exporting-functions">
+<span class="header-section-number">4.4.1</span> Importing and exporting functions</h3>
+<p>The roxygen comments are also where you import functions from other packages and mark your functions for export. This information will be written into the NAMESPACE file so you don’t have to (see the <a href="https://r-pkgs.org/namespace.html#namespace">R package book</a> for more information about this file).</p>
+<p>If you want to use a function from any other package (except <code>base</code>) you need to add the dependency to the package to the DESCRIPTION file.</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">use_package</span><span class="op">(</span><span class="st">"dplyr"</span><span class="op">)</span>
+<span class="co">#use_dev_package("packageFromGithub")</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can now use a function from <code>dplyr</code> with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate</a></code>. This gets messy if you need to use lots of functions from a package. Then it is better to import them. We could use</p>
+<pre><code>#' @import dplyr</code></pre>
+<p>to import all functions in the package, or</p>
+<pre><code>#' @importFrom dplyr %&gt;%</code></pre>
+<p>if we want to just import specific functions. This is safer as it minimises the risk of conflicts.</p>
+<p>Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (<span class="citation" data-cites="troubleshooting">@troubleshooting</span>).</p>
+<p>Export any of your functions that you want users to have access to by adding <code>@export</code> to the roxygen comments.</p>
+</section><section id="generate-the-.rd-files" class="level3" data-number="4.4.2"><h3 data-number="4.4.2" class="anchored" data-anchor-id="generate-the-.rd-files">
+<span class="header-section-number">4.4.2</span> Generate the .Rd files</h3>
+<p>Convert the roxygen comments to .Rd files with</p>
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html">document</a></span><span class="op">(</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>View the compiled help files by running</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html">load_all</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>which simulates loading the package without having to install it properly. Then you can use <code>?</code> as normal to get the help (links won’t work)</p>
+</section></section><section id="data" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="data">
+<span class="header-section-number">4.5</span> Data</h2>
+<p>Many packages include data, either because they are needed for examples, or because the aim of the package is to distribute a dataset (probably with some functions to access it).</p>
+<p>Data are stored in <code>data/</code> as <code>.rda</code> files and can be loaded into R with the <code><a href="https://rdrr.io/r/utils/data.html">data()</a></code> function.</p>
+<div class="cell">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"penguins"</span>, package <span class="op">=</span> <span class="st">"palmerpenguins"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The best way to add <code>.rda</code> files is to use the function <code>use_data_raw()</code> with the name of the dataset you want create.</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">use_data_raw</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"dataset1"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This will create <code>data_raw/</code> and add a file called <code>dataset1.R</code> that looks like this.</p>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">## code to prepare `dataset1` dataset goes here</span>
+
+<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_data.html">use_data</a></span><span class="op">(</span><span class="va">dataset1</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Add the code needed to reproducibly create <code>dataset1</code>, perhaps importing and processing data files that you have copied into <code>data-raw/</code>.</p>
+<p>When you run the entire script, the code will create <code>dataset1.rda</code> in <code>data/</code>.</p>
+<section id="documenting-data" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="documenting-data">
+<span class="header-section-number">4.5.1</span> Documenting data</h3>
+<p>Data in <code>data/</code> need to be documented. Write the documentation for the data using roxygen2 and save it in <code>R/</code>. I usually call this file <code>data.R</code> and document all the datasets in it.</p>
+<p>In my traitstrap package, one of the data objects is called trait. Here is the entry from <code>R/data.R</code>:</p>
+<pre><code>#' Trait data
+#'
+#' A dataset containing plant traits in control plots on Svalbard from PFCT4
+#' TraitTrain course.
+#'
+#' @format A data frame with 53940 rows and 10 variables:
+#' \describe{
+#'   \item{Taxon}{species name}
+#'   \item{Site}{site name}
+#'   \item{PlotID}{plot name}
+#'   \item{Trait}{trait name with unit}
+#'   \item{Value}{trait value}
+#' }
+#' @source \url{http://https://www.uib.no/en/rg/EECRG/114808/plant-functional-traits-course-4}
+"trait"</code></pre>
+<p>The first line gives the title followed by the desciption. The @format field lets you describe the data. The last line has the object name in quotes (note no #’ first).</p>
+</section></section><section id="adding-other-files" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="adding-other-files">
+<span class="header-section-number">4.6</span> Adding other files</h2>
+<p>R gets upset if there are files where they are not supposed to be in the R package. You cannot put extra files into the package root directory. The solution is to put extra files into subdirectories in <code>inst/</code>.</p>
+<p>If you want to include raw data files because your package has functions to process them, they can go in <code>inst/extdata/</code>.</p>
+<p>When the package is compiled, <code>inst/</code> will be removed and <code>extdata/</code> will be put into the package root directory. The path to the file can the be accessed with <code><a href="https://rdrr.io/r/base/system.file.html">system.file()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"readr"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Tutorials and other resources can also be put into suitable directories in <code>inst/</code>.</p>
+</section><section id="sec-checking" class="level2" data-number="4.7"><h2 data-number="4.7" class="anchored" data-anchor-id="sec-checking">
+<span class="header-section-number">4.7</span> Checking</h2>
+<p>Now we are ready to check the package compiles correctly. The check function is slow (it checks many aspects of the package), so before running it, run some functions that check different aspects of the package.</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># build the documentation</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html">document</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="co"># check the examples work</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/run_examples.html">run_examples</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="co"># check the tests work</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html">test</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After fixing any problems, check the entire package either with the <code>Check</code> button in the Build tab (in the same panel as the Environment tab), or with <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>. They do exactly the same work, but the Check button leaves the console available.</p>
+<p>Check is very thorough. It will almost certainly report errors, warnings or notes the first times you run it. Identify the problems, fix them and run check again.</p>
+<p>Now use</p>
+<div class="cell">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html">load_all</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>and give your functions a test drive.</p>
+</section><section id="sec-build-and-install" class="level2" data-number="4.8"><h2 data-number="4.8" class="anchored" data-anchor-id="sec-build-and-install">
+<span class="header-section-number">4.8</span> Build and install</h2>
+<p>When you are happy with your package, use the “Install and Restart” button in the build tab to install your package. Now you can load it with <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> as you would any other package.</p>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./02-package-infrastructure.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Creating the package infrastructure</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04-more-documentation.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">More documentation</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
