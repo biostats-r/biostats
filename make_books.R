@@ -57,10 +57,8 @@ withr::with_dir("Rmarkdown/", {
 })
 
 # R packages
-withr::with_dir("writing_a_package/", {
-  bookdown::render_book('index.Rmd', 'bookdown::bs4_book', output_dir = "../docs/package")
-  bioceed_links("../docs/package")
-})
+quarto::quarto_render("writing_a_package")
+bioceed_links("docs/package", quarto = TRUE)
 
 #working in R
 
