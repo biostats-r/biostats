@@ -62,10 +62,8 @@ bioceed_links("docs/package", quarto = TRUE)
 
 #working in R
 
-withr::with_dir("WorkingInR/", {
-  bookdown::render_book('index.Rmd', 'bookdown::bs4_book', output_dir = "../docs/workingInR")
-  bioceed_links("../docs/workingInR")
-})
+quarto::quarto_render("WorkingInR")
+bioceed_links("docs/WorkingInR", quarto = TRUE)
 
 # quarto markdown
 
