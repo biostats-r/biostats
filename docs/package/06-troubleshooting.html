@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Richard J Telford">
-<meta name="dcterms.date" content="2022-06-24">
 
-<title>Writing an R package</title>
+<title>Writing an R package - 7&nbsp; Troubleshooting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -26,7 +24,7 @@ ul.task-list{list-style: none;}
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
-<link href="./01-system-setup.html" rel="next">
+<link href="./05-distributing.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -66,7 +64,7 @@ ul.task-list{list-style: none;}
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Writing an R package</h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -109,7 +107,7 @@ ul.task-list{list-style: none;}
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -139,7 +137,7 @@ ul.task-list{list-style: none;}
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-troubleshooting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a>
+  <a href="./06-troubleshooting.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a>
   </div>
 </li>
     </ul>
@@ -151,19 +149,20 @@ ul.task-list{list-style: none;}
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">1</span> Introduction</a>
-  <ul class="collapse">
-  <li><a href="#why-write-your-own-package" id="toc-why-write-your-own-package" class="nav-link" data-scroll-target="#why-write-your-own-package"> <span class="header-section-number">1.1</span> Why write your own package</a></li>
-  </ul></li>
+  <li><a href="#warning-library-or-require-call" id="toc-warning-library-or-require-call" class="nav-link active" data-scroll-target="#warning-library-or-require-call"> <span class="header-section-number">7.1</span> Warning ‘library’ or ‘require’ call</a></li>
+  <li><a href="#note-no-visible-global-function-definition" id="toc-note-no-visible-global-function-definition" class="nav-link" data-scroll-target="#note-no-visible-global-function-definition"> <span class="header-section-number">7.2</span> Note no visible global function definition</a></li>
+  <li><a href="#error-invalid-namespace-file" id="toc-error-invalid-namespace-file" class="nav-link" data-scroll-target="#error-invalid-namespace-file"> <span class="header-section-number">7.3</span> Error Invalid NAMESPACE file</a></li>
+  <li><a href="#note-no-visible-binding-for-global-variable" id="toc-note-no-visible-binding-for-global-variable" class="nav-link" data-scroll-target="#note-no-visible-binding-for-global-variable"> <span class="header-section-number">7.4</span> Note no visible binding for global variable</a></li>
+  <li><a href="#note-non-standard-filedirectory-found-at-top-level" id="toc-note-non-standard-filedirectory-found-at-top-level" class="nav-link" data-scroll-target="#note-non-standard-filedirectory-found-at-top-level"> <span class="header-section-number">7.5</span> NOTE Non-standard file/directory found at top level</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/biostats-r/biostats/blob/main/index.qmd" class="toc-action">View source</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/biostats-r/biostats/blob/main/06-troubleshooting.qmd" class="toc-action">View source</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Writing an R package</h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></h1>
 </div>
 
 
@@ -172,55 +171,82 @@ ul.task-list{list-style: none;}
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Richard J Telford </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">June 24, 2022</p>
-    </div>
-  </div>
     
   </div>
   
 
 </header>
 
-<section id="introduction" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>This tutorial will show you how to write your own R package.</p>
+<p>These are some errors, warnings and notes you might find with check and how to fix them.</p>
+<section id="warning-library-or-require-call" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="warning-library-or-require-call"><span class="header-section-number">7.1</span> Warning ‘library’ or ‘require’ call</h2>
+<pre><code>&gt; checking dependencies in R code ... WARNING
+  'library' or 'require' call not declared from: ‘dplyr’
+  'library' or 'require' call to ‘dplyr’ in package code.
+    Please use :: or requireNamespace() instead.
+    See section 'Suggested packages' in the 'Writing R Extensions' manual.</code></pre>
+<p>Diagnosis: you have a <code>library()</code> call in one of your functions.</p>
+<p>Solution: see <a href="03-package-contents.html#sec-importing-exporting-functions"><span>Section&nbsp;4.4.1</span></a> for how to import functions correctly.</p>
+</section>
+<section id="note-no-visible-global-function-definition" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="note-no-visible-global-function-definition"><span class="header-section-number">7.2</span> Note no visible global function definition</h2>
+<pre><code>  my_function: no visible global function definition for
+    ‘rnorm’
+  Undefined global functions or variables:
+    rnorm
+  Consider adding
+    importFrom("stats", "rnorm")
+  to your NAMESPACE file.</code></pre>
+<p>Diagnosis: you have used a function from another package other than <code>base</code> in function <code>my_function</code> without importing it.</p>
+<p>Solution: see <a href="03-package-contents.html#sec-importing-exporting-functions"><span>Section&nbsp;4.4.1</span></a> for how to import functions correctly.</p>
+</section>
+<section id="error-invalid-namespace-file" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="error-invalid-namespace-file"><span class="header-section-number">7.3</span> Error Invalid NAMESPACE file</h2>
+<pre><code>&gt; checking package namespace information ... ERROR
+  Invalid NAMESPACE file, parsing gives:
+  Error in asChar(ivars): empty name in directive 'importFrom' in 'NAMESPACE' file
+  
+  See section ‘Package namespaces’ in the ‘Writing R Extensions’ manual.</code></pre>
+<p>Diagnosis: A package has been imported with <code>@import</code> or <code>@importFrom</code> in roxygen comments but not added to the DESCRIPTION file.</p>
+<p>Solution: Delete the malformed NAMESPACE file. Then add the missing package to the DESCRIPTION file with <code>use_package()</code> (see <a href="03-package-contents.html#sec-importing-exporting-functions"><span>Section&nbsp;4.4.1</span></a>).</p>
+</section>
+<section id="note-no-visible-binding-for-global-variable" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="note-no-visible-binding-for-global-variable"><span class="header-section-number">7.4</span> Note no visible binding for global variable</h2>
+<pre><code>&gt; checking R code for possible problems ... NOTE
+  my_function: no visible binding for global variable
+    ‘species’
+  Undefined global functions or variables:
+     species</code></pre>
+<p>Diagnosis: You are probably using dplyr, ggplot2 or related packages.</p>
+<p>Solution: Use the <code>.data</code> pronoun or declare global variables (see <a href="03-package-contents.html#sec-tidyverse"><span>Section&nbsp;4.3.5</span></a>).</p>
+</section>
+<section id="note-non-standard-filedirectory-found-at-top-level" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="note-non-standard-filedirectory-found-at-top-level"><span class="header-section-number">7.5</span> NOTE Non-standard file/directory found at top level</h2>
+<pre><code>&gt; checking top-level files ... NOTE
+  Non-standard file/directory found at top level:
+    ‘extra.R’</code></pre>
+<p>Diagnosis: You have an unexpected file in the package’s root directory.</p>
+<p>Solution: Add this file to <code>.Rbuildignore</code>, or move it to a more appropriate place, perhaps <code>inst/</code>.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Before you start
+Further reading
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>You will need to have installed</p>
 <ul>
-<li><a href="https://www.rstudio.com/products/rstudio/">RStudio</a></li>
-<li><a href="https://cran.r-project.org/">R</a></li>
+<li>Wickham, H. and Bryan, J. <a href="https://r-pkgs.org/">R Packages</a></li>
+<li>Wickham, H. <a href="https://adv-r.hadley.nz/">Advanced R</a></li>
+<li><a href="https://cran.r-project.org/doc/manuals/r-release/R-exts.html">Writing R Extensions</a> Official documentation from CRAN.</li>
 </ul>
 </div>
 </div>
-<section id="why-write-your-own-package" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="why-write-your-own-package"><span class="header-section-number">1.1</span> Why write your own package</h2>
-<ul>
-<li>Publish code that implements novel statistical method</li>
-<li>Code to import data from, for example, a logger</li>
-<li>Wrap up various functions that you want to reuse</li>
-</ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -305,11 +331,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./05-distributing.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributing your package</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01-system-setup.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">System setup</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

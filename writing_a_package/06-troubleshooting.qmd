@@ -1,0 +1,73 @@
+# Troubleshooting
+
+These are some errors, warnings and notes you might find with check and how to fix them.
+
+## Warning 'library' or 'require' call
+
+    > checking dependencies in R code ... WARNING
+      'library' or 'require' call not declared from: ‘dplyr’
+      'library' or 'require' call to ‘dplyr’ in package code.
+        Please use :: or requireNamespace() instead.
+        See section 'Suggested packages' in the 'Writing R Extensions' manual.
+
+Diagnosis: you have a `library()` call in one of your functions.
+
+Solution: see @sec-importing-exporting-functions for how to import functions correctly.
+
+## Note no visible global function definition
+
+      my_function: no visible global function definition for
+        ‘rnorm’
+      Undefined global functions or variables:
+        rnorm
+      Consider adding
+        importFrom("stats", "rnorm")
+      to your NAMESPACE file.
+
+Diagnosis: you have used a function from another package other than `base` in function `my_function` without importing it.
+
+Solution: see @sec-importing-exporting-functions for how to import functions correctly.
+
+## Error Invalid NAMESPACE file
+
+    > checking package namespace information ... ERROR
+      Invalid NAMESPACE file, parsing gives:
+      Error in asChar(ivars): empty name in directive 'importFrom' in 'NAMESPACE' file
+      
+      See section ‘Package namespaces’ in the ‘Writing R Extensions’ manual.
+
+Diagnosis: A package has been imported with `@import` or `@importFrom` in roxygen comments but not added to the DESCRIPTION file.
+
+Solution: Delete the malformed NAMESPACE file.
+Then add the missing package to the DESCRIPTION file with `use_package()` (see @sec-importing-exporting-functions).
+
+## Note no visible binding for global variable
+
+    > checking R code for possible problems ... NOTE
+      my_function: no visible binding for global variable
+        ‘species’
+      Undefined global functions or variables:
+         species
+
+Diagnosis: You are probably using dplyr, ggplot2 or related packages.
+
+Solution: Use the `.data` pronoun or declare global variables (see @sec-tidyverse).
+
+## NOTE Non-standard file/directory found at top level
+
+    > checking top-level files ... NOTE
+      Non-standard file/directory found at top level:
+        ‘extra.R’
+
+Diagnosis: You have an unexpected file in the package's root directory.
+
+Solution: Add this file to `.Rbuildignore`, or move it to a more appropriate place, perhaps `inst/`.
+
+::: callout-note
+## Further reading
+
+-   Wickham, H. and Bryan, J. [R Packages](https://r-pkgs.org/)
+-   Wickham, H. [Advanced R](https://adv-r.hadley.nz/)
+-   [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html) Official documentation from CRAN.
+:::
+
