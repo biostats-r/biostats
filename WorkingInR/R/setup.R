@@ -1,4 +1,3 @@
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE)
 library("tidyverse")
 
 data(penguins, package = 'palmerpenguins')
