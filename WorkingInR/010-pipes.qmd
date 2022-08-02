@@ -1,16 +1,24 @@
-``` {r setup, include=FALSE}
+```{r setup, include=FALSE}
 source("R/setup.R")
 ```
 
 # Pipes
 
-If we want to run several functions in turn, for example, if we wanted to find the mean bill length for each penguin species with `group_by` and `summarise` (you will find out more about these functions in Chapter \@ref(working-with-single-tables-in-dplyr)).
+::: callout-note
+## In this chapter, you will
+
+-   learn how multiple function can be used to process data in succession
+-   be introduced to the pipe `|>`
+:::
+
+If we want to run several functions in turn, for example, if we wanted to find the mean bill length for each penguin species with `group_by` and `summarise` (you will find out more about these functions in @sec-working-with-single-tables-in-dplyr).
 You could nest one function inside the other.
 
 ```{r nested-function}
 summarise(group_by(penguins, species), mean = mean(bill_length_mm, na.rm = TRUE))
 ```
-With more larger problems using more function, this solution becomes almost impossible to read and it is very easy to make mistakes and forget which brackets belong to which function.
+
+This sort of works, but with larger problems using more function, this solution becomes almost impossible to read and it is very easy to make mistakes and forget which brackets belong to which function.
 
 Another strategy is to make and use intermediate objects
 
@@ -18,10 +26,11 @@ Another strategy is to make and use intermediate objects
 penguins_grouped <- group_by(penguins, species)
 summarise(penguins_grouped, mean = mean(bill_length_mm, na.rm = TRUE))
 ```
+
 This works better, but can generate many intermediates and it can be difficult to ensure that the correct one is used.
 
 A popular alternative is to use pipes.
-The R code for a pipe is `|>`
+The R code for a pipe is `|>`.
 Pipes pass the results from one function directly into the next function.
 
 ```{r pipes}
@@ -30,24 +39,13 @@ penguins |>
   summarise(mean = mean(bill_length_mm, na.rm = TRUE))
 ```
 
+The pipe basically means "and then", so the above code can be read as "take the penguin data *and then* group by species *and then* summarise the mean bill length".
+
 You never need to use pipes, but they can make code more readable.
-
-### The old pipe `%>%` {- .facta .toc-ignore}
-
-The `|>` pipe was introduced in R version 4.1.
-Previously, the `magrittr` package pipe `%>%` was widely used, especially with tidyverse functions.
-You will see the `%>%` in a lot of code on [stackoverflow](https://stackoverflow.com/questions/tagged/r) and other help sites.
-In most cases the old and new pipes work in exactly the same way.
-Advantages of the `|>` pipe are that it is 
-
- - slightly faster
- - doesn't need any packages loading
- - easier to debug
 
 ## A recipe for mashed potato
 
-The pipe can be read as "and then".
-This recipe for mashed potato can be read as buy 1kg potatoes, *and then* peel them, *and then* boil them, and so on. 
+Here is a recipe for mashed potato using pipes.
 
 ```{r potatoes, eval = FALSE}
 buy("potatoes", kg = "1") |> 
@@ -57,6 +55,8 @@ buy("potatoes", kg = "1") |>
   mash(add = list("salt", "milk", "butter")) |> 
   serve(decorate = "parsley")
 ```
+
+This recipe for mashed potato can be read as buy 1kg potatoes, *and then* peel them, *and then* boil them, and so on.
 
 ## The native R pipe `|>`
 
@@ -90,17 +90,60 @@ penguins |>
   lm(formula = bill_length ~ species)
 ```
 
-More complex arrangements, for example piping the same object to two separate commands can be done by writing a function.
+Or we can use the placeholder `_`
+
+```{r placeholder-argument, eval = FALSE}
+
+# named first argument, penguins pipes into second argument
+penguins |>
+  lm(bill_length ~ species, data = _) # R 4.2 and newer only
+```
+
+More complex arrangements, for example using the piped object multiple times, can be done by writing a function, or using the `pipebind` package.
 You probably won't have to do this very often.
+
+```{r}
+#| label: pipebind
+#| eval: true
+
+# Using a anonymous function
+rnorm(10) |>
+  (function(x){x - mean(x)})() # Result from rnorm is passed to the anonymous function as x 
+
+# Using the \ shortcut for function
+rnorm(10) |>
+  (\(x){x - mean(x)})()
+
+# using pipebind (recommended)
+library(pipebind)
+rnorm(10) |>
+  bind(x, x - mean(x))
+
+```
+
+::: callout-tip
+## The old pipe `%>%`
+
+The `|>` pipe was introduced in R version 4.1.
+Previously, the `magrittr` package pipe `%>%` was widely used, especially with tidyverse functions.
+You will see the `%>%` in a lot of code on [stackoverflow](https://stackoverflow.com/questions/tagged/r) and other help sites.
+In most cases the old and new pipes work in exactly the same way.
+Advantages of the `|>` pipe are that it is
+
+-   slightly faster
+-   doesn't need any packages loading
+-   easier to debug
+:::
 
 ## Making a pipe
 
-You can make a pipe either by typing it directly, or by using the RStudio keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>m</kbd> 
-(on a Mac, <kbd>cmd</kbd> + <kbd>Shift</kbd> + <kbd>m</kbd>).
+You can make a pipe either by typing it directly, or by using the RStudio keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>m</kbd> (on a Mac, <kbd>cmd</kbd> + <kbd>Shift</kbd> + <kbd>m</kbd>).
 You may need to set the RStudio options.
-Go to `Tools` > `Global Options` > `Code` and tick `Use native pipe operator, |>`.
+Go to `Tools` \> `Global Options` \> `Code` and tick `Use native pipe operator, |>`.
 To make your code readable, put a line break after each pipe.
 
-### Contributors {- .contributors .toc-ignore}
+::: callout-note
+## Contributors
 
 Richard J. Telford
+:::
