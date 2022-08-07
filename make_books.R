@@ -1,7 +1,7 @@
 library(tidyverse)
 
 bioceed_links <- function(dir, front_page = FALSE, quarto = FALSE){
-  files <- list.files(dir, pattern = "html", full.names = TRUE, recursive = !front_page)
+  files <- list.files(dir, pattern = "html$", full.names = TRUE, recursive = !front_page)
   print(files)
   map(files, ~{
     f <- readLines(.x)
@@ -60,7 +60,7 @@ withr::with_dir("Rmarkdown/", {
 quarto::quarto_render("writing_a_package")
 bioceed_links("docs/package", quarto = TRUE)
 
-#working in R
+# working in R
 
 quarto::quarto_render("WorkingInR")
 bioceed_links("docs/WorkingInR", quarto = TRUE)
@@ -69,4 +69,8 @@ bioceed_links("docs/WorkingInR", quarto = TRUE)
 
 quarto::quarto_render("quarto")
 bioceed_links("docs/quarto", quarto = TRUE)
-
+{
+quarto::quarto_render(input = "quarto/demo_presentation.qmd", output_file = "docs/quarto/demo_presentation.html")
+fs::dir_copy("quarto/demo_presentation_files/", "docs/quarto/demo_presentation_files/")
+fs::dir_delete("quarto/demo_presentation_files/") 
+}

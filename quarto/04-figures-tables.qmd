@@ -1,0 +1,225 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+library(palmerpenguins)
+library(tidyverse)
+source("../Templates/biostats_theme.R")
+```
+
+# Figures, tables and equations
+
+::: callout-note
+## In this chapter, you will
+
+- learn how to add figures, tables, equations and formulae to your quarto document
+:::
+
+## Figures made in R
+
+Plots can be included with a chunk that makes a figure with either base plot or ggplot.
+
+If you make the plot with ggplot, remember to print it.
+
+```{r}
+#| echo: fenced
+#| label: fig-histogram
+#| fig-cap: "An embedded figure"
+#| fig-alt: "A histogram of penguin bill lengths made with ggplot2"
+#| message: false
+#| warning: false
+p <- ggplot(penguins, aes(x = bill_length_mm)) +
+  geom_histogram()
+p # remember to print the plot
+```
+
+::: callout-important
+## Figure labels
+
+The label for the figure block must start with `fig-` for the figure to get a figure number and be possible to link to.
+See @sec-cross-referencing on cross-referencing.
+:::
+
+### Figure code block options {#sec-figure-chunk-options}
+
+There are several useful block options for figures, including:
+
+-   `fig-cap` figure caption.
+-   `fig-alt` alternate text to improve accessibility
+-   `fig-height` figure height *in inches* (1 inch = 25.4 mm)
+-   `fig-width` figure width *in inches*
+
+::: callout-note
+## Exercise 
+
+The figure of temperature against year is missing a caption. 
+Use code block options to give it an appropriate caption.
+
+Many journals require figures to be a specific size so they fit with the journal layout. 
+For PLOSone, figures that fit in one column can be up to 13.2 cm (5.2 inches) wide. 
+Use code block options to ensure that the figure would fit.
+
+:::
+
+## Embedding external images
+
+In the visual editor, photographs and other figures that have been prepared outside of R can be included with the insert tool by typing "/" on a blank line and choosing "Figure/Image".
+This will open an menu to get the path to the image and set the caption etc.
+Once you close the menu, you can set the figure size.
+This will generate a bit of markdown that looks like.
+
+`![Marine diatoms](Pics/Marine_diatoms_SEM2.jpg){fig-alt="SEM photograph of marine diatoms" width="491"}`
+
+![Marine diatoms](Pics/Marine_diatoms_SEM2.jpg){fig-alt="SEM photograph of marine diatoms - from https://commons.wikimedia.org/wiki/File:Marine_diatoms_SEM2.jpg" width="491"}
+
+Alternatively, you can use `knitr::include_graphics()` in a regular code block.
+
+```{r}
+#| echo: fenced
+#| label: fig-include-figure
+#| out-width: "491px"
+#| fig-cap: "An embedded figure of diatoms"
+#| fig-alt: "An embedded figure of diatoms"
+knitr::include_graphics("Pics/Marine_diatoms_SEM2.jpg")
+```
+
+Use the `out.width` and `out.height` chunk options to set the display size of the figure.
+
+
+## Tables
+
+You can make tables in markdown by hand (the <kbd>/</kbd> insert tool helps a lot), but it often so much easier to use R.
+
+Simple tables can be made with the function `knitr::kable`.
+Several packages, including `kableExtra` and `gt` can make beautiful tables.
+
+### kable
+
+```{r kable}
+
+knitr::kable(x = slice(penguins, 1:5), #the data for the table
+             caption = "The top penguins" # the caption
+)
+```
+
+### gt
+
+The [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) package can make more elaborate tables than `knitr::kable()`.
+
+```{r gt}
+#| label: tbl-gt
+#| tbl-cap: Tables with gt
+library(gt)
+penguins |>
+  slice(1:5) |> # get top few rows only
+  gt(caption = "Basic gt table")
+
+penguins |>
+  slice(1:5) |>
+  gt(caption = "gt table with more features") |>
+  cols_label(species = "Species",           # Display column headers
+             island = "Island",
+             bill_length_mm = "Length mm",
+             bill_depth_mm  = "Depth mm",
+             flipper_length_mm = "Flipper length mm",
+             body_mass_g = "Body mass g", 
+             sex = "Sex", 
+             year = "Year") |>
+  tab_spanner(label = "Bill", columns = c(bill_length_mm, bill_depth_mm)) |>
+  tab_spanner(label = "Body", columns = c(flipper_length_mm, body_mass_g))
+```
+
+::: callout-tip
+## Number of decimal places
+
+When reporting real numbers (i.e. numbers that have a decimal part), you need to decide how many digits to display.
+Be careful not to show spurious precision.
+You can use `round()` to remove unwanted decimals, or `gt::fmt_number()` to clean up one or more columns in a table. 
+To control the default number of decimals across the whole document, use `options(digits = 2)` in the first chunk.
+:::
+
+::: callout-note
+## Exercise
+
+Write a code block to make a table showing the mean precipitation and its standard deviation for each month.
+
+<details>
+
+<summary>
+
+Hint
+
+</summary>
+
+`group_by()` and `summarise()` then use any of the table making functions.
+
+</details>
+
+:::
+
+## Equations
+
+Equations are embedded in a pair of dollar symbols.
+RStudio will show a preview of the equation as you type it.
+Equations are written with [LaTeX notation](https://en.wikibooks.org/wiki/LaTeX/Mathematics).
+
+```{r equations, echo = FALSE, message = FALSE}
+read_csv('
+What, How, Output
+"Lower-case Greek letters", "`$\\sigma$`", "$\\sigma$"
+"Upper-Case Greek Letters", "`$\\Sigma$`", "$\\Sigma$"
+"Subscript", "`$\\beta_{0}$`", "$\\beta_{0}$"
+"Superscript", "`$\\chi^{2}$`", "$\\chi^{2}$"
+"Fractions", "`$\\frac{1}{2}$`", "$\\frac{1}{2}$"
+"Roots", "`$\\sqrt{4} = 2$`", "$\\sqrt{4} = 2$"') |>
+  knitr::kable()
+```
+
+<br>
+
+Here is an example of using an inline equation.
+
+``` markdown
+The $\delta^{13}C$ value ...
+```
+<div class="bg-success">
+The $\delta^{13}C$ value ...
+</div>
+
+
+A double dollar enclosure gives the equation its own line.
+For example, this is the equation of a standard deviation that uses several different elements.
+
+``` markdown
+$$
+SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}
+$$
+```
+
+$$
+SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}
+$$
+
+When making a complex formula, build one element at a time, often starting in the middle, rather than trying to get it all working at once.
+
+## Chemistry
+
+Equations are printed in an italic font, which is not great for chemical formulae.
+We can fix this with the `\mathrm` LaTeX command which forces roman typeface.
+
+``` markdown
+Sulphate $\mathrm{SO_4^{2-}}$
+```
+
+<div class="bg-success">
+Sulphate $\mathrm{SO_4^{2-}}$
+</div>
+
+``` markdown
+$$\mathrm{CO_3^{2-} + H^+ \rightleftharpoons HCO_3^{2-}}$$
+```
+
+$$\mathrm{CO_3^{2-} + H^+ \rightleftharpoons HCO_3^{2-}}$$
