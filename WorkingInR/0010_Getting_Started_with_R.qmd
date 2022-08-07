@@ -1,0 +1,525 @@
+# Installing and configuring R and RStudio
+
+```{r setup, include=FALSE}
+
+source("R/setup.R")
+```
+
+::: callout-note
+## In this chapter, you will
+
+- learn why we use the [RStudio](https://rstudio.com){target="_blank"} integrated development environment for working with R
+-   install R and RStudio
+-   find your way around RStudio
+-   configure RStudio
+
+If you already have R and RStudio installed, check they are the required version (or more recent)
+:::
+
+## Working in R via RStudio
+
+R comes with its own Graphical User Interface (GUI; @fig-r-gui).
+Nearly everything in R happens either in the script editor (R editor - @fig-r-gui, left window) where the user writes code, or in the console (R console - @fig-r-gui, right window) which runs commands and prints results.
+
+```{r}
+#| label: fig-r-gui
+#| echo: false
+#| fig-cap: "R Graphical User Interface."
+#| out-width: "100%"
+#| fig-alt: Screenshot of R s Graphical User Interface
+knitr::include_graphics("figures/Rgui.png")
+```
+
+It is a minimalist GUI that does not offer much more than a short main menu and five buttons in total.
+This is the engine that will do all your analyses, but you will rarely, if ever, use it directly.
+
+Instead, you will use a more user-friendly interface, such as RStudio.
+
+### What is RStudio?
+
+[RStudio](https://rstudio.com){target="_blank"} is an integrated development environment (IDE) for the R language.
+RStudio runs R "in the background", and replaces R's minimalist interface with its own (@fig-rstudio-gui).
+This means that you do not lose anything of R's power, you simply work with it from a different perspective.
+
+```{r}
+#| label: fig-rstudio-gui
+#| echo: false
+#| fig-cap: "RStudio Graphical User Interface."
+#| fig-alt: "Screenshot of RStudio's Graphical User Interface."
+#| out.width: "100%"
+knitr::include_graphics("figures/RStudiogui.png")
+```
+
+This interface is more complex and organized.
+The script editor (top left) is more advanced and equipped with a syntax highlighter, which will prove useful when writing code.
+Many functions (console, file explorer, etc) are available and dispatched in panes and tabs.
+A significant benefit of using RStudio is the possibility to create and manage projects.
+Projects let you organize your tasks and load only the files and packages that you define as necessary for the workflow.
+
+We will further describe RStudio's interface in @sec-the-interface and how to set up projects in @sec-working-project.
+For now, let's install everything we need, starting with R and RStudio.
+
+## Installing R and RStudio
+
+There are several ways to install R and RStudio, depending on the state of your computer.
+
+::: panel-tabset
+### On your own computer
+
+Use this option if
+
+-   You have permission to install software on your computer (e.g. it is not a university-owned clien computer)
+-   Your computer is fast enough, and has enough hard disk space, to run R and RStudio (if not use the UiB virtual computer or rstudio.cloud)
+
+#### Installing R {.unnumbered}
+
+Go to [The Comprehensive R Archive Network](https://cloud.r-project.org/).
+In the top section "Download and Install R", click on the link that matches your platform and follow the instructions to install the version of R designed for your OS.
+
+#### Install RStudio {.unnumbered}
+
+Go to [RStudio's website](https://rstudio.com/products/rstudio/download/#download) and download the free version of RStudio Desktop made for your OS.
+Install it on your computer.
+
+#### NTNU student {.unnumbered}
+
+NTNU students can access and download many programmes, including R and RStudio, through the [apps.ntnu.no](https://apps.ntnu.no/).
+Simply go to [apps.ntnu.no](https://apps.ntnu.no), search for R and RStudio and install both on your computer.
+
+### On a UiB virtual computer
+
+**UiB** students and staff can access and download R and RStudio in a virtual computer, through the [Third Party Portal (apps.uib.no)](https://apps.uib.no).
+
+Use this option if
+
+-   You are a UiB student or staff member
+-   Your own computer is too old and slow (or lacks hard disk space) to run R and RStudio
+-   You don't have permission to install software on your computer
+
+Simply go to [apps.uib.no](https://apps.uib.no), search for R and RStudio and install both on your virtual computer.
+You will find information about how to log on and use the Third Party Portal for the first time [here in Mitt UiB](https://mitt.uib.no/courses/22090).
+
+### On a client computer
+
+Use this option if
+
+-   If your computer is owned by your university, and you do not have permission to install software directly.
+
+If you have a UiB or NTNU (and many other universities) owned computer you can install pre-approved software from a Software Center.
+If you have a client machine but do not have access to a Software Center, you need to ask your IT-department for help installing R and RStudio (you can use rstudio.cloud until your computer is fixed).
+
+The version of R or RStudio in your software center can be old (e.g. R \< 4.2).
+If so, ask your IT-department to update them.
+
+#### UiB employees {.unnumbered}
+
+UiB employees working on a client computer should use the app "Software Center" (Windows 10) or "Managed Software Center" (Mac OS) to install R and RStudio.
+You will find help with programme installation [here (Windows)](https://hjelp.uib.no/tas/public/ssp/content/detail/knowledgeitem?unid=4e46c754-118f-4409-98dc-1ab8589aeccb) and [there (Mac OS)](https://hjelp.uib.no/tas/public/ssp/content/detail/knowledgeitem?unid=14b5270a-3528-4b60-9f84-d3d93d5b8479).
+
+#### NTNU employees {.unnumbered}
+
+NTNU staff working on a client setup Windows computer should use the app "Software Center" that comes preinstalled to install R and RStudio.
+A description of how to find and use Software Center can be found [here](https://innsida.ntnu.no/wiki/-/wiki/English/Install+applications+from+Software+Center).
+Search for R and RStudio in "Applications", and install both on your computer.
+
+Alternatively, go to [apps.ntnu.no](https://apps.ntnu.no), search for R and RStudio and install both.
+
+### RStudio cloud
+
+[rstudio.cloud](https://rstudio.cloud) is a web-service provided by RStudio which lets you run R and RStudio on their computer through a browser tab.
+
+Use this option if
+
+-   Your own computer is too old and slow (or lacks hard disk space) to run R and RStudio
+-   You cannot run R and RStudio on the UiB virtual computer
+-   You don't have permission to install software on your computer
+-   You want a zero hassle experience setting everything up
+-   You don't mind paying for the service if you use it throughout the course
+
+There is a [free plan](https://rstudio.cloud/plans/free), but you will probably need a [paid plan](https://rstudio.cloud/plans/plus) (few dollars a month) if you want to use it throughout your course.
+[rstudio.cloud](https://rstudio.cloud) is not suitable for large analyses as it has limited memory.
+
+To set up an account, go to [rstudio.cloud](https://rstudio.cloud)
+:::
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Install R and RStudio on your laptop (or set up one of the virtual computers).
+If you already have these installed, check that the R version is 4.2 or newer and the RStudio version is 2022.07.1 or newer.
+
+## Starting with RStudio
+
+Now that both R and RStudio are installed on your computer, you are ready to start.
+Note that you do not (usually) need to do anything to link RStudio to R or vice versa.
+Everything should be ready to use.
+
+### The interface {#sec-the-interface}
+
+When opening RStudio for the first time, the following main screen (@fig-rstudio-start)) appears:
+
+```{r}
+#| label: fig-rstudio-start
+#| echo: false
+#| fig-cap: "Opening RStudio for the first time."
+#| fig-alt: Screenshot showing how RStudio looks when it is first opened
+#| out.width: "100%"
+knitr::include_graphics("figures/Rstudio-start.png")
+```
+
+The interface is divided into 3 panes:
+
+-   a large one to the left that contains the tabs **`Console`**, **`Terminal`** and `Jobs`,
+-   a smaller one in the top right quadrant with the tabs **`Environment`**, `History`, `Connections` and **`Tutorial`**,
+-   a last one in the bottom right quadrant with the tabs **`Files`**, **`Plots`**, **`Packages`**, `Help` and `Viewer`.
+
+In the upcoming sections, we will see what these tabs are made for (NB: only the tabs in bold will be dealt with here).
+
+### Scripts
+
+First, go to the main menu in File \> New File and choose R Script.
+This opens a new, empty tab called `Untitled1` in the top left pane (@fig-rstudio-gui2).
+
+```{r}
+#| label: fig-rstudio-gui2
+#| echo: false
+#| fig-cap: "The script _Untitled1_ shows up in the top left pane."
+#| fig-alt: Screenshot of RStudio showing a new script in the top left
+#| out.width: "100%"
+knitr::include_graphics("figures/RStudio-script.png")
+```
+
+This tab displays a *script*.
+A script is a worksheet that looks a lot like a plain text file.
+This is where you will write your code, edit it, correct it if necessary.
+It may contain just a few lines, or hundreds of them.
+It may also contain comments (lines starting with the symbol `#`) which will help you keep track of your work.
+
+Here is a simple script:
+
+```{r script, echo=TRUE, eval=FALSE}
+# this is my data
+simple_data <- c(4, 5, 9, 75, 2, 11, 8, 45, 61, 64, 54, 5, 4, 4, 16, 65, 4, 65, 1, 56, 16, 5, 49, 4, 65)
+
+# calculate the mean
+mean(simple_data)
+
+# calculate the standard deviation
+sd(simple_data)
+```
+
+You may open several scripts at the same time.
+Each of them will show up as a separate tab in the top left pane of RStudio.
+If the tab title is red and followed with a star `*`, this means that the script is not yet saved, or has been edited since the last time it was saved.
+Scripts may be saved at any time using <kbd>CTRL</kbd> + <kbd>S</kbd> (or <kbd>⌘</kbd> + <kbd>S</kbd> on a Mac).
+
+In @sec-working-script, we will talk more about working with scripts and adding comments.
+
+### Console and Terminal
+
+The tabs `Console` and `Terminal` are located in the bottom left pane of RStudio, along with `Jobs` (@fig-rstudio-gui3).
+
+```{r}
+#| label: fig-rstudio-gui3
+#| echo: false
+#| fig-cap: "The tabs _Console_ and _Terminal_ are located in the bottom left pane."
+#| fig-alt: Screenshot of RStudio showing the location of the Console and Terminal tabs in the bottom left.
+#| out.width: "100%"
+knitr::include_graphics("figures/RStudio-console.png")
+```
+
+#### The Console tab
+
+The console is the R module that executes the commands.
+This is where you find the output/results of your commands providing that they can be display with symbols or characters (as opposed to graphics).
+
+A greater-than sign `>` displays at the beginning of the line.
+This is the prompt.
+In the console, every command that you enter at the prompt appears in blue; the output of your commands is printed in black, and errors or warning messages appear in red (@fig-rstudio-gui4).
+
+```{r}
+#| label: fig-rstudio-gui4
+#| echo: false
+#| fig-cap: The console prints code, output and messages in different colors."
+#| fig-alt: Screenshot of the RStudio console showing code, output and messages in different colours.
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-print.png")
+```
+
+You can actually write a simple command directly in the console and run it with `Enter`, but this is not good practice: one should always write code in the script and run it in the console (see @sec-working-script).
+The exception is for code that you don't want to run again, such as code to install a package.
+
+If a plus sign `+` appears instead of `>`, that means that your command is incomplete (you are possibly missing a bracket or a quote mark) and R is waiting for something more.
+You may either complete the code, or press <kbd>Esc</kbd> to return to the prompt.
+
+#### The Terminal tab
+
+The tab `Terminal` allows for manipulating files locally on your computer or remotely on a server, running Python scripts, etc (@fig-rstudio-gui5).
+
+```{r}
+#| label: fig-rstudio-gui5
+#| echo: false
+#| fig-cap: "The _Terminal_ tab allows for running commands outside of the R environment."
+#| fig-alt: Screenshot of the terminal in RStudio.
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-term.png")
+```
+
+### Files, Plots and Packages
+
+The tabs `Files`, `Plots` and `Packages` are located in the bottom right pane, along with `Help` and `Viewer` (@fig-rstudio-gui6).
+
+```{r}
+#| label: fig-rstudio-gui6
+#| echo: false
+#| fig-cap: "The _Files_, _Plots_ and _Packages_ tabs are located in the bottom right pane."
+#| out-width: "100%"
+#| fig-alt: Screenshot of RStudio the location of the Files, Plots and Packages tabs in the bottom right pane.
+knitr::include_graphics("figures/RStudio-files.png")
+```
+
+#### The Files tab
+
+The tab `Files` is a file explorer that lets you navigate the folder structure of your project (for more info about projects, see @sec-working-project).
+
+When RStudio starts up in a given project, the tab `Files` displays by default the content of the project folder.
+For a new project, the only content should be able to see is a single .Rproj file.
+NB: We will see in @sec-working-project) what the benefits to work with a project are.
+This is also the folder where the scripts that you create are preferentially saved and stored.
+Feel free to add subfolders, data files and anything else that will be relevant for your work.
+
+At the top of the pane, you will find the following menu:
+
+```{r}
+#| label: fig-rstudio-gui7
+#| echo: false
+#| fig-cap: "The menu in the _Files_ tab"
+#| fig-alt: Screenshot highlighting the menu in the RStudio files tab
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-files-menu.png")
+```
+
+Via this menu, you can rename and/or delete the files you have checked in the list beforehand; you can also create new folders, and copy or move items to other places via the dropdown menu of the button `More`.
+
+#### The Plots tab
+
+The tab `Plots` is the place where graphic outputs that result from your code will be displayed.
+
+Whenever a code chunk leading to a plot is run in the console, the corresponding plot appears in that tab and its size will adapt automatically to the size of the pane.
+When changing the dimensions of the pane, plots will be automatically refreshed to fit the new frame.
+
+At the top of the pane, you will find the following menu:
+
+```{r}
+#| label: fig-rstudio-gui9
+#| echo: false
+#| fig-cap: "The menu in the _Plots_ tab"
+#| fig-alt: "Screenshot of the menu in the Plots tab in RStudio"
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-plots-menu.png")
+```
+
+Via this menu, you can explore all the plots that have been created (not only the latest one) with the arrows, zoom in and out, delete the current plot or all the plots.
+The button `Export` offers two options to save the currently displayed plot as a file.
+You may either `save as image` or `save as pdf`.
+In both cases, a dialog box pops up that lets you define the dimensions, target folder, file name, file type, etc.
+
+#### The Packages tab {#sec-packages-tab}
+
+The tab `Packages` provides you with a list of all the R packages that are currently installed on your computer (@fig-rstudio-gui11).
+
+```{r}
+#| label: fig-rstudio-gui11
+#| echo: false
+#| fig-cap: "The _Packages_ tab shows the packages installed on your computer."
+#| fig-alt: Screenshot of RStudio showing the Packages tab with several packages installed.
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-packages.png")
+```
+
+Each line corresponds to a specific package.
+The checkbox to the left indicates whether the package is currently loaded in RStudio or not, in which case any command referring to it will not perform properly.
+A short description of the package comes along, as well as the version of the package currently installed.
+Conveniently, the globe icon to the right brings you to the online information page, and the cross icon allows you to uninstall the package.
+
+Only two items are found in the menu (@fig-rstudio-gui12):
+
+-   `Install`, which also you to install new packages from a remote repository or a file on your computer,
+-   `Update`, which searches for newer versions of the packages that are already on your computer.
+
+```{r}
+#| label: fig-rstudio-gui12
+#| echo: false
+#| fig-cap: "The Packages tab menu"
+#| fig-alt: "Screenshot of the RStudio Packages tab menu"
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-packages-menu.png")
+```
+
+### Environment and Tutorial
+
+The tabs `Environment` and `Tutorial` are located in the top right pane, along with `History` and `Connections` (@fig-rstudio-gui13).
+
+```{r}
+#| label: fig-rstudio-gui13
+#| echo: false
+#| fig-cap: "The _Environment_ and _Tutorial_ tabs are located in the top right pane."
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-Environment.png")
+```
+
+#### The Environment tab
+
+The tab `Environment` lists all the R objects currently stored in memory in the current project along with a quick summary of their content.
+
+@fig-rstudio-gui14 shows an example of the tab when four objects (`one_2_three_4`, `one_two_three`, `result` and `results`) have been stored in memory.
+
+```{r}
+#| label: fig-rstudio-gui14
+#| echo: false
+#| eval: true
+#| fig-cap: "The _Environment_ tab shows the R objects stored in memory."
+#| fig-alt: Screenshot of the RStudio environment tab with four objects in memory
+#| out-width: "100%"
+knitr::include_graphics("figures/env_now.png")
+```
+
+You can see that each object is displayed on its own line, along with a quick overview of its content and nature.
+You will learn extensively about R objects and data in @sec-first-steps-in-r.
+
+#### The Tutorial tab {#sec-tutorial-tab}
+
+The tab `Tutorial` lists R tutorials which come pre-installed with packages and which may be run directly in this tab (@fig-rstudio-gui15).
+
+```{r}
+#| label: fig-rstudio-gui15
+#| echo: false
+#| fig-cap: "The _Tutorial_ tab is located in the top right pane."
+#| fig-alt: Screenshot of RStudio showing the location of the Tutorial tab.
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-Tutorial.png")
+```
+
+Each tutorial is displayed along with a short description, the package it originates from, and a button `Start Tutorial ?` (@fig-rstudio-gui16).
+
+```{r}
+#| label: fig-rstudio-gui16
+#| echo: false
+#| fig-cap: "The _Tutorial_ tab provides you with tutorials linked to R packages."
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-Tutorial-list.png")
+```
+
+Along with the present website, we have written the package `biostats.tutorials` that will help you better learn stats and R.
+The installation procedure is described further below in @sec-installing-packages.
+Once installed, our tutorials will be available in this tab.
+
+
+## Customizing RStudio
+
+R/RStudio does not require much configuring at start, even though the menus in Tools \> Global Options... let you change dozens of settings at any time.
+In fact, you should be ready to work right now.
+That said, there are a couple of things in RStudio that we recommend you customize.
+
+### Taking care of .Rdata
+
+.Rdata is a file that R uses to store objects, data, etc.
+It is saved automatically when RStudio shuts down, and restored when it starts up again.
+We advise you to prevent RStudio from saving changes and restoring .Rdata to improve reproducibility.
+
+Go to Tools \> Global Options... \> General \> Basic to get to the menu shown in @fig-settings1.
+In the section Workspace (@fig-settings1, red box), uncheck the box, and select "Never" in the dropdown menu.
+
+```{r}
+#| label: fig-settings1
+#| echo: false
+#| fig-cap: "Taking care of .Rdata"
+#| fig-alt: Screenshot of the RStudio Options menu.
+#| out.width: "100%"
+knitr::include_graphics("figures/RStudio-settings1.png")
+```
+
+Or, if you install the `usethis` paackage, you can do this in code with
+
+```{r usethis-blank-slate, eval = FALSE}
+usethis::use_blank_slate()
+```
+
+### Imposing UTF-8 encoding
+
+Not all symbols or characters are accepted or recognized in the format that RStudio uses by default when saving scripts.
+We recommend to force RStudio to save scripts in UTF-8 format, which is much more permissive.
+
+Go to Tools \> Global Options... \> Code \> Saving to get to the menu shown in @fig-settings2.
+In the section Serialization (Fig. @fig-settings2, red box), click "Change" and choose UTF-8.
+
+```{r}
+#| label: fig-settings2
+#| echo: false
+#| fig-cap: "Saving files as UTF-8"
+#| fig-alt: Screenshot of RStudio Options menu
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-settings2.png")
+```
+
+### Soft-wrapping R scripts
+
+When the length of a code line exceeds the width of the editor, a horizontal scrollbar appears at the bottom of the editor, allowing you to navigate and review the whole line from its first to its last character.
+This setting makes things impractical as you will often have to scroll back and forth when reviewing multiple long lines.
+The obvious solution is to make sure you write short lines of code - a maximum of 80 characters is often recommended.
+However on a laptop, this can still be too long, so an alternative is to force RStudio to split the code onto the next line(s) of the editor -- this is called *soft-wrapping*.
+We recommend that you activate soft-wrapping in RStudio.
+
+Go to Tools \> Global Options... \> choose Code \> Editing to get to the menu shown in Figure \@ref(fig:settings3).
+In the section General (Fig. \@ref(fig:settings3), red box), check the box "Soft-wrap R source files".
+
+```{r}
+#| label: fig-settings3
+#| echo: false
+#| fig-cap: "Activating soft-wrapping of R scripts"
+#| fig-alt: Screenshot of Options menu in RStudio for softwrapping scripts
+#| out-width: "100%"
+knitr::include_graphics("figures/RStudio-settings3.png")
+```
+
+### Exercise {.unnumbered .facta .toc-ignore}
+
+Configure RStudio so that
+
+-   .Rdata files are not restored when RStudio is started
+-   .Rdata files are not saved when you close RStudio
+-   Soft-wrap is set on
+-   UTF-8 encoding is set on.
+
+## RStudio keyboard short-cuts
+
+You have already been introduced to RStudio short-cuts to run code.
+There are many more - press <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>k</kbd>.
+You certainly don't need to learn them all.
+Here are some we find useful
+
+-   run line <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+-   Find/replace <kbd>Ctrl</kbd> + <kbd>F</kbd>
+-   Find in files <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>
+-   Insert assignment operator <kbd>Alt</kbd> + <kbd>-</kbd>
+-   Comment out selected lines <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>
+-   Help on selected function <kbd>F1</kbd>
+
+You will be introduced to more short-cuts later.
+
+### Further Reading {.unnumbered .literature .toc-ignore}
+
+You may find the following links useful:
+
+-   [R for Data Science](https://r4ds.had.co.nz/){target="_blank"}
+-   [Using the RStudio IDE](https://support.rstudio.com/hc/en-us/sections/200107586-Using-the-RStudio-IDE){target="_blank"}
+-   [The tidyverse](https://www.tidyverse.org/){target="_blank"}
+
+### What's next {.unnumbered .facta .toc-ignore}
+
+You will now learn the basics of the R language, make simple calculations, learn about data types, store and handle data in R objects.
+
+### Contributors {.unnumbered .contributors .toc-ignore}
+
+-   Jonathan Soulé
+-   Aud Halbritter
+-   Richard Telford

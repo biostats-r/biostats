@@ -1,0 +1,86 @@
+# Working with a script {#sec-working-script}
+
+### What is a script?
+
+Practically, a script is a plain text file where you write your code, whether it contains a handful of lines or dozens of them.
+It is an evolving document which not only helps you keep track of your code, but also your workflow.
+
+With time, you will realize that a script is a lot of things at the same time:
+
+-   it is a whiteboard where you try coding for something and correct mistakes whenever you find out things do not work as expected,
+-   it contains your coding history, where all the steps from loading a data set to printing the final output are chronologically exposed,
+-   it is the key file that you may share with collaborators, etc,
+-   it is guarantee that your work is reproducible, meaning that you can run your code on your data set again and again, and obtain the same result, consistently.
+
+A simple script may look like this:
+
+```{r commented-script, echo=TRUE, eval=FALSE}
+# activate tidyverse
+library(tidyverse)
+
+# load the data from external file
+Veronica_Vestland <- read_delim("Veronica_Vestland.csv", delim = ",")
+
+# calculate the mean and standard deviation of Sepal.Length for each Location
+mean_sd_SL <- Veronica_Vestland |>
+           group_by(location) |>
+           summarise(mean(Sepal.Length), sd(Sepal.Length))
+
+# print the result
+mean_sd_SL
+
+# draw boxplot Sepal.Length for each Location
+ggplot(Veronica_Vestland,
+       aes(x = Location, y  = Sepal.Length, fill = Location)) +
+  geom_boxplot()
+```
+
+You will be able to write similar code to this very soon.
+
+### Running the code
+
+Writing code in a script does not do anything *per se*.
+To tell R to do something, you must either:
+
+-   place the cursor on a single line of code and press the `Run` button above the script or type <kbd>CTRL</kbd> + <kbd>Enter</kbd> (<kbd>⌘</kbd> + <kbd>Enter</kbd>) to run that *single line of code*, or
+-   select several lines of code and press <kbd>CTRL</kbd> + <kbd>Enter</kbd> (<kbd>⌘</kbd> + <kbd>Enter</kbd>) to run *ALL* the selected lines at once, or
+-   press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Enter</kbd> (<kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>Enter</kbd>) to run the whole script.
+
+The result of your command(s) will appear in the tab `Console` if the commands are intended to print something, and/or in the tab `Plots` if the commands generate a plot.
+
+### Code versus comment
+
+In the script above, there are two types of lines: those that start with the symbol `#`, and those that do not.
+
+Let's start with the lines that do not start with a `#`.
+They are the *real* code, the commands that manipulate the data.
+Right now these lines do not mean much to you, but in fact, each of them commands R to "do something specific" with your data.
+That "something specific" is defined by *functions* which are followed by parentheses -- `function()`.
+In the R language, functions are verbs in your sentences, the data are their subject.
+For example, in the code above, `library(tidyverse)` commands R to *activate* the package tidyverse found in the package library.
+
+The lines that start with a `#` are *comments*.
+They do not code for anything at all.
+When you run the script via a console, R simply ignores them.
+So use comments to keep track of what you do with the code.
+Write what the point of each *real* code line is, what you plan to do.
+That way, you will always remember what you originally intended to code for, in case you lose track.
+
+The symbol `#` is also convenient to prevent R from running a specific code line or chunk, without having to delete that line.
+Indeed if you place a `#` in front of any line, the console will consider it as a comment, and simply skip it.
+
+In the following example, each line was originally written to activate a different package:
+
+```{r commenting-to-deactivate, echo=TRUE, eval=FALSE}
+library(ggplot2)
+library(tidyr)
+#library(tidyverse)
+library(readr)
+```
+
+However, the third line has been *commented* with a `#`.
+Consequently, only the packages `ggplot2`, `tidyr`, and `readr` are activated; `tidyverse` will be ignored.
+
+In the chapter First Steps in R (@sec-first-steps-in-r), you will learn to write in the R language.
+We strongly advise you to work in scripts, and make extensive use of comments from the start.
+This is considered good coding practice, and will save you quite some time and energy.
