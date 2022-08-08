@@ -12,7 +12,7 @@ A fork is a copy of somebody's GitHub repository. You can fork a repo and work i
 
 However, you cannot directly affect (or damage) the original project, which is somewhat less scary, right?
 
-::: callout-note
+::: callout-tip
 ## Definitions
 
 - **fork** - a copy of a repo on GitHub that is connected to the original
@@ -26,7 +26,9 @@ However, you cannot directly affect (or damage) the original project, which is s
 
 To understand the **workflow**, let's see how Angelina and Kingsley collaborate using GitHub (@fig-github-fork).
 
-Kingsley owns a GitHub repo. Angelina **forks** this repo (1) and then **clones** is to her computer (2). Angelina develops code using **branches** and makes **commits** (3). Then she **pushes** these changes to her **remote repo** on GitHub (4) and makes a **pull request** to the original repo, which Kingsley **merges** (5).
+Kingsley owns a GitHub repo. Angelina **forks** this repo (1) and then **clones** it to her computer (2). 
+Angelina develops code using **branches** and makes **commits** (3). 
+Then she **pushes** these changes to her **remote repo** on GitHub (4) and makes a **pull request** to the original repo, which Kingsley **merges** (5).
 
 From now on Angelina will **fetch** (6) and **merge** (7) the newest changes from **upstream** into her local repo and continue the workflow (3-5).
 
@@ -37,7 +39,12 @@ From now on Angelina will **fetch** (6) and **merge** (7) the newest changes fro
 knitr::include_graphics("Pics/fork_branch_tutorial/1_workflow3.png")
 ```
 
-### Forking with `usethis`
+## Forking a repo
+
+You can fork a repo from R with `usethis`, or directly on GitHub.
+
+::: panel-tabset
+## Forking with `usethis`
 
 The easiest way to fork a repo on GitHub and clone it to your computer is with the `usethis` package. Find the user name and repo name of the repo you want to fork. To fork and clone the "kingsleyshacklebolt/dragon_study" repo, use
 
@@ -52,14 +59,14 @@ create_from_github("kingsleyshacklebolt/dragon_study", fork = TRUE)
 This will
 
 -   fork the repo, creating a copy in your own GitHub account.
--   clone your fork of the repo onto your computer. By default, the clone will be put on your desktop. You can copy the entire folder to somewhere more convenient, or set the `destdir` argument.
+-   clone your fork of the repo onto your computer. By default, the clone will be put on your desktop. You can move the entire folder to somewhere more convenient, or set the `destdir` argument.
 -   set up the connections between the clone, your fork and the original repo. You can see these connections in the terminal with the command
 
 ``` bash
 git remote -v
 ```
 
-### Fork a repo on GitHub
+## Fork a repo on GitHub
 
 Sometimes if you only want to make a small change to a repo, it might be more convenient to make a **fork** on GitHub and make all the edits directly on GitHub.
 
@@ -74,17 +81,49 @@ Let us assume that Angelina wants to fork the magic_dragon repo from biostats. C
 knitr::include_graphics("Pics/fork_branch_tutorial/2_fork_repo.png")
 ```
 
+:::
+
 ## Working on a fork
 
 You have forked a repository and are ready to start working on the project.
 
-But first we need to make a branch. Bad things happen if you work on the main branch of fork. For example, it becomes difficult to keep the repo in sync with the upstream repo without many **merge conflicts**. See @sec-new-branch for how to make a new branch in RStudio.
+But first we need to make a **branch**. Bad things happen if you work on the main branch of fork. For example, it becomes difficult to keep the repo in sync with the upstream repo without many **merge conflicts**. See @sec-new-branch for how to make a new branch in RStudio.
+
+::: callout-caution
+Seriously, don't even consider making commits to the main branch of a fork. 
+You can protect the main branch from accidental commits, see @sec-prevent-commit-main.
+:::
 
 ### Code, commit and push to origin in RStudio
 
-Now is the time to work in a new or edit an existing file on the project. You can work the way it is described in section @sec-stage-commit-push. Write or edit code, test it, **commit** regularly, add a useful commit message.
+Now is the time to work in a new file or edit an existing file on the project. 
+You can work the way it is described in section @sec-stage-commit-push.
+Write or edit code, test it, **commit** regularly, add a useful commit message.
 
 Once you are done with the task in this **branch**, and tested it, it is time to send it to GitHub so it can be included in the original, **upstream** repo.
+
+::: callout-note
+## Exercise
+
+::: panel-tabset
+
+## In class
+
+Work in pairs. Find your partners GitHub user name and their course repo name.
+
+Fork their repo and clone it to your computer. 
+Make a new branch in the repo and make some edits or additions to the code. 
+Commit and push your edits.
+
+## Working alone
+
+Fork Kingsley's magic_dragons repo and clone it to your computer. 
+
+Make a new branch in the repo and make add your name to the file "successfully_forked". 
+Commit and push your edits.
+
+:::
+:::
 
 ### Make a pull request on GitHub
 
@@ -92,14 +131,21 @@ Once you have **pushed** your branch back to your **fork** on GitHub, you can ma
 
 Go to your fork on GitHub (not the upstream repo). Click on the green box **Compare & pull request** which has appear at the top of the page.
 
-```{r}
-#| label: fig-pull-request-1
-#| fig-cap: Click the green botton to start creating a pull request.
-#| fig-alt: Screenshot of GitHub showing button to create pull request.
-knitr::include_graphics("Pics/fork_branch_tutorial/8_pull_request.png")
+
+```{r another-pull-request}
+knitr::include_graphics("Pics/fork_branch_tutorial/10.4_another_pull_request.png")
 ```
 
-Add a comment about your pull request and click **Create pull request**.
+This will take you to a page where you can review your commits, add a comment about your pull request and then click **Create pull request**.
+
+<!-- ```{r} -->
+<!-- #| label: fig-pull-request-1 -->
+<!-- #| fig-cap: Click the green botton to start creating a pull request. -->
+<!-- #| fig-alt: Screenshot of GitHub showing button to create pull request. -->
+<!-- knitr::include_graphics("Pics/fork_branch_tutorial/8_pull_request.png") -->
+<!-- ``` -->
+
+
 
 ```{r}
 #| label: fig-pull-request-2
@@ -122,48 +168,12 @@ knitr::include_graphics("Pics/fork_branch_tutorial/10_merge_pull_request.png")
 
 Now it's time for you to relax, wait for the response of the repo maintainer and have some cake 🍰, you have earned it!
 
-#### Exercise {.unnumbered .facta .toc-ignore}
+::: callout-note
+## Exercise
 
-This exercise is for people taking a class on using GitHub.
+Go to GitHub and open a pull request so the owner of the upstream repo can accept your edits. (Or not!)
+:::
 
-Work in pairs. Find the GitHub user name and course repo name of your partner.
-
-Fork their repo and clone it to your computer. 
-Make a new branch in the repo and make some edits or additions to the code. 
-Commit and push your edits.
-
-Now go to GitHub and open a pull request so your partner can accept your edits. (Or not!)
-
-
-#### Exercise: make pull request
-
-Let's make a pull request together. Go to the magic_dragons repo that you forked above, or fork it now. Open the file called **successfully forked**.
-
-Click on the **main** button to create a new **branch**. Type a name and click **Create branch: new_name**.
-
-```{r successful-file}
-knitr::include_graphics("Pics/fork_branch_tutorial/10.1_successful_file.png")
-```
-
-You are now working on the **new branch**. Click on the pencil symbol on the right side to edit the file. Add your name and scroll all the way to the bottom of the page.
-
-```{r add-your-name, out.width = '60%'}
-knitr::include_graphics("Pics/fork_branch_tutorial/10.2_add_your_name.png")
-```
-
-Type a commit message and make sure you commit to the **new branch** you just made.
-
-```{r commit-to-new-branch}
-knitr::include_graphics("Pics/fork_branch_tutorial/10.3_commit_to_new_branch.png")
-```
-
-Go to the your fork of the magic_dragons repo on GitHub and click on the green button **Compare & pull request** and on the next page **Create pull request**
-
-```{r another-pull-request}
-knitr::include_graphics("Pics/fork_branch_tutorial/10.4_another_pull_request.png")
-```
-
-Now it's time for you to relax, wait for the response of the repo maintainer and have some cake 🍰, you have earned it!
 
 ### Repo maintainer accepts pull request (or not)
 
@@ -185,26 +195,34 @@ Eventually, (hopefully), the **maintainer** will **merge** the **pull request** 
 knitr::include_graphics("Pics/fork_branch_tutorial/13_confirm_merge.png")
 ```
 
-#### Exercise {.unnumbered .facta .toc-ignore}
+
+::: callout-note
+## Exercise
 
 This exercise is for people taking a class on using GitHub.
 
 Once your partner has made a pull request, you will be notified. 
 Have a look at the pull request, if you like it, accept it, otherwise give feedback through GitHub.
+:::
 
-#### Exercise: make pull request continues
+::: callout-note
+## Exercise
 
-Maybe you got a request from Kingsley Shackelbolt about your pull request. Go ahead and fix it.
+Maybe you got a message from the owner of the repo you forked about your pull request. 
 
-If everything was ok, then you are done.
+If they made comments, then fix the issues.
+
+If they accepted and merged the pull request, then celebrate.
+:::
 
 ### Update your fork
 
-Once your **pull request** has been accepted, you have to update your fork to get the latest changes from **upstream**.
+Once your **pull request** has been accepted, you can to update your fork to get the latest commits from **upstream**.
 
 You can do this either on GitHub or in the terminal.
 
-#### On GitHub
+::: panel-tabset
+## On GitHub
 
 Go to your fork on GitHub. Click the "Fetch upstream" link beneath the green "Code" button, then press "Fetch and Merge" in the popup.
 
@@ -225,7 +243,7 @@ Is your fork behind? You can now sync from the parent repo with just a single cl
 ```
 Now go to RStudio and **pull** the updates to your computer. Unless you want to continue working on the same branch, you should now return to the main branch.
 
-#### In the terminal
+## In the terminal
 
 Go to RStudio and the **Terminal** tab.
 
@@ -245,18 +263,21 @@ git merge upstream/main
 ```
 
 **Fetch** downloads all the changes from **upstream**. **Checkout main** makes sure your **main branch** is active. And the last line **merges** the changes with your local repository.
+:::
+
+::: callout-note
+## Exercise
+
+Working in class or alone
+
+Once your pull request has been accepted, merge the changes from the upstream repo into your fork. 
+Then go to the main branch of your repo in RStudio and pull the edited code.
+Check everything has worked.
+:::
 
 ### Delete branches
 
 If you have finished with the branch you used to make the pull request, you can delete it (see @sec-delete-branch).
-
-#### Exercise {.unnumbered .facta .toc-ignore}
-
-This exercise is for people taking a class on using GitHub.
-
-Once your pull request has been accepted, merge the changes from your partners upstream repo into your fork. 
-Then go to the main branch of your repo in RStudio and pull the edited code.
-Check everything has worked.
 
 ### Trouble shooting
 
@@ -295,7 +316,7 @@ knitr::include_graphics("Pics/fork_branch_tutorial/14_merge_conflict.png")
 
 The conflicting file is called dragon_analysis. Most likely somebody has changed the file in the meantime and you do not have the most recent version of code. Check the status of this file on the upstream repo. Fix the changes, so that they are not conflicting anymore, **commit**, **push** and make the **pull request** again. Now everything should work.
 
-#### Prevent commits to main
+#### Prevent commits to main {#sec-prevent-commit-main}
 
 We have already established that when you collaborate on a repo using a fork, you never make changes to the **main branch**. 
 This can be difficult to remember. Fortunately, there is a way to prevent from committing to *main* using a git hook. 
@@ -320,12 +341,16 @@ usethis::use_git_hook(
 From now on if you are trying to commit changes to main it will give you a warning message. 
 If this happens, make a **new branch**, **commit** the changes and **push**.
 
-### Further reading {.unnumbered .literature .toc-ignore}
+::: callout-note
+## Further reading {.unnumbered .literature .toc-ignore}
 
 [**Happy Git**](https://happygitwithr.com/) provides instructions for how to getting started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong. 
 
 The [**Git flight rules**](https://github.com/k88hudson/git-flight-rules) are an exhaustive resource for what to do when things go wrong. 
+:::
 
-### What's next {.facta .toc-ignore}
+::: callout-note
+## What's next
 
 Nothing yet. Go and eat more cake 🍰
+:::
