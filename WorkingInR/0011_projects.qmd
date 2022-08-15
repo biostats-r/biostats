@@ -14,16 +14,23 @@ source("R/setup.R")
 :::
 
 RStudio allows you to divide your work into projects which are independent from each other.
-A project has its on working directory in which you can create specific scripts, load data sets, add external files, activate packages, etc.
+A project has its own working directory in which you can create specific scripts, load data sets, add external files, activate packages, etc.
 For each project, you will thus be guaranteed to work in a dedicated workspace.
 
 Working with projects is a great way to keep things organised.
 You do not risk to mix up files or variables with relatively similar names when writing your code, especially if you are not so creative when it comes to naming objects.
-You will also find it easy to share your work with others since everything they need (and nothing less or more) is in a project.
+You will also find it easy to share your work with others since everything they need (and nothing less or more) is in a project, and they work well with [git](https://biostats-r.github.io/biostats/github/index.html).
 
 For example, if you plan to work with assignments in different courses in addition to the data analyses for your master's thesis, we strongly recommend to set up a RStudio project for each course, and another for your thesis.
 
-To create a project, go to the main menu and select File \> New Project... as shown in @fig-new-project:
+To create a project, go to the main menu and select 
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">File</li>
+  <li class="breadcrumb-item">New Project...</li>
+  <li class="breadcrumb-item">Quarto Document...</li>
+</ol>
+as shown in @fig-new-project:
 
 ```{r}
 #| label: fig-new-project
@@ -47,12 +54,100 @@ knitr::include_graphics("figures/RStudio-createproject.png")
 
 Feel free to import in the project folder all the files that you will need later on, such as original data sets, etc.
 
-## Exercise {.unnumbered .facta .toc-ignore}
+::: callout-note
+## Exercise 
 
 Create a project for BIO300B.
 Call it BIO300B and save it to a convenient location.
+:::
+
+## Opening a project
+
+Once you have made a project, you need to make sure that you are using it when you start RStudio. 
+You can check this by looking in the top right corner of RStudio: it will say "Project: (None)" if you are not in a project, and will show your project name if it is correct.
+There are several ways to open an RStudio project
+ 
+- by clicking on the file in your file manager
+- click on the list o recently opened projects in the top right corner of RStudio and selecting your project
+- from the menu
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">File</li>
+  <li class="breadcrumb-item">Open Project...</li>
+</ol>
+
+
 
 ## Organising files in a project
 
-xxx
+Imagine how hard it would be to find what you wanted to wear if you kept all your clothes in a heap on the floor. 
+It's the same when you keep all your files in one directory (norsk: _mappe_), which might look something like this.
+
+```{r}
+#| echo: false
+library(fs)
+
+# bad
+tmp <- file.path(tempdir(), "demo")
+dir_create(tmp)
+withr::with_dir(tmp, {
+  file_create("my_project.Rproj")
+
+  file_create("final2_lake-tilo-diatoms.csv")
+  file_create("final_lake-tilo-diatoms.csv")
+  file_create("final-lake-tilo-chemistry.csv")
+  
+  file_create("import.R")
+  file_create("analyse.R")
+
+  file_create("manuscript.qmd")
+  file_create("references.bib")
+  file_create("manuscript.pdf")
+  
+  dir_tree()
+  })
+```
+
+Much better to use sub-directories to organise the files.
+
+```{r}
+#| column: page-right
+#| echo: false
+## good
+tmp <- file.path(tempdir(), "demo2")
+dir_create(tmp)
+withr::with_dir(tmp, {
+  file_create("my_project.Rproj")
+  dir_create("data")
+  file_create("data/2022-8-15_lake-tilo-diatoms.csv")
+  file_create("data/2022-3-24_lake-tilo-diatoms.csv")
+  file_create("data/2022-3-24_lake-tilo-chemistry.csv")
+  dir_create("R")
+  file_create("R/01_import.R")
+  file_create("R/02_analyse.R")
+
+  dir_create("quarto")
+  file_create("quarto/manuscript.qmd")
+  file_create("quarto/references.bib")
+  dir_create("output")
+  file_create("output/manuscript.pdf")
+  
+  dir_tree()
+  })
+```
+
+In this example, the data files are in the "data" directory. 
+It is important to keep the raw data files separate from any processed data files (you might need a "raw-data" directory).
+The creation data of each file is included in the file name to make it easy to sort them (much better than "final" and "final2").
+The R scripts are in the "R" directory (some people call this directory "code" as it can contain languages other than R). 
+The scripts are numbered in the order that they are used.
+The quarto directory contains [markdown](https://biostats-r.github.io/biostats/quarto/index.html) and associated files. 
+Any output files are kept in the "output" directory.
+
+::: callout-note
+## Exercise 
+
+Create directories in your project for data and R code. 
+You can do this in the RStudio files tab, your computers file manager (or directly in R with `fs::dir_create`).
+:::
+
 
