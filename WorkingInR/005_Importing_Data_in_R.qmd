@@ -16,10 +16,11 @@ For example:
 In this chapter, you will learn how to import tabular data from an external text file as a tibble.
 We will use functions from the package `readr` which is part of the `tidyverse` package, so make sure that you have activated it with `library(tidyverse)`. 
 
-### Before we start {- .facta .toc-ignore}
+::: callout-note
+## Before we start
 
 You must be familiar with tibbles and data types (such as numeric, character, etc).
-
+:::
 
 ## What are tabular data? 
 
@@ -28,7 +29,10 @@ A table often has a header, i.e. an additional row that displays variable names.
 Here is an example of a formatted table with header:
 
 
-``` {r kable, echo=FALSE, message=FALSE}
+``` {r}
+#| label: tbl-kable
+#| echo: false
+#| message: false
 table <- read_delim(file = "data/weather.csv", delim = ",")
 knitr::kable(table, caption  ="_A simple table with header_")
 ```
@@ -56,22 +60,30 @@ Briefly, tidy data follows a short series of rules:
 
 The following figure illustrates well these rules.
 
-``` {r threerules, echo=FALSE, fig.cap='_In a tidy dataset, variables are in columns, observations are in rows, and values are in cells._ --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html) - [CC BY-NC-ND 3.0 US](https://creativecommons.org/licenses/by-nc-nd/3.0/us/)', out.width = "100%"}
+``` {r}
+#| label: threerules
+#| echo: false
+#| fig-cap: 'In a tidy dataset, variables are in columns, observations are in rows, and values are in cells. --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html)'
+#| fig-alt: Schematic diagram showing that variables should be in columns, observations in rows and each cell should contain a single value
+#| out.width: "100%"
 knitr::include_graphics("figures/tidy1.png")
 ```
 
 
-The dataset presented in Table \@ref(tab:kable) respects all three rules, and is thus a tidy dataset.  
+The dataset presented in @tbl-kable respects all three rules, and is thus a tidy dataset.  
 
 On the contrary, the following dataset is *not* tidy:
-``` {r tidy, echo=FALSE, message=FALSE}
+``` {r}
+#| label: tidy
+#| echo: false
+#| message: false
 table2 <- read_delim(file = "data/nottidy.csv", delim = ";")
 rmarkdown::paged_table(table2)
 ```
 Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).   
 
 Importing data from a file containing tidy data is a great way to start your work, but it is *not* a prerequisite to data import.
-As long as your data is tabular, you will be able to import it in R, and later you will have the chance to tidy it (see chapter \@ref(tidying-data-with-tidyr)).
+As long as your data is tabular, you will be able to import it in R, and later you will have the chance to tidy it (see @sec-tidying-data-with-tidyr).
 
 
 ## File formats
@@ -86,7 +98,7 @@ Simpler formats such as plain text files with `.txt` or `.csv` should always be 
 
 One of the most common format for storing tabular data in plain text files is CSV, which stands for **C**omma-**S**eparated **V**alues.
 It is this format that we are going to deal with here.
-Note that CSV-formatted files often have (but not always) a `.csv` extension. They may also have a regular `.txt` extension.  
+Note that CSV-formatted files often have (but not always) a `.csv` extension. They may also have a `.txt` extension.  
 
 In a CSV-formatted file, the data is stored in a similar manner to this: 
 
@@ -94,7 +106,7 @@ In a CSV-formatted file, the data is stored in a similar manner to this:
 knitr::include_graphics("figures/csv.png")
 ```
 
-For information, this file matches the example in Table \@ref(tab:kable).
+For information, this file matches the example in @tbl-kable.
 Each line corresponds to a row in the table (including header) and cell contents are separated with a comma `,`.
 Note that the period symbol `.` is used as decimal separator.
 
@@ -103,7 +115,7 @@ Other symbols such as a semi-colon `;` may be used as a delimiter.
 This is the case in several European countries where commas are decimal separator.
 Here is the same data set as above, this time in the European format:
 
-``` {r csv2-data, echo=FALSE, fig.cap="_Contents of another CSV file_", out.width="75%"}
+```{r csv2-data, echo=FALSE, fig.cap="_Contents of another CSV file_", out.width="75%"}
 knitr::include_graphics("figures/csv2.png")
 ```
 
@@ -139,12 +151,14 @@ In this file, the decimal separator is `.` and the delimiter is `,`.
 `readr` comes with several functions that read data files. 
 Among them are:
 
-+ `read_delim()`,
-+ `read_csv()`,
-+ `read_csv2()`.
++ `read_delim()`
++ `read_csv()`
++ `read_csv2()`
++ `read_table()`
 
 We will focus essentially on `read_delim()` as it is a general function that can import all the formats. 
 `read_csv()` and `read_csv2()` are more specific functions which are preset to import CSV-formatted files in which a comma `,` or a semi-colon `;` is defined as delimiter, respectively.
+`read_delim()` reads white-space delimited files.
 
 
 ### read_delim()
@@ -165,7 +179,7 @@ This is why the tibble produced by `read_delim()` must be assigned to an object 
 When searching for the file, R/RStudio uses the location of the current RStudio project as a root. 
 As a consequence, you may simply write the file name if the file is in the same folder as your `.Rproj` file. 
 Alternatively, write `[subfolder]/[filename]` if the file is in a subfolder.
-For more info about RStudio projects, read section \@ref(working-with-a-project).
+For more info about RStudio projects, read section @sec-working-project.
 
 In the following example, we import the file `weather.csv` located in the subfolder `data` of the current RStudio project into the object `weather`. 
 In `weather.csv`, the delimiter is `,` and the decimal separator is `.`
@@ -178,9 +192,14 @@ weather <- read_delim(file = "data/weather.csv",
 When the function is executed, the console shows a short series of warnings and messages.
 In the frame above, the message `Column specification` tells you that the content of the column `month` has been recognized as of data type `character`, and that the three other columns have been recognized as `double` (which is similar to `numeric`).  
 
-Now the tibble `weather` is available in R as you may see in the tab `Environment` (see figure \@ref(fig:csv-env)). 
+Now the tibble `weather` is available in R as you may see in the tab `Environment` (see @fig-csv-env). 
 
-``` {r csv-env, echo=FALSE, fig.cap="_The tibble_ weather _is now stored in R._", out.width="100%"}
+``` {r} 
+#| label: fig-csv-env
+#| echo: false
+#| fig-cap: The _tibble_ weather is now stored in R.
+#| fig-alt: Screenshot of the environment tab showing one object "weather" with 12 obsevations and 4 variables.
+#| out-width: "100%"
 knitr::include_graphics("figures/csv-env.png")
 ```
 
@@ -201,9 +220,14 @@ weather2 <- read_delim(file = "data/weather2.csv",
                        delim = ",")
 ```
 The message `Column specification` tells you that the content of the whole CSV file has been transferred into one single column named `month;temperature (Celsius);precipitation (mm);Wind (m/s)` and recognized as of data type `character`.
-Accordingly, the object `weather2`, now visible in the tab `Environment` (see figure \@ref(fig:csv-env2)), is described as a tibble with 12 observations and only one variable.
+Accordingly, the object `weather2`, now visible in the tab `Environment` (see @fig-csv-env2), is described as a tibble with 12 observations and only one variable.
 
-``` {r csv-env2, echo=FALSE, fig.cap="_The tibble_ weather2 _is now stored, but is wrongly formatted._", out.width="100%"}
+``` {r}
+#| label: fig-csv-env2
+#| echo: false
+#| fig-cap: "The _tibble_ weather2 is now stored, but is wrongly formatted."
+#| fig-alt: Screenshot of the environment tab, which now also has weather2 which only has one variable
+#| out-width: "100%"
 knitr::include_graphics("figures/csv-env2.png")
 ```
 
@@ -227,9 +251,14 @@ To find out about this issue we need to review the imported data in the object `
 #### Review the imported data
 
 The example above shows the importance of carefully verifying that the imported data in R matches the original data set.
-The following figure compares the content of the file `weather2.csv` (Fig. \@ref(fig:comp-fig) left) to the content of the object `weather2` (Fig. \@ref(fig:comp-fig) right):
+The following figure compares the content of the file `weather2.csv` (@fig-comp-fig left) to the content of the object `weather2` (@fig-comp-fig right):
 
-``` {r comp-fig, echo=FALSE, fig.cap="_The data in the object does not match the data in the file._", out.width="100%"}
+``` {r}
+#| label: fig-comp-fig
+#| echo: false
+#| fig-cap: "The data in the object does not match the data in the file." 
+#| fig-alt: Screenshots of the original text file with decimals separated by commas and the imported object in R, mostly without decimal separators
+#| out-width: "100%"
 knitr::include_graphics("figures/comp.png")
 ```
 
