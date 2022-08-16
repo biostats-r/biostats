@@ -2,9 +2,9 @@
 source("R/setup.R")
 ```
 
-# Colours, shapes and linetypes
+# Colours, shapes and linetypes {#sec-colours-shapes-and-linetypes}
 
-## Colours and fill
+## Colours and fill {#sec-colours-and-fill}
 
 The `colour` aesthetic give colour for points and lines, while the `fill` aesthetic gives colour to areas.
 It is very easy to forget this.
@@ -139,7 +139,7 @@ Here are many examples of colour palettes in the `paletteer` package
 About 1/8 men and 1/200 women are colour blind.
 We need to use colour and fill palettes that are colourblind friendly.
 Some popular scales are not. 
-For example, we can use the [`colorblindr` package](https://github.com/clauswilke/colorblindr) to simulate how this figure is percieved by people with different forms of colourblindness.
+For example, we can use the `colorBlindness` to simulate how this figure is perceived by people with different forms of colour vision deficiency.
 
 ```{r not-colourblind-friendly, fig.cap = "Default ggplot fill.", fig.height = 3, fig.width=3.5}
 p3 <- ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
@@ -151,8 +151,8 @@ p3
 
 
 ```{r colour-blindr-default, echo = TRUE, fig.cap = "How people with different types of colourblindness see the default colour scale."}
-library(colorblindr)
-cvd_grid(p3)
+library(colorBlindness)
+cvdPlot(p3)
 ```
 
 That was hopeless. 
@@ -166,7 +166,7 @@ p3_v
 
 
 ```{r viridis-colourblind2, echo = FALSE, fig.cap = "How people with different types of colourblindness see the viridis colour scale."}
-cvd_grid(p3_v)
+cvdPlot(p3_v)
 ```
 
 Much better. 
@@ -192,7 +192,7 @@ tibble(x0 = 0:5, r = 0.5, alpha = x0/5) |>
         panel.grid  = element_blank())
 ```
 You can map a variable to `alpha` in `aes()`, but it is probably more common to set `alpha`.
-This is very useful, for example, when there are many overlapping points in a scatterplot, or you want to see the data behind the confidence interval of a regression line (section \ref(manual-plotting-of-a-linear-model)). 
+This is very useful, for example, when there are many overlapping points in a scatterplot, or you want to see the data behind the confidence interval of a regression line (@sec-manual-plotting-of-a-linear-model). 
 Be careful using transparency when different colours overlap, as it can appear to make a third colour.
 
  
@@ -250,9 +250,15 @@ ggplot(ChickWeight, aes(x = Time, y = weight, group = Chick, colour = Diet, line
   geom_line()
 ```
 
-If you need to change the linetypes assigned to each value, you can use `scale_linetype_manual` and specify them by name (Fig. \@ref(fig:linetypes)).
+If you need to change the linetypes assigned to each value, you can use `scale_linetype_manual` and specify them by name (@fig-linetypes).
 
-```{r linetypes, fig.height=2.5, fig.width=3, fig.cap = "Some named linetypes", echo=FALSE}
+```{r}
+#| label: fig-linetypes
+#| fig-height: 2.5
+#| fig-width: 3
+#| fig-cap: "Some named linetypes"
+#| echo: false
+
 tibble(
     label = c("blank", "dotted", "dashed", "longdash", "solid"),
     y = 5:1

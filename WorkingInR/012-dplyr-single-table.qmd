@@ -1,22 +1,22 @@
-``` {r setup, include=FALSE}
+```{r setup, include=FALSE}
 source("R/setup.R")
 ```
 
-# Working with single tables in `dplyr`
+# Working with single tables in `dplyr` {#sec-working-with-single-tables-in-dplyr}
 
-Data frames are usually the most convenient objects for storing, plotting or analysing data in R. 
+Data frames are usually the most convenient objects for storing, plotting or analysing data in R.
 We also need to be able to manipulate data in data frames.
 
 This tutorial will show you how to manipulate data frames using the `dplyr` package, part of `tidyverse`.
 
-Everything that can be done with `dplyr` can be done with base R. 
+Everything that can be done with `dplyr` can be done with base R.
 The `dplyr` solution is usually easier to write and understand, and can be faster.
 
 There are many function in `dplyr`, this tutorial focuses on the functions I find most useful.
 
 ### Load the package
 
-You can load `dplyr` with 
+You can load `dplyr` with
 
 ```{r load-dplyr}
 library("dplyr")
@@ -27,7 +27,6 @@ But is is usually more convenient to load `tidyverse` so that you get `ggplot2`,
 ```{r load-packages, eval = FALSE}
 library("tidyverse")
 ```
-
 
 ### More feedback `tidylog`
 
@@ -51,12 +50,11 @@ data("penguins", package = "palmerpenguins")
 penguins
 ```
 
-
 ## Selecting columns with `select()`
 
 You can choose which columns of the data frame you want with `select()`.
 
-The first argument is the data, which is supplied by the pipe `|>`, the next arguments are the names of the columns you want. 
+The first argument is the data, which is supplied by the pipe `|>`, the next arguments are the names of the columns you want.
 The names do not need quote marks.
 
 ```{r select1}
@@ -65,36 +63,40 @@ penguins |>
   select(species, bill_length_mm, bill_depth_mm)
 ```
 
-
 This is equivalent to the base R code
 
 ```{r select1.5}
 #select species, bill_length_mm & bill_depth_mm
 penguins[, c("species", "bill_length_mm", "bill_depth_mm")] 
 ```
+
 Remember that if you want to use the output of this code in a further analysis, you need to assign it to an object name with `<-`.
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 From the `penguins` data, select
 
- - `species`
- - `species` and `bill_length_mm`
- - all columns except year
+-   `species`
+-   `species` and `bill_length_mm`
+-   all columns except year
 
- <details>
-  <summary>Hint</summary>
+<details>
+
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 penguins |> 
   select(___, ___)
 ```
-</details> 
 
+</details>
+:::
 
-### `select()` helpers  
+### `select()` helpers {#sec-select-helpers}
 
 Sometimes we don't want to write out the names of all the columns we want to select.
-We might not even know them all in advance. 
+We might not even know them all in advance.
 Fortunately there are some helper functions.
 
 If you want to `select()` adjacent columns, you can use the notation `first:last`.
@@ -104,7 +106,7 @@ If you want to `select()` adjacent columns, you can use the notation `first:last
 penguins |> select(species:bill_depth_mm)
 ```
 
-Sometimes it is easier to remove the columns you don't want. 
+Sometimes it is easier to remove the columns you don't want.
 You can do this by putting a `-` in front of the column name.
 
 ```{r select3}
@@ -123,7 +125,7 @@ penguins |> select(starts_with("bill"))
 Conversely, if we want to select all columns that end with "mm", we can use `ends_with()`.
 `contains()` is more flexible and `matches()` is the most powerful of the helper functions, using regular expressions to identify the columns (see the regular expression tutorial).
 
-Sometimes, you might want to select all the columns of a certain type. 
+Sometimes, you might want to select all the columns of a certain type.
 For example, to select all the numeric columns we can use the `is.numeric` function inside `select()` with the helper `where()`.
 
 ```{r select5}
@@ -136,17 +138,18 @@ You can also select columns by number (1 being the first column), but this is ge
 
 Which of these strategies works best is context dependent.
 
-### Exercise {- .facta .toc-ignore}
-
+::: callout-note
+## Exercise
 From the `penguins` data, select
 
- - all columns except year
- - all non-numeric columns
- - `species` and columns ending in "mm"
+-   all columns except year
+-   all non-numeric columns
+-   `species` and columns ending in "mm"
 
+<details>
 
- <details>
-  <summary>Hint</summary>
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 # hint 1
 penguins |> 
@@ -158,9 +161,9 @@ penguins |>
 # hint 3
 ?ends_with
 ```
-</details> 
 
-
+</details>
+:::
 
 ## Renaming columns with `rename`
 
@@ -181,20 +184,20 @@ penguins |> select(Species = species)
 
 ## Moving columns with `relocate()`
 
-Sometimes it is useful to reorder the columns. 
+Sometimes it is useful to reorder the columns.
 This is never necessary for data analysis or plotting, but can be needed when making a table for presentation.
 
 ```{r relocate}
 penguins |> relocate(island)
 ```
 
-The default is to move the named column first, the `.before` and `.after` arguments let you move the column into any position. 
+The default is to move the named column first, the `.before` and `.after` arguments let you move the column into any position.
 
 ## Filtering rows with `filter()`
 
 Filtering rows that meet some condition is a very common task.
 
-For example, to filter rows of `penguins` that have a bill length greater than 40 mm, we can use 
+For example, to filter rows of `penguins` that have a bill length greater than 40 mm, we can use
 
 ```{r filter1}
 penguins |> filter(bill_length_mm > 40)
@@ -202,7 +205,7 @@ penguins |> filter(bill_length_mm > 40)
 
 This will filter out each row where the condition is `TRUE`.
 
-The base R equivalent of this is 
+The base R equivalent of this is
 
 ```{r filter_base}
 penguins[penguins$bill_length_mm > 40, ]
@@ -210,11 +213,10 @@ penguins[penguins$bill_length_mm > 40, ]
 
 Generally, `filter` makes it easier to understand, especially with more complex criteria.
 
+Other tests include
 
-Other tests include 
-
-- `==` exactly equals. Often a bad idea to use with numeric data 
-- `near` safe function for testing equality of numeric data as it has a tolerance for rounding errors.
+-   `==` exactly equals. Often a bad idea to use with numeric data
+-   `near` safe function for testing equality of numeric data as it has a tolerance for rounding errors.
 
 ```{r filter-near}
 sqrt(2) ^ 2 == 2 # should be true, but rounding errors 
@@ -222,14 +224,14 @@ sqrt(2) ^ 2 - 2 # the difference
 near(sqrt(2) ^ 2, 2) # safe alternative
 ```
 
-- `!=` not equal to
-- `<` less than
-- `<=` less than or equal to
-- `>` greater than
-- `>=` greater than or equal to
-- `is.na()` for filtering by missing values.
-- `between()` for filtering values with a range
-- `%in%` is used when you want to test if a value is in a vector
+-   `!=` not equal to
+-   `<` less than
+-   `<=` less than or equal to
+-   `>` greater than
+-   `>=` greater than or equal to
+-   `is.na()` for filtering by missing values.
+-   `between()` for filtering values with a range
+-   `%in%` is used when you want to test if a value is in a vector
 
 ```{r filter-in}
 penguins |> 
@@ -282,18 +284,21 @@ Another common error is to forget to quote any strings.
 penguins |> filter(species == Chinstrap)
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 From the `penguins` data, filter
 
- - Gentoo penguins
- - Gentoo or Adelie penguins
- - penguins with a mass greater than or equal to 5000g
- - penguins with a bill length between 45 and 50 mm
- - Gentoo penguins not from from Dream Island
- 
- <details>
-  <summary>Hint</summary>
+-   Gentoo penguins
+-   Gentoo or Adelie penguins
+-   penguins with a mass greater than or equal to 5000g
+-   penguins with a bill length between 45 and 50 mm
+-   Gentoo penguins not from from Dream Island
+
+<details>
+
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 #hint 1
 penguins |> filter(___ = ___)
@@ -310,26 +315,25 @@ penguins |> filter(___ >= ___)
 #hint 5
 ?`!`
 ```
-</details> 
 
-
+</details>
+:::
 
 ## Slicing the data with `slice()`
 
-Sometimes it is useful to extract rows by row number. 
+Sometimes it is useful to extract rows by row number.
 
 ```{r slice}
 penguins |> slice(3:7)
 ```
 
-You can use negative numbers to remove rows. 
-Be careful using `slice()` as if the data change, different rows may be returned. 
-
+You can use negative numbers to remove rows.
+Be careful using `slice()` as if the data change, different rows may be returned.
 
 ## Distinct rows with `distinct()`
 
 If there are duplicates in the data, we can remove these with `distinct()`.
-`distinct()` with no extra arguments will remove duplicate rows. 
+`distinct()` with no extra arguments will remove duplicate rows.
 
 ```{r}
 penguins |> distinct()
@@ -343,27 +347,31 @@ penguins |> distinct(island)
 
 Other columns will be removed unless the argument `.keep_all = TRUE` is used.
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise {.unnumbered .facta .toc-ignore}
 
-From the `penguins` data, find distinct values of 
+From the `penguins` data, find distinct values of
 
- - species
- - species, island and sex
+-   species
+-   species, island and sex
 
- <details>
-  <summary>Hint</summary>
+<details>
+
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 penguins |> distinct(___, ___)
 
 ```
-</details> 
 
+</details>
+:::
 
 ## Random rows
 
-Sometimes you want to sample rows at random from a data.frame. 
-This can be done with `slice_sample()`. 
-This can either sample a constant _n_ rows or constant fraction of the rows depending on whether the `n` or `prop` argument is used.
+Sometimes you want to sample rows at random from a data.frame.
+This can be done with `slice_sample()`.
+This can either sample a constant *n* rows or constant fraction of the rows depending on whether the `n` or `prop` argument is used.
 
 ```{r sample-n}
 penguins |> slice_sample(n = 10)
@@ -380,37 +388,39 @@ penguins |>
   mutate(body_mass_kg = body_mass_g / 1000)
 ```
 
-There are lots of functions that are useful to use with mutate. 
+There are lots of functions that are useful to use with mutate.
 Any function that returns either a single value or as many values as are in the data can be used.
 
 `mutate()` is very useful when cleaning data.
 
-- See text manipulation tutorial for cleaning text with the `stringr` package.
-- See date and time tutorial for cleaning dates and times with the `lubridate` package.
+-   See text manipulation tutorial for cleaning text with the `stringr` package.
+-   See date and time tutorial for cleaning dates and times with the `lubridate` package.
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise 
 
-With the `penguins` data, 
+With the `penguins` data,
 
- - convert flipper length to cm
- - add a column with the ratio of bill width to length
+-   convert flipper length to cm
+-   add a column with the ratio of bill width to length
 
- <details>
-  <summary>Hint</summary>
+<details>
+
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 # hint 1
 penguins |> 
   mutate(___ = ___)
 ```
-</details> 
 
-
-
+</details>
+:::
 
 ## Summarising data with `summarise()`
 
 `summarise()` lets us summarise data.
-We can use it if we want to calculate a summary statistic of the data. 
+We can use it if we want to calculate a summary statistic of the data.
 Remember to separate arguments with a comma.
 
 ```{r summarise1}
@@ -422,26 +432,29 @@ penguins |> summarise(
 
 Only the columns created in the `summarise()` and any grouping columns (see below) will be kept.
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 With the `penguins` data, find
 
- - the maximum and minimum bill length
+-   the maximum and minimum bill length
 
+<details>
 
- <details>
-  <summary>Hint</summary>
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 penguins |> 
   summarise(___ = ___(___))
 ```
-</details> 
 
+</details>
+:::
 
 ### Summarising multiple columns
 
 Sometimes you want to summarise multiple columns at the same time.
-This can be done with the `across()` helper function. 
+This can be done with the `across()` helper function.
 `across()` needs to be told which columns to process and what function or functions to use.
 
 ```{r across}
@@ -454,7 +467,6 @@ penguins |>
 ```
 
 You can also use `across()` with `mutate()` to mutate several columns at the same time.
-
 
 ## Grouping data with `group_by`
 
@@ -469,26 +481,28 @@ penguins |>
   summarise(mean_flipper_length = mean(flipper_length_mm))
 ```
 
-
 Grouped data can be ungrouped with `ungroup()`.
 This can help prevent surprises!
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise 
 
 With the `penguins` data, find
 
- - the maximum and minimum bill depth of each species
- 
- <details>
-  <summary>Hint</summary>
+-   the maximum and minimum bill depth of each species
+
+<details>
+
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 penguins |> 
   group_by(___)
   summarise(___ =  ___(___))
 ```
-</details> 
 
-
+</details>
+:::
 
 ## Sorting with `arrange()`
 
@@ -498,22 +512,25 @@ To sort the data frame by one or more of the variables we can use `arrange()`.
 penguins |> arrange(bill_length_mm, bill_depth_mm)
 ```
 
-This will sort smallest first. 
+This will sort smallest first.
 To reverse the sort order, use `desc()`
 
 ```{r arrange2}
 penguins |> arrange(desc(bill_length_mm), desc(bill_depth_mm))
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 Sort the `penguins` data by
 
- - body mass
- - island and body mass, with the largest birds first
+-   body mass
+-   island and body mass, with the largest birds first
 
- <details>
-  <summary>Hint</summary>
+<details>
+
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 # hint 1
 penguins |> 
@@ -522,9 +539,10 @@ penguins |>
 # hint 2
 ?desc
 ```
-</details> 
 
- 
+</details>
+:::
+
 ## Counting rows with `count()` and `n()`
 
 The function `n` can count how many rows there are in the each group (or the entire data frame if it is not grouped).
@@ -543,17 +561,20 @@ penguins |>
   count(species)
 ```
 
-`count()` is more concise, but `group_by()` and `summarise()` is useful when you need to calculate more variables (for example mean and standard deviation). 
+`count()` is more concise, but `group_by()` and `summarise()` is useful when you need to calculate more variables (for example mean and standard deviation).
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise 
 
 From the `penguins` data, find
 
- - how many penguins are there of each species
- - how many penguins are there of each species in each island
+-   how many penguins are there of each species
+-   how many penguins are there of each species in each island
 
- <details>
-  <summary>Hint</summary>
+<details>
+
+<summary>Hint</summary>
+
 ```{r, eval = FALSE}
 penguins |> 
   count(___, ___)
@@ -564,30 +585,35 @@ penguins |>
   summarise(___ = n())
 
 ```
-</details> 
 
+</details>
+:::
 
 ## Common problems
 
 ### Non standard names
 
-Ideally column names should follow the standard rules for naming objects in R - UPPER and lower case letters, numbers, "." and "_" with the first character being a letter (or a dot if you want an invisible object).
+Ideally column names should follow the standard rules for naming objects in R - UPPER and lower case letters, numbers, "." and "\_" with the first character being a letter (or a dot if you want an invisible object).
 Sometimes when you import data, it has non-standard names with spaces or extra characters.
 If you need to refer to a column name that doesn't follow the rules, you need to enclose it with back-ticks.
+
 ```{r non-standard-names}
 df <- tibble(`Region/Country` = "Norway", value = 42)
 df
 df |> rename(region_country = `Region/Country`)
 ```
-It is sometimes best to rename these columns to make them easier to refer to. 
+
+It is sometimes best to rename these columns to make them easier to refer to.
 `janitor::clean_names()` is very efficient for making easy-to-use names.
 
-## Resources
+::: callout-note
+## Further reading
 
-- [stat545](https://stat545.com/dplyr-intro.html)
-- [R for data science](https://r4ds.had.co.nz/) (Online copy of book)
-- [`dplyr` cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf)
+-   [stat545](https://stat545.com/dplyr-intro.html)
+-   [R for data science](https://r4ds.had.co.nz/) (Online copy of book)
+-   [`dplyr` cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf)
+:::
 
-### Contributors {- .contributors .toc-ignore}
+### Contributors {.unnumbered .contributors .toc-ignore}
 
 Richard J. Telford

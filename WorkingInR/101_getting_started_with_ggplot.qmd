@@ -4,18 +4,20 @@ source("R/setup.R")
 
 # Getting started with ggplot
 
-### Before you start {.facta}
+::: callout-note
+## Before you start
 
 You need to be 
 
 - familiar with different types of data (continuous, categorical)
 - able to handle tibbles
 - know how to install a package
+:::
 
 ## The `ggplot2` package
 
 `ggplot2` is part of `tidyverse` so if you have already installed `tidyverse`, you already have `ggplot2` installed.
-If not, see the section \@ref(the-tidyverse).
+If not, see @sec-tidyverse.
 
 To activate `ggplot2`, you can use
 
@@ -56,11 +58,16 @@ The `data` is a data frame or tibble containing the variables to produce the fig
 The `mapping` uses `aes()` to describe how the variables should be mapped onto the **aes**tetics, such as x and y position or colour.
 Every other component of the plot is added with `+`.
 It makes the code easier to read if you put a new line after each `+` (the `+` must go at the end of a line, not at the start).
-These other elements include the graphical elements that display the data, usually created with a `geom_*()` function, labels created with `labs()`, and [themes](themes-1.html) that change the non-data elements of the plot with `themes()`.
+These other elements include the graphical elements that display the data, usually created with a `geom_*()` function, labels created with `labs()`, and themes (@sec-themes) that change the non-data elements of the plot with `themes()`.
 
-You can think of it as different layers that are put on top of each other see \@ref(fig:ggplot-hierarchy).
+You can think of it as different layers that are put on top of each other see @fig-ggplot-hierarchy.
 
-```{r ggplot-hierarchy, echo=FALSE, fig.cap="Visualization of how ggplots are built.", out.width = '100%'}
+```{r}
+#| label: fig-ggplot-hierarchy
+#| echo: false
+#| fig-cap: "Visualization of how ggplots are built."
+#| out-width: '100%'
+
 knitr::include_graphics("figures/ggplot_setup.png")
 ```
 
@@ -98,7 +105,7 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
 
 One thing that might be confusing about the argument colour is that it only allows to be a variable, for example `colour = species` or `colour = island`. 
 So for example `colour = "red"` does not work.
-If you want to choose a specific colour, this has to be done in geom or in scales (see section \@ref(colours-and-fill).
+If you want to choose a specific colour, this has to be done in geom or in scales (@sec-colours-and-fill).
 
 Now the ggplot function has added the x and y axis to the plot.
 
@@ -106,7 +113,7 @@ Now the ggplot function has added the x and y axis to the plot.
 
 To plot the actual data, you need a **geom function**.
 There are many different geom functions that you can choose.
-See chapter \@ref(choosing-your-visualisation) for an overview.
+See @sec-choosing-your-visualisation for an overview.
 
 Here, we will use four different geoms to display aspects of the penguins data in different ways.
 The legend is automatically plotted on the right side when needed.
@@ -135,7 +142,8 @@ p1 + labs(title = "geom_point()") +
   p4 + labs(title = "geom_boxplot()")
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 - Make a histogram of the penguins bill length.
  <details>
@@ -188,12 +196,13 @@ ggplot(data = ___, mapping = aes(x = ___, y = ___, colour = ___, shape = ___)) +
 
 ```
 </details> 
+:::
 
 ### Scales
 
 **Scales** as the name says is for scaling, converting, inverting.
 With scales you can manipulate the labels, breaks, transformations and palettes.
-In other words you can manually change the axis text, labels, ticks, add breaks, make transformations, and manipulate aesthetics like colour, shape, linetype (see section \@ref( colours-shapes-and-linetypes)).
+In other words you can manually change the axis text, labels, ticks, add breaks, make transformations, and manipulate aesthetics like colour, shape, linetype ( @sec-colours-shapes-and-linetypes).
 
 Here is just a small selection to show what is possible.
 We can log transform the y axis, change the axis titles, and change the colours.
@@ -206,7 +215,8 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   scale_color_viridis_d()
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 - Give your violin plot a colour-blind friendly fill.
 
@@ -219,7 +229,7 @@ ggplot(data = ___, mapping = aes(x = ___, y = ___, fill = ___)) +
  
 ```
 </details> 
-
+:::
 
 
 ### Labs
@@ -239,9 +249,10 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 ```
 
 Titles can be useful for presentations, but generally not useful for manuscripts, where you can put the information into the caption. 
-Tags are useful when building a multipart figure (see \@ref(combining-plots)).
+Tags are useful when building a multipart figure (@sec-combining-plots).
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 - Add axis & legend labels to your violin plot
 
@@ -253,6 +264,7 @@ violin_plot +
  
 ```
 </details> 
+:::
 
 ### Facets
 
@@ -263,7 +275,7 @@ In the next example, we use `facet_wrap()` to split the penguin data into 3 pane
 ```{r facets, eval = TRUE, fig.height = 3, fig.width=5}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
-  facet_wrap(~ island)
+  facet_wrap(facets = vars(island))
 ```
 
 If you want to split the data by two variables, `facet_grid()` can be useful.
@@ -271,10 +283,11 @@ If you want to split the data by two variables, `facet_grid()` can be useful.
 ```{r facets-grid, eval = TRUE, fig.height = 3, fig.width=5}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
-  facet_grid(island ~ sex)
+  facet_grid(rows = vars(island), cols = vars(sex))
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 - split your scatterplot into facets by sex.
 
@@ -286,7 +299,7 @@ scatter_plot +
  
 ```
 </details> 
-
+:::
 
 ### Themes
 
@@ -295,7 +308,7 @@ In themes you can change, remove and add the background, gridlines, ticks, text,
 
 In our example, we will change the axis tile text size, the colour of the axis text and change the theme to `theme_minimal()`.
 
-See chapter \@ref(themes) for more about using themes.
+See @sec-themes for more about using themes.
 
 ```{r theme, eval = TRUE, , fig.height = 3, fig.width=5}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
@@ -307,7 +320,8 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise 
 
 - Change the theme of your scatterplot
 
@@ -319,6 +333,7 @@ scatter_plot +
  
 ```
 </details> 
+:::
 
 ### A ggplots are built with layers
 
@@ -348,7 +363,8 @@ points_on_top + labs(title = "Points on top") +
 
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 - Make a boxplot of bill length by species on top of the jittered bill length data
 
@@ -361,8 +377,9 @@ ggplot(data = ___, mapping = aes(x = ___, y = ___)) +
  
 ```
 </details> 
+:::
 
-## Trouble shooting {.tabset}
+## Trouble shooting
 
 In the beginning you will make mistakes which will result in error messages, warnings or incomplete plots.
 These mistakes often occur when one of the layers is missing, because a `+` is forgotten at the end of a line, due to a typo, or the data or other elements are forgotten.
@@ -411,7 +428,8 @@ If the geometry is missing `geom_point()`, ggplot will draw a empty plot, with a
 ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
 ```
 
-### Exercise {- .facta .toc-ignore}
+::: callout-note
+## Exercise
 
 I make lots of mistakes and my plots don't work. 
 Please fix them.
@@ -458,10 +476,11 @@ ggplot(penguins, aes(x = bill_length, y = bill_depth, fill = species)) +
   Also note that the **c** in  `scale_colour_viridis_c()` is for a continuous scale. 
   See the help file for how to change this.
 </details> 
+:::
 
-
-
-### What's next? {.facta}
+::: callout-note
+## What's next?
 
 Next, we will show the [essential elements]() of a plot (title, axes, legend, ...) and you can learn how to change and adapt each of these elements.
-Further you can learn the most common plots types that are commonly used  (\@ref(choosing-your-visualisation)).
+Further you can learn the most common plots types that are commonly used  (@sec-choosing-your-visualisation).
+:::
