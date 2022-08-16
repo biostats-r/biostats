@@ -1,14 +1,4 @@
----
-title: "Binomial generalized linear models"
-output:
-  bookdown::html_document2:
-    highlight: tango
-    toc: true
-    toc_float: true
-    css: ../css/style-chapters.css
-editor_options: 
-  chunk_output_type: console
----
+# Binomial generalized linear models
 
 ```{r setup, eval=TRUE, include=FALSE}
 
@@ -20,9 +10,6 @@ library(fontawesome)
 
 # source figure settings
 source("../StatisticsInR/Files/biostats_theme.R")
-
-# set warning to be off for all chunks
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```
 
@@ -53,14 +40,15 @@ example_data2 <- example_data %>% group_by(group, response) %>%
 
 ```
 
-### Before you start {.facta .toc-ignore}
+::: callout-note
+## Before you start
+
 
 Before reading this page, you should be comfortable with basic statistical 
 theory, using R, continuous and categorical data, and **linear models**.
 
 You should also review the basics of the Binomial distribution [here](). EGS: ADD LINK.
-
-</br>
+:::
 
 ## Introduction
 
@@ -92,7 +80,7 @@ population of 10 (10 trials).
 The $Y$ values can only 
 take values between 0 or 1 (either 0 and 1 themselves or proportions e.g. 0.1).  
 
-```{r nonlinear-plot, include = TRUE, echo = FALSE, , fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
+```{r fig-nonlinear-plot, include = TRUE, echo = FALSE, fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
 
 ggplot(aes(x = explanatory, y = response), data = example_data)+
   geom_point(shape = 16)+
@@ -163,8 +151,8 @@ $Y$ can be stored as a factor, an integer, or as a continuous numeric variable.
 For this worked example, we will try to find out if/how body weight (kg)
 influences the survival probability of Soay sheep. 
 
-```{r sheep-fig, echo=FALSE, eval=TRUE, fig.cap="Illustration of sheep by Emily G. Simmonds", fig.height=150}
-include_graphics("./Figures/sheep.png")
+```{r fig-sheep, echo=FALSE, eval=TRUE, fig.cap="Illustration of sheep by Emily G. Simmonds", fig.height=150}
+#include_graphics("./Figures/sheep.png")
 ```
 
 Biologically, it is expected that smaller sheep would find it harder to survive
@@ -204,7 +192,7 @@ top of each other.
 
 EGS: NEED TO ADD LINE TO READ IN DATA YOU CAN GET IT FROM THE PAPER LINK ABOVE THEN HOST IT.
 
-```{r sheep-data-plot, include = TRUE, echo = TRUE, fig.cap = "Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points"}
+```{r fig-sheep-data-plot, include = TRUE, echo = TRUE, fig.cap = "Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points"}
 
 plot1 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
  geom_point(colour = "grey70", size = 2, alpha = 0.25)+
@@ -714,7 +702,11 @@ This is the parameter that gives the value of the log odds of $Y$ when $X = 0$.
 This gives the amount of change in the log odds of $Y$ as the value of $X$ 
 changes by one unit. 
 
-```{r log-odds-plot, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue"}
+```{r}
+#| label: fig-log-odds-plot
+#| include: true
+#| echo: false
+#| fig-cap: "Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue"
 
 example_data <- mutate(example_data,
                        logity = predict.glm(glm_model_object, 
@@ -775,9 +767,14 @@ However, on the
 response scale, the relationship between $X$ and $Y$ is not linear. 
 As a result,
 the gradient of the model line will be different for different $X$ values 
-(see \@ref(fig:response-scale-example)). 
+(see @fig-response-scale-example). 
 
-```{r response-scale-example, include = TRUE, echo = FALSE, fig.cap = "Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue", fig.height=5}
+```{r}
+#| label: fig-response-scale-example
+#| include: true
+#| echo: false
+#| fig-cap: "Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue"
+#| fig-height: 5
 
 example_data <- mutate(example_data, 
                        predictions = predict(glm_model_object,
@@ -807,7 +804,7 @@ case even though this relationship will not be linear on the response scale.
 
 To see the change in slope of the model line on the response scale you can
 predict values of $Y$ on the response scale and either plot the relationship 
-(like above in \@ref(fig:response-scale-example)) or
+(like above in @fig-response-scale-example) or
 simply look at the change between two $X$ values. 
 
 e.g.
@@ -1072,7 +1069,7 @@ The above section has shown how you can quantify uncertainty in the line
 parameters of a Binomial GLM as numbers. 
 But often in science, it is clearer to show these things visually.
 
-We can add the confidence intervals to \@ref(fig:log-odds-plot) 
+We can add the confidence intervals to @fig-log-odds-plot 
 showing our GLM fitted line. This can be done either on the link scale or the
 response scale. 
 
@@ -1154,7 +1151,7 @@ a GLM using `predict()` you need to calculate the bounds yourself.
 You need to add or
 subtract 1.96 times the standard error from the mean prediction. 
 
-```{r plot_ci_example, fig.caption = "Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the response scale (B)"}
+```{r fig-plot_ci_example, fig.cap = "Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the response scale (B)"}
 
 predictions <- predictions %>% mutate(upper_ci_link = predictions_link + (2*SE_link),
                                       lower_ci_link = predictions_link - (2*SE_link),
@@ -1226,49 +1223,50 @@ newdata <- data.frame(Weight = seq(min(sheep_data$Weight),
                max(sheep_data$Weight),
                length.out = 100))
 
-sheep_predictions <- newdata %>% mutate(predictions_link = predict(sheep_model,
-                                                    newdata,
-                                                    type="link", 
-                                                    se.fit = TRUE)$fit,
-                            # the next lines add the lower and upper ci bounds
-                            lower_ci_link = predict(sheep_model,
-                                                    newdata,
-                                                    type="link", 
-                                                    se.fit = TRUE)$fit - 
-                                                    (1.96*predict(sheep_model,
-                                                    newdata,
-                                                    type="link", 
-                                                    se.fit = TRUE)$se.fit),
-                            upper_ci_link = predict(sheep_model, 
-                                                    newdata,
-                                                    type="link", 
-                                                    se.fit = TRUE)$fit + 
-                                                    (1.96*predict(sheep_model,
-                                                    newdata,
-                                                    type="link", 
-                                                    se.fit = TRUE)$se.fit),
-                            # then predict on the response scale
-                            predictions_response = predict(sheep_model,
-                                                    newdata,
-                                                    type="response", 
-                                                    se.fit = TRUE)$fit,
-                            # and add the confidence interval bounds
-                            lower_ci_response = predict(sheep_model,
-                                                    newdata, 
-                                                    type="response", 
-                                                    se.fit = TRUE)$fit - 
-                                                    (1.96*predict(sheep_model,
-                                                    newdata,
-                                                    type="response", 
-                                                    se.fit = TRUE)$se.fit),
-                            upper_ci_response = predict(sheep_model,
-                                                    newdata, 
-                                                    type="response", 
-                                                    se.fit = TRUE)$fit + 
-                                                    (1.96*predict(sheep_model,
-                                                    newdata,
-                                                    type="response", 
-                                                    se.fit = TRUE)$se.fit))
+sheep_predictions <- newdata %>% 
+  mutate(predictions_link = predict(sheep_model,
+                                    newdata,
+                                    type="link", 
+                                    se.fit = TRUE)$fit,
+            # the next lines add the lower and upper ci bounds
+            lower_ci_link = predict(sheep_model,
+                                    newdata,
+                                    type="link", 
+                                    se.fit = TRUE)$fit - 
+                                    (1.96*predict(sheep_model,
+                                    newdata,
+                                    type="link", 
+                                    se.fit = TRUE)$se.fit),
+            upper_ci_link = predict(sheep_model, 
+                                    newdata,
+                                    type="link", 
+                                    se.fit = TRUE)$fit + 
+                                    (1.96*predict(sheep_model,
+                                    newdata,
+                                    type="link", 
+                                    se.fit = TRUE)$se.fit),
+            # then predict on the response scale
+            predictions_response = predict(sheep_model,
+                                    newdata,
+                                    type="response", 
+                                    se.fit = TRUE)$fit,
+            # and add the confidence interval bounds
+            lower_ci_response = predict(sheep_model,
+                                    newdata, 
+                                    type="response", 
+                                    se.fit = TRUE)$fit - 
+                                    (1.96*predict(sheep_model,
+                                    newdata,
+                                    type="response", 
+                                    se.fit = TRUE)$se.fit),
+            upper_ci_response = predict(sheep_model,
+                                    newdata, 
+                                    type="response", 
+                                    se.fit = TRUE)$fit + 
+                                    (1.96*predict(sheep_model,
+                                    newdata,
+                                    type="response", 
+                                    se.fit = TRUE)$se.fit))
 
 ```
 </br>
@@ -1276,7 +1274,7 @@ sheep_predictions <- newdata %>% mutate(predictions_link = predict(sheep_model,
 Once we have created predictions of $Y$ from the model object, 
 we can plot them using `geom_line()` and `geom_ribbon()` as in the code below.
 
-```{r sheep_predictions_plot, fig.caption = "A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+```{r fig-sheep_predictions_plot, fig.cap = "A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
 # Plot of Confidence Intervals on the link scale
 
@@ -1352,14 +1350,16 @@ the response scale
 
 To do this, we can re-plot the example plot from the section above. 
 
-```{r example_predictions_plot, fig.caption = "plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+```{r}
+#| label: fig-example_predictions_plot
+#| fig-cap: "plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"
 
 example_predictions_response +
     labs(title = "Model predictions and data on response scale")
 
 ```
 
-If you look carefully at \@ref(fig:example_predictions_plot) you can see that 
+If you look carefully at @fig-example_predictions_plot you can see that 
 there are more data points that are 0 for the response for 
 negative values of the explanatory variable.
 As the values of the explanatory variable increase, we find progressively more
@@ -1381,7 +1381,7 @@ Then it would be possible to also test:
 
 * whether the data points are evenly distributed around the fitted line
 
-```{r example_predictions_plot_proportion, fig.caption = "plot of the fitted GLM line on the response scale with proportional response, including 95% confidence interval (grey)"}
+```{r fig-example_predictions_plot_proportion, fig.cap = "plot of the fitted GLM line on the response scale with proportional response, including 95% confidence interval (grey)"}
 
 ggplot(aes(x = explanatory, y = successes/(successes + failures)), 
        data = example_data2)+
@@ -1466,7 +1466,7 @@ together.**
 
 </br>
 
-```{r sheep_predictions_plot2, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+```{r fig-sheep_predictions_plot2, fig.cap = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
 sheep_predictions_response +
   labs(title = "Model predictions on response scale")
@@ -1479,7 +1479,7 @@ The fit of this model is perhaps a little harder than the example in the theory
 section. 
 This is partly caused because there is more data, so it overlaps a lot. 
 
-```{r sheep_predictions_plot3, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+```{r fig-sheep_predictions_plot3, fig.cap = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
 ggplot() +
   geom_jitter(data = sheep_data, 
@@ -1583,7 +1583,7 @@ the log-odds of the survival of the sheep increases by
 On the response scale this increase is non-linear and is better shown with a
 graph. 
 
-```{r sheep_predictions_plot4, fig.caption = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
+```{r fig-sheep_predictions_plot4, fig.cap = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
 
 sheep_predictions_response +
   labs(title = "Model predictions on response scale")
@@ -1618,26 +1618,26 @@ Older sheep are likely to be bigger than new lambs.
 Therefore, it might be good to also include Age in the model possibly conducting
 model selection to decide if this variable is needed. 
 
-</br>
 
-## {.toc-ignore} 
-
-ANYONE KNOW HOW TO REMOVE THIS TITLE?
-
-### What's next? {.facta .toc-ignore}
+::: callout-note
+## What's next? 
 
 * **Poisson Generalized linear models** for analyses when your response 
 variable is not normally distributed.
+:::
 
-### Further reading {.facta .toc-ignore}
+::: callout-note
+## Further reading
 
-### Contributors {- .contributors .toc-ignore}
+:::
 
-```{r contributors, eval=FALSE}
-* Kwaku Peprah Adjei (lead)
-* Emily G. Simmonds
-* Bob O'Hara
-```
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
+
+- Kwaku Peprah Adjei (lead)
+- Emily G. Simmonds
+- Bob O'Hara
+:::
 
 
 

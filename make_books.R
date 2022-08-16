@@ -72,3 +72,8 @@ quarto::quarto_render(input = "quarto/demo_presentation.qmd", output_file = "doc
 fs::dir_copy("quarto/demo_presentation_files/", "docs/quarto/demo_presentation_files/")
 fs::dir_delete("quarto/demo_presentation_files/") 
 }
+
+
+# Statistics in R
+quarto::quarto_render("StatisticsInR")
+bioceed_links("docs/statisticsInR", quarto = TRUE)

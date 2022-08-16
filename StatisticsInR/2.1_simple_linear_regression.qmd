@@ -1,12 +1,5 @@
----
-title: "Simple linear Regression"
-output:
-  bookdown::html_document2:
-    highlight: tango
-    toc: true
-    toc_float: true
-    css: ../css/style-chapters.css
----
+# Simple linear Regression
+
 
 ```{r setup, eval=TRUE, include=FALSE}
 
@@ -17,22 +10,19 @@ library(knitr)
 # source figure settings
 source("../StatisticsInR/Files/biostats_theme.R")
 
-# set warning to be off for all chunks
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-
 ```
 
 ```{r setup-data, include=FALSE, echo=FALSE}
 
 # import data for the example
-dive_data <- read_csv("../StatisticsInR/Files/dive_depths.csv", col_names=T)
+dive_data <- read_csv("../StatisticsInR/Files/dive_depths.csv")
 
 # set the data type for each column
 dive_data <- dive_data %>% mutate(max_depth = as.integer(max_depth), Species = 
                                   as.factor(species), Group = as.factor(group))
 
 # load data for spurious correlation figure
-Spurious <- read_csv("./Files/spurious.csv", col_names = TRUE)
+Spurious <- read_csv("./Files/Spurious.csv")
 # convert pounds to kg
 Spurious <- Spurious %>% mutate(uranium_us = round(uranium_us/2.205, 2))
 
@@ -48,13 +38,14 @@ example_data <- as_tibble(data.frame(x = round(rnorm(100,1:100,10),2),
                           z = as.factor(1:100)))
 ```
 
-### Before you start {.facta .toc-ignore}
+
+::: callout-note
+## Before you start
 
 You should be familiar with basic statistical theory, basics of R, continuous 
 and categorical data, hypothesis testing, statistical modeling, 
 and the concept of linear models.
-
-</br>
+:::
 
 ## Introduction
 
@@ -93,7 +84,7 @@ how tall will a plant be if mean temperatures increase by 2&deg;C?
 
 </br>
 
-```{r plant-temp-fig, echo=FALSE, eval=TRUE, fig.cap="Panel A shows an illustration of inferring the effect of temperature on plant height. Panel B shows an illustration of the prediction of a plant height under a 2&deg;C increase in temperature. Created by Emily G. Simmonds", fig.height=150}
+```{r fig-plant-temp, echo=FALSE, eval=TRUE, fig.cap="Panel A shows an illustration of inferring the effect of temperature on plant height. Panel B shows an illustration of the prediction of a plant height under a 2&deg;C increase in temperature. Created by Emily G. Simmonds", fig.height=150}
 include_graphics("./Figures/plant_height_temp.png")
 ```
 
@@ -118,7 +109,7 @@ A linear relationship between two variables does not necessarily mean that $X$ h
 For example, 
 the number of PhDs awarded in math has nothing to do with the amount of Uranium stored in the USA.
 However, when plotting the two variables against each other, 
-one could assume a perfect relationship (see \@ref(fig:fig-2)). 
+one could assume a perfect relationship (see @fig-spurious)). 
 Therefore, before statistically analyzing data it is essential to make sure there is a biological explanation or assumption for a relationship between $X$ and $Y$. 
 For more examples of wrong assumptions of causality [click here](https://www.tylervigen.com/spurious-correlations).
 
@@ -137,7 +128,11 @@ uranium_plot <- ggplot(Spurious, aes(y=uranium_us, x=maths_phd))+
 
 
 
-```{r figure-2, include=TRUE, echo=FALSE, fig.cap="Example of a spurious correlation (one that does not make sense causally). Scatterplot of number of maths PhDs awarded in a year against the amount of uranium stored in US power plants annually. Smooth line indicates a regression line for this data with the 95% confidence interval as the shaded area"}
+```{r}
+#| label: fig-spurious
+#| include: true
+#| echo: false
+#| fig-cap: "Example of a spurious correlation (one that does not make sense causally). Scatterplot of number of maths PhDs awarded in a year against the amount of uranium stored in US power plants annually. Smooth line indicates a regression line for this data with the 95% confidence interval as the shaded area"
 
 uranium_plot
 
@@ -219,7 +214,7 @@ for smaller species to dive deeper.
 The direction and strength of the influence of body size on dive depth can be 
 quantified using a linear regression. 
 
-```{r mammal-fig, echo=FALSE, eval=TRUE, fig.cap="Illustration of marine mammals by Emily G. Simmonds", fig.height=150}
+```{r fig-mammal, echo=FALSE, eval=TRUE, fig.cap="Illustration of marine mammals by Emily G. Simmonds", fig.height=150}
 include_graphics("./Figures/marine_mammals.png")
 ```
 
@@ -277,7 +272,7 @@ dive_fig <- ggplot(dive_data, aes(x=body_size_kg, y=max_depth, color=group))+
 
 ```
 
-```{r dive-fig, include=TRUE, echo=FALSE, fig.cap="Scatterplot of body size against maximum dive depth for marine mammals. Colours indicate taxonomic group"}
+```{r fig-dive, include=TRUE, echo=FALSE, fig.cap="Scatterplot of body size against maximum dive depth for marine mammals. Colours indicate taxonomic group"}
 
 dive_fig
 
@@ -585,10 +580,13 @@ parameter_plot <- ggplot(your_data, aes(x=explanatory, y=response))+
 ```
 
 
-```{r parameter-plot, include=TRUE, echo=FALSE, fig.cap="Illustration of components of a linear regression. Intercept is in orange, slope is in blue, and the residuals (explained later) are in red"}
+```{r}
+#| label: fig-parameter-plot
+#| include: true
+#| echo: false
+#| fig-cap: "Illustration of components of a linear regression. Intercept is in orange, slope is in blue, and the residuals (explained later) are in red"
 
 parameter_plot
-
 ``` 
 
 In this section we will go through these parameters and 
@@ -637,7 +635,7 @@ In the case of a simple linear regression, the error is assumed to be normally d
 
 </br>
 
-In \@ref(fig:parameter-plot), 
+In @fig-parameter-plot), 
 you can see a plot of a regression line through the data points, 
 but it does not touch all of the points. 
 In other words, it is not capturing all of the variation in the data. 
@@ -655,7 +653,7 @@ You can extract the residuals from your model object using the function
 `residuals()`, which is useful when checking model assumptions (see below). 
 Data points below the regression line have a negative the residual and 
 data points above the line have a positive residual. 
-These are highlighted red in \@ref(fig:parameter-plot).
+These are highlighted red in @fig-parameter-plot).
 
 </br>
 
@@ -801,7 +799,7 @@ In this case our model estimates a negative slope.
 This means that for every increase of 1 kg in body size of marine mammals the maximum dive depth decreases by 
 0.005 m. 
 In other words, there is a negative relationship between body weight 
-and dive depth and as $X$ increases $Y$ decreases (\@ref(fig:fig-6)).
+and dive depth and as $X$ increases $Y$ decreases (@fig-fig-6).
 
 </br>
 
@@ -882,7 +880,7 @@ dive_model_fig <- ggplot(dive_data, aes(x=body_size_kg, y=max_depth))+
   x="Body Size (kg)")
 ```
 
-```{r dive-model-fig, include=TRUE, echo=FALSE, fig.cap="Scatter plot of dive depths against body size. The black line is the regression line predicted from the linear model"}
+```{r fig-dive-model, include=TRUE, echo=FALSE, fig.cap="Scatter plot of dive depths against body size. The black line is the regression line predicted from the linear model"}
 
 dive_model_fig
 
@@ -1152,7 +1150,7 @@ fig_7 <- ggplot()+
 
 ```
 
-```{r dive-predictions-plot, include = TRUE, echo = FALSE, fig.cap="Scatter plot of dive depths against body size. Line is the regression line from a linear model. Shaded area is 95% confidence interval"}
+```{r fig-dive-predictions-plot, include = TRUE, echo = FALSE, fig.cap="Scatter plot of dive depths against body size. Line is the regression line from a linear model. Shaded area is 95% confidence interval"}
 
 depth_predictions <- depth_predictions %>%
                       mutate(x=dive_data$body_size_kg)
@@ -1261,7 +1259,7 @@ If the assumptions are met, you can expect a few characteristics of the plot:
 
 </br>
 
-```{r residuals-vs-fitted-fig, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) residuals vs fitted plot for a simple linear regression"}
+```{r fig-residuals-vs-fitted-fig, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) residuals vs fitted plot for a simple linear regression"}
 
 set.seed(2020)
 example_data$a <- rpois(100,as.numeric(example_data$z)^1.2)
@@ -1294,7 +1292,7 @@ are met, you can expect:
 
 </br>
 
-```{r normal-qq-fig, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) normal QQ diagnostic plot"}
+```{r fig-normal-qq, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) normal QQ diagnostic plot"}
 
 set.seed(2020)
 example_data$b <- as.numeric(example_data$z)^10
@@ -1326,7 +1324,7 @@ If the assumptions are met, you can expect:
 
 </br>
 
-```{r scale-location-fig, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) scale-location plot"}
+```{r fig-scale-location, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) scale-location plot"}
 set.seed(2020)
 example_data$b <- rpois(100,as.numeric(example_data$z)^5)
 
@@ -1351,7 +1349,7 @@ If the assumptions are met, you can expect:
 
 </br>
 
-```{r cook-d-fig, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) Cook's Distance plot"}
+```{r fig-cook-d, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) Cook's Distance plot"}
 
 example_data$a <- c(example_data$a[1:98], 1000, 150)
 
@@ -1388,7 +1386,10 @@ We will use one plot at a time to test specific assumptions.
 
 #### Residuals vs fitted
 
-```{r dive-residual-fig, echo = TRUE, fig.cap = "Residuals vs fitted plot for dive depths model"}
+```{r}
+#| label: fig-dive-residual
+#| echo: true
+#| fig-cap: "Residuals vs fitted plot for dive depths model"
 
 plot(dive_model, which = 1)
 
@@ -1396,7 +1397,7 @@ plot(dive_model, which = 1)
 
  </br> 
  
-\@ref(fig:dive-residual-fig) looks quite unusual. 
+@fig-dive-residual looks quite unusual. 
 
 There are a few assumptions we are checking with this plot:
 
@@ -1441,7 +1442,7 @@ very different.
 
 #### Normal QQ
 
-```{r dive-qq-fig, echo = TRUE, fig.cap="Normal QQ plot for dive depth model"}
+```{r fig-dive-qq, echo = TRUE, fig.cap="Normal QQ plot for dive depth model"}
 
 plot(dive_model, which = 2)
 
@@ -1458,14 +1459,14 @@ the distribution of the residuals.
 There is some deviation at both tails of the distribution. 
 At lower quantiles, this seems ok. 
 At higher values, points 9 and 10 deviate quite a lot. 
-These points also stood out in \@ref(fig:dive-residual-fig). 
-We will need to look into them more in \@ref(fig:dive-cook-d-fig). 
+These points also stood out in @fig-dive-residual. 
+We will need to look into them more in @fig-dive-cook-d. 
 
 </br>
 
 #### Scale-location
 
-```{r dive-scale-fig, echo = TRUE, fig.cap="Scale-location plot for dive depth model"}
+```{r fig-dive-scale, echo = TRUE, fig.cap="Scale-location plot for dive depth model"}
 
 plot(dive_model, which = 3)
 
@@ -1476,7 +1477,7 @@ plot(dive_model, which = 3)
 The assumption we are checking with this plot is: 
 **Do the residuals have equal variance across fitted values?**
 
-\@ref(fig:fig-14) shows a very similar picture to \@ref(fig:fig-12). 
+@fig-fig-14 shows a very similar picture to @fig-fig-12. 
 While there is a slight increase in variance as the amount of data increases, 
 the amount of change is < 0.5 and there is not much structure in the points. 
 So, this looks like things are ok.
@@ -1485,7 +1486,10 @@ So, this looks like things are ok.
 
 #### Cook's distance
 
-```{r dive-cook-d-fig, echo = TRUE, fig.cap = "Cook's distance plot for the dive depth model"}
+```{r}
+#| label: fig-dive-cook-d
+#| echo: true
+#| fig-cap: "Cook's distance plot for the dive depth model"
 
 plot(dive_model, which = 4)
 
@@ -1495,7 +1499,7 @@ plot(dive_model, which = 4)
 
 The assumption we are checking with this plot is: **Are there any outliers?**
 
-\@ref(fig:fig-15) shows that the Cook's distances of this model are not 
+@fig-dive-cook-d shows that the Cook's distances of this model are not 
 very high (max = 0.2).
 So, it does not seem that any points have that large an influence on the 
 fitted values.
@@ -1652,7 +1656,7 @@ final_dive_fig<- ggplot(dive_data, aes(x=body_size_kg, y=max_depth, color=group)
 
 ```
 
-```{r final-dive-fig, include = TRUE, echo = FALSE, fig.cap = "Plot of the relationship between dive depth and body size faceted by taxonomic group"}
+```{r fig-final-dive, include = TRUE, echo = FALSE, fig.cap = "Plot of the relationship between dive depth and body size faceted by taxonomic group"}
 
 final_dive_fig
 
@@ -1670,7 +1674,8 @@ It might be more appropriate to consider an effect of Group as well as body
 size. We can do this using **Linear models for categorical explanatory variables**/**ANOVA**, 
 check out these pages to continue the analysis of this data.
 
-### What's next {.facta .toc-ignore}
+::: callout-note
+## What's next
 
 * **Linear models for categorical explanatory variables**/**ANOVA** 
 for analyses when your explanatory variable is not numeric
@@ -1678,16 +1683,18 @@ for analyses when your explanatory variable is not numeric
 explanatory variable
 * **Generalised linear models** for analyses when your response variable is not 
 normally distributed
+:::
 
-## {.toc-ignore}
+::: callout-note
+## Further reading
 
-### Further reading {.facta .toc-ignore}
+:::
 
-### Contributors {- .contributors .toc-ignore}
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
 
-```{r contributors, eval=FALSE}
-* Emily G. Simmonds
-```
+- Emily G Simmonds
+:::
 
 
 
