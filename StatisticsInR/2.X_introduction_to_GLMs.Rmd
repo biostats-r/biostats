@@ -1,0 +1,237 @@
+---
+title: "Introduction to generalised linear models"
+output:
+  bookdown::html_document2:
+    highlight: tango
+    toc: true
+    toc_float: true
+    css: ../css/style-chapters.css
+---
+
+```{r setup, eval=TRUE, include=FALSE}
+
+# add all packages that need loading
+library(tidyverse)
+library(patchwork)
+library(knitr)
+#library(readr)
+#library(GGally)
+#library(ggpubr)
+
+# source figure settings
+source("../StatisticsInR/Files/biostats_theme.R")
+
+# set warning to be off for all chunks
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+```
+
+```{r setup2, eval=TRUE, include=FALSE}
+PhoenixData <- read.csv("https://www.math.ntnu.no/emner/ST2304/2019v/Week11/Phoenix.csv", stringsAsFactors = TRUE, header = TRUE)
+
+
+PhoenixModel <- glm(ClutchSize ~ Location, data = PhoenixData,  
+    family = poisson(link=log))  
+
+```
+
+### Before you start {.facta .toc-ignore}
+
+Before reading this page, you should be comfortable with basic statistical 
+theory, using R, continuous and categorical data, and **linear models**.
+
+</br>
+
+## Introduction
+
+This model builds on from the standard linear models covered on these pages 
+[1](), [2](), [3](). GLMs are similar to the linear models conceptually and in 
+R, but are much more flexible. GLMs are actually the general case of linear models, 
+hence their name (generalised linear models).
+
+Like the linear regression, the GLM also has two motivations. 
+**inference** and **prediction**. But as the name suggests, it is more general
+than the standard linear models (used for linear regression, ANOVA, and analyses
+with categorical and continuous variables). 
+
+</br>
+
+Linear models are used to model a continuous response as a function of 
+explanatory variables. 
+GLMs also model a response as a function of explanatory 
+variables. However, as they are more flexible 
+GLMs can
+be used for discrete as well as continuous response variables, They can model
+non-linear relationships, and handle cases where model residuals would not be
+normally distributed. 
+
+</br>
+
+In particular, GLMs are useful when the assumptions of the linear model are 
+violated. The most common violations that can be addressed with a GLM are:
+
+ * Residuals that are not normally distributed
+ * Non-linearity
+ * Unequal variance 
+ 
+While some of these violations could be addressed by transformation of the 
+response to try and improve linearity or equalise the variance - 
+this is not always possible or preferable. 
+The GLM makes it possible to account for violations of
+linearity and variance of residuals in a single model without changing the 
+response. This is especially useful when you know that the response data will
+not follow a normal distribution e.g. if they are binary results or derive from
+counting. In these cases, different distributions will better represent the data
+generation process than the normal distribution used in the linear model.
+
+</br>
+
+## <i class="fas fa-tasks"></i> Model checking {.tabset .tabset-fade}
+
+For linear models, 
+we used **residuals vs fitted plots** to check for equal variance and linearity, 
+**normal Q-Q plots** to check for normality of residuals and the 
+**Cooks distance** to check for the outliers. 
+
+For GLMs things are a little different since GLMs have non-normal and 
+non-constant variance (for Binomial and Poisson distributions the variance is
+controlled by the mean). 
+
+To account for the non-constant variance and be able to use diagnostic plots to 
+check if model assumptions are met, the residuals of a GLM need to be altered. 
+There are two ways of doing this: **Pearson** and **Deviance** residuals. 
+These are not perfect in any way. 
+These measures scale the residuals by the variance. 
+Once we have scaled the residuals in this way to account for non-equal variance, 
+they should be approximately normal.
+
+**Pearson residuals**
+
+These are calculated by dividing the residual (difference between observed data
+point $y_i$ and the fitted value $\hat{\mu}$) but the standard deviation of the estimates $\sigma_x$: 
+$$
+Res_p = \frac{y_i - \hat{\mu}}{\sigma_x}.
+$$
+
+In $R$, the Pearson residuals are obtained by:
+```{r pearson_residual, eval = FALSE}
+
+residuals_pearson <- resid(glm_model_object, type = "pearson")
+
+```
+
+Pearson residuals follow a chi-squared ($\chi^2$) distribution. 
+
+**Deviance Residuals**
+
+These are calculated by calculating the individual deviance $d_i$ 
+(the contribution of
+each data point to the deviance of the model) and then assigning this a direction
+based on the sign of the difference between the observed data point  $y_i$ and 
+the fitted value $\hat{\mu}$. : 
+$$
+Res_D = sign(y_i - \hat{\mu})\sqrt{d_i}
+$$
+where $sign(y_i - \hat{\mu}) = 1$ when $y_i - \hat{\mu} > 0$ and 
+$sign(y_i - \hat{\mu}) = -1$ when $y_i - \hat{\mu} < 0$. 
+
+The deviance residuals are the default in the `glm()`. 
+
+In $R$, the Deviance residuals are obtained by:
+
+```{r deviance_residuals, eval = FALSE}
+
+residuals_deviance <- resid(glm_model_object, type = "deviance")
+
+```
+
+</br>
+
+
+
+THEN SHOW SOME EXAMPLES AND SHOW IT IS NOT PERFECT. SO, INSTEAD WE CHECK
+OVERDISPERSION AND PLOT PREDICTIONS VS DATA. 
+
+Overdispersion
+
+Looking back to the start of this section, 
+we gave a list of assumptions of a GLM:
+
+* Lack of outliers
+
+* Correct distribution used
+
+* Correct link function is used
+
+* **Correct variance function is used**
+
+* **Dispersion parameter is constant**
+
+* Independence of y
+
+Some of these are the same as for linear models. But some are different. 
+This section focuses on the two assumptions in bold above.  
+
+</br>
+
+In Binomial and Poisson GLMs we assume that the variance is controlled by the 
+mean. But this is not always true. 
+It is something we need to check as part of the model checking process.
+
+</br>
+
+Two things can happen:
+
+1. We could get overdispersion (more variation than we expect). 
+
+2. We could get less variation than we expect. 
+
+The first option is a bigger problem and something we need to correct for, if we find it. 
+
+</br>
+
+#### How do we check for overdispersion?
+
+To check for overdispersion in GLMs we need to calculate the deviance. 
+To do this we **take the ratio of residual deviance and residual degrees of freedom.**
+
+Our assumption is that the deviance = 1. So, we want a value close to that. >1.2 indicates a potential problem.
+
+</br>
+
+We can find these deviance values in `summary()` 
+they are in the final paragraph of the output as discussed back in Part C. 
+([link](https://ntnu.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=7e1471ec-82ed-4309-ad83-acfd00e7d1e1))
+e.g.
+
+
+```{r, echo=TRUE, include=TRUE}
+
+summary(PhoenixModel)
+
+```
+
+
+For the example above (the phoenix model) 
+the **Deviance ratio = 116.17/98 = `r 116.17/98`.**
+
+We assume a value of 1, 1.185 is *just* ok. 
+Any higher and we might want to investigate
+further. 
+
+</br>
+
+The main problem with overdispersion is: uncertainty. If there is more variation, 
+the uncertainty in the estimate should be wider. 
+However, if our model does not know there is extra variation and it is assuming something else, it will give uncertainty that is too narrow! 
+We want the correct amount of uncertainty for our model and data. 
+
+</br>
+
+There are a few ways to correct for overdispersion, more on that in two weeks!
+
+For now, just know that it is something we should check for. 
+
+</br>
+
+
