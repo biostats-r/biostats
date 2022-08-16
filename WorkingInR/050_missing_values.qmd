@@ -24,7 +24,7 @@ The `penguins` dataset from `palmerpenguins` is used as an example.
 
 ### Detecting missing values
 
-`NA` values can be detected with the function `is.na` (NB lower case).
+`NA` values can be detected with the function `is.na()` (NB lower case).
 
 ```{r is.na}
 x <- c(0, 7, NA)
@@ -43,18 +43,18 @@ penguins |>
 ### Importing data with missing values
 
 When you import a text file (e.g., a csv file) any blank cells, or cells with "NA" will be treated as `NA`.
-If you have coded missing values as something else, you can use the `na` argument to `read_delim`
+If you have coded missing values as something else, you can use the `na` argument to `read_delim()`
 
 ```{r, eval = FALSE}
 # set blank cells, "NA" or "missing" to NA  
 read_delim(file = "my_file.csv", na = c("", "NA", "missing"))
 ```
 
-In `readxl::read_excel`, the default for the `na` argument is just for blank cells to be made `NA`, but other values can be added in the same way as in `read_delim`.
+In `readxl::read_excel()`, the default for the `na` argument is just for blank cells to be made `NA`, but other values can be added in the same way as in `read_delim()`.
 
 ### Removing rows with missing values
 
-We can remove rows with `NA` in particular columns from a data frame using `drop_na`.
+We can remove rows with `NA` in particular columns from a data frame using `drop_na()`.
 For example, to remove rows in the `penguins` data set with an `NA` in the `bill_length_mm` or `bill_depth_mm` columns, we could use
 
 ```{r drop-na}
@@ -62,7 +62,7 @@ penguins |>
   drop_na(bill_length_mm, bill_depth_mm)
 ```
 
-Alternatively, we can use `filter` and `is.na`. 
+Alternatively, we can use `filter()` and `is.na()`. 
 This is most useful when removing `NA` is one of several arguments to `filter`.
 
 ```{r filter-na}
@@ -70,15 +70,19 @@ penguins |>
   filter(species == "Gentoo", !is.na(bill_length_mm))
 ```
 
-You might see some code using `na.omit` to remove rows with missing values from a data frame.
-This can be dangerous as it will remove rows with an `NA` in any column, not just the columns you are interested in.
 
-### Replacing missing values
+::: callout-warning
+## na.omit
+You might see some code using `na.omit()` to remove rows with missing values from a data frame.
+This can be dangerous as it will remove rows with an `NA` in any column, not just the columns you are interested in.
+:::
+
+### Replacing missing values {#sec-replacing-missing-values}
 
 Sometimes you want to replace `NA` with another value.
 Perhaps you want to make a plot where `NA` values are labelled unknown, or you know that the `NA` values are actually zeros, or the `NA` are values below the detection limit of an instrument and you want to replace these with half the detection limit.
 
-You can use `tidyr::replace_na` to do this.
+You can use `tidyr::replace_na()` to do this.
 
 Here, the code replaces missing values for bill length with the mean value for bill length.
 
@@ -91,11 +95,11 @@ penguins |>
   )
 ```
 
-### Replacing `NA` in factors
+#### Replacing `NA` in factors
 
 The code in the previous section won't work if we try to replace an `NA` in a factor. 
 
-```{r bad-factor, warning = TRUE, message = TRUE}
+```{r bad-factor, error = TRUE, message = TRUE}
 penguins |> 
   mutate(sex = replace_na(sex, "missing")) |> 
   distinct(sex)
@@ -103,7 +107,7 @@ penguins |>
 
 As the warning indicates, the problem is that "missing" is not one of the levels of the factor sex.
 
-Instead we need to use the function `forcats::fct_explicit_na` (the `forcats` package is part of `tidyverse` for manipulating factors).
+Instead we need to use the function `forcats::fct_explicit_na()` (the `forcats` package is part of `tidyverse` for manipulating factors).
 
 ```{r good-factor}
 penguins |> 
@@ -112,10 +116,10 @@ penguins |>
 ```
 
 
-### Replacing `NA` with values from another vector
+#### Replacing `NA` with values from another vector 
 
 Sometimes you have a vector with `NA` and you want to replace the missing values with values from a second vector.
-The `coalesce` can do this.
+The `coalesce()` can do this.
 
 
 ```{r}
@@ -132,7 +136,7 @@ And so on.
 Some data sets use a number to represent a missing value, for example -9999.
 Obviously, if you do any calculations with a data set containing -9999 as a missing value, the results could be seriously wrong.
 Instead we need to replace these values with `NA`.
-We can do this with `dplyr::na_if`.
+We can do this with `dplyr::na_if()`.
 
 ```{r na_if}
 x <- c(1, 7, -9999)
@@ -140,9 +144,9 @@ na_if(x, y = -9999)
 ```
 
 
-### Missing values and dplyr `filter`
+### Missing values and dplyr `filter()`
 
-`dplyr::filter` returns rows where the condition is strictly TRUE.
+`dplyr::filter()` returns rows where the condition is strictly TRUE.
 This is usually what you want: if we want to filter penguins with long bills from the penguins dataset we don't want the birds with unknown bill length.
 
 Occasionally we do want to keep the rows with `NA`. 
@@ -155,11 +159,11 @@ penguins |>
 
 Here the `|` means OR in Boolean logic.
 
-### Missing values and dplyr `if_else` and `case_when`
+### Missing values and dplyr `if_else()` and `case_when()`
 
-Sometimes is it useful to set values to `NA` with `if_else` (when there is a choice of two outcomes) or `case_when` (when there is a choice of two or more outcomes).
+Sometimes is it useful to set values to `NA` with `if_else()` (when there is a choice of two outcomes) or `case_when()` (when there is a choice of two or more outcomes).
 
-All possible values returned by `if_else` and `case_when` need to be of the same type (character, numeric, integer, logical).
+All possible values returned by `if_else()` and `case_when()` need to be of the same type (character, numeric, integer, logical).
 If the types are inconsistent, an error is produced.
 This is useful as forcing consistency helps avoid unexpected behaviour.
 
@@ -217,7 +221,7 @@ min(x, na.rm = TRUE)
 
 ### `NA` in correlations and covariances
 
-The functions for calculating correlation, `cor`, and covariance, `cov`, work a little differently as these functions can work on two vectors or on a matrix or data frame.
+The functions for calculating correlation, `cor()`, and covariance, `cov()`, work a little differently as these functions can work on two vectors or on a matrix or data frame.
 The `use` argument is used to control how `NA` are treated.
 
 By default, if any values are `NA` in either vector, the result is also `NA`.
@@ -239,7 +243,7 @@ penguins |>
 
 ### Missing values and regession models
 
-By default regression models such as `lm`, `glm`, and `lmer` remove any case that has an `NA` in either the response or predictors.
+By default regression models such as `lm()`, `glm()`, and `lmer()` remove any case that has an `NA` in either the response or predictors.
 This behaviour is controlled by the `na.action` argument.
 This is great if we are interested in the model coefficients, but it can cause problems if there are `NA` in the data and we want to add the residuals, fitted values, or predictions into the original data frame for plotting.
 
@@ -260,7 +264,7 @@ penguins |> mutate(fit = fitted(mod))
 
 With `na.exclude` the `NA` are still excluded from the model fitting - most models do not allow `NA` values. 
 
-When comparing models, for example with `anova`, all models need to have been fit to the same dataset. 
+When comparing models, for example with `anova()`, all models need to have been fit to the same dataset. 
 This can cause problems if `NA` have caused different numbers of observations to be removed.
 
 ```{r bad-anova, error = TRUE}
@@ -282,7 +286,7 @@ On the other hand, if missing data are not randomly distributed, omitting observ
 
 There are several ways that can be used to impute missing values. 
 
-The simplest is to replace a the missing value with the mean or median of the variable as shown in section \@ref(replacing-missing-values).
+The simplest is to replace a the missing value with the mean or median of the variable as shown in @sec-replacing-missing-values.
 
 More complex methods use the multivariate relationship between predictors to estimate the missing values. 
 Several R packages can help with this, e.g., `mice`.
@@ -290,8 +294,8 @@ Several R packages can help with this, e.g., `mice`.
 
 ## Missing values and `ggplot2`
 
-By default, missing values in the `x` or `y` aesthetics are dropped by `ggplot` with a warning, whereas missing values in the `colour` or `fill` aesthetics are shown in grey. 
-This behaviour can be controlled with the `na.value` argument to the relevant `scale_*_*` function.
+By default, missing values in the `x` or `y` aesthetics are dropped by `ggplot()` with a warning, whereas missing values in the `colour` or `fill` aesthetics are shown in grey. 
+This behaviour can be controlled with the `na.value` argument to the relevant `scale_*_*()` function.
 
 ```{r ggplot2, warning = TRUE, fig.height=3, fig.width=3}
 #x or y NA
@@ -355,7 +359,8 @@ tibble(
 ```
 
 
-### Contributors {- .contributors .toc-ignore}
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
 
-Richard J. Telford
-
+-   Richard Telford
+:::

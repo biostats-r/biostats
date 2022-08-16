@@ -59,7 +59,7 @@ Projects let you organize your tasks and load only the files and packages that y
 We will further describe RStudio's interface in @sec-the-interface and how to set up projects in @sec-working-project.
 For now, let's install everything we need, starting with R and RStudio.
 
-## Installing R and RStudio
+## Installing R and RStudio {#sec-installing}
 
 There are several ways to install R and RStudio, depending on the state of your computer.
 
@@ -84,7 +84,7 @@ Install it on your computer.
 #### NTNU student {.unnumbered}
 
 NTNU students can access and download many programmes, including R and RStudio, through the [apps.ntnu.no](https://apps.ntnu.no/).
-Simply go to [apps.ntnu.no](https://apps.ntnu.no), search for R and RStudio and install both on your computer.
+GSo to [apps.ntnu.no](https://apps.ntnu.no), search for R and RStudio and install both on your computer.
 
 ### On a UiB virtual computer
 
@@ -146,7 +146,8 @@ To set up an account, go to [rstudio.cloud](https://rstudio.cloud)
 ## Exercise 
 
 Install R and RStudio on your laptop (or set up one of the virtual computers).
-If you already have these installed, check that the R version is 4.2 or newer and the RStudio version is 2022.07.1 or newer.
+
+If you already have these installed, check that the R version is 4.2 or newer (run `R.version.string`) and the RStudio version is 2022.07.1 or newer (run `rstudioapi::versionInfo()$long_version`).
 :::
 
 ## Starting with RStudio
@@ -214,7 +215,7 @@ Each of them will show up as a separate tab in the top left pane of RStudio.
 If the tab title is red and followed with a star `*`, this means that the script is not yet saved, or has been edited since the last time it was saved.
 Scripts may be saved at any time using <kbd>CTRL</kbd> + <kbd>S</kbd> (or <kbd>⌘</kbd> + <kbd>S</kbd> on a Mac).
 
-In @sec-working-script, we will talk more about working with scripts and adding comments.
+In @sec-working-script, we will talk more about working with scripts.
 
 ### Console and Terminal
 
@@ -369,7 +370,7 @@ The tabs `Environment` and `Tutorial` are located in the top right pane, along w
 knitr::include_graphics("figures/RStudio-Environment.png")
 ```
 
-#### The Environment tab
+#### The Environment tab {#sec-the-environment-tab}
 
 The tab `Environment` lists all the R objects currently stored in memory in the current project along with a quick summary of their content.
 
@@ -416,7 +417,7 @@ The installation procedure is described further below in @sec-installing-package
 Once installed, our tutorials will be available in this tab.
 
 
-## Customizing RStudio
+## Customising RStudio {#sec-customise-rstudio}
 
 R/RStudio does not require much configuring at start, even though the menus in Tools \> Global Options... let you change dozens of settings at any time.
 In fact, you should be ready to work right now.
@@ -424,11 +425,24 @@ That said, there are a couple of things in RStudio that we recommend you customi
 
 ### Taking care of .Rdata
 
-.Rdata is a file that R uses to store objects, data, etc.
-It is saved automatically when RStudio shuts down, and restored when it starts up again.
+.Rdata is a file that R uses to store the workspace - objects, data, etc in the Environment - when you close RStudio so that you can resume working on an analysis when you restart RStudio.
+This sounds like a good idea, but it really isn't, as the environment tends to fill up with objects and you no longer remember how you made them.
+This is bad for reproducibility.
+Much better to save the code needed to make the objects in a script (@sec-working-script).
+Saving and loading the workspace also slows R down (a lot if you have many large objects).
+
 We advise you to prevent RStudio from saving changes and restoring .Rdata to improve reproducibility.
 
-Go to Tools \> Global Options... \> General \> Basic to get to the menu shown in @fig-settings1.
+Go to 
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Tools</li>
+  <li class="breadcrumb-item">Global Options...</li>
+  <li class="breadcrumb-item">General</li>
+  <li class="breadcrumb-item">Basic</li>
+</ol> 
+
+to get to the menu shown in @fig-settings1.
 In the section Workspace (@fig-settings1, red box), uncheck the box, and select "Never" in the dropdown menu.
 
 ```{r}
@@ -440,28 +454,12 @@ In the section Workspace (@fig-settings1, red box), uncheck the box, and select 
 knitr::include_graphics("figures/RStudio-settings1.png")
 ```
 
-Or, if you install the `usethis` paackage, you can do this in code with
+Or, if you install the `usethis` package, you can do this in code with
 
 ```{r usethis-blank-slate, eval = FALSE}
 usethis::use_blank_slate()
 ```
 
-### Imposing UTF-8 encoding
-
-Not all symbols or characters are accepted or recognized in the format that RStudio uses by default when saving scripts.
-We recommend to force RStudio to save scripts in UTF-8 format, which is much more permissive.
-
-Go to Tools \> Global Options... \> Code \> Saving to get to the menu shown in @fig-settings2.
-In the section Serialization (Fig. @fig-settings2, red box), click "Change" and choose UTF-8.
-
-```{r}
-#| label: fig-settings2
-#| echo: false
-#| fig-cap: "Saving files as UTF-8"
-#| fig-alt: Screenshot of RStudio Options menu
-#| out-width: "100%"
-knitr::include_graphics("figures/RStudio-settings2.png")
-```
 
 ### Soft-wrapping R scripts
 
@@ -471,17 +469,32 @@ The obvious solution is to make sure you write short lines of code - a maximum o
 However on a laptop, this can still be too long, so an alternative is to force RStudio to split the code onto the next line(s) of the editor -- this is called *soft-wrapping*.
 We recommend that you activate soft-wrapping in RStudio.
 
-Go to Tools \> Global Options... \> choose Code \> Editing to get to the menu shown in Figure \@ref(fig:settings3).
-In the section General (Fig. \@ref(fig:settings3), red box), check the box "Soft-wrap R source files".
+Go to 
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Tools</li>
+  <li class="breadcrumb-item">Global Options...</li>
+  <li class="breadcrumb-item">Code</li>
+  <li class="breadcrumb-item">Editing</li>
+</ol> 
+
+to get to the menu shown in @fig-settings3 and check the box "Soft-wrap R source files" highlighted by the red box.
 
 ```{r}
 #| label: fig-settings3
 #| echo: false
-#| fig-cap: "Activating soft-wrapping of R scripts"
-#| fig-alt: Screenshot of Options menu in RStudio for softwrapping scripts
+#| fig-cap: "Enabling soft-wrapping of R scripts and the native pipe operator"
+#| fig-alt: Screenshot of Options menu in RStudio for softwrapping scripts and using the native pipe operator
 #| out-width: "100%"
 knitr::include_graphics("figures/RStudio-settings3.png")
 ```
+
+
+### Use the native pipe
+
+While you have the menu open to enable soft wrapping, also enable the native pipe operator keyboard shortcut, by checking the box highlighted by the blue box in @fig-settings3.
+You will learn more about pipes in @sec-pipes.
+
 
 ::: callout-note 
 ## Exercise 
@@ -491,7 +504,7 @@ Configure RStudio so that
 -   .Rdata files are not restored when RStudio is started
 -   .Rdata files are not saved when you close RStudio
 -   Soft-wrap is set on
--   UTF-8 encoding is set on.
+-   The native pipe keyboard shortcut is enabled
 :::
 
 ## RStudio keyboard short-cuts
@@ -510,20 +523,26 @@ Here are some we find useful
 
 You will be introduced to more short-cuts later.
 
-### Further Reading {.unnumbered .literature .toc-ignore}
+:::callout-note
+## Further Reading {.unnumbered .literature .toc-ignore}
 
 You may find the following links useful:
 
 -   [R for Data Science](https://r4ds.had.co.nz/){target="_blank"}
 -   [Using the RStudio IDE](https://support.rstudio.com/hc/en-us/sections/200107586-Using-the-RStudio-IDE){target="_blank"}
 -   [The tidyverse](https://www.tidyverse.org/){target="_blank"}
+:::
 
-### What's next {.unnumbered .facta .toc-ignore}
+::: callout-note
+## What's next 
 
 You will now learn the basics of the R language, make simple calculations, learn about data types, store and handle data in R objects.
+:::
 
-### Contributors {.unnumbered .contributors .toc-ignore}
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
 
 -   Jonathan Soulé
 -   Aud Halbritter
 -   Richard Telford
+:::

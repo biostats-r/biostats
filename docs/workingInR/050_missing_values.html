@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Working in R - 19&nbsp; Handling missing values</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./060_bestiary.html" rel="next">
+<link href="./130_patchwork.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">
+<span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Handling missing values</span>
+</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Working in R</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+<li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+    </ul>
+<a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Setting up R and RStudio</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0010_Getting_Started_with_RStudio.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Installing and configuring R and RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0011_projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">RStudio projects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0012_scripts.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Working with a script</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0013_packages.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Installing packages</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">First steps in R</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./002_First_Steps_in_R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">First steps in R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./005_Importing_Data_in_R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Importing data in R</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Data manipulation with the tidyverse</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./010-pipes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pipes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./011-tidyr-pivot.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./012-dplyr-single-table.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Working with single tables in <code>dplyr</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./013-dplyr-multiple-tables.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Working with multiple tables in <code>dplyr</code></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Data Visualisation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./100_why_data_visualisation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Why is data visualization important?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./101_getting_started_with_ggplot.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Getting started with ggplot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./103_different_types_of_vizualization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Choosing your visualisation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./118_themes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Themes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./120_colour_shape_linetypes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Colours, shapes and linetypes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./125_ggplot_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Regression and ggplot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./130_patchwork.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Combining plots</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Other Topics</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050_missing_values.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Handling missing values</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./060_bestiary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bestiary of Brackets and other R notation</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<style>
+               img.site-logo {
+  height: auto;
+  width: 95%;
+}
+      </style>
+<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
+<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
+        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#data-handling-with-missing-values" id="toc-data-handling-with-missing-values" class="nav-link active" data-scroll-target="#data-handling-with-missing-values"> <span class="header-section-number">19.1</span> Data handling with missing values</a>
+  <ul class="collapse">
+<li><a href="#detecting-missing-values" id="toc-detecting-missing-values" class="nav-link" data-scroll-target="#detecting-missing-values"> <span class="header-section-number">19.1.1</span> Detecting missing values</a></li>
+  <li><a href="#importing-data-with-missing-values" id="toc-importing-data-with-missing-values" class="nav-link" data-scroll-target="#importing-data-with-missing-values"> <span class="header-section-number">19.1.2</span> Importing data with missing values</a></li>
+  <li><a href="#removing-rows-with-missing-values" id="toc-removing-rows-with-missing-values" class="nav-link" data-scroll-target="#removing-rows-with-missing-values"> <span class="header-section-number">19.1.3</span> Removing rows with missing values</a></li>
+  <li><a href="#sec-replacing-missing-values" id="toc-sec-replacing-missing-values" class="nav-link" data-scroll-target="#sec-replacing-missing-values"> <span class="header-section-number">19.1.4</span> Replacing missing values</a></li>
+  <li><a href="#setting-mising-values" id="toc-setting-mising-values" class="nav-link" data-scroll-target="#setting-mising-values"> <span class="header-section-number">19.1.5</span> Setting mising values</a></li>
+  <li><a href="#missing-values-and-dplyr-filter" id="toc-missing-values-and-dplyr-filter" class="nav-link" data-scroll-target="#missing-values-and-dplyr-filter"> <span class="header-section-number">19.1.6</span> Missing values and dplyr <code>filter()</code></a></li>
+  <li><a href="#missing-values-and-dplyr-if_else-and-case_when" id="toc-missing-values-and-dplyr-if_else-and-case_when" class="nav-link" data-scroll-target="#missing-values-and-dplyr-if_else-and-case_when"> <span class="header-section-number">19.1.7</span> Missing values and dplyr <code>if_else()</code> and <code>case_when()</code></a></li>
+  </ul>
+</li>
+  <li>
+<a href="#statistics-with-missing-values" id="toc-statistics-with-missing-values" class="nav-link" data-scroll-target="#statistics-with-missing-values"> <span class="header-section-number">19.2</span> Statistics with missing values</a>
+  <ul class="collapse">
+<li><a href="#na-arithemetic" id="toc-na-arithemetic" class="nav-link" data-scroll-target="#na-arithemetic"> <span class="header-section-number">19.2.1</span> <code>NA</code> arithemetic</a></li>
+  <li><a href="#na-in-correlations-and-covariances" id="toc-na-in-correlations-and-covariances" class="nav-link" data-scroll-target="#na-in-correlations-and-covariances"> <span class="header-section-number">19.2.2</span> <code>NA</code> in correlations and covariances</a></li>
+  <li><a href="#missing-values-and-regession-models" id="toc-missing-values-and-regession-models" class="nav-link" data-scroll-target="#missing-values-and-regession-models"> <span class="header-section-number">19.2.3</span> Missing values and regession models</a></li>
+  <li><a href="#imputing-missing-values" id="toc-imputing-missing-values" class="nav-link" data-scroll-target="#imputing-missing-values"> <span class="header-section-number">19.2.4</span> Imputing missing values</a></li>
+  </ul>
+</li>
+  <li><a href="#missing-values-and-ggplot2" id="toc-missing-values-and-ggplot2" class="nav-link" data-scroll-target="#missing-values-and-ggplot2"> <span class="header-section-number">19.3</span> Missing values and <code>ggplot2</code></a></li>
+  <li>
+<a href="#related-concepts" id="toc-related-concepts" class="nav-link" data-scroll-target="#related-concepts"> <span class="header-section-number">19.4</span> Related concepts</a>
+  <ul class="collapse">
+<li><a href="#nan" id="toc-nan" class="nav-link" data-scroll-target="#nan"> <span class="header-section-number">19.4.1</span> <code>NaN</code></a></li>
+  <li><a href="#inf" id="toc-inf" class="nav-link" data-scroll-target="#inf"> <span class="header-section-number">19.4.2</span> Inf</a></li>
+  <li><a href="#comparison-of-tests" id="toc-comparison-of-tests" class="nav-link" data-scroll-target="#comparison-of-tests"> <span class="header-section-number">19.4.3</span> Comparison of tests</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block">
+<span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Handling missing values</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header><p>Many datasets have missing values. These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m where the sea is only 100m deep.</p>
+<p>Missing values in R are represented by <code>NA</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="va">x</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  0  5 NA</code></pre>
+</div>
+</div>
+<p>This tutorial shows you how to cope with missing values in R, focusing on manipulating data with the <code>tidyverse</code> package, running statistical analyses, and making figures with <code>ggplot2</code>.</p>
+<p>The <code>penguins</code> dataset from <code>palmerpenguins</code> is used as an example.</p>
+<section id="data-handling-with-missing-values" class="level2" data-number="19.1"><h2 data-number="19.1" class="anchored" data-anchor-id="data-handling-with-missing-values">
+<span class="header-section-number">19.1</span> Data handling with missing values</h2>
+<section id="detecting-missing-values" class="level3" data-number="19.1.1"><h3 data-number="19.1.1" class="anchored" data-anchor-id="detecting-missing-values">
+<span class="header-section-number">19.1.1</span> Detecting missing values</h3>
+<p><code>NA</code> values can be detected with the function <code><a href="https://rdrr.io/r/base/NA.html">is.na()</a></code> (NB lower case).</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE FALSE  TRUE</code></pre>
+</div>
+</div>
+<p>We could use this, for example, to find the number of missing values in a column of the <code>penguins</code> data.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">summarise</span><span class="op">(</span>n_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  n_missing
+      &lt;int&gt;
+1         2</code></pre>
+</div>
+</div>
+</section><section id="importing-data-with-missing-values" class="level3" data-number="19.1.2"><h3 data-number="19.1.2" class="anchored" data-anchor-id="importing-data-with-missing-values">
+<span class="header-section-number">19.1.2</span> Importing data with missing values</h3>
+<p>When you import a text file (e.g., a csv file) any blank cells, or cells with “NA” will be treated as <code>NA</code>. If you have coded missing values as something else, you can use the <code>na</code> argument to <code>read_delim()</code></p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># set blank cells, "NA" or "missing" to NA  </span></span>
+<span><span class="fu">read_delim</span><span class="op">(</span>file <span class="op">=</span> <span class="st">"my_file.csv"</span>, na <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"NA"</span>, <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In <code><a href="https://readxl.tidyverse.org/reference/read_excel.html">readxl::read_excel()</a></code>, the default for the <code>na</code> argument is just for blank cells to be made <code>NA</code>, but other values can be added in the same way as in <code>read_delim()</code>.</p>
+</section><section id="removing-rows-with-missing-values" class="level3" data-number="19.1.3"><h3 data-number="19.1.3" class="anchored" data-anchor-id="removing-rows-with-missing-values">
+<span class="header-section-number">19.1.3</span> Removing rows with missing values</h3>
+<p>We can remove rows with <code>NA</code> in particular columns from a data frame using <code>drop_na()</code>. For example, to remove rows in the <code>penguins</code> data set with an <code>NA</code> in the <code>bill_length_mm</code> or <code>bill_depth_mm</code> columns, we could use</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 342 × 8
+  species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+1 Adelie  Torge…           39.1          18.7              181        3750 male 
+2 Adelie  Torge…           39.5          17.4              186        3800 fema…
+3 Adelie  Torge…           40.3          18                195        3250 fema…
+# … with 339 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>Alternatively, we can use <code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code> and <code><a href="https://rdrr.io/r/base/NA.html">is.na()</a></code>. This is most useful when removing <code>NA</code> is one of several arguments to <code>filter</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="st">"Gentoo"</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 123 × 8
+  species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+1 Gentoo  Biscoe           46.1          13.2              211        4500 fema…
+2 Gentoo  Biscoe           50            16.3              230        5700 male 
+3 Gentoo  Biscoe           48.7          14.1              210        4450 fema…
+# … with 120 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
+</div>
+</div>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+na.omit
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You might see some code using <code><a href="https://rdrr.io/r/stats/na.fail.html">na.omit()</a></code> to remove rows with missing values from a data frame. This can be dangerous as it will remove rows with an <code>NA</code> in any column, not just the columns you are interested in.</p>
+</div>
+</div>
+</section><section id="sec-replacing-missing-values" class="level3" data-number="19.1.4"><h3 data-number="19.1.4" class="anchored" data-anchor-id="sec-replacing-missing-values">
+<span class="header-section-number">19.1.4</span> Replacing missing values</h3>
+<p>Sometimes you want to replace <code>NA</code> with another value. Perhaps you want to make a plot where <code>NA</code> values are labelled unknown, or you know that the <code>NA</code> values are actually zeros, or the <code>NA</code> are values below the detection limit of an instrument and you want to replace these with half the detection limit.</p>
+<p>You can use <code><a href="https://tidyr.tidyverse.org/reference/replace_na.html">tidyr::replace_na()</a></code> to do this.</p>
+<p>Here, the code replaces missing values for bill length with the mean value for bill length.</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>    bill_length_mm <span class="op">=</span> <span class="fu">replace_na</span><span class="op">(</span></span>
+<span>      data <span class="op">=</span> <span class="va">bill_length_mm</span>, </span>
+<span>      replace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 8
+  species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+1 Adelie  Torge…           39.1          18.7              181        3750 male 
+2 Adelie  Torge…           39.5          17.4              186        3800 fema…
+3 Adelie  Torge…           40.3          18                195        3250 fema…
+# … with 341 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
+</div>
+</div>
+<section id="replacing-na-in-factors" class="level4" data-number="19.1.4.1"><h4 data-number="19.1.4.1" class="anchored" data-anchor-id="replacing-na-in-factors">
+<span class="header-section-number">19.1.4.1</span> Replacing <code>NA</code> in factors</h4>
+<p>The code in the previous section won’t work if we try to replace an <code>NA</code> in a factor.</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>sex <span class="op">=</span> <span class="fu">replace_na</span><span class="op">(</span><span class="va">sex</span>, <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">distinct</span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `mutate()`:
+! Problem while computing `sex = replace_na(sex, "missing")`.
+Caused by error in `vec_assign()`:
+! Can't convert from `replace` &lt;character&gt; to `data` &lt;factor&lt;8f119&gt;&gt; due to loss of generality.
+• Locations: 1</code></pre>
+</div>
+</div>
+<p>As the warning indicates, the problem is that “missing” is not one of the levels of the factor sex.</p>
+<p>Instead we need to use the function <code><a href="https://forcats.tidyverse.org/reference/fct_explicit_na.html">forcats::fct_explicit_na()</a></code> (the <code>forcats</code> package is part of <code>tidyverse</code> for manipulating factors).</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>sex <span class="op">=</span> <span class="fu">fct_explicit_na</span><span class="op">(</span><span class="va">sex</span>, na_level <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">count</span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  sex         n
+  &lt;fct&gt;   &lt;int&gt;
+1 female    165
+2 male      168
+3 missing    11</code></pre>
+</div>
+</div>
+</section><section id="replacing-na-with-values-from-another-vector" class="level4" data-number="19.1.4.2"><h4 data-number="19.1.4.2" class="anchored" data-anchor-id="replacing-na-with-values-from-another-vector">
+<span class="header-section-number">19.1.4.2</span> Replacing <code>NA</code> with values from another vector</h4>
+<p>Sometimes you have a vector with <code>NA</code> and you want to replace the missing values with values from a second vector. The <code>coalesce()</code> can do this.</p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">3</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu">coalesce</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -1  2  3 -4</code></pre>
+</div>
+</div>
+<p>Here, the first value of <code>x</code> is <code>NA</code>, so the first value of <code>y</code> is used. The second value of <code>x</code> is not <code>NA</code>, and so can be used. And so on.</p>
+</section></section><section id="setting-mising-values" class="level3" data-number="19.1.5"><h3 data-number="19.1.5" class="anchored" data-anchor-id="setting-mising-values">
+<span class="header-section-number">19.1.5</span> Setting mising values</h3>
+<p>Some data sets use a number to represent a missing value, for example -9999. Obviously, if you do any calculations with a data set containing -9999 as a missing value, the results could be seriously wrong. Instead we need to replace these values with <code>NA</code>. We can do this with <code><a href="https://dplyr.tidyverse.org/reference/na_if.html">dplyr::na_if()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span>, <span class="op">-</span><span class="fl">9999</span><span class="op">)</span></span>
+<span><span class="fu">na_if</span><span class="op">(</span><span class="va">x</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">9999</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  7 NA</code></pre>
+</div>
+</div>
+</section><section id="missing-values-and-dplyr-filter" class="level3" data-number="19.1.6"><h3 data-number="19.1.6" class="anchored" data-anchor-id="missing-values-and-dplyr-filter">
+<span class="header-section-number">19.1.6</span> Missing values and dplyr <code>filter()</code>
+</h3>
+<p><code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code> returns rows where the condition is strictly TRUE. This is usually what you want: if we want to filter penguins with long bills from the penguins dataset we don’t want the birds with unknown bill length.</p>
+<p>Occasionally we do want to keep the rows with <code>NA</code>. Perhaps we have a column of comments, many of which are <code>NA</code>, and we only want to remove rows where the non-<code>NA</code> values meet some criterion.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+ 1 Adelie  Torgersen           NA            NA                  NA          NA
+ 2 Adelie  Torgersen           34.1          18.1               193        3475
+ 3 Adelie  Torgersen           42            20.2               190        4250
+ 4 Adelie  Torgersen           37.8          17.1               186        3300
+ 5 Adelie  Torgersen           37.8          17.3               180        3700
+ 6 Adelie  Dream               37.5          18.9               179        2975
+ 7 Gentoo  Biscoe              44.5          14.3               216        4100
+ 8 Gentoo  Biscoe              46.2          14.4               214        4650
+ 9 Gentoo  Biscoe              47.3          13.8               216        4725
+10 Gentoo  Biscoe              44.5          15.7               217        4875
+11 Gentoo  Biscoe              NA            NA                  NA          NA
+# … with 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>Here the <code>|</code> means OR in Boolean logic.</p>
+</section><section id="missing-values-and-dplyr-if_else-and-case_when" class="level3" data-number="19.1.7"><h3 data-number="19.1.7" class="anchored" data-anchor-id="missing-values-and-dplyr-if_else-and-case_when">
+<span class="header-section-number">19.1.7</span> Missing values and dplyr <code>if_else()</code> and <code>case_when()</code>
+</h3>
+<p>Sometimes is it useful to set values to <code>NA</code> with <code>if_else()</code> (when there is a choice of two outcomes) or <code>case_when()</code> (when there is a choice of two or more outcomes).</p>
+<p>All possible values returned by <code>if_else()</code> and <code>case_when()</code> need to be of the same type (character, numeric, integer, logical). If the types are inconsistent, an error is produced. This is useful as forcing consistency helps avoid unexpected behaviour.</p>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span></span>
+<span><span class="fu">case_when</span><span class="op">(</span></span>
+<span>  <span class="va">x</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="cn">NA</span>,</span>
+<span>  <span class="va">x</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"One"</span>,</span>
+<span>  <span class="va">x</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">~</span> <span class="st">"Two"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in names(message) &lt;- `*vtmp*`: 'names' attribute [1] must be the same length as the vector [0]</code></pre>
+</div>
+</div>
+<p>The problem occurs here because <code>NA</code> is treated as a logical vector, while the other values are characters. The solution is to use <code>NA_character_</code> which is an <code>NA</code> with the correct type.</p>
+<div class="cell">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span></span>
+<span><span class="fu">case_when</span><span class="op">(</span></span>
+<span>  <span class="va">x</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="cn">NA_character_</span>,</span>
+<span>  <span class="va">x</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"One"</span>,</span>
+<span>  <span class="va">x</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">~</span> <span class="st">"Two"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA    "One" "Two"</code></pre>
+</div>
+</div>
+<p>Other typed <code>NA</code> include <code>NA_real_</code> for numeric values and <code>NA_integer</code> for integer values.</p>
+</section></section><section id="statistics-with-missing-values" class="level2" data-number="19.2"><h2 data-number="19.2" class="anchored" data-anchor-id="statistics-with-missing-values">
+<span class="header-section-number">19.2</span> Statistics with missing values</h2>
+<section id="na-arithemetic" class="level3" data-number="19.2.1"><h3 data-number="19.2.1" class="anchored" data-anchor-id="na-arithemetic">
+<span class="header-section-number">19.2.1</span> <code>NA</code> arithemetic</h3>
+<p>What is five plus an unknown number? The answer is, of course, unknown.</p>
+<div class="cell">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">5</span> <span class="op">+</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>NA are contagious in calculations: if one value is <code>NA</code> the result is <code>NA</code>. This effects many descriptive statistics.</p>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>The solution is to use the <code>na.rm</code> argument to these functions to exclude the <code>NA</code> from the calculation.</p>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8</code></pre>
+</div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4</code></pre>
+</div>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+</section><section id="na-in-correlations-and-covariances" class="level3" data-number="19.2.2"><h3 data-number="19.2.2" class="anchored" data-anchor-id="na-in-correlations-and-covariances">
+<span class="header-section-number">19.2.2</span> <code>NA</code> in correlations and covariances</h3>
+<p>The functions for calculating correlation, <code><a href="https://rdrr.io/r/stats/cor.html">cor()</a></code>, and covariance, <code><a href="https://rdrr.io/r/stats/cor.html">cov()</a></code>, work a little differently as these functions can work on two vectors or on a matrix or data frame. The <code>use</code> argument is used to control how <code>NA</code> are treated.</p>
+<p>By default, if any values are <code>NA</code> in either vector, the result is also <code>NA</code>. If you want to find the correlation between two vectors without the <code>NA</code>, then use</p>
+<div class="cell">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penguins</span><span class="op">$</span><span class="va">bill_length_mm</span>,</span>
+<span>    y <span class="op">=</span> <span class="va">penguins</span><span class="op">$</span><span class="va">bill_depth_mm</span>, </span>
+<span>    use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.2350529</code></pre>
+</div>
+</div>
+<p>If you have a matrix (or data frame), and want to calculate a correlation matrix, then <code>use = "complete.obs"</code> will calculate this using just the rows that have no <code>NA</code>, and <code>use = "pairwise.complete.obs"</code> will calculate the correlation between each pair of variables using all complete pairs of observations on those variables.</p>
+<div class="cell">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span>, <span class="va">flipper_length_mm</span>, <span class="va">body_mass_g</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span>use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+bill_length_mm         1.0000000    -0.2350529         0.6561813   0.5951098
+bill_depth_mm         -0.2350529     1.0000000        -0.5838512  -0.4719156
+flipper_length_mm      0.6561813    -0.5838512         1.0000000   0.8712018
+body_mass_g            0.5951098    -0.4719156         0.8712018   1.0000000</code></pre>
+</div>
+</div>
+</section><section id="missing-values-and-regession-models" class="level3" data-number="19.2.3"><h3 data-number="19.2.3" class="anchored" data-anchor-id="missing-values-and-regession-models">
+<span class="header-section-number">19.2.3</span> Missing values and regession models</h3>
+<p>By default regression models such as <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>, <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>, and <code>lmer()</code> remove any case that has an <code>NA</code> in either the response or predictors. This behaviour is controlled by the <code>na.action</code> argument. This is great if we are interested in the model coefficients, but it can cause problems if there are <code>NA</code> in the data and we want to add the residuals, fitted values, or predictions into the original data frame for plotting.</p>
+<div class="cell">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span>, data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `mutate()`:
+! Problem while computing `fit = fitted(mod)`.
+✖ `fit` must be size 344 or 1, not 342.</code></pre>
+</div>
+</div>
+<p>The problem is that there are fewer observation in the model (which omitted the <code>NA</code>) than the original data frame (which still has them).</p>
+<p>We can make this work by using <code>na.action = na.exclude</code> which will pad the fitted values with <code>NA</code> so that it is the same length as the original data.</p>
+<div class="cell">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span>, data <span class="op">=</span> <span class="va">penguins</span>, na.action <span class="op">=</span> <span class="va">na.exclude</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 9
+  species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+1 Adelie  Torge…           39.1          18.7              181        3750 male 
+2 Adelie  Torge…           39.5          17.4              186        3800 fema…
+3 Adelie  Torge…           40.3          18                195        3250 fema…
+# … with 341 more rows, and 2 more variables: year &lt;int&gt;, fit &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>With <code>na.exclude</code> the <code>NA</code> are still excluded from the model fitting - most models do not allow <code>NA</code> values.</p>
+<p>When comparing models, for example with <code><a href="https://rdrr.io/r/stats/anova.html">anova()</a></code>, all models need to have been fit to the same dataset. This can cause problems if <code>NA</code> have caused different numbers of observations to be removed.</p>
+<div class="cell">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span> <span class="op">+</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">penguins</span>, na.action <span class="op">=</span> <span class="va">na.exclude</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">mod2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in anova.lmlist(object, ...): models were not all fitted to the same size of dataset</code></pre>
+</div>
+</div>
+<p>The easiest solution is to remove rows with <code>NA</code> in any predictor before fitting any of the models.</p>
+</section><section id="imputing-missing-values" class="level3" data-number="19.2.4"><h3 data-number="19.2.4" class="anchored" data-anchor-id="imputing-missing-values">
+<span class="header-section-number">19.2.4</span> Imputing missing values</h3>
+<p>As shown above, observations with missing values are omitted from the model. If a predictor has many missing values, it may be better to exclude the predictor from the model to avoid losing too many observations.</p>
+<p>An alternative is to impute the missing data. This should be done with caution as it can bias the results, especially if a substantial proportion of the data are imputed. On the other hand, if missing data are not randomly distributed, omitting observations with missing data can also bias the results.</p>
+<p>There are several ways that can be used to impute missing values.</p>
+<p>The simplest is to replace a the missing value with the mean or median of the variable as shown in <a href="#sec-replacing-missing-values"><span>Section&nbsp;19.1.4</span></a>.</p>
+<p>More complex methods use the multivariate relationship between predictors to estimate the missing values. Several R packages can help with this, e.g., <code>mice</code>. <a href="https://doi.org/10.1016/j.knosys.2018.06.012">Yadav and Roychoudhury (2018)</a> compare the performance of some popular methods.</p>
+</section></section><section id="missing-values-and-ggplot2" class="level2" data-number="19.3"><h2 data-number="19.3" class="anchored" data-anchor-id="missing-values-and-ggplot2">
+<span class="header-section-number">19.3</span> Missing values and <code>ggplot2</code>
+</h2>
+<p>By default, missing values in the <code>x</code> or <code>y</code> aesthetics are dropped by <code>ggplot()</code> with a warning, whereas missing values in the <code>colour</code> or <code>fill</code> aesthetics are shown in grey. This behaviour can be controlled with the <code>na.value</code> argument to the relevant <code>scale_*_*()</code> function.</p>
+<div class="cell">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#x or y NA</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, </span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>  colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, colour <span class="op">=</span> <span class="va">colour</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="050_missing_values_files/figure-html/ggplot2-1.png" class="img-fluid" width="288"></p>
+</div>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># change defaults</span></span>
+<span><span class="va">p</span> <span class="op">+</span> </span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>na.value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_colour_continuous</span><span class="op">(</span>na.value <span class="op">=</span> <span class="st">"hotpink"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="050_missing_values_files/figure-html/ggplot2-2.png" class="img-fluid" width="288"></p>
+</div>
+</div>
+</section><section id="related-concepts" class="level2 page-columns page-full" data-number="19.4"><h2 data-number="19.4" class="anchored" data-anchor-id="related-concepts">
+<span class="header-section-number">19.4</span> Related concepts</h2>
+<p><code>NaN</code> and <code>Inf</code> are related to <code>NA</code>.</p>
+<section id="nan" class="level3" data-number="19.4.1"><h3 data-number="19.4.1" class="anchored" data-anchor-id="nan">
+<span class="header-section-number">19.4.1</span> <code>NaN</code>
+</h3>
+<p><code>NaN</code> represents Not a Number. <code>NaN</code> can be generated, for example, by taking the log of a negative number. They can be tested for with <code><a href="https://rdrr.io/r/base/is.finite.html">is.nan()</a></code></p>
+<div class="cell">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in log(c(1, -1, NA)): NaNs produced</code></pre>
+</div>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]   0 NaN  NA</code></pre>
+</div>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.nan</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE  TRUE FALSE</code></pre>
+</div>
+</div>
+</section><section id="inf" class="level3" data-number="19.4.2"><h3 data-number="19.4.2" class="anchored" data-anchor-id="inf">
+<span class="header-section-number">19.4.2</span> Inf</h3>
+<p><code>Inf</code> and <code>-Inf</code> represent positive and negative infinite numbers respectively. These can be generated, for example, by dividing by zero, and tested for with <code><a href="https://rdrr.io/r/base/is.finite.html">is.infinite()</a></code></p>
+<div class="cell">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.infinite</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  TRUE FALSE  TRUE</code></pre>
+</div>
+</div>
+</section><section id="comparison-of-tests" class="level3" data-number="19.4.3"><h3 data-number="19.4.3" class="anchored" data-anchor-id="comparison-of-tests">
+<span class="header-section-number">19.4.3</span> Comparison of tests</h3>
+<p>The test <code><a href="https://rdrr.io/r/base/is.finite.html">is.finite()</a></code> it <code>TRUE</code> if the value is numeric and not <code>NA</code>, <code>NaN</code>, <code>Inf</code> or <code>-Inf</code>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead><tr class="header">
+<th style="text-align: right;">value</th>
+<th style="text-align: left;">is.na</th>
+<th style="text-align: left;">is.nan</th>
+<th style="text-align: left;">is.infinite</th>
+<th style="text-align: left;">is.finite</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">NaN</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Inf</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-Inf</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- -->
+
+<div class="no-row-height column-margin column-container"><section id="contributors" class="level3 unlisted unnumbered"><h3 class="unlisted unnumbered anchored" data-anchor-id="contributors">Contributors</h3>
+<ul>
+<li>Richard Telford</li>
+</ul></section></div></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./130_patchwork.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Combining plots</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./060_bestiary.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bestiary of Brackets and other R notation</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb63" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r setup, include=FALSE}</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/setup.R"</span>)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Handling missing values</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>Many datasets have missing values.</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>These could represent data that were not measured, perhaps because of instrument failure, or were impossible to measure, for example water temperature at 200m where the sea is only 100m deep. </span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>Missing values in R are represented by <span class="in">`NA`</span>.</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a><span class="in">```{r NA}</span></span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>, <span class="cn">NA</span>)</span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a>This tutorial shows you how to cope with missing values in R, focusing on manipulating data with the <span class="in">`tidyverse`</span> package, running statistical analyses, and making figures with <span class="in">`ggplot2`</span>.</span>
+<span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-21"><a href="#cb63-21" aria-hidden="true" tabindex="-1"></a>The <span class="in">`penguins`</span> dataset from <span class="in">`palmerpenguins`</span> is used as an example.</span>
+<span id="cb63-22"><a href="#cb63-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-23"><a href="#cb63-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data handling with missing values</span></span>
+<span id="cb63-24"><a href="#cb63-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-25"><a href="#cb63-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detecting missing values</span></span>
+<span id="cb63-26"><a href="#cb63-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-27"><a href="#cb63-27" aria-hidden="true" tabindex="-1"></a><span class="in">`NA`</span> values can be detected with the function <span class="in">`is.na()`</span> (NB lower case).</span>
+<span id="cb63-28"><a href="#cb63-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-29"><a href="#cb63-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r is.na}</span></span>
+<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="cn">NA</span>)</span>
+<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(x)</span>
+<span id="cb63-32"><a href="#cb63-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-33"><a href="#cb63-33" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-34"><a href="#cb63-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-35"><a href="#cb63-35" aria-hidden="true" tabindex="-1"></a>We could use this, for example, to find the number of missing values in a column of the <span class="in">`penguins`</span> data.</span>
+<span id="cb63-36"><a href="#cb63-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-37"><a href="#cb63-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r is.na.sum}</span></span>
+<span id="cb63-38"><a href="#cb63-38" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-39"><a href="#cb63-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n_missing =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(bill_length_mm)))</span>
+<span id="cb63-40"><a href="#cb63-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-41"><a href="#cb63-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-42"><a href="#cb63-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-43"><a href="#cb63-43" aria-hidden="true" tabindex="-1"></a><span class="fu">### Importing data with missing values</span></span>
+<span id="cb63-44"><a href="#cb63-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-45"><a href="#cb63-45" aria-hidden="true" tabindex="-1"></a>When you import a text file (e.g., a csv file) any blank cells, or cells with "NA" will be treated as <span class="in">`NA`</span>.</span>
+<span id="cb63-46"><a href="#cb63-46" aria-hidden="true" tabindex="-1"></a>If you have coded missing values as something else, you can use the <span class="in">`na`</span> argument to <span class="in">`read_delim()`</span></span>
+<span id="cb63-47"><a href="#cb63-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-48"><a href="#cb63-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb63-49"><a href="#cb63-49" aria-hidden="true" tabindex="-1"></a><span class="co"># set blank cells, "NA" or "missing" to NA  </span></span>
+<span id="cb63-50"><a href="#cb63-50" aria-hidden="true" tabindex="-1"></a><span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"my_file.csv"</span>, <span class="at">na =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"NA"</span>, <span class="st">"missing"</span>))</span>
+<span id="cb63-51"><a href="#cb63-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-52"><a href="#cb63-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-53"><a href="#cb63-53" aria-hidden="true" tabindex="-1"></a>In <span class="in">`readxl::read_excel()`</span>, the default for the <span class="in">`na`</span> argument is just for blank cells to be made <span class="in">`NA`</span>, but other values can be added in the same way as in <span class="in">`read_delim()`</span>.</span>
+<span id="cb63-54"><a href="#cb63-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-55"><a href="#cb63-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### Removing rows with missing values</span></span>
+<span id="cb63-56"><a href="#cb63-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-57"><a href="#cb63-57" aria-hidden="true" tabindex="-1"></a>We can remove rows with <span class="in">`NA`</span> in particular columns from a data frame using <span class="in">`drop_na()`</span>.</span>
+<span id="cb63-58"><a href="#cb63-58" aria-hidden="true" tabindex="-1"></a>For example, to remove rows in the <span class="in">`penguins`</span> data set with an <span class="in">`NA`</span> in the <span class="in">`bill_length_mm`</span> or <span class="in">`bill_depth_mm`</span> columns, we could use</span>
+<span id="cb63-59"><a href="#cb63-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-60"><a href="#cb63-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r drop-na}</span></span>
+<span id="cb63-61"><a href="#cb63-61" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-62"><a href="#cb63-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(bill_length_mm, bill_depth_mm)</span>
+<span id="cb63-63"><a href="#cb63-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-64"><a href="#cb63-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-65"><a href="#cb63-65" aria-hidden="true" tabindex="-1"></a>Alternatively, we can use <span class="in">`filter()`</span> and <span class="in">`is.na()`</span>. </span>
+<span id="cb63-66"><a href="#cb63-66" aria-hidden="true" tabindex="-1"></a>This is most useful when removing <span class="in">`NA`</span> is one of several arguments to <span class="in">`filter`</span>.</span>
+<span id="cb63-67"><a href="#cb63-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-68"><a href="#cb63-68" aria-hidden="true" tabindex="-1"></a><span class="in">```{r filter-na}</span></span>
+<span id="cb63-69"><a href="#cb63-69" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-70"><a href="#cb63-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>, <span class="sc">!</span><span class="fu">is.na</span>(bill_length_mm))</span>
+<span id="cb63-71"><a href="#cb63-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-72"><a href="#cb63-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-73"><a href="#cb63-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-74"><a href="#cb63-74" aria-hidden="true" tabindex="-1"></a>::: callout-warning</span>
+<span id="cb63-75"><a href="#cb63-75" aria-hidden="true" tabindex="-1"></a><span class="fu">## na.omit</span></span>
+<span id="cb63-76"><a href="#cb63-76" aria-hidden="true" tabindex="-1"></a>You might see some code using <span class="in">`na.omit()`</span> to remove rows with missing values from a data frame.</span>
+<span id="cb63-77"><a href="#cb63-77" aria-hidden="true" tabindex="-1"></a>This can be dangerous as it will remove rows with an <span class="in">`NA`</span> in any column, not just the columns you are interested in.</span>
+<span id="cb63-78"><a href="#cb63-78" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb63-79"><a href="#cb63-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-80"><a href="#cb63-80" aria-hidden="true" tabindex="-1"></a><span class="fu">### Replacing missing values {#sec-replacing-missing-values}</span></span>
+<span id="cb63-81"><a href="#cb63-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-82"><a href="#cb63-82" aria-hidden="true" tabindex="-1"></a>Sometimes you want to replace <span class="in">`NA`</span> with another value.</span>
+<span id="cb63-83"><a href="#cb63-83" aria-hidden="true" tabindex="-1"></a>Perhaps you want to make a plot where <span class="in">`NA`</span> values are labelled unknown, or you know that the <span class="in">`NA`</span> values are actually zeros, or the <span class="in">`NA`</span> are values below the detection limit of an instrument and you want to replace these with half the detection limit.</span>
+<span id="cb63-84"><a href="#cb63-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-85"><a href="#cb63-85" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`tidyr::replace_na()`</span> to do this.</span>
+<span id="cb63-86"><a href="#cb63-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-87"><a href="#cb63-87" aria-hidden="true" tabindex="-1"></a>Here, the code replaces missing values for bill length with the mean value for bill length.</span>
+<span id="cb63-88"><a href="#cb63-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-89"><a href="#cb63-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r replace-na}</span></span>
+<span id="cb63-90"><a href="#cb63-90" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-91"><a href="#cb63-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb63-92"><a href="#cb63-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">bill_length_mm =</span> <span class="fu">replace_na</span>(</span>
+<span id="cb63-93"><a href="#cb63-93" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> bill_length_mm, </span>
+<span id="cb63-94"><a href="#cb63-94" aria-hidden="true" tabindex="-1"></a>      <span class="at">replace =</span> <span class="fu">mean</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb63-95"><a href="#cb63-95" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb63-96"><a href="#cb63-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-97"><a href="#cb63-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-98"><a href="#cb63-98" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Replacing `NA` in factors</span></span>
+<span id="cb63-99"><a href="#cb63-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-100"><a href="#cb63-100" aria-hidden="true" tabindex="-1"></a>The code in the previous section won't work if we try to replace an <span class="in">`NA`</span> in a factor. </span>
+<span id="cb63-101"><a href="#cb63-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-102"><a href="#cb63-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r bad-factor, error = TRUE, message = TRUE}</span></span>
+<span id="cb63-103"><a href="#cb63-103" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-104"><a href="#cb63-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">replace_na</span>(sex, <span class="st">"missing"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb63-105"><a href="#cb63-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(sex)</span>
+<span id="cb63-106"><a href="#cb63-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-107"><a href="#cb63-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-108"><a href="#cb63-108" aria-hidden="true" tabindex="-1"></a>As the warning indicates, the problem is that "missing" is not one of the levels of the factor sex.</span>
+<span id="cb63-109"><a href="#cb63-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-110"><a href="#cb63-110" aria-hidden="true" tabindex="-1"></a>Instead we need to use the function <span class="in">`forcats::fct_explicit_na()`</span> (the <span class="in">`forcats`</span> package is part of <span class="in">`tidyverse`</span> for manipulating factors).</span>
+<span id="cb63-111"><a href="#cb63-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-112"><a href="#cb63-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r good-factor}</span></span>
+<span id="cb63-113"><a href="#cb63-113" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-114"><a href="#cb63-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">fct_explicit_na</span>(sex, <span class="at">na_level =</span> <span class="st">"missing"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb63-115"><a href="#cb63-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(sex)</span>
+<span id="cb63-116"><a href="#cb63-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-117"><a href="#cb63-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-118"><a href="#cb63-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-119"><a href="#cb63-119" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Replacing `NA` with values from another vector </span></span>
+<span id="cb63-120"><a href="#cb63-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-121"><a href="#cb63-121" aria-hidden="true" tabindex="-1"></a>Sometimes you have a vector with <span class="in">`NA`</span> and you want to replace the missing values with values from a second vector.</span>
+<span id="cb63-122"><a href="#cb63-122" aria-hidden="true" tabindex="-1"></a>The <span class="in">`coalesce()`</span> can do this.</span>
+<span id="cb63-123"><a href="#cb63-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-124"><a href="#cb63-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-127"><a href="#cb63-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb63-128"><a href="#cb63-128" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>)</span>
+<span id="cb63-129"><a href="#cb63-129" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">4</span>)</span>
+<span id="cb63-130"><a href="#cb63-130" aria-hidden="true" tabindex="-1"></a><span class="fu">coalesce</span>(x, y)</span>
+<span id="cb63-131"><a href="#cb63-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-132"><a href="#cb63-132" aria-hidden="true" tabindex="-1"></a>Here, the first value of <span class="in">`x`</span> is <span class="in">`NA`</span>, so the first value of <span class="in">`y`</span> is used.</span>
+<span id="cb63-133"><a href="#cb63-133" aria-hidden="true" tabindex="-1"></a>The second value of <span class="in">`x`</span> is not <span class="in">`NA`</span>, and so can be used.</span>
+<span id="cb63-134"><a href="#cb63-134" aria-hidden="true" tabindex="-1"></a>And so on.</span>
+<span id="cb63-135"><a href="#cb63-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-136"><a href="#cb63-136" aria-hidden="true" tabindex="-1"></a><span class="fu">### Setting mising values</span></span>
+<span id="cb63-137"><a href="#cb63-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-138"><a href="#cb63-138" aria-hidden="true" tabindex="-1"></a>Some data sets use a number to represent a missing value, for example -9999.</span>
+<span id="cb63-139"><a href="#cb63-139" aria-hidden="true" tabindex="-1"></a>Obviously, if you do any calculations with a data set containing -9999 as a missing value, the results could be seriously wrong.</span>
+<span id="cb63-140"><a href="#cb63-140" aria-hidden="true" tabindex="-1"></a>Instead we need to replace these values with <span class="in">`NA`</span>.</span>
+<span id="cb63-141"><a href="#cb63-141" aria-hidden="true" tabindex="-1"></a>We can do this with <span class="in">`dplyr::na_if()`</span>.</span>
+<span id="cb63-142"><a href="#cb63-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-143"><a href="#cb63-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r na_if}</span></span>
+<span id="cb63-144"><a href="#cb63-144" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="sc">-</span><span class="dv">9999</span>)</span>
+<span id="cb63-145"><a href="#cb63-145" aria-hidden="true" tabindex="-1"></a><span class="fu">na_if</span>(x, <span class="at">y =</span> <span class="sc">-</span><span class="dv">9999</span>)</span>
+<span id="cb63-146"><a href="#cb63-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-147"><a href="#cb63-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-148"><a href="#cb63-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-149"><a href="#cb63-149" aria-hidden="true" tabindex="-1"></a><span class="fu">### Missing values and dplyr `filter()`</span></span>
+<span id="cb63-150"><a href="#cb63-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-151"><a href="#cb63-151" aria-hidden="true" tabindex="-1"></a><span class="in">`dplyr::filter()`</span> returns rows where the condition is strictly TRUE.</span>
+<span id="cb63-152"><a href="#cb63-152" aria-hidden="true" tabindex="-1"></a>This is usually what you want: if we want to filter penguins with long bills from the penguins dataset we don't want the birds with unknown bill length.</span>
+<span id="cb63-153"><a href="#cb63-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-154"><a href="#cb63-154" aria-hidden="true" tabindex="-1"></a>Occasionally we do want to keep the rows with <span class="in">`NA`</span>. </span>
+<span id="cb63-155"><a href="#cb63-155" aria-hidden="true" tabindex="-1"></a>Perhaps we have a column of comments, many of which are <span class="in">`NA`</span>, and we only want to remove rows where the non-<span class="in">`NA`</span> values meet some criterion.</span>
+<span id="cb63-156"><a href="#cb63-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-159"><a href="#cb63-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb63-160"><a href="#cb63-160" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-161"><a href="#cb63-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"Female"</span> <span class="sc">|</span> <span class="fu">is.na</span>(sex))</span>
+<span id="cb63-162"><a href="#cb63-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-163"><a href="#cb63-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-164"><a href="#cb63-164" aria-hidden="true" tabindex="-1"></a>Here the <span class="in">`|`</span> means OR in Boolean logic.</span>
+<span id="cb63-165"><a href="#cb63-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-166"><a href="#cb63-166" aria-hidden="true" tabindex="-1"></a><span class="fu">### Missing values and dplyr `if_else()` and `case_when()`</span></span>
+<span id="cb63-167"><a href="#cb63-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-168"><a href="#cb63-168" aria-hidden="true" tabindex="-1"></a>Sometimes is it useful to set values to <span class="in">`NA`</span> with <span class="in">`if_else()`</span> (when there is a choice of two outcomes) or <span class="in">`case_when()`</span> (when there is a choice of two or more outcomes).</span>
+<span id="cb63-169"><a href="#cb63-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-170"><a href="#cb63-170" aria-hidden="true" tabindex="-1"></a>All possible values returned by <span class="in">`if_else()`</span> and <span class="in">`case_when()`</span> need to be of the same type (character, numeric, integer, logical).</span>
+<span id="cb63-171"><a href="#cb63-171" aria-hidden="true" tabindex="-1"></a>If the types are inconsistent, an error is produced.</span>
+<span id="cb63-172"><a href="#cb63-172" aria-hidden="true" tabindex="-1"></a>This is useful as forcing consistency helps avoid unexpected behaviour.</span>
+<span id="cb63-173"><a href="#cb63-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-174"><a href="#cb63-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r case-when-error, error=TRUE}</span></span>
+<span id="cb63-175"><a href="#cb63-175" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span></span>
+<span id="cb63-176"><a href="#cb63-176" aria-hidden="true" tabindex="-1"></a><span class="fu">case_when</span>(</span>
+<span id="cb63-177"><a href="#cb63-177" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA</span>,</span>
+<span id="cb63-178"><a href="#cb63-178" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"One"</span>,</span>
+<span id="cb63-179"><a href="#cb63-179" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Two"</span></span>
+<span id="cb63-180"><a href="#cb63-180" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb63-181"><a href="#cb63-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-182"><a href="#cb63-182" aria-hidden="true" tabindex="-1"></a>The problem occurs here because <span class="in">`NA`</span> is treated as a logical vector, while the other values are characters.</span>
+<span id="cb63-183"><a href="#cb63-183" aria-hidden="true" tabindex="-1"></a>The solution is to use <span class="in">`NA_character_`</span> which is an <span class="in">`NA`</span> with the correct type.</span>
+<span id="cb63-184"><a href="#cb63-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-185"><a href="#cb63-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r case-when}</span></span>
+<span id="cb63-186"><a href="#cb63-186" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span></span>
+<span id="cb63-187"><a href="#cb63-187" aria-hidden="true" tabindex="-1"></a><span class="fu">case_when</span>(</span>
+<span id="cb63-188"><a href="#cb63-188" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
+<span id="cb63-189"><a href="#cb63-189" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"One"</span>,</span>
+<span id="cb63-190"><a href="#cb63-190" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Two"</span></span>
+<span id="cb63-191"><a href="#cb63-191" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb63-192"><a href="#cb63-192" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-193"><a href="#cb63-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-194"><a href="#cb63-194" aria-hidden="true" tabindex="-1"></a>Other typed <span class="in">`NA`</span> include <span class="in">`NA_real_`</span> for numeric values and <span class="in">`NA_integer`</span> for integer values.</span>
+<span id="cb63-195"><a href="#cb63-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-196"><a href="#cb63-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-197"><a href="#cb63-197" aria-hidden="true" tabindex="-1"></a><span class="fu">## Statistics with missing values</span></span>
+<span id="cb63-198"><a href="#cb63-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-199"><a href="#cb63-199" aria-hidden="true" tabindex="-1"></a><span class="fu">### `NA` arithemetic</span></span>
+<span id="cb63-200"><a href="#cb63-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-201"><a href="#cb63-201" aria-hidden="true" tabindex="-1"></a>What is five plus an unknown number?</span>
+<span id="cb63-202"><a href="#cb63-202" aria-hidden="true" tabindex="-1"></a>The answer is, of course, unknown.</span>
+<span id="cb63-203"><a href="#cb63-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-206"><a href="#cb63-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb63-207"><a href="#cb63-207" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">+</span> <span class="cn">NA</span></span>
+<span id="cb63-208"><a href="#cb63-208" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-209"><a href="#cb63-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-210"><a href="#cb63-210" aria-hidden="true" tabindex="-1"></a>NA are contagious in calculations: if one value is <span class="in">`NA`</span> the result is <span class="in">`NA`</span>.</span>
+<span id="cb63-211"><a href="#cb63-211" aria-hidden="true" tabindex="-1"></a>This effects many descriptive statistics.</span>
+<span id="cb63-212"><a href="#cb63-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-213"><a href="#cb63-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r contagion}</span></span>
+<span id="cb63-214"><a href="#cb63-214" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="cn">NA</span>)</span>
+<span id="cb63-215"><a href="#cb63-215" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(x)</span>
+<span id="cb63-216"><a href="#cb63-216" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x)</span>
+<span id="cb63-217"><a href="#cb63-217" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(x)</span>
+<span id="cb63-218"><a href="#cb63-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-219"><a href="#cb63-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-220"><a href="#cb63-220" aria-hidden="true" tabindex="-1"></a>The solution is to use the <span class="in">`na.rm`</span> argument to these functions to exclude the <span class="in">`NA`</span> from the calculation.</span>
+<span id="cb63-221"><a href="#cb63-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-222"><a href="#cb63-222" aria-hidden="true" tabindex="-1"></a><span class="in">```{r na.rm}</span></span>
+<span id="cb63-223"><a href="#cb63-223" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb63-224"><a href="#cb63-224" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb63-225"><a href="#cb63-225" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb63-226"><a href="#cb63-226" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-227"><a href="#cb63-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-228"><a href="#cb63-228" aria-hidden="true" tabindex="-1"></a><span class="fu">### `NA` in correlations and covariances</span></span>
+<span id="cb63-229"><a href="#cb63-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-230"><a href="#cb63-230" aria-hidden="true" tabindex="-1"></a>The functions for calculating correlation, <span class="in">`cor()`</span>, and covariance, <span class="in">`cov()`</span>, work a little differently as these functions can work on two vectors or on a matrix or data frame.</span>
+<span id="cb63-231"><a href="#cb63-231" aria-hidden="true" tabindex="-1"></a>The <span class="in">`use`</span> argument is used to control how <span class="in">`NA`</span> are treated.</span>
+<span id="cb63-232"><a href="#cb63-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-233"><a href="#cb63-233" aria-hidden="true" tabindex="-1"></a>By default, if any values are <span class="in">`NA`</span> in either vector, the result is also <span class="in">`NA`</span>.</span>
+<span id="cb63-234"><a href="#cb63-234" aria-hidden="true" tabindex="-1"></a>If you want to find the correlation between two vectors without the <span class="in">`NA`</span>, then use</span>
+<span id="cb63-235"><a href="#cb63-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-236"><a href="#cb63-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r cor}</span></span>
+<span id="cb63-237"><a href="#cb63-237" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="at">x =</span> penguins<span class="sc">$</span>bill_length_mm,</span>
+<span id="cb63-238"><a href="#cb63-238" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> penguins<span class="sc">$</span>bill_depth_mm, </span>
+<span id="cb63-239"><a href="#cb63-239" aria-hidden="true" tabindex="-1"></a>    <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb63-240"><a href="#cb63-240" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-241"><a href="#cb63-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-242"><a href="#cb63-242" aria-hidden="true" tabindex="-1"></a>If you have a matrix (or data frame), and want to calculate a correlation matrix, then <span class="in">`use = "complete.obs"`</span> will calculate this using just the rows that have no <span class="in">`NA`</span>, and <span class="in">`use = "pairwise.complete.obs"`</span> will calculate the correlation between each pair of variables using all complete pairs of observations on those variables. </span>
+<span id="cb63-243"><a href="#cb63-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-244"><a href="#cb63-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{r cor-matrix}</span></span>
+<span id="cb63-245"><a href="#cb63-245" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-246"><a href="#cb63-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) <span class="sc">|&gt;</span> </span>
+<span id="cb63-247"><a href="#cb63-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>(<span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>) </span>
+<span id="cb63-248"><a href="#cb63-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-249"><a href="#cb63-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-250"><a href="#cb63-250" aria-hidden="true" tabindex="-1"></a><span class="fu">### Missing values and regession models</span></span>
+<span id="cb63-251"><a href="#cb63-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-252"><a href="#cb63-252" aria-hidden="true" tabindex="-1"></a>By default regression models such as <span class="in">`lm()`</span>, <span class="in">`glm()`</span>, and <span class="in">`lmer()`</span> remove any case that has an <span class="in">`NA`</span> in either the response or predictors.</span>
+<span id="cb63-253"><a href="#cb63-253" aria-hidden="true" tabindex="-1"></a>This behaviour is controlled by the <span class="in">`na.action`</span> argument.</span>
+<span id="cb63-254"><a href="#cb63-254" aria-hidden="true" tabindex="-1"></a>This is great if we are interested in the model coefficients, but it can cause problems if there are <span class="in">`NA`</span> in the data and we want to add the residuals, fitted values, or predictions into the original data frame for plotting.</span>
+<span id="cb63-255"><a href="#cb63-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-256"><a href="#cb63-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r lm-omit, error = TRUE}</span></span>
+<span id="cb63-257"><a href="#cb63-257" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g, <span class="at">data =</span> penguins)</span>
+<span id="cb63-258"><a href="#cb63-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-259"><a href="#cb63-259" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">fit =</span> <span class="fu">fitted</span>(mod))</span>
+<span id="cb63-260"><a href="#cb63-260" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-261"><a href="#cb63-261" aria-hidden="true" tabindex="-1"></a>The problem is that there are fewer observation in the model (which omitted the <span class="in">`NA`</span>) than the original data frame (which still has them).</span>
+<span id="cb63-262"><a href="#cb63-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-263"><a href="#cb63-263" aria-hidden="true" tabindex="-1"></a>We can make this work by using <span class="in">`na.action = na.exclude`</span> which will pad the fitted values with <span class="in">`NA`</span> so that it is the same length as the original data.</span>
+<span id="cb63-264"><a href="#cb63-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-265"><a href="#cb63-265" aria-hidden="true" tabindex="-1"></a><span class="in">```{r lm-exclude, error = TRUE}</span></span>
+<span id="cb63-266"><a href="#cb63-266" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g, <span class="at">data =</span> penguins, <span class="at">na.action =</span> na.exclude)</span>
+<span id="cb63-267"><a href="#cb63-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-268"><a href="#cb63-268" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">fit =</span> <span class="fu">fitted</span>(mod))</span>
+<span id="cb63-269"><a href="#cb63-269" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-270"><a href="#cb63-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-271"><a href="#cb63-271" aria-hidden="true" tabindex="-1"></a>With <span class="in">`na.exclude`</span> the <span class="in">`NA`</span> are still excluded from the model fitting - most models do not allow <span class="in">`NA`</span> values. </span>
+<span id="cb63-272"><a href="#cb63-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-273"><a href="#cb63-273" aria-hidden="true" tabindex="-1"></a>When comparing models, for example with <span class="in">`anova()`</span>, all models need to have been fit to the same dataset. </span>
+<span id="cb63-274"><a href="#cb63-274" aria-hidden="true" tabindex="-1"></a>This can cause problems if <span class="in">`NA`</span> have caused different numbers of observations to be removed.</span>
+<span id="cb63-275"><a href="#cb63-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-276"><a href="#cb63-276" aria-hidden="true" tabindex="-1"></a><span class="in">```{r bad-anova, error = TRUE}</span></span>
+<span id="cb63-277"><a href="#cb63-277" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g <span class="sc">+</span> sex, <span class="at">data =</span> penguins, <span class="at">na.action =</span> na.exclude)</span>
+<span id="cb63-278"><a href="#cb63-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-279"><a href="#cb63-279" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod, mod2)</span>
+<span id="cb63-280"><a href="#cb63-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-281"><a href="#cb63-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-282"><a href="#cb63-282" aria-hidden="true" tabindex="-1"></a>The easiest solution is to remove rows with <span class="in">`NA`</span> in any predictor before fitting any of the models.</span>
+<span id="cb63-283"><a href="#cb63-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-284"><a href="#cb63-284" aria-hidden="true" tabindex="-1"></a><span class="fu">### Imputing missing values</span></span>
+<span id="cb63-285"><a href="#cb63-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-286"><a href="#cb63-286" aria-hidden="true" tabindex="-1"></a>As shown above, observations with missing values are omitted from the model. </span>
+<span id="cb63-287"><a href="#cb63-287" aria-hidden="true" tabindex="-1"></a>If a predictor has many missing values, it may be better to exclude the predictor from the model to avoid losing too many observations.</span>
+<span id="cb63-288"><a href="#cb63-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-289"><a href="#cb63-289" aria-hidden="true" tabindex="-1"></a>An alternative is to impute the missing data. </span>
+<span id="cb63-290"><a href="#cb63-290" aria-hidden="true" tabindex="-1"></a>This should be done with caution as it can bias the results, especially if a substantial proportion of the data are imputed.</span>
+<span id="cb63-291"><a href="#cb63-291" aria-hidden="true" tabindex="-1"></a>On the other hand, if missing data are not randomly distributed, omitting observations with missing data can also bias the results.</span>
+<span id="cb63-292"><a href="#cb63-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-293"><a href="#cb63-293" aria-hidden="true" tabindex="-1"></a>There are several ways that can be used to impute missing values. </span>
+<span id="cb63-294"><a href="#cb63-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-295"><a href="#cb63-295" aria-hidden="true" tabindex="-1"></a>The simplest is to replace a the missing value with the mean or median of the variable as shown in @sec-replacing-missing-values.</span>
+<span id="cb63-296"><a href="#cb63-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-297"><a href="#cb63-297" aria-hidden="true" tabindex="-1"></a>More complex methods use the multivariate relationship between predictors to estimate the missing values. </span>
+<span id="cb63-298"><a href="#cb63-298" aria-hidden="true" tabindex="-1"></a>Several R packages can help with this, e.g., <span class="in">`mice`</span>.</span>
+<span id="cb63-299"><a href="#cb63-299" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Yadav and Roychoudhury (2018)</span><span class="co">](https://doi.org/10.1016/j.knosys.2018.06.012)</span> compare the performance of some popular methods.</span>
+<span id="cb63-300"><a href="#cb63-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-301"><a href="#cb63-301" aria-hidden="true" tabindex="-1"></a><span class="fu">## Missing values and `ggplot2`</span></span>
+<span id="cb63-302"><a href="#cb63-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-303"><a href="#cb63-303" aria-hidden="true" tabindex="-1"></a>By default, missing values in the <span class="in">`x`</span> or <span class="in">`y`</span> aesthetics are dropped by <span class="in">`ggplot()`</span> with a warning, whereas missing values in the <span class="in">`colour`</span> or <span class="in">`fill`</span> aesthetics are shown in grey. </span>
+<span id="cb63-304"><a href="#cb63-304" aria-hidden="true" tabindex="-1"></a>This behaviour can be controlled with the <span class="in">`na.value`</span> argument to the relevant <span class="in">`scale_*_*()`</span> function.</span>
+<span id="cb63-305"><a href="#cb63-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-306"><a href="#cb63-306" aria-hidden="true" tabindex="-1"></a><span class="in">```{r ggplot2, warning = TRUE, fig.height=3, fig.width=3}</span></span>
+<span id="cb63-307"><a href="#cb63-307" aria-hidden="true" tabindex="-1"></a><span class="co">#x or y NA</span></span>
+<span id="cb63-308"><a href="#cb63-308" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb63-309"><a href="#cb63-309" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, </span>
+<span id="cb63-310"><a href="#cb63-310" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>, <span class="dv">5</span>),</span>
+<span id="cb63-311"><a href="#cb63-311" aria-hidden="true" tabindex="-1"></a>  <span class="at">colour =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="cn">NA</span>)</span>
+<span id="cb63-312"><a href="#cb63-312" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb63-313"><a href="#cb63-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">colour =</span> colour)) <span class="sc">+</span></span>
+<span id="cb63-314"><a href="#cb63-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>)</span>
+<span id="cb63-315"><a href="#cb63-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-316"><a href="#cb63-316" aria-hidden="true" tabindex="-1"></a>p</span>
+<span id="cb63-317"><a href="#cb63-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-318"><a href="#cb63-318" aria-hidden="true" tabindex="-1"></a><span class="co"># change defaults</span></span>
+<span id="cb63-319"><a href="#cb63-319" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> </span>
+<span id="cb63-320"><a href="#cb63-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">na.value =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb63-321"><a href="#cb63-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_continuous</span>(<span class="at">na.value =</span> <span class="st">"hotpink"</span>)</span>
+<span id="cb63-322"><a href="#cb63-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-323"><a href="#cb63-323" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-324"><a href="#cb63-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-325"><a href="#cb63-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-326"><a href="#cb63-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## Related concepts</span></span>
+<span id="cb63-327"><a href="#cb63-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-328"><a href="#cb63-328" aria-hidden="true" tabindex="-1"></a><span class="in">`NaN`</span> and <span class="in">`Inf`</span> are related to <span class="in">`NA`</span>.</span>
+<span id="cb63-329"><a href="#cb63-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-330"><a href="#cb63-330" aria-hidden="true" tabindex="-1"></a><span class="fu">### `NaN`</span></span>
+<span id="cb63-331"><a href="#cb63-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-332"><a href="#cb63-332" aria-hidden="true" tabindex="-1"></a><span class="in">`NaN`</span> represents Not a Number.</span>
+<span id="cb63-333"><a href="#cb63-333" aria-hidden="true" tabindex="-1"></a><span class="in">`NaN`</span> can be generated, for example, by taking the log of a negative number.</span>
+<span id="cb63-334"><a href="#cb63-334" aria-hidden="true" tabindex="-1"></a>They can be tested for with <span class="in">`is.nan()`</span></span>
+<span id="cb63-335"><a href="#cb63-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-336"><a href="#cb63-336" aria-hidden="true" tabindex="-1"></a><span class="in">```{r nan}</span></span>
+<span id="cb63-337"><a href="#cb63-337" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="cn">NA</span>))</span>
+<span id="cb63-338"><a href="#cb63-338" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb63-339"><a href="#cb63-339" aria-hidden="true" tabindex="-1"></a><span class="fu">is.nan</span>(x)</span>
+<span id="cb63-340"><a href="#cb63-340" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-341"><a href="#cb63-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-342"><a href="#cb63-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-343"><a href="#cb63-343" aria-hidden="true" tabindex="-1"></a><span class="fu">### Inf</span></span>
+<span id="cb63-344"><a href="#cb63-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-345"><a href="#cb63-345" aria-hidden="true" tabindex="-1"></a><span class="in">`Inf`</span> and <span class="in">`-Inf`</span> represent positive and negative infinite numbers respectively.</span>
+<span id="cb63-346"><a href="#cb63-346" aria-hidden="true" tabindex="-1"></a>These can be generated, for example, by dividing by zero, and tested for with <span class="in">`is.infinite()`</span></span>
+<span id="cb63-347"><a href="#cb63-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-348"><a href="#cb63-348" aria-hidden="true" tabindex="-1"></a><span class="in">```{r inf}</span></span>
+<span id="cb63-349"><a href="#cb63-349" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>, <span class="cn">Inf</span>)</span>
+<span id="cb63-350"><a href="#cb63-350" aria-hidden="true" tabindex="-1"></a><span class="fu">is.infinite</span>(x)</span>
+<span id="cb63-351"><a href="#cb63-351" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-352"><a href="#cb63-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-353"><a href="#cb63-353" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparison of tests</span></span>
+<span id="cb63-354"><a href="#cb63-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-355"><a href="#cb63-355" aria-hidden="true" tabindex="-1"></a>The test <span class="in">`is.finite()`</span> it <span class="in">`TRUE`</span> if the value is numeric and not <span class="in">`NA`</span>, <span class="in">`NaN`</span>, <span class="in">`Inf`</span> or <span class="in">`-Inf`</span>.</span>
+<span id="cb63-356"><a href="#cb63-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-357"><a href="#cb63-357" aria-hidden="true" tabindex="-1"></a><span class="in">```{r comparison, echo = FALSE}</span></span>
+<span id="cb63-358"><a href="#cb63-358" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb63-359"><a href="#cb63-359" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>, <span class="cn">NaN</span>, <span class="cn">Inf</span>, <span class="sc">-</span><span class="cn">Inf</span>),</span>
+<span id="cb63-360"><a href="#cb63-360" aria-hidden="true" tabindex="-1"></a>  <span class="at">is.na =</span> <span class="fu">is.na</span>(value),</span>
+<span id="cb63-361"><a href="#cb63-361" aria-hidden="true" tabindex="-1"></a>  <span class="at">is.nan =</span> <span class="fu">is.nan</span>(value),</span>
+<span id="cb63-362"><a href="#cb63-362" aria-hidden="true" tabindex="-1"></a>  <span class="at">is.infinite =</span> <span class="fu">is.infinite</span>(value),</span>
+<span id="cb63-363"><a href="#cb63-363" aria-hidden="true" tabindex="-1"></a>  <span class="at">is.finite =</span> <span class="fu">is.finite</span>(value)</span>
+<span id="cb63-364"><a href="#cb63-364" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span>
+<span id="cb63-365"><a href="#cb63-365" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb63-366"><a href="#cb63-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-367"><a href="#cb63-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-368"><a href="#cb63-368" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb63-369"><a href="#cb63-369" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
+<span id="cb63-370"><a href="#cb63-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-371"><a href="#cb63-371" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Richard Telford</span>
+<span id="cb63-372"><a href="#cb63-372" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>
