@@ -7,10 +7,10 @@ bioceed_links <- function(dir, front_page = FALSE, quarto = FALSE){
     f <- readLines(.x)
     if(isTRUE(quarto)){
       p1 <- grep(
-        pattern = '</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">',
+        pattern = '<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">',
         x = f)
       p2 <- grep(
-        pattern= '<nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>',
+        pattern= '<nav id="TOC" role="doc-toc">',
         x = f)
     }
     else {
@@ -61,12 +61,10 @@ quarto::quarto_render("writing_a_package")
 bioceed_links("docs/package", quarto = TRUE)
 
 # working in R
-
 quarto::quarto_render("WorkingInR")
-bioceed_links("docs/WorkingInR", quarto = TRUE)
+bioceed_links("docs/workingInR", quarto = TRUE)
 
 # quarto markdown
-
 quarto::quarto_render("quarto")
 bioceed_links("docs/quarto", quarto = TRUE)
 {
