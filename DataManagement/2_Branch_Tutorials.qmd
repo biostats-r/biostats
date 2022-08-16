@@ -1,0 +1,287 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# Working with branches {#sec-working-branches}
+
+```{r title-pic}
+knitr::include_graphics("Pics/branch_tutorial/0_winter_forest.JPEG")
+```
+
+## What is a branch?
+
+A **branch** lets you develop code, fix a problem, or test an idea without affecting the original project.
+A **branch** is created from an existing **branch**, usually from the **main branch** of the project.
+Note that **main branch** was previously named master branch, but removed because of the reference to slavery.
+Because of this change you might find references to the old name when looking for help elsewhere.
+
+You can work on a **branch**, bravely develop code that works or does not work and it does not break the code on the **main branch**.
+Basically, you can experiment on your own.
+
+If the idea did not work or you have another idea, the **branch** can be deleted and nobody ever needs to know about it.
+Make a new **branch** and start all over again.
+None of this will affect the original project.
+
+If you are working **on your own** project, and happy with the new code, or the idea is tested and working, you can **merge** the **branch** you are working on with the **main branch**.
+
+::: callout-tip
+## Definitions
+
+-   **branch** - a space for making changes to code without affecting the original code
+-   **merge** - merge the commits on two branches
+-   **merge conflict** - a problem when there are two incompatible versions of a file that you are trying to merge
+-   **main** - conventional name of the default branch of your repo
+:::
+
+### The workflow
+
+To understand the **workflow**, let's see how Kingsley is using branches (@fig-workflow-branches).
+
+Kingsley owns a GitHub repo.
+He **clones** the repo to his computer (1).
+To develop code, he creates a **new branch** (2) and makes **commits** (3).
+Then he **merges** the **new branch** with the **main branch** locally on his computer (4).
+Finally, he **pushes** these changes to his **remote repo** on GitHub (5).
+Kingsley then continue the workflow (2-5).
+
+```{r}
+#| label: fig-workflow-branches
+#| fig-cap: Workflow using branches
+#| fig-alt: Schematic diagram of the workflow when using branches
+knitr::include_graphics("Pics/branch_tutorial/1_workflow_branch.png")
+```
+
+Let's have a look how to create, use and delete **branches**.
+
+### Make a new branch in RStudio {#sec-new-branch}
+
+In RStudio, click on the **New Branch** button in the Git tab.
+Next to this button it will say on which branch you are.
+In this case it is main, which is the default branch.
+
+```{r}
+#| label: fig-new-branch
+#| fig-cap: Icon for making a new branch in RStudio
+#| fig-alt: Screenshot of the git panel in RStudio showing the icon for making a new branch
+knitr::include_graphics("Pics/fork_branch_tutorial/5_make_new_branch.png")
+```
+
+Give the branch a short and informative name (no spaces) and click **Create**.
+
+```{r}
+#| label: fig-name-branch
+#| out-width: '50%'
+#| fig-cap: New branch popup.
+#| fig-alt: Screenshot of the new branch popup window in RStudio
+knitr::include_graphics("Pics/fork_branch_tutorial/6_name_branch.png")
+```
+
+You are now in the newly created branch.
+
+```{r}
+#| label: fig-new-branch-2
+#| fig-cap: The new branch is now active. Use this drop-down list to switch to a different branch.
+#| fig-alt: Screenshot of git panel in RStudio showing which branch is active
+knitr::include_graphics("Pics/fork_branch_tutorial/7_new_branch.png")
+```
+
+If you want to switch back to the **main branch** or another **branch**, click again on the box in the top corner to switch.
+Note that you cannot switch to another branch if you have uncommitted changes.
+They need to be committed first.
+
+### Code, commit and push to origin in RStudio
+
+Now is the time to work in a new or edit an existing file on the project.
+You can work the way it is described in @sec-stage-commit-push.
+Write or edit code, test it, **commit** regularly and add a useful commit message.
+
+Once you are done with the task it is time to **merge** the work on your **new branch** into the **main branch**.
+You can do this either locally or on GitHub.
+
+::: panel-tabset
+##  Merging branches on GitHub
+
+The easiest way to merge branches is on GitHub.
+
+First, **push** your commits to GitHub and then open your repo on GitHub.
+
+You should have a green button "Compare & pull request" (@fig-compare-pr).
+Click this.
+
+```{r}
+#| label: fig-compare-pr
+#| fig-cap: Click the green Compare and pull request button to start merging.
+#| fig-alt: Screenshot of GitHub.com showing button to start merging branches.
+knitr::include_graphics("Pics/branch_tutorial/3_compare_pull_request.png")
+```
+
+Now you should see a page with the title "Open a pull request" (@fig-pull-request).
+Click on the green create pull request button and follow the instructions on the next page to complete the pull request.
+
+```{r}
+#| label: fig-pull-request
+#| fig-cap: Click the big green button to start merging the branches.
+#| fig-alt: Screenshot of GitHub.com showing the Open a pull request page.
+knitr::include_graphics("Pics/branch_tutorial/4_pull_request.png")
+```
+
+The final step is to switch to the **main branch** in RStudio (@fig-new-branch-2) and **pull** the latest commits.
+
+This process is similar to the workflow when collaborating with forks (@sec-collaborating-with-forks).
+
+## Merging branches locally
+
+You can also merge branches in RStudio using the terminal if you prefer.
+
+First you need to go to the **main branch**.
+You can change to the main branch in RStudio (@fig-new-branch-2), or, go to the **Terminal** and type:
+
+``` bash
+git checkout main
+```
+
+To merge the **branch** called *community_analysis* into the **main branch** type:
+
+``` bash
+git merge community_analysis
+```
+
+The last step is to **push** these changes to GitHub.
+For this, go to the git tab in RStudio and **push** the green arrow.
+:::
+
+### Delete branches {#sec-delete-branch}
+
+Once you have created some **branches**, it will become difficult to track which **branch** you are still working on and which are old.
+Generally, you want to delete a **branch** when you are finished with it.
+
+You can delete a branch on **GitHub** either as the last step of merging a branch, or by clicking on the "branches" button and then the dustbin icon next to the branch you want to get rid of.
+
+To delete a **branch** locally, open the terminal and type:
+
+``` bash
+git branch -d community_analysis
+```
+
+To save you from losing work, this command will not work if the branch has not been merged.
+If you really want to delete the branch, use this instead.
+
+``` bash
+git branch -D community_analysis
+```
+
+::: callout-note
+## Exercise
+
+Make a new branch for your repo, then, on the branch edit your code and make some commits.
+Then merge the branch with the main branch and delete the new branch.
+Look at the git history to see how the branch and its commits are represented (open the git window in RStudio and click on history).
+:::
+
+### Trouble shooting
+
+#### Check configurations in the Terminal
+
+If the push and pull icons are in pale green, you might want to check the configurations of your repository.
+In the **Terminal** you can check the **origin** of your repo, which is from where you **push** and **pull**.
+And it will show you if your **origin** is wrong.
+
+Go to the **Terminal** tab and type:
+
+``` bash
+git remote -v
+```
+
+The output will look like this:
+
+    origin  git@github.com:kingsleyshacklebolt/magic_dragons.git (pull)
+    origin  git@github.com:kingsleyshacklebolt/magic_dragons.git (push)
+
+If this looks right, try running
+
+``` bash
+git pull
+```
+
+and following the instructions in any error message.
+
+#### Handling a merge conflict {#sec-merge-conflicts}
+
+A **merge conflict** can occur when you try merging branches that both have edits to the same part of a file.
+This can happen if you are trying to merge two branches when you have edited the file on both branches, or when you are pulling from GitHub and you (or a collaborator) have edited the file there.
+
+The goal is to avoid such conflicts, or at least minimise them, and a good strategy for this is to commit often, work in small steps, push and pull regularly.
+**Merge conflicts** can be avoided if you use separate **branches** for each file that you are creating or editing.
+
+But **merge conflicts** cannot always be avoided.
+If it should happen you will get notified in the **Terminal** when you are trying to **merge** the **new branch** with the **main branch**.
+The message will look like this
+
+    CONFLICT (content): Merge conflict in R/dragon_analysis.R
+
+First, do not panic.
+This message simply tells you that you cannot do the merge and there is a merge conflict in the "dragon_analysis.R" file.
+
+Go the the file with the merge conflict, which will look like this:
+
+    ### Dragon analysis ###
+
+    library("broom")
+
+    # Import data
+    source("R/import_dragon_data.R")
+
+
+    # Run model
+
+    <<<<<< HEAD:dragon_analysis 
+    mod <- lm(body_size ~ body_length, data = dragon)
+    ======
+      mod <- lm(body_size ~ body_length * temperature, data = dragon)
+    >>>>>>> issue-5:dragon_analysis 
+
+    tidy(mod)
+
+In this file the **merge conflict** starts with `<<<<<< HEAD:dragon_analysis` indicating the name of the file.
+Then the two different versions of the code are shown, and separated by `======`.
+Finally, `>>>>>>> issue-5:dragon_analysis` indicates the end of the merge conflict.
+
+To resolve the conflict, you have to edit this section and remove the conflicting parts.
+Basically, choose one of the versions or combine them.
+Also remove the conflict markers `<<<<<<`, `======` and `>>>>>>`.
+
+    ### Dragon analysis ###
+
+    library("broom")
+
+    # Import data
+    source("R/import_dragon_data.R")
+
+
+    # Run model
+    mod <- lm(body_size ~ body_length * temperature, data = dragon)
+
+    tidy(mod)
+
+Save the file, **commit**, switch to the **main branch**, **merge** and **push** to GitHub.
+
+Easy peasy!
+
+::: callout-note
+## Further reading
+
+**Happy Git** provides instructions for how to getting started with Git, R and RStudio, explains the workflow and useful tips for when things go wrong.
+
+[Pro Git Book](https://git-scm.com/book/en/v2) chapter on [basic branching and merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging).
+Note that this book is competent user level with command line focus.
+
+The [**Git flight rules**](https://github.com/k88hudson/git-flight-rules) are an exhaustive resource for what to do when things go wrong.
+:::
+
+::: callout-note
+## What's next
+
+For collaborating with others on the same project read the chapter on **Collaborating with forks**
+:::

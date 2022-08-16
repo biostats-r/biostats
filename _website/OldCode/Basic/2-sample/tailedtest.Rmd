@@ -1,0 +1,45 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: comparing two means - one-tailed or two-tailed tests
+# author: jonathan
+# revised: 13/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/2-sample/tailedtest.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/2-sample/tailedtest.Rmd")
+```
+
+Most of the tests that you would use to compare two samples in R have been set *by default* to run a **two-tailed test**. This means that, when running these tests, you will be looking for differences in both directions (positive and negative): the tests will tell you that there exists a difference between samples, or that a factor has had an effect on one of your sample… but it won’t tell you whether the one sample mean is significantly larger (or smaller) or that the factor has had a positive or negative effect.
+
+Depending on what you are testing, your assumptions, your expectations or your knowledge of the experiment/subjects, you might want to know whether the mean of a sample is specifically greater (or specifically lower) than the mean of the other. Here’s is an example:
+
+>You work on developing a food diet for fish with the specific aim to improve their growth. You run an experiment on a group of individuals and keep a control group which gets the “regular diet”. Eventually, you will want to check whether your work has been successful by comparing the size, weight or any appropriate variable of the individuals. What to do?
+
+Choose a test for comparing the two groups and define that positive difference (growth) is the only "successful" outcome. Here, the null hypothesis `H0` is that the group means are equal, but your alternative hypothesis `Ha` is that the mean weight of the experimental group is *larger* than control. Thus, you concentrate your efforts (and the “efforts” of the test) on looking only for larger growth.
+
+When coding this, you will need to force the system to run a **one-tailed test** rather than two-tailed test by adding the argument `alt=` OR `alternative=` to your function. The possibilities are:
+
++ `alt="less"`
++ `alt="greater"`
++ `alt="two.sided"` (for two-sided test, which is the default parameter).
+
+By writing the code that follows, you will use [Student’s t.test](http://biostats.w.uib.no/comparing-two-means-t-test/){target="_blank"} for independent samples to check whether the mean of `groupA` is **significantly larger** than the mean of `groupB`:
+
+``` {r test, eval=FALSE}
+t.test(groupA, groupB, alt="greater")
+```
+
+Note that this argument is applicable to many tests such as [Student’s t-test](http://biostats.w.uib.no/comparing-two-means-t-test/){target="_blank"}, [Mann-Whitney U test](http://biostats.w.uib.no/comparing-two-means-mann-whitney-u-test/){target="_blank"}… If you are not sure that the test that you want to run accepts this argument, go to the R console and run `?t.test`, `?wilcox.test` or any function preceded by a question mark. A webpage will show up and show you the list of parameters to use in this function. If `alternative` is found in that list, you may use it in the test.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

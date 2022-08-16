@@ -1,0 +1,134 @@
+# Working with a script {#sec-working-script}
+
+::: callout-note
+## In this chapter, you will
+
+- learn why you should use scripts for R code
+- learn how to run code in a script
+- learn how and why to use comments in code
+- learn some tips for making readable code
+:::
+
+
+## What is a script?
+
+You can code directly in the RStudio console.
+This is useful for throwaway code that you never want to run again. 
+If you want to be able to run the code again (and you probably do) you should put your code in a script (or equivalently a code chunk in a [quarto document](https://biostats-r.github.io/biostats/quarto/index.html)).
+
+Practically, a script is a plain text file where you write your code, whether it contains a handful of lines or dozens of them.
+It is an evolving document which not only helps you keep track of your code, but also your workflow.
+
+With time, you will realize that a script is a lot of things at the same time:
+
+-   it is a whiteboard where you try coding for something and correct mistakes whenever you find out things do not work as expected,
+-   it contains your coding history, where all the steps from loading a data set to printing the final output are chronologically exposed,
+-   it is the key file that you may share with collaborators, etc,
+-   it is guarantee that your work is reproducible, meaning that you can run your code on your data set again and again, and obtain the same result, consistently.
+
+A simple script may look like this:
+
+```{r commented-script, echo=TRUE, eval=FALSE}
+# activate tidyverse
+library(tidyverse)
+
+# load the data from external file
+Veronica_Vestland <- read_delim("Veronica_Vestland.csv", delim = ",")
+
+# calculate the mean and standard deviation of Sepal.Length for each Location
+mean_sd_SL <- Veronica_Vestland |>
+           group_by(location) |>
+           summarise(mean(Sepal.Length), sd(Sepal.Length))
+
+# print the result
+mean_sd_SL
+
+# draw boxplot Sepal.Length for each Location
+ggplot(Veronica_Vestland,
+       aes(x = Location, y  = Sepal.Length, fill = Location)) +
+  geom_boxplot()
+```
+
+You will be able to write similar code to this very soon.
+
+## Making a new script
+
+You can make a new script with 
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">File</li>
+  <li class="breadcrumb-item">New File</li>
+  <li class="breadcrumb-item">R Script</li>
+</ol> 
+
+## Running the code
+
+Writing code in a script does not do anything *per se*.
+To tell R to do something, you must either:
+
+-   place the cursor on a single line of code and press the `Run` button above the script or type <kbd>CTRL</kbd> + <kbd>Enter</kbd> (<kbd>⌘</kbd> + <kbd>Enter</kbd>) to run that line and any syntactically connected to it, or
+-   select some code (either part of a line or several lines) and press <kbd>CTRL</kbd> + <kbd>Enter</kbd> (<kbd>⌘</kbd> + <kbd>Enter</kbd>) to run *ALL* the selected code
+
+The result of your command(s) will appear in the tab `Console` if the commands are intended to print something, and/or in the tab `Plots` if the commands generate a plot.
+
+## Code versus comment
+
+In the script above, there are two types of lines: those that start with the symbol `#`, and those that do not.
+
+Let's start with the lines that do not start with a `#`.
+They are the *real* code, the commands that manipulate the data.
+Right now these lines do not mean much to you, but in fact, each of them commands R to "do something specific" with your data.
+That "something specific" is defined by *functions* which are followed by parentheses -- `function()`.
+In the R language, functions are verbs in your sentences, the data are their subject.
+For example, in the code above, `library(tidyverse)` commands R to *activate* the package tidyverse found in the package library.
+
+The lines that start with a `#` are *comments*.
+They do not code for anything at all.
+When you run the script via a console, R simply ignores them.
+So use comments to keep track of what you do with the code.
+Write what the point of each *real* code line is, what you plan to do.
+That way, you will always remember what you originally intended to code for.
+
+The symbol `#` is also convenient to prevent R from running a specific code line or chunk, without having to delete that line.
+Indeed if you place a `#` in front of any line, the console will consider it as a comment, and simply skip it.
+
+In the following example, each line was originally written to activate a different package:
+
+```{r commenting-to-deactivate, echo=TRUE, eval=FALSE}
+library(ggplot2)
+library(tidyr)
+#library(tidyverse)
+library(readr)
+```
+
+However, the third line has been *commented* with a `#`.
+Consequently, only the packages `ggplot2`, `tidyr`, and `readr` are activated; `tidyverse` will be ignored. 
+If you want to comment out many lines of code at once, you can use the Rstudio shortcut <kbd>CTRL</kbd> + <kbd>Shift</kbd> + <kbd>c</kbd> (<kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>c</kbd>)
+
+
+## Writing readable code
+
+Code can be difficult to read when you try working on it again after a few weeks or months. 
+
+Here are three tips for making it easier
+
+- use good comments
+- use good object names (@sec-naming-objects)
+- codeishardtoreadifwithoutwhitespace
+
+In the chapter First Steps in R (@sec-first-steps-in-r), you will learn to write in the R language.
+We strongly advise you to work in scripts, and make extensive use of comments from the start.
+This is considered good coding practice, and will save you quite some time and energy.
+
+## Special characters
+
+R uses some special characters, including `~`, `{`, `[`, `$` and `~` (see @sec-bestiary for a more complete list). 
+These characters are usually easy to find on a Windows computer. 
+If you are using a Mac, make sure you can find these.
+
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
+
+-   Jonathan Soulé
+-   Richard Telford
+:::

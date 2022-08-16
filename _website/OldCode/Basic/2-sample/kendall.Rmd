@@ -1,0 +1,51 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: comparing two variables - Kendall rank correlation coefficient 
+# author: jonathan
+# revised: 14/1/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/2-sample/kendall.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/2-sample/kendall.Rmd")
+library(ggplot2)
+rain<-c(38.2,171.1,83.2,94.8,107.2,87.6,116.0,253.0,262.6,99.8,189.0,93.8)
+temperature<-c(5.6,8.1,10.7,13.6,15.8,12.9,9.4,6.6,5.5,0.6,1.8,4.3)
+df <- data.frame(rain, temperature)
+```
+
+Kendall rank correlation coefficient (often called Kendall’s *τ* or *tau*) is a non-parametric test which measures the strength of the relationship between two variables. This test is also used when [Pearson product-moment correlation](https://biostats.w.uib.no/comparing-two-variables-pearsons-correlation/){target="_blank"} cannot be used because (one of) the assumptions for the test (is) are challenged. It is also an alternative to [Spearman’s *rho*](https://biostats.w.uib.no/comparing-two-variables-spearmans-correlation/){target="_blank"} when the sample size is small.
+
+As for Spearman’s *rho*, Kendall’s *tau* comes with one main assumption: the monotonicity of the relationship between variables. Check Lærd statistics’ [webpage](https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php){target="_blank"} for a tip on monotonic relationships.
+
+Let’s check this with an example. Here we consider the same variables and dataset as we used for [Spearman’s *rho*](https://biostats.w.uib.no/comparing-two-variables-spearmans-correlation/){target="_blank"}: the weather records for the last 12 months in Bergen. The variables are rain and temperature, and again we’ll try to see whether there is a form of relationship between these variables.
+
+Normality and equal variance are not to be check here, so let’s draw directly a scatter plot:
+``` {r scatterplot, echo=FALSE}
+ggplot(df, aes(x = temperature, y = rain)) +
+  geom_point(size = 2, color = "red")
+```
+<br/><br/>
+Hard to see any obvious relationship…
+
+Let’s check Kendall’s *τ* . The function is `cor.test()`. Note that the function is the same as for Pearson’s *r* and Spearman’s *rho*. The extra parameter `method=" "` defines which correlation coefficient is to be considered in the test (choose between `"pearson"`, `"spearman"` and `"kendall"`; if the parameter method is omitted, the default test will be Pearson’s *r*).
+
+In this test, the null hypothesis `H0` states that there is no relationship between the variables.
+``` {r correlation}
+cor.test(rain, temperature, method="kendall")
+```
+Here, there isn’t much surprise: the p-value is largely *greater* than 0.05, this null hypothesis is accepted.
+
+By curiosity, you can compare the result of this test with [Spearman’s *rho*](https://biostats.w.uib.no/comparing-two-variables-spearmans-correlation/){target="_blank"}. There is a very slight difference between the two coefficients (after all, these are two different calculations…) but the conclusion is the same in the present case.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

@@ -1,0 +1,115 @@
+---
+output:
+  html_document:
+    css: custom.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Creating a multiple line plot
+# author: jonathan
+# revised: 28/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Multiple/multiple-lines.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Multiple/multiple-lines.Rmd")
+library(ggplot2)
+time <- rep(0:23,2)
+location <- c(rep("Østerbø", 24), rep("Lygra",24))
+solarrad <- c(0,0,0,0,0,0,14,53,183,308,323,558,509,609,693,685,702,651,514,393,253,104,33,1,	
+              0,0,0,0,0,12,43,82,260,396,506,624,727,780,519,544,284,229,557,425,148,38,23,0)
+```
+
+A (multiple) line plot represents two or more data series from a data set in the form of straight lines joining the points or markers (which are themselves represented often as dots, circles, squares, etc.). 
+
+Before going any further, if you are not so familiar with line plots, have a quick look at this page:
+
++ [Creating a line plot](https://biostats.w.uib.no/creating-a-line-plot/){target="_blank"}.
+
+Let’s use `ggplot()` to draw the line plot for a dataset representing the solar irradiance (response variable `solarrad`) registered every hour during 24 hours (predictor variable `time`) at two locations: Østerbø, Sogn og Fjordane and Lygra, Hordaland (predictor variable `location`) on July 23rd, 2017.
+
+The dataframe for this tutorial is as follows:
+```{r dataframe}
+# dataframe
+df <- data.frame(time, location, solarrad)
+# structure of the dataframe
+str(df)
+```
+<br/><br/>
+
+The function to use for drawing the lines is `geom_line()`. We must map the variables with the function `aes()` which will look more or less like this: `aes(time, solarrad, location)`. Our plan is to:
+
++ plot the predictor variable `time` on the X-axis, 
++ plot the response variable `solarrad` on the Y-axis,
++ use `color=` to split the data for each level of `location`,
++ draw the lines with `geom_line()`.
+
+The code for the plot is as follows:
+
+```{r plot}
+ggplot(df, aes(x = time, y = solarrad, color = location)) +
+  geom_line()
+```
+Here the data for each location is represented by a colored line.
+
+Alternatively, it is possible to represent the data for each location in the form of a dotted line, a plain line, a dashed line, etc, instead of a specific color. To do so, we replace `color=` with `linetype=`:
+
+```{r plot2}
+ggplot(df, aes(x = time, y = solarrad, linetype = location)) +
+  geom_line()
+```
+<br/><br/>
+
+And it is possible to combine bith color and linetype to represent the locations. Here we simply cumulate `linetype = location` and `color = location` in `aes()`:
+```{r plot3}
+ggplot(df, aes(x = time, y = solarrad, color = location, linetype = location)) +
+  geom_line()
+```
+<br/><br/>
+
+As usual, you may tune the thickness of the lines with `size=` to make them more visible:
+```{r plot4}
+ggplot(df, aes(x = time, y = solarrad, color = location, linetype = location)) +
+  geom_line(size = 1.3)
+```
+<br/><br/>
+
+It is possible to add shapes to the lines to mark the data points. To do so, we must add a layer with the function `geom_point()`. Nothing else is needed as all the necessary info (mapping, grouping) is already mentioned in `aes()`:
+
+```{r plot5}
+ggplot(df, aes(x = time, y = solarrad, color = location, linetype = location)) +
+  geom_line(size = 1) +
+  geom_point(size = 2)
+```
+<br/><br/>
+
+And if you want to use various shapes (triangle, square, circles, etc) for the markers, add `shape = location` to `aes()`:
+
+```{r plot6}
+ggplot(df, aes(x = time, y = solarrad, color = location, shape = location)) +
+  geom_line(size = 1) +
+  geom_point(size = 2)
+```
+<br/><br/>
+
+### Adding plot title, axis titles, ticks, labels and other essential elements
+
+In [this section](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}, you will learn how to set/modify all the necessary elements that make a plot complete and comprehensible. Such elements are:
+
++ [plot title](https://biostats.w.uib.no/title/){target="_blank"}, 
++ [axis title](https://biostats.w.uib.no/axis-titles/){target="_blank"},
++ [axis scale](https://biostats.w.uib.no/axis-scale/){target="_blank"},
++ [axis ticks](https://biostats.w.uib.no/axis-ticks/){target="_blank"},
++ [category labels](https://biostats.w.uib.no/category-labels/){target="_blank"},
++ [legend](https://biostats.w.uib.no/legend/){target="_blank"},
++ [secondary Y-axis](https://biostats.w.uib.no/secondary-y-axis/){target="_blank"},
++ [colors](https://biostats.w.uib.no/choosing-colors-for-your-plot/){target="_blank"},
++ [etc](https://biostats.w.uib.no/topics/data-visualization-with-ggplot2/essential-elements/){target="_blank"}.
+
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

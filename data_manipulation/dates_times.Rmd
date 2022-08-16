@@ -1,0 +1,335 @@
+---
+title: "Working with dates and times"
+description: Manipulating dates and times with the lubridate package
+output:
+  bookdown::html_document2: 
+    highlight: tango
+    toc: yes
+    toc_float: yes
+    css: ../css/style-chapters.css
+---
+
+``` {r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, rows.print = 3)
+library("tidyverse")
+library("lubridate")
+library("conflicted")
+conflict_prefer(name = "filter", winner = "dplyr")
+
+temperature <- read_delim("Florida_2020-04-20_2020-04-23_1589018968.csv", delim = ",")
+
+source("../Templates/biostats_theme.R")
+```
+
+
+
+## Date and times
+
+Many data sets have dates and times.
+
+In this tutorial, you will learn how to
+
+- make dates and times in R
+- manipulate dates and times
+- use dates and times in data.frames with `dplyr`
+- plot dates and times with `ggplot2`
+
+## Date and time formats
+
+Converting text strings to dates can be tricky.
+
+There are many ways of writing dates
+ 
+- Saturday 5th December 2020
+- 12-5-2020
+- 5.12.20
+- 5 Dec 20
+- 2020/12/5
+
+With or without times
+
+- Saturday 5th December 2020 2:23 PM
+- 12-5-2020 14:23:01
+
+Or just times
+
+- 14:32
+
+And in a variety of languages
+
+- januar
+- January
+- janvier
+- 一月
+
+R can cope will all of these formats, but when entering data into a spreadsheet, I strongly recommend using the [international standard format](https://en.wikipedia.org/wiki/ISO_8601) for dates and times.
+
+- Year-Month-Day Hour:Minute:Second
+- 2020-12-5 12:23:13
+
+## Time and date formats in R
+
+It is usually more convenient to have times and dates in special format rather than as a text.
+This allows them to be manipulated, sorted, and plotted properly.
+
+The formats for dates without times is `Date`.
+Internally, this is the number of day since 1970-01-01.
+
+The format for dates with times is `POSIXct`.
+Internally, this is the number of seconds since 1970-01-01.
+
+Sometimes it is useful to have a time-only format, this is provided by the `hms` package.
+
+## Converting text to dates and times
+
+Text can be converted to dates and times with base R.
+
+```{r base-R-convert}
+dat <- "26 October 2016 14:39:10 CEST" #date with time-zone
+as.POSIXct(dat, format = "%d %B %Y %H:%M:%S") # might return NA if run on your computer - see locales below
+```
+
+Here the `%d` represents the day, `%B` represents the month written as the full word (`%b` would work if the month was the abbreviated) and `%Y` represents the 4-digit year. 
+There is a complete alphabet of codes you can use. 
+See `?strptime` for the complete list.
+
+## Converting dates and times with `lubridate`
+
+It is difficult to remember all the codes and easy to get the format wrong.
+Fortunately, the `lubridate` package makes converting dates much easier.
+
+** No more `"%d %B %y"`**
+
+With `lubridate`, you don't need to remember the alphabet of codes and get the format **exactly** right, you just need to select the function with the day, month and year in the correct order.
+
+```{r lubridate-convert}
+library("lubridate")
+dat <- "26 October 2016 14:39:10"
+dmy_hms(dat)
+```
+
+`dmy_hms` expects the order to be days-months-years followed by hours:minutes:seconds. 
+Provided the elements are in this order, any format can be used.
+
+```{r lubridate-dmy_hms}
+dmy_hms("26-10-16 14.39.10")
+dmy_hms("26th Oct 2016 14 39 10")
+dmy_hms("261016143910")#this would be a really bad way to store date-times
+```
+
+`lubridate` can even cope when the format is mixed, provided the elements are in the same order.
+
+```{r lubridate-dmy_hms-mixed}
+dmy_hms(c("26-10-16 14.39.10", "26th Oct 2016 14 39 10", "261016143910"))
+```
+
+
+
+### Different formats
+
+There are many other functions in the `lubridate` package for coping with dates with elements in different orders.
+
+For example
+
+```{r lubridate-formats}
+dmy_hm("26th Oct 2016 14.39") # no seconds
+ydm_hms("2016 26th Oct 14 39 10") # year first then day
+mdy_hms("Oct 26th 2016 14 39 10") # month first (US standard)
+dmy("26-10-2016") #date only. Gives date format.
+```
+
+Look at the help file for more functions and arguments.
+
+If you have an invalid format or an impossible date, you will get a warning.
+
+```{r bad-date}
+dmy("28-F-2020") # Invalid format - use February, Feb or 2
+dmy("31-Feb-2020") # Impossible date
+```
+
+
+
+### Time zones
+
+The default timezone for the `lubridate` functions is UTC (approximately Greenwich Mean Time).
+This is normally fine unless you are dealing with local times in multiple time-zones, or because you need to allow for daylight saving time.
+You can change the time zone with the argument "tz".
+
+```{r timezone}
+mdy_hm("July 1 2001 2:14", tz = "Europe/Oslo")
+```
+
+The function `OlsonNames()` returns a vector of valid time zones.
+Here are the first ten time zone names.
+
+```{r}
+OlsonNames()[1:10]
+```
+
+## Languages
+
+R uses locales to know what language to expect the date to be written in. 
+See `?locales`. 
+Locales are a bit of a pain.
+
+You can find your current locale with 
+
+```{r get-locale}
+Sys.getlocale(category = "LC_TIME")
+```
+
+Unfortunately, the locales available depend on your operating system.
+
+You can change the locale to Bokmål for the whole session with 
+
+```{r date-locales}
+Sys.setlocale(category = "LC_TIME", locale = "nb_NO.utf8") #on linux/Mac, "nn_NO.utf8" for nynorsk
+#Sys.setlocale(category = "LC_TIME", locale = "Norwegian Bokmål_Norway.1252") # should work on windows
+dmy("1 januar 2020")
+```
+
+Or use the `locale` argument of `dmy`.
+
+To see the available locales on your computer, run 
+
+```{r available-locales, eval = FALSE}
+system("locale -a", intern = TRUE) #on linux/Mac
+```
+On Windows, you need to go to the Region setting in the Control Panel.
+
+```{r date-locale-revert, echo = FALSE, include = FALSE}
+Sys.setlocale("LC_TIME", "en_DK.utf8")
+```
+
+
+## Date arithmetic
+
+Dates and times can be used in calculations
+
+```{r date-arithmetic}
+ymd("2020-5-18") - 5 #base unit is days for dates
+ymd("2020-5-18") - period(5, unit = "months")
+ymd("2020-5-18") - ymd("2020-5-13")
+```
+
+## Extracting elements of the date
+
+Given a date or time, we can extract different elements, for example the month, day or hour.
+
+```{r}
+month(today())
+yday(today())# day of year
+hour(now())
+```
+
+
+
+## Dates and `dplyr`
+
+As an ecologist, I spend a lot of time processing climate data  for comparison with ecological data.
+The data are typically in R in a data.frame, so `dplyr` is useful for manipulating them.
+This section shows how to use `lubridate` together with `dplyr`.
+
+The dataset `temperature` includes a few days of air temperature from the [GFI weather station](https://veret.gfi.uib.no/), Bergen.
+
+The dataset has three columns, `Dato`, `Tid` and `Lufttemperatur`. 
+I have imported the data with `readr::read_delim` so the first two columns have automatically been converted to date and time formats. 
+You can tell this because the class of each column is given below the column name.
+
+```{r print-temperature}
+temperature
+```
+
+### Using `mutate` to make a new column
+
+I want to make a single date-time column. 
+To do this I need to combine the data and time columns with `paste`, and then use `ymd_hms` for the conversion. 
+
+```{r date-time-temperature}
+temperature2 <- temperature %>% 
+  mutate(
+    date_time = paste(Dato, Tid), #combine
+    date_time = ymd_hms(date_time)#convert
+    ) 
+
+temperature2
+```
+
+`lubridate` functions `make_date` and `make_datetime` are useful if the year, month, day etc. are in different columns.
+
+```{r make-date}
+tibble(year = 2020, month = 10, day = 3) %>% 
+  mutate(date = make_date(year = year, month = month, day = day))
+```
+
+
+### Using `filter` to select rows
+
+I often need to `filter` data to remove bad data or restrict the dates and times in the dataset.
+
+For example, to calculate the mean temperature of the afternoon of the 21st April, we first need to `filter` the data. 
+`between` is a useful helper function here to avoid having to write a more complicated logical condition.
+
+```{r filter-temperature}
+temperature2 %>% 
+  filter(between(date_time, 
+                 left = ymd_hm("2020-04-21 12:00"),
+                 right = ymd_hm("2020-04-21 17:00"))) %>% 
+  summarise(mean_temp = mean(Lufttemperatur))
+
+```
+
+
+### Using `group_by` and `summarise`
+
+I often want to summarise climate data to calculate mean monthly temperatures. 
+We can do an analogous task with the `temperature` dataset to calculate mean hourly temperatures.
+
+```{r mean-hourly}
+temperature2 %>% 
+  mutate(hour = hour(date_time)) %>% 
+  group_by(hour) %>% 
+  summarise(mean_temperature = mean(Lufttemperatur))
+```
+
+
+## Plotting dates
+
+We can plot the temperature against date-time with `ggplot`.
+
+```{r}
+ggplot(temperature2, aes(x = date_time, y = Lufttemperatur)) + 
+  geom_line()
+```
+
+`ggplot` recognises that the x-axis variable is a date-time and plots the axis with appropriate labels. 
+The language will depend on the locale (see `Sys.getlocale()`). 
+I don't like the way the dates have been formatted so I can use `scale_x_datetime` to alter the format. 
+The codes from `?strptime` that you learnt at the start of this tutorial finally become useful!
+
+```{r}
+ggplot(temperature2, aes(x = date_time, y = Lufttemperatur)) + 
+  geom_line() +
+  scale_x_datetime(date_labels = "%A %d %B") #see also date_breaks to change label positions
+```
+
+
+We can also plot the temperature against time, which has class `hms` . 
+
+```{r}
+ggplot(temperature2, aes(x = Tid, y = Lufttemperatur, group = Dato)) + 
+  geom_line()
+```
+
+Here the aesthetic `group = Dato` make `ggplot` draw a different line for each day.
+
+I don't think the breaks in this plot were chosen very well so I can use `scale_x_time` to set the breaks and the format for the times.
+Breaks need to be specified as the number of seconds since midnight.
+The easy way to do this is to choose the hours and then multiple by 3600.
+
+```{r}
+ggplot(temperature2, aes(x = Tid, y = Lufttemperatur, group = Dato)) + 
+  geom_line() + 
+  scale_x_time(breaks = seq(0, 24, 6) * 3600, labels = scales::time_format("%H:%M"))
+```
+

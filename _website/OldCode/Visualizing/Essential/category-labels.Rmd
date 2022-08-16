@@ -1,0 +1,59 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+--- 
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+
+# title: Category labels
+# author: jonathan
+# revised: 15/3/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Essential/category-labels.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Essential/category-labels.Rmd")
+library(ggplot2)
+
+# variable 1
+values <- c(rnorm(150, mean=20, sd=5), rnorm(150, mean=30, sd=4), rnorm(150, mean=15, 3), rnorm(150, mean=40, sd=5)) 
+# variable 2
+category <- c(rep("Gr1", 150), rep("Gr2", 150), rep("Gr3", 150), rep("Gr4", 150))
+
+# dataframe
+df <- data.frame(category, values)
+```
+It is important for the readability of your graph to label correctly the groups/categories. ggplot usually displays the names of the corresponding variables found in the data frame. But sometimes, it may be useful to rename the categories in the graph without affecting the original data frame.
+
+Here we will see how to modify category labels with a simple example, a jitter plot where the 4 displayed categories were originally labeled `Gr1`, `Gr2`, `Gr3` and `Gr4` in the data frame. 
+
+Letâs start with the code for a reference plot. This plot is stored in the object `baseplot` so that we can reuse it throughout the whole tutorial:
+```{r plot}
+baseplot <- ggplot(df, aes(category, values, color=category)) +
+  geom_jitter()
+baseplot
+```
+<br/><br/>
+
+To rename the labels, we use `scale_x_discrete(labels=)` in the following way:
+```{r plot2}
+baseplot +
+  scale_x_discrete(labels=c("Group A", "Group B", "Group C", "Group D"))
+```
+
+As you may see in the resulting plot above, the labels have been modified on the X-axis as expected, but not in the legend. Indeed `scale_x_discrete()` takes care of the X-axis only, but nothing else. To modify the legend as well, you need to add the matching function `scale_color_discrete(labels=)` to the code:
+```{r plot3}
+baseplot +
+  scale_x_discrete(labels=c("Group A", "Group B", "Group C", "Group D")) +
+  scale_color_discrete(labels=c("Group A", "Group B", "Group C", "Group D"))
+```
+
+
+Note the we have used `scale_color_discrete()` here because the code for our plot originally used `color=category` to group and color the data. In other cases where groups are colored with `fill=`, we would use `scale_fill_discrete()`.
+<br/><br/>
+
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

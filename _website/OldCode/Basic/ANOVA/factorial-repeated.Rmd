@@ -1,0 +1,96 @@
+---
+output:
+  html_document:
+    css: custom-blockquote.css
+---
+
+```{r setup&variables, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# title: Factorial Repeated Measures ANOVA
+# author: jonathan
+# revised: 15/4/2020 
+
+WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/factorial-repeated.html")
+GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/factorial-repeated.Rmd")
+library(nlme)
+library(ggplot2)
+
+```
+A factorial repeated measures ANOVA (or two-way repeated measures ANOVA) is quite similar to a [factorial ANOVA](http://biostats.w.uib.no/factorial-design/){target="_blank"} with the difference that there is **dependency** between groups in the data set like in a [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"}. This means that subjects have been measured repeatedly in time or in different circumstances or treatments. 
+
+The null hypothesis `H0` in this test is that all means are equal.
+
+As for the "simple" [repeated measures ANOVA](https://biostats.w.uib.no/repeated-measures-anova/){target="_blank"}, you may fit a **linear mixed effect model** with the function `lme()` that is found in the package `nlme`.
+
+Letâs take an example where 10 rats (5 rats from strain A and 5 rats from strain B) are weighed 4 times with intervals of 4 weeks (week8 to week20). Here is the code for the dataframe:
+```{r dataframe}
+
+# response variable
+rat.weight <- c(166,168,155,159,151,166,170,160,162,153,220,230,223,233,229,262,274,267,283,274,261,275,264,280,282,343,354,351,359,349,297,311,305,315,303,375,399,388,405,395)
+
+# predictor variables
+rat.strain <- as.factor(rep(c(rep("strainA",5),rep("strainB",5)),4))
+time.point <- as.factor(c(rep("week08",10), rep("week12",10), rep("week16",10), rep("week20",10)))
+
+# individual ID
+rat.ID <- as.factor(rep(c("rat01","rat02","rat03","rat04","rat05","rat06","rat07","rat08","rat09","rat10"),4))
+
+#dataframe
+my.dataframe <- data.frame(rat.ID,rat.strain,time.point,rat.weight)
+```
+<br/><br/>
+
+Lets visualize the data with a line plot:
+<br/><br/>
+```{r plot, echo=FALSE}
+ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, shape = rat.strain, color = rat.ID)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 4) +
+  scale_color_viridis_d(option = "inferno")
+```
+<br/><br/>
+
+### Assumptions
+
+The assumptions are:
+
++ each individual is represented in the form of a **measurement in each of the tested groups** (there cannot be any missing value),
++ **normality** of distribution (use the  [Shapiro-Wilk](https://biostats.w.uib.no/test-for-normality-shapiro-wilks-test/){target="_blank"}),
++ **sphericity**, which means that equality of variance is verified when comparing any two groups (all possible pairs of groups) in the experimental design (commonly checked via [Mauchlyâs test](https://biostats.w.uib.no/test-for-sphericity-mauchly-test/){target="_blank"}), 
++ groups contain [**no outliers**](https://biostats.w.uib.no/finding-outliers/){target="_blank"}.
+ 
+
+<br/><br/>
+
+### Running the test
+
+Since `lme()` is part of the package `nlme()`, you need to install and load it. Here is how to do it:
+
+```{r nlme, eval=FALSE}
+install.packages("nlme")
+library(nlme)
+```
+<br/>
+
+We first need to fit the linear mixed effect model with `lme()`. The syntax is as follows: `lme(response ~ predictor1 * predictor2, random=~1|subjects, data = my.dataframe)`, where `response` is the response variable, `predictor1` and `predictor2` are the predictor variables or factors (which categorize the observations), `subjects` is the variable that defines the individuals, and `dataframe` the name of the dataframe that contains the data.
+In our example, the predictor variables are `time.point` and `rat.strain`, the response variable is `rat.weight`, and the subjects are described by the variable `rat.ID`. 
+We will store the model in the object `model`, and we finally compute and display the table for the analysis using `anova()`:
+```{r lme}
+model <- lme(rat.weight ~ time.point * rat.strain, random=~1|rat.ID, data=my.dataframe)
+anova(model)
+```
+
+The large F-value and the very small p-value on the lines `rat.strain` and `time.point` indicate that there is indeed a main effect of both `rat.strain` and `time.point` on `rat.weight`. Further down, the last line of the table (`time.point:rat.strain`) also shows a very low p-value and thus indicates an interaction between `time.point` and `rat.strain`.
+<br/><br/>
+
+**But this does not tell us anything about the groups which means are significantly different.**
+
+Indeed, this test tells you about main effects and interactions, but does not tell you which groups are significantly different from others. For that, we will need *post hoc* tests. We can run [multiple comparisons in linear mixed effect models [factorial design]](https://biostats.w.uib.no/post-hoc-tests-multiple-comparisons-in-linear-mixed-effect-models-2/){target="_blank"}.
+
+<br/><br/>
+
+***
+<!-- UNCOMMENT TO ACTIVATE
+Get the Rmarkdown file corresponding to this page on [GitHub](`r GIT`){target="_blank"}.
+-->

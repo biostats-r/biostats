@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Writing an R package - 3&nbsp; Creating the package infrastructure</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-package-contents.html" rel="next">
+<link href="./01-system-setup.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Creating the package infrastructure</span>
+</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Writing an R package</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+<li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+    </ul>
+<a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-system-setup.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">System setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-package-infrastructure.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Creating the package infrastructure</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-package-contents.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Package Contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-more-documentation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">More documentation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-distributing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributing your package</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-troubleshooting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<style>
+               img.site-logo {
+  height: auto;
+  width: 95%;
+}
+      </style>
+<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
+<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
+        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#description-file" id="toc-description-file" class="nav-link active" data-scroll-target="#description-file"> <span class="header-section-number">3.1</span> DESCRIPTION file</a></li>
+  <li><a href="#choose-a-licence" id="toc-choose-a-licence" class="nav-link" data-scroll-target="#choose-a-licence"> <span class="header-section-number">3.2</span> Choose a licence</a></li>
+  <li><a href="#git-and-github" id="toc-git-and-github" class="nav-link" data-scroll-target="#git-and-github"> <span class="header-section-number">3.3</span> git and GitHub</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block">
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Creating the package infrastructure</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header><p>A package starts life as a directory with some files and subdirectories that R expects. There is nothing to stop you building the whole thing from scratch. But it is <em>so</em> much easier to get some help from <code>usethis</code>.</p>
+<p>The <code>create_package</code> function takes the path of the project you want to write, creates this directory, add adds some files and subdirectories.</p>
+<p>The name of the directory will become the name of the package. Choose carefully as it is easier to get it right now than change it later. There are special rules for naming packages</p>
+<ul>
+<li>Contain only ASCII letters, numbers, and ‘.’</li>
+<li>Have at least two characters</li>
+<li>Start with a letter</li>
+<li>Not end with ‘.’</li>
+</ul>
+<p>Try to avoid name clashes with existing packages, especially those on <a href="https://cran.r-project.org/">CRAN</a>. The function <code><a href="https://rdrr.io/pkg/available/man/available.html">available::available()</a></code> can tell you if your name is valid and if it clashes with an existing package.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">available</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/available/man/available.html">available</a></span><span class="op">(</span><span class="st">"helper"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Once you have chosen your name, you can create the skeleton of your package.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># Choose a path on your computer</span>
+<span class="co"># My package will be called DemoPackage</span>
+<span class="va">package_path</span> <span class="op">=</span> <span class="st">"/home/gbsrt/Documents/teaching/DemoPackage"</span>
+<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">package_path</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>When you run this, it will open a new RStudio session. The files tab should look something like this.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-initial-files-pic" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="figures/package-files.png" class="img-fluid figure-img" alt="Screenshot of the RStudio files tab showing files generated by usethis::create_package" width="1354"></p>
+<p></p><figcaption class="figure-caption">Figure 3.1: Files generated by <code><a href="https://usethis.r-lib.org/reference/create_package.html">usethis::create_package</a></code></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>
+<code>.gitignore</code> - which files should git ignore</li>
+<li>
+<code>.Rbuildignore</code> - When R builds a package, it does not like unexpected files. <code>.Rbuildignore</code> tells it which ones it should ignore.</li>
+<li>
+<code>DemoPackage.Rproj</code> - an Rstudio project</li>
+<li>
+<code>DESCRIPTION</code> - metadata about the package</li>
+<li>
+<code>NAMESPACE</code> - Which functions are to be imported/exported. It is automatically generated so don’t edit this file by hand, but delete it if it becomes corrupt.</li>
+<li>
+<code>R</code> - a folder for your R code</li>
+</ul>
+<p>Almost everything concerned with setting up a package is easier with the <code>usethis</code> package. We are going to be using this package a lot, so you might want to load it now.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org">usethis</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="description-file" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="description-file">
+<span class="header-section-number">3.1</span> DESCRIPTION file</h2>
+<p>The <code>DESCRIPTION</code> file contains the information used by CRAN to make the package page there (see for example <a href="https://cran.r-project.org/web/packages/devtools/index.html">devtools</a>).</p>
+<p>Start by editing the title, author and description fields of the <code>DESCRIPTION</code> files. The title field must be in title case (they really do check this when you submit to CRAN).</p>
+<pre><code>Package: DemoPackage
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "First",
+           family = "Last",
+           role = c("aut", "cre"),
+           email = "first.last@example.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1</code></pre>
+<p>When you have finished, be sure to save the file otherwise your changes will be over-written.</p>
+</section><section id="choose-a-licence" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="choose-a-licence">
+<span class="header-section-number">3.2</span> Choose a licence</h2>
+<p>You need to set a licence for your package otherwise, legally, no-one will be allowed to make a copy and use it.</p>
+<p>Frequently used open source licences for R packages are</p>
+<ul>
+<li>
+<a href="https://choosealicense.com/licenses/mit/">MIT licence</a> is a permissive licence, letting people do almost anything (including use, copy, modify, merge, publish, distribute, sublicense, or sell) with the software. Generate with <code><a href="https://usethis.r-lib.org/reference/licenses.html">usethis::use_mit_license()</a></code>
+</li>
+<li>
+<a href="https://choosealicense.com/licenses/gpl-3.0/">GPL licence</a> lets people do almost anything <em>except</em> distributing closed source versions. Generate with <code><a href="https://usethis.r-lib.org/reference/licenses.html">usethis::use_gpl_license()</a></code>
+</li>
+</ul>
+<p>I generally use the MIT licence. Data packages probably should use a <a href="https://choosealicense.com/licenses/cc0-1.0/"><code>CC0</code></a> licence.</p>
+<p>For more information about licences, see the <a href="https://r-pkgs.org/license.html">R package book</a> and <a href="https://choosealicense.com/">Choose a License</a></p>
+</section><section id="git-and-github" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="git-and-github">
+<span class="header-section-number">3.3</span> git and GitHub</h2>
+<p>You don’t have to use git and GitHub when writing a package, but there are many advantages if you are do.</p>
+<p>You are probably aware of some of these</p>
+<ul>
+<li>Version control</li>
+<li>Collaboration</li>
+<li>Issue tracking - for bug reports or feature requests</li>
+<li>Distribution - people can install your package directly from GitHub.</li>
+</ul>
+<p>A fourth is that you can use GitHub actions. GitHub actions will perform some action on your repo. For example, with <code><a href="https://usethis.r-lib.org/reference/github_actions.html">usethis::use_github_action_check_standard()</a></code> we can check the package works on the latest version of R on linux, macOS and Windows every time we push a commit. This is essential if you want your package to be released on CRAN, but useful anyway, as it can find problems that are not apparent on your own computer.</p>
+<p>See the <a href="https://biostats-r.github.io/biostats/github/index.html">Biostats git and GitHub tutorial</a> for how to make a GitHub repo for your package. To set up GitHub actions, just run the following command, then commit the files it generates and push.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/github_actions.html">use_github_action_check_standard</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+<!-- -->
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./01-system-setup.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">System setup</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-package-contents.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Package Contents</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Creating the package infrastructure </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>A package starts life as a directory with some files and subdirectories that R expects.</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>There is nothing to stop you building the whole thing from scratch.</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>But it is _so_ much easier to get some help from <span class="in">`usethis`</span>.</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>The <span class="in">`create_package`</span> function takes the path of the project you want to write, creates this directory, add adds some files and subdirectories.</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>The name of the directory will become the name of the package.</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>Choose carefully as it is easier to get it right now than change it later.</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>There are special rules for naming packages</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Contain only ASCII letters, numbers, and '.' </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Have at least two characters</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Start with a letter</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Not end with '.'</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>Try to avoid name clashes with existing packages, especially those on <span class="co">[</span><span class="ot">CRAN</span><span class="co">](https://cran.r-project.org/)</span>.</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`available::available()`</span> can tell you if your name is valid and if it clashes with an existing package.</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r available}</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>available<span class="sc">::</span><span class="fu">available</span>(<span class="st">"helper"</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>Once you have chosen your name, you can create the skeleton of your package.</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{r create-project, eval = FALSE}</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose a path on your computer</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co"># My package will be called DemoPackage</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>package_path <span class="ot">=</span> <span class="st">"/home/gbsrt/Documents/teaching/DemoPackage"</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">create_package</span>(<span class="at">path =</span> package_path)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>When you run this, it will open a new RStudio session.</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>The files tab should look something like this.</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-initial-files-pic</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "1354px"</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Files generated by `usethis::create_package`</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: Screenshot of the RStudio files tab showing files generated by usethis::create_package</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/package-files.png"</span>)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`.gitignore`</span> - which files should git ignore</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`.Rbuildignore`</span> - When R builds a package, it does not like unexpected files. <span class="in">`.Rbuildignore`</span> tells it which ones it should ignore.</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`DemoPackage.Rproj`</span> - an Rstudio project</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`DESCRIPTION`</span> - metadata about the package</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`NAMESPACE`</span> - Which functions are to be imported/exported. It is automatically generated so don't edit this file by hand, but delete it if it becomes corrupt.</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`R`</span> - a folder for your R code</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>Almost everything concerned with setting up a package is easier with the <span class="in">`usethis`</span> package.</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>We are going to be using this package a lot, so you might want to load it now.</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r usethis}</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(usethis)</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a><span class="fu">## DESCRIPTION file</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>The <span class="in">`DESCRIPTION`</span> file contains the information used by CRAN to make the package page there (see for example <span class="co">[</span><span class="ot">devtools</span><span class="co">](https://cran.r-project.org/web/packages/devtools/index.html)</span>).</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>Start by editing the title, author and description fields of the <span class="in">`DESCRIPTION`</span> files. </span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>The title field must be in title case (they really do check this when you submit to CRAN).</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="in">Package: DemoPackage</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="in">Title: What the Package Does (One Line, Title Case)</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="in">Version: 0.0.0.9000</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="in">Authors@R: </span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="in">    person(given = "First",</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="in">           family = "Last",</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a><span class="in">           role = c("aut", "cre"),</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="in">           email = "first.last@example.com",</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="in">           comment = c(ORCID = "YOUR-ORCID-ID"))</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="in">Description: What the package does (one paragraph).</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="in">License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a</span></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="in">    license</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="in">Encoding: UTF-8</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="in">LazyData: true</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="in">Roxygen: list(markdown = TRUE)</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">RoxygenNote: 7.1.1</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>When you have finished, be sure to save the file otherwise your changes will be over-written.</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a><span class="fu">## Choose a licence</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>You need to set a licence for your package otherwise, legally, no-one will be allowed to make a copy and use it.  </span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>Frequently used open source licences for R packages are </span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">MIT licence</span><span class="co">](https://choosealicense.com/licenses/mit/)</span> is a permissive licence, letting people do almost anything (including use, copy, modify, merge, publish, distribute, sublicense, or sell) with the software. </span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>Generate with <span class="in">`usethis::use_mit_license()`</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">GPL licence</span><span class="co">](https://choosealicense.com/licenses/gpl-3.0/)</span> lets people do almost anything _except_ distributing closed source versions. </span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>Generate with <span class="in">`usethis::use_gpl_license()`</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>I generally use the MIT licence.</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>Data packages probably should use a <span class="co">[</span><span class="ot">`CC0`</span><span class="co">](https://choosealicense.com/licenses/cc0-1.0/)</span> licence.</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>For more information about licences, see the <span class="co">[</span><span class="ot">R package book</span><span class="co">](https://r-pkgs.org/license.html)</span> and <span class="co">[</span><span class="ot">Choose a License</span><span class="co">](https://choosealicense.com/)</span></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## git and GitHub</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>You don't have to use git and GitHub when writing a package, but there are many advantages if you are do. </span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>You are probably aware of some of these</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Version control</span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Collaboration</span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Issue tracking - for bug reports or feature requests </span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Distribution - people can install your package directly from GitHub.</span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>A fourth is that you can use GitHub actions.</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>GitHub actions will perform some action on your repo. </span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>For example, with <span class="in">`usethis::use_github_action_check_standard()`</span> we can check the package works on the latest version of R on linux, macOS and Windows every time we push a commit.</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>This is essential if you want your package to be released on CRAN, but useful anyway, as it can find problems that are not apparent on your own computer.</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>See the <span class="co">[</span><span class="ot">Biostats git and GitHub tutorial</span><span class="co">](https://biostats-r.github.io/biostats/github/index.html)</span> for how to make a GitHub repo for your package.</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>To set up GitHub actions, just run the following command, then commit the files it generates and push.</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r github-setup, eval = FALSE}</span></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_github_action_check_standard</span>()</span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

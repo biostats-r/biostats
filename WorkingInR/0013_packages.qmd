@@ -1,0 +1,333 @@
+# Installing packages {#sec-installing-packages}
+
+```{r setup, include=FALSE}
+
+source("R/setup.R")
+```
+
+::: callout-note
+## In this chapter, you will
+
+-   learn how packages extend what R can do
+-   install packages from CRAN and from GitHub
+-   load packages so their functions/data are available
+-   learn how to cite R and packages
+:::
+
+## Functions & Packages
+
+Everything that does something in R is a **function**.
+
+All functions arranged into **packages**.
+
+Packages are stored in **libraries**.
+
+Some R packages, for example, `stats` and `utils`, are automatically loaded when you start R.
+You can see the packages you have installed (and which are loaded) in the tab `Packages` (see @sec-packages-tab).
+
+There are also several recommended packages that are installed by default, for example the `mgcv` package for fitting generalised additive models.
+
+## Loading packages
+
+If you want to use the functions in a package, you need to load the package with the function `library()`.
+
+```{r}
+#| eval: false
+library("mgcv")
+```
+
+## Installing extra packages
+
+In addition to the packages already installed, there are thousands of extra packages available for download that expand the computing possibilities of R by adding new functions, classes, documentation, data sets, etc.
+
+The vast number of available packages is a little daunting, but many are very specialised, and won't be useful for you.
+If you don't know the name of the package you need for your analyses the [task views](https://cran.r-project.org/web/views/) can help.
+For example, the [Environmetrics](https://cran.r-project.org/web/views/Environmetrics.html) task view describes packages for the analysis of ecological and environmental data.
+
+Many packages can be downloaded from CRAN (R's homepage), and others can be installed from GitHub.
+The next sections show you how to install packages from these locations.
+
+
+
+Every time you install a new package, R imports all necessary files into a local *library*, but does not activate it.
+You will have to remember to activate the new package with `library()` every time your project require items or functions from that package.
+
+|                 | Book                               | R Package                     |
+|-----------------|------------------------------------|-------------------------------|
+| How to get      | Order from your favourite bookshop | `install.packages("tidyr")`   |
+| When it is kept | Bookshelf/library                  | A Library                     |
+| How to use it   | Open book                          | `library(tidyr)`              |
+
+: Books vs R packages
+
+## Packages published on CRAN
+
+There are lots of extra R packages available from [CRAN](https://cran.r-project.org/){target="_blank"}.
+
+You can install or update a package from CRAN with `install.packages()`.
+Simply type the name of the the package you want to install and add quotation marks `"` `"`.
+
+```{r install-CRAN, eval = FALSE}
+install.packages("tidyr")
+```
+
+You only need to do this once, until you need to install a new version of a package, so you should run this directly in the console and not keep it in your script or markdown document (otherwise it will install the package every time you run the code which will be slow).
+
+Once you have installed the package, you can use `library()` to load it.
+You need to do this every time use use it.
+
+## Packages published on GitHub
+
+Not all R packages are available on CRAN.
+Some packages are only available on [GitHub.com](github.com).
+If you want to install a package published on [GitHub](https://github.com/){target="_blank"}, you may use the function `remotes::install_github()` (install `remotes` from CRAN first).
+You need the repo name from GitHub, this given as `"name_of_owner/name_of_repo"` Here also, you must add quotation marks `"` `"`.
+
+```{r install-github, eval = FALSE}
+install.packages("remotes")
+#ggvegan for plotting ordinations is only on github
+remotes::install_github(repo = "gavinsimpson/ggvegan")
+```
+
+## Recommended packages
+
+The present website refers to the use of several packages that we recommend, not only for learning R, but also for working with your course assignments and projects.
+These packages are:
+
+-   `tidyverse`
+-   `palmerpenguins`
+-   `biostats.tutorials`,
+
+These packages will be used throughout the website, so get ready to install them now.
+Here is the procedure.
+
+### The tidyverse {#sec-tidyverse}
+
+The tidyverse is an amazing toolbox which contains a growing, evolving collection of R packages for data science.
+The packages are developed on the same philosophy and are fully compatible with each other.
+Some of the tidyverse packages help you import data, some let you make figures, others help you rearrange your data set.
+Have a look at [the tidyverse webpages](https://www.tidyverse.org/){target="_blank"} to explore the collection.
+
+Install and activate the tidyverse with the following lines:
+
+```{r recommended-tidyverse, echo=TRUE, eval=FALSE}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+### palmerpenguins
+
+`palmerpenguins` is a package that provides you with two *real* data sets.
+They contain measurements from three penguin species found in the Palmer archipelago, Antarctica.
+Several variables such as species, island, and body mass are included, and no less than 344 observations are found in the table.
+These data sets will be used in the upcoming sections of this website.
+
+Install and activate the package with these lines:
+
+```{r install-the-penguins, echo=TRUE, eval=FALSE}
+install.packages("palmerpenguins")
+library(palmerpenguins)
+```
+
+Type this following line in the console if you want to know more about `palmerpenguins`:
+
+```{r citation-penguins, echo=TRUE, eval=FALSE}
+citation("palmerpenguins")
+```
+
+### biostats.tutorials {#sec-biostatstutorials}
+
+Along with the present website, our team has developed a package with tutorials called `biostats.tutorials`.
+This package will help you learn and practice R functions and concepts.
+Several of the upcoming chapters refer to this package.
+Install `biostats.tutorials` with this code:
+
+```{r install-the-tutorial, echo=TRUE, eval=FALSE}
+#install.packages("remotes")
+remotes::install_github("biostats-r/biostats.tutorials")
+```
+
+Now load the package with `library(biostats.tutorials)` and the tutorials should appear in the tab `Tutorial` (see @sec-tutorial-tab).
+Exercises will tell you when to run a tutorial.
+Click the "Start Tutorial" button to start the tutorial (this may take a few seconds to start the first time).
+
+::: callout-note
+## Exercise
+
+Install `tidyverse`, `palmerpenguins` and `remotes` from CRAN and `biostats.tutorials` from GitHub using the code above.
+:::
+
+## Debugging failed package installation
+
+Sometimes packages fail to install properly.
+This can be frustrating and difficult to debug.
+
+Some recommendations
+
+-   Check exactly which package won't install. It may be a dependency of the package you want that has problems installing. Try to install the package or dependency again and pay attention to any error message.
+-   Restart R (in Session menu in RStudio) and try again.
+-   Find your user library with `.libPaths()` and in the file manager delete the packages directory.
+-   Google any error message. Someone else may have had the same problem.
+-   Try installing the package directly in R (i.e not using RStudio)
+
+## Name conflicts
+
+### The problem
+
+```{r, echo = FALSE}
+options(tibble.print_max = 2)
+```
+
+Sometimes two packages have functions with the same names.
+For example, both `MASS` and `dplyr` have a `select` function which does completely different things.
+If both packages are loaded at the same time there is a conflict and the function that was loaded last takes priority.
+This can cause big problems, with difficult to interpret error messages.
+
+```{r, error = TRUE}
+library(palmerpenguins) # load data
+library(dplyr)
+library(MASS) # R will report that select is being masked
+
+penguins |> select(species)
+
+```
+
+```{r echo = FALSE}
+library(palmerpenguins) 
+```
+
+
+If you have code that worked one day and fails the next with a weird error messages, it might be because of a name conflict.
+If you start typing a function name into RStudio, it will show which package the function comes from.
+
+There are three solutions.
+
+### Loading order
+
+Be very careful about the order in which packages are loaded.
+If the example above had loaded `MASS` before `dplyr` the `select` function in `MASS` would have been masked and the code would have worked.
+This solution can is very fragile as it is easy to load packages in the wrong order.
+
+### `package::function`
+
+Use the `package::function` notation to specify which package a function comes from.
+This is safe and can make code easier to understand by explicitly showing which packages the functions are from.
+The code above could be written safely as
+
+```{r, error = TRUE}
+penguins |> dplyr::select(species)
+
+```
+
+This gets tedious fairly quickly, so is best used with packages that you only need a few functions from once or twice, not many functions you need repeatedly.
+
+### `conflicted` package
+
+The safest solution is to use the [`conflicted` package](https://conflicted.r-lib.org/).
+The `conflicted` package converts any conflicts between packages into errors.
+This might seem like a bad idea, but it is much easier to diagnose an error from `conflicted` than the weird error of a masked function.
+
+```{r, error = TRUE}
+library(dplyr)
+library(MASS)
+library(conflicted)
+
+penguins |> select(Species)
+```
+
+As the error message suggests, we can resolve the error either by using the `package::function` notation, or use the function `conflict_prefer` to say which function we want to use by default.
+
+```{r, error = TRUE}
+library(dplyr)
+library(MASS)
+library(conflicted)
+conflict_prefer("select", "dplyr")
+
+peguins |> select(Species)
+```
+
+If there are many functions that need preferences recording, for example if you have loaded `tidylog`, you can iterate over them with `purrr::map`.
+
+```{r tidylog-conflicts, eval = FALSE}
+getNamespaceExports("tidylog") |> 
+  map(~conflict_prefer(.x, winner = "tidylog"))
+```
+
+## Packages change over time
+
+R packages often get updated.
+This is good as functions get added or improved and bugs get fixed.
+However, it also means that code written last year might give the same result (or even not work at all) next year with all the latest packages.
+This is a big problem for reproducibility.
+
+The solution is to make sure you re-run your code with the same packages.
+That is not easy to do by hand.
+The [`renv` package](https://rstudio.github.io/renv/articles/renv.html) keeps track of all the packages you are using (and all the packages they depend on).
+I use `renv` for my analyses.
+
+The workflow when working with `renv` is:
+
+-   Call `renv::init()` to initialise a private R library for the project
+-   Work in the project as normal, installing R packages as needed in the project
+-   Call `renv::snapshot()` to save the state of the project library
+-   Continue working on your project, installing and updating R packages as needed. Use `renv::install()` to install packages from CRAN or GitHub.
+-   If the changes were successful, call `renv::snapshot()` again. If the updated packages introduced problems, call `renv::restore()` to revert to the previous state of the library.
+
+## Writing your own function/packages
+
+If you find that you need to run the same code several times, it can be useful to write a function.
+
+To make a function, you need to use the reserved word `function` followed by brackets with zero or more arguments.
+After the brackets, braces encompass the body of the function.
+
+Here is a function that multiples two numbers together.
+
+```{r, eval = FALSE}
+mutliply <- function(x, y = 1){ #The default value of y is 1
+  x * y
+}
+
+multiply(x = 6, y = 7)
+```
+
+Once you have written a function, it can be useful to make your own package.
+This makes it easy to use in your own analysis and easy to share with other users.
+Information on how to make a package using the `usethis` and `devtools` packages can be found in the [package writing book](https://biostats-r.github.io/biostats/package/index.html).
+
+## Citing packages
+
+When you use a package it is important to cite it in a manuscript or thesis both to acknowledge the author's work in making the package and to increase reproducibility.
+The correct citation can be seen with the function `citation`.
+
+```{r citation}
+citation("lme4")
+```
+
+It is also important to cite the version used.
+
+```{r version}
+packageVersion("lme4")
+```
+
+You should also cite R.
+Again, the `citation` function can be used
+
+```{r}
+citation()
+```
+
+The R version can be obtained with `R.version.string`.
+This is a variable not a function so it does not take brackets.
+
+```{r}
+R.version.string
+```
+
+In quarto you can also use the insert citation tool to add a package to your bibliography.
+
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
+
+-   Jonathan Soulé
+-   Richard Telford
+:::

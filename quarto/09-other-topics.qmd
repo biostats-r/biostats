@@ -1,0 +1,45 @@
+# Other topics
+
+## Too much or too slow code
+
+If code runs slowly, the output of code blocks can be cached, so next time the document is rendered the existing cached results can be used, unless the code has been changed.
+The caching system in quarto can be activated by setting the code block option `cache = TRUE`.
+The caching system can be tricky to set up for complex projects, and the [`targets` package](https://books.ropensci.org/targets/) is a much more robust framework for building reproducible analysis pipelines.
+See this [demonstration project](https://github.com/richardjtelford/neotomaTargets) for an example of how to set up `targets`.
+
+## Paramertised reports
+
+If you need a template for many reports, for example, showing results for a specific location or time period, consider using
+[Paramertised reports](https://quarto.org/docs/computations/parameters.html)
+which allow you to pass a variable into an quarto document when it is rendered.
+
+This is done by declaring one or more parameters in the YAML. 
+For example, to make a report about just one of the species in the penguins dataset, we might use this YAML, which sets the default value of species to Adelie.
+
+``` yaml
+---
+title: "Penguin Report"
+params:
+  species: Adelie
+---
+```
+
+We can now access this parameter with `param$species`. 
+Perhaps in a chunk like this 
+
+``` r
+library(tidyverse)
+palmerpenguins::penguins |> 
+  filter(species == params$species) |> 
+  summarise(mean_bill_length = mean(bill_length_mm, na.rm = TRUE))
+```
+
+If we wanted to make the report for a different species, we would have to run `quarto_render` in the console.
+
+``` r
+quarto::render(
+    input = "penguin_report.qmd", 
+    execute_params = list(species = "Gentoo")
+  )
+```
+
