@@ -1,0 +1,411 @@
+---
+title: "Working with character vectors"
+description: Manipulating text
+output:
+  bookdown::html_document2: 
+    highlight: tango
+    toc: yes
+    toc_float: yes
+    css: ../css/style-chapters.css
+---
+
+``` {r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, rows.print = 3)
+library("tidyverse")
+library("conflicted")
+conflict_prefer(name = "filter", winner = "dplyr")
+
+source("../Templates/biostats_theme.R")
+```
+
+making a character vector
+ special characters - escaping
+ encoding
+paste
+ - collapse
+glue
+detect, subset, replace, extract
+regular expressions
+
+
+
+## Text manipulation
+
+In this tutorial, you will learn how to manipulate character (text) vectors with the `stringr` package. 
+
+Consider this vector of diatom species names (which could be a column in a `data.frame` or `tibble`)
+
+```{r diatoms}
+diatoms <- c("Navicula_elkab",
+             "Nitzschia_palea",
+             "Aulacoseira_granulata") # a vector
+```
+
+Each element in the character vector is known as a string.
+We might want to detect which strings have a particular pattern, or replace, remove or extract part of the text.
+We can do this with the `stringr` package which is loaded when `tidyverse` is loaded.
+
+```{r eval = FALSE}
+library("tidyverse")# load stringr, ggplot2, dplyr etc
+```
+
+This tutorial starts with detecting or replacing fixed patterns and then shows how you can use regular expressions to extract varying patterns.
+
+## Detecting a pattern
+
+### Using `str_detect`
+
+We might want to detect which of the species are in the genus _Navicula_. We can do this with `str_detect` (the base R equivalent is `grepl`).
+
+```{r detect}
+str_detect(string = diatoms, pattern = "Navicula")
+```
+This return a logical vector: `TRUE` where the character vector includes the pattern "Navicula", `FALSE` otherwise.
+
+
+
+### Using `str_detect` with `filter`
+
+If the vector `diatoms` was a column in a `tibble` (or `data.frame`), we can use this test in a `filter` to select rows. 
+
+```{r detect-tibble}
+diatom_df <- tibble(species = diatoms, 
+                    count = c(27, 3, 46))
+diatom_df
+
+diatom_df %>% 
+  filter(str_detect(string = diatoms, pattern = "Navicula"))
+```
+
+## Regular expressions
+
+### The problem
+
+The code 
+
+
+```{r detect2, eval = FALSE}
+str_detect(string = diatoms, pattern = "Navicula")
+```
+
+works just fine when we know exactly what we are searching for.
+Sometimes what you want to detect fixed pattern but something more general.
+Perhaps we want to detect everything that starts with an "N", but ignore any other "N".
+For this type of problem, [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) are a very powerful tool.
+
+Regular expressions (often shortened to regex) are sequences of special metacharacters and literal characters.
+They can be though of as an extension of wildcard for searching. 
+
+### Literal characters
+
+Characters such as `a`, `Z`, `3`, `_` are literal characters. 
+We can use them as we already have.
+
+
+
+### Metacharacters
+
+Metacharacters are like wildcards in that they can match different literal characters. 
+
+- `.`  Matches any character.
+- `\d` Matches any digit. 
+- `\D` matches anything that is not a digit.
+- `\s` matches any whitespace. 
+- `\S` matches anything that is not whitespace
+- `\w` matches any alphanumeric character or underscore
+- `\W` matches anything that is not alphanumeric or underscore
+
+Because the `\` is a special character, it needs to be escaped with another backslash.
+So to match white space character, use `\\s`.
+
+Sometimes it is useful to make our own set of characters. 
+We can do this with square brackets.
+
+- `[aeiou]`  matches vowels 
+- `[^aeiou]` matches anything but vowels
+- `[a-z]` matches lower case letters
+- `[a-zA-Z]` matches upper or lower case letters
+
+The vertical line `|` matches the group of characters either before or after it.
+So `"Navicula|Nitzschia"` will match either genus.
+
+
+### Your turn
+
+Detect which diatom name includes a number
+
+```{r metachar-ex, exercise = TRUE}
+diatoms <- c("Navicula sp2",
+             "Nitzschia palea",
+             "Aulacoseira granulata") 
+str_detect()
+
+```
+```{r metachar-ex-solution}
+diatoms <- c("Navicula sp2",
+             "Nitzschia palea",
+             "Aulacoseira granulata") 
+
+str_detect(string = diatoms, pattern = "\\d")
+```
+
+
+### Repeats
+
+If we want to match a repeating series of characters
+
+We can control how many times something gets matched by following it with a quantifier. 
+
+
+- `?`: Zero or one times 
+- `+`: One or more times
+- `*`: Any number of times 
+- `{2}`: Exactly twice 
+- `{2,4}`: Between two and four times
+- `{,4}`: At most four times
+- `{2,}`: At least twice
+
+So to match either "palaeoecology" or "paleoecology", we can follow the "a" with a "?".
+
+```{r regex-1}
+#match both palaeoecology and paleoecology
+str_detect(c("palaeoecology", "paleoecology"), pattern = "pala?eo")
+```
+
+
+To match a four digit sequence we can use `"\\d{4}"`.
+
+```{r regex-2}
+#detect year from code
+str_detect(c("x2020", "20.20"), pattern = "\\d{4}")
+```
+
+### Your turn
+
+Detect which diatoms have a word with at least 10 characters
+
+```{r repeat-ex, exercise = TRUE}
+diatoms <- c("Navicula elkab",
+             "Nitzschia palea",
+             "Aulacoseira granulata") 
+str_detect()
+
+```
+```{r repeat-ex-solution}
+diatoms <- c("Navicula elkab",
+             "Nitzschia palea",
+             "Aulacoseira granulata") 
+
+str_detect(string = diatoms, pattern = "\\w{10,}")
+```
+
+
+### Anchors
+
+You can use anchors so that matches are only made at the start or end of a string.
+
+ - `^A` Matches "A" but only at the start of a string
+ - `A$` Matches "A" but only at the end of a string
+
+### Your turn
+
+Detect which diatoms end in an "a".
+
+```{r anchor-ex, exercise = TRUE}
+diatoms <- c("Navicula_elkab",
+             "Nitzschia_palea",
+             "Aulacoseira_granulata") 
+str_detect()
+
+```
+```{r anchor-ex-solution}
+diatoms <- c("Navicula_elkab",
+             "Nitzschia_palea",
+             "Aulacoseira_granulata") 
+
+str_detect(string = diatoms, pattern = "a$")
+```
+
+
+
+
+### Escaping metacharacters
+
+If you want to detect a literal "." then there is a problem as "." is a metacharacter. 
+We need to escape metacharacters `{}[]()^$.|*+? and \` with two backslashes to treat them as literals.
+
+```{r escape}
+has_dot <- c("Navicula.elkab", "Navicula radiosa")
+
+str_detect(string = has_dot, pattern = "\\.")
+```
+
+If we don't want to use any metacharacters as metacharacters, it is easier to use a helper function.
+
+
+```{r escape_coll}
+has_dot <- c("Navicula.elkab", "Navicula radiosa")
+
+str_detect(string = has_dot, pattern = coll("."))
+```
+
+### Your turn
+
+What happens if you forget to escape a metacharacter
+
+```{r escape-ex, exercise = TRUE}
+has_dot <- c("Navicula.elkab", "Navicula radiosa")
+str_detect(string = has_dot, pattern = ".")
+
+```
+
+Why?
+
+
+
+### Help from `regexplain`
+
+Writing regular expressions is tricky.
+Fortunately there are Rstudio addins from the [`regexplain` package](https://github.com/gadenbuie/regexplain) that can help you write them.
+You will find these in the addins menu after you install the package.
+
+Note that in the `regexplain` addins, the backslashes in the regular expressions are not doubled.
+
+
+## Replacing text
+
+### Using `str_replace`
+
+
+We can replace characters in some text using `str_replace`. So to replace the underscore in diatoms with a space, we could use
+
+```{r replace}
+str_replace(diatoms, pattern = "_", replacement = " ")
+```
+
+This will replace the first underscore in each element.
+If there were several underscores and we want to replace them all, we can use `str_replace_all`. 
+If we want to remove some character, we can either use `str_replace` and set `replacement = ""`, or use `str_remove`.
+
+### Using `str_replace` with `mutate`
+
+We can use `str_replace` on a column in a tibble with a `mutate`
+
+```{r replace-tibble}
+diatom_df %>% 
+  mutate(species = str_replace(string = species,
+                               pattern = "_", 
+                               replacement  = " "))
+```
+
+
+
+
+## Extracting characters
+
+Sometimes you want to extract some characters from a string.
+
+For example, we might want to extract the year embedded in a file name
+```{r capture-group-string}
+filename <- "c:/pond_2020.xls"
+```
+
+There are two ways to do this.
+
+The first is to use capture groups in `str_replace`.
+Capture groups are groups of characters in the pattern surrounded by brackets.
+
+```{r capture-groups}
+str_replace(filename, pattern = ".*_(\\d{4})\\.xls", replacement = "\\1")
+```
+The pattern `".*_(\\d{4})\\.xls$"` will match strings that have any number of any characters followed by an underscore, followed by four numbers followed by ".xls" which has to be the end of the string because of the `$`.
+The `\\1` in the replacement will return the first (and only) capture group.
+
+### Using `str_extract`
+
+The second solution is the use `str_extract`.
+
+```{r extract}
+str_extract(filename, pattern = "\\d{4}")
+```
+
+It is usually possible to use either of these methods.
+Here, `str_extract` is easier. 
+If there were multiple numeric sequences and we wanted a specific one, then capture groups might be easier.
+One important difference is that if the match fails, `str_extract` will return `NA`, whereas `str_replace` will return the original string.
+
+### Your turn
+
+Extract the habitat type from these filenames.
+
+```{r extract-ex, exercise = TRUE}
+filenames <- c("c:/pond_2020.xls", "d:/data/marsh_2018.xls")
+
+
+```
+```{r extract-ex-solution}
+str_replace(filenames, pattern = ".*/(\\w*)_\\d{4}\\.xls$", replacement = "\\1")
+#or extract word followed by an "_", then remove "_"
+str_extract(filenames, pattern = "\\w*_") %>% 
+  str_remove(pattern = "_")
+```
+
+
+## Some other useful `stringr` function 
+
+### Changing case
+
+You can change the case of a character vector with `str_to_upper` and `str_to_lower`. 
+Changing the case can often solve many formatting errors.
+
+```{r to-lower}
+mess <- c("ponds", "Ponds", "PONDS")
+str_to_lower(mess)
+```
+
+### Your turn
+
+Make the diatoms vector upper case.
+
+```{r case-ex, exercise = TRUE}
+diatoms <- c("Navicula_elkab",
+             "Nitzschia_palea",
+             "Aulacoseira_granulata") 
+
+```
+```{r case-ex-solution}
+diatoms <- c("Navicula_elkab",
+             "Nitzschia_palea",
+             "Aulacoseira_granulata") 
+str_to_upper(diatoms)
+```
+
+
+
+### Trimming white space
+
+One very common problem with raw data is extra spaces. 
+
+"Navicula" is not equal to "Navicula&nbsp;" or " Navicula", but it may be impossible to see the difference. 
+`str_trim` will remove whitespace from the start or end of a string.  
+
+```{r str-trim}
+str_trim(c("Navicula ", " Navicula"))
+```
+
+
+### Wrapping long strings
+
+`str_wrap` puts a line return (`\n`) into long lines of text.
+This is useful in when making a figure if captions or labels are too long.
+
+```{r str-wrap}
+str_wrap("The quick brown fox jumps over the lazy dog.", width = 30)
+```
+
+## Further resources
+
+- [Rstudio Strings Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf) for help with `stringr` and regular expressions.
+
+ - [regex101](https://regex101.com/) Regular expressions tester. Provide some test strings and your regular expression to see what matches. Note that it uses a single backslash to escape where R would use double backslash. 
+
