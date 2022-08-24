@@ -51,7 +51,6 @@ bioceed_links("docs/github", quarto = TRUE)
 
 # R markdown
 withr::with_dir("Rmarkdown/", {
-  rmarkdown::render("formatting.Rmd", output_format = "pdf_document")
   bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "../docs/rmarkdown")
   bioceed_links("../docs/rmarkdown")
 })
