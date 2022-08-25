@@ -42,7 +42,7 @@ bioceed_links <- function(dir, front_page = FALSE, quarto = FALSE){
 
 # Front page
 quarto::quarto_render("frontpage")
-bioceed_links("docs/", front_page = TRUE)
+bioceed_links("docs/", front_page = TRUE, quarto = TRUE)
 
 # Git and GitHub
 quarto::quarto_render("DataManagement", quarto = TRUE)
