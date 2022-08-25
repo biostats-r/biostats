@@ -41,11 +41,11 @@ bioceed_links <- function(dir, front_page = FALSE, quarto = FALSE){
 }
 
 # Front page
-bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "docs")
+quarto::quarto_render("frontpage")
 bioceed_links("docs/", front_page = TRUE)
 
 # Git and GitHub
-quarto::quarto_render("DataManagement")
+quarto::quarto_render("DataManagement", quarto = TRUE)
 bioceed_links("docs/github", quarto = TRUE)
 
 
