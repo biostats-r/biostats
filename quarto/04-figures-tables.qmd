@@ -64,6 +64,32 @@ Use code block options to ensure that the figure would fit.
 
 :::
 
+::: callout-tip
+## R code in chunk options
+
+Sometimes it is useful to have R code in the chunk options.
+
+We can do this by putting `!expr` before the R code.
+For example, this chunk makes the figure caption include how many species there are in the dataset.
+It could be written with `paste()` but I prefer `glue::glue()` syntax - the code in the braces `{}` is evaluated and included in the sentence.
+
+```{r}
+#| label: fig-r-in-chunk-options
+#| echo: fenced
+#| fig-cap: !expr glue::glue("Bill lengths of {n_distinct(p$species)} species of penguin")
+#| fig-alt: "A density plot of penguin bill lengths made with ggplot2"
+#| message: false
+#| warning: false
+
+p <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_density()
+p 
+```
+
+
+
+:::
+
 ## Embedding external images
 
 In the visual editor, photographs and other figures that have been prepared outside of R can be included with the insert tool by typing "/" on a blank line and choosing "Figure/Image".
