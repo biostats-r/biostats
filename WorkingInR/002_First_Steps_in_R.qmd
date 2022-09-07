@@ -1,5 +1,6 @@
 ``` {r setup, include=FALSE}
 source("R/setup.R")
+rm(penguins)
 ```
 
 # First steps in R {#sec-first-steps-in-r}
@@ -52,6 +53,8 @@ You can compare 2 elements using the following operators:
 When comparing two elements, R returns either `TRUE` or `FALSE`.
 
 ```{r comp, echo = TRUE}
+9 == 3 * 3
+5 > 4
 9^2 != 9 * (3 + 6)
 ```
 
@@ -79,7 +82,7 @@ In R, calculate
 - The natural logarithm of 29
 - The base 10 logarithm of 29
 
-You may need to look at the built in help for some of these.
+You may need to look at the built-in help for some of these.
 :::
 
 ## Help!
@@ -144,15 +147,15 @@ If the package is loaded, they can be used by typing their name.
 
 ```{r pi}
 pi
-month.abb# abbreviated month names
+month.abb # abbreviated month names
 ```
 
 To make objects in packages available you can either load the package with `library()` first, or use `data()`.
 
 ```{r data, error = TRUE}
-penguins # not available
+penguins # not available yet
 data(penguins, package = "palmerpenguins")
-penguins
+penguins # available now
 ```
 
 
@@ -175,7 +178,7 @@ Putting data into named objects allows you to:
 + *divide* your code into separate steps, each of which is clearly identifiable by name and thus reusable,
 + *simplify* your code by referring to previous calculations or plots.
 
-```{r palmercode, echo=FALSE}
+```{r palmercode, echo=FALSE, warning=FALSE}
 library(palmerpenguins)
 library(dplyr)
 library(ggplot2)
@@ -263,7 +266,7 @@ knitr::include_graphics("figures/new_result.png")
 
 Note that the previous content of `result` is lost as soon as the new data is assigned. 
 To restore the original value, you will have to go back to your script and rerun the original command that assigned the square root of 42 to `result`.
-This is one of the many reasons why you should always work with a script and annotate it: it is your life line in case you make a mistake, lose objects, modify data elements, etc.
+This is one of the many reasons why you should always work with a script and annotate it: it is your life-line in case you make a mistake, lose objects, modify data elements, etc.
 
 
 ### Concatenating data
@@ -311,6 +314,7 @@ Beside these rules, you may find the following recommendations useful:
 + give your object a meaningful name such as `norwegian_seabirds`, `alpine_species_vestland`, etc
 + avoid names which meaning may change with time, such as `new_dataset`, `modified_dataset`, `last_year_data`, etc
 + avoid very long names
++ remember R is case-sensitive
 + have a look at the [tidyverse style guide](https://style.tidyverse.org/syntax.html#object-names){target="_blank"}
 
 ::: callout-note 
@@ -376,6 +380,14 @@ rm(result, results)
 
 Again, once it is done, there is only one way back: go to your script and rerun the commands that originally created `result` and `results`.
 
+To delete everything, you can use the broom icon in the Environment tab, but it is usually better to restart the R session.
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Session</li>
+  <li class="breadcrumb-item">Restart R</li>
+</ol> 
+
+
 
 ## Creating sequences and series
 
@@ -388,14 +400,14 @@ These sequences and series are often created by a bunch of functions or expressi
 The function `rep()` comes handy when you wish to repeat data elements `n` times in a row, or to repeat a sequence of elements `n` times. 
 Using various arguments, you can decide how many times and/or in which manner the elements or sequences have to be repeated.
 
-The simplest form of usage of `rep()` is `rep(x, times= n)` where `x` is what you want to repeat (string, number(s), etc) and `n` the number of iterations.
+The simplest form of usage of `rep()` is `rep(x, times = n)` where `x` is what you want to repeat (string, number(s), etc) and `n` the number of iterations.
 
 ```{r rep, echo=TRUE}
 rep(c(1, 2, 3), times= 3)
 rep(c("One", "Two", "Three"), times= 3)
 ```
 
-The argument `each= n` allows for repeating `n` times each element at a time. 
+The argument `each = n` allows for repeating `n` times each element at a time. 
 
 ```{r rep2, echo=TRUE}
 rep(c(1, 2, 3), each= 3)
@@ -432,22 +444,24 @@ Note that `b` is not necessarily the last element of the series.
 #### The function seq()
 
 Similar to `a:b`, `seq(a, b)` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
+
 ```{r seq, echo=TRUE}
 seq(14, 24)
 ```
 
 Again, `b` is not necessarily the last element of the series.
+
 ```{r seq2, echo=TRUE}
 seq(14, 24.5)
 seq(14.5, 24)
 ```
 
 You can use a set of additional arguments in `seq()` to adjust the output. 
-Adding `by=` allows to tune the incrementation to any value you want (including decimal values). `length.out=` adjusts the incrementation to provide the desired number of elements ranging precisely from `a` to `b`.
+Adding `by =` allows to tune the incrementation to any value you want (including decimal values). `length.out =` adjusts the incrementation to provide the desired number of elements ranging precisely from `a` to `b`.
 
 ```{r seq3, echo=TRUE}
-seq(14, 24, by=2.5)
-seq(14, 24, length.out=7)
+seq(14, 24, by = 2.5)
+seq(14, 24, length.out = 7)
 ```
 
 ::: callout-note 
@@ -484,10 +498,10 @@ tibble(
 runif(7)
 ```
 
-`runif(n, min=a, max=b)` returns a series of `n` random numbers in the range from `a` to `b`:
+`runif(n, min = a, max = b)` returns a series of `n` random numbers in the range from `a` to `b`:
 
 ```{r runif2, echo=TRUE}
-runif(7, min=10, max=100)
+runif(7, min = 10, max = 100)
 ```
 
 
@@ -499,15 +513,15 @@ runif(7, min=10, max=100)
 rnorm(10)
 ```
 
-By default, the normally distributed population is set up with a mean of 0 and a standard deviation of 1, but this may be adjusted with `mean= ` and `sd= `.
+By default, the normally distributed population is set up with a mean of 0 and a standard deviation of 1, but this may be adjusted with `mean = ` and `sd = `.
 ```{r rnorm2, echo=TRUE}
-rnorm(10, mean=50, sd=3)
+rnorm(10, mean = 50, sd = 3)
 ```
 
 #### The function sample()
 
-`sample(x, n, replace = TRUE/FALSE)` returns a sample of `n` integers randomly taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
-`replace=` followed by either TRUE or FALSE defines whether or not a data element can appear repeatedly in the sample.
+`sample(x, n, replace = TRUE/FALSE)` returns a sample of `n` values randomly taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
+`replace =` followed by either TRUE or FALSE defines whether or not a data element can appear repeatedly in the sample.
 
 ```{r sample, echo=TRUE}
 sample(1:100, 10, replace = FALSE)
@@ -522,8 +536,8 @@ sample(1:10)
 
 #### `set.seed()`
 
-The sequences are not strictly random but pseudo random.
-The sequences repeat with a very long period (2^19937^ - 1 for the default Mersenne-Twister algorithm).
+The sequence of "random" numbers that R generates are not strictly random but pseudo-random.
+The sequence repeats with a very long period (2^19937^ - 1 for the default Mersenne-Twister algorithm).
 If you want to get exactly the same sequence again (for reproducibility), you can set the seed for the random numbers with `set.seed()`.
 
 ```{r set-seed}
@@ -551,10 +565,10 @@ Here we will first review the primitive data types, then see a few useful data c
 
 ### Primitive data types
 
-R lets you manipulate 6 primitive data types: numeric, integer, character, logical (also called boolean), complex and raw. 
+R lets you manipulate 6 primitive data types: numeric, integer, character, logical (also called Boolean), complex and raw. 
 Only the first four types are relevant in the scope of this website.
 
-NB: in the following sections, we will use the function `class()` to identify the nature of the data stored in objects.
+In the following sections, we will use the function `class()` to identify the nature of the data stored in objects (`mode()` and `typeof()` give related information).
 
 #### numeric
 
@@ -581,8 +595,8 @@ The "L" that follows the number forces the object to store it as an integer.
 If we write 35 instead of 35L, the object is just numeric as shown below.
 
 ```{r numeric2, echo = TRUE}
-int <- 35
-class(int)
+not_int <- 35
+class(not_int)
 ```
 
 #### character
@@ -609,7 +623,7 @@ class(logic)
 ```
 
 Note that `TRUE` and `FALSE` are sometimes replaced with "T" or "F".
-Be warned that this is bad coding practice, which may result in (or be the origin of) errors that may compromise your work and the validity of its output.
+This is bad coding practice, which may result in weird errors that may compromise your work and the validity of its output.
 
 #### Modifying data types
 
@@ -700,7 +714,7 @@ There is a tutorial for handling dates with the `lubridate` package in `biostats
 
 A factor is an object that only contains predefined values. 
 These predefined values are called the *levels* of the factor. 
-Factors are especially useful in the context of statistical analysis where categorical data are involved (like ANOVA, etc). 
+Factors are especially useful in the context of statistical analysis where categorical data are involved (like ANOVA, etc), and for forcing the order of categories on a plot.
 Categories often appear as "text labels", and may thus look like simple strings of characters. 
 
 In the following example, the object `scandinavian_countries` is a factor that contains 7 elements and three levels: `Norway`, `Sweden` and `Denmark`.
@@ -716,7 +730,7 @@ class(scandinavian_countries)
 
 
 One way to build such a factor consists in converting a character object such as `scandinavia` with the function `factor()`.
-However, one must not forget to set the levels correctly with the argument `levels=`.
+However, one must not forget to set the levels correctly with the argument `levels =`.
 ```{r scandia3, echo = TRUE}
 scandinavia <- c("Norway", "Denmark", "Sweden", "Denmark", "Sweden", "Norway", "Denmark")
 scandinavian_kingdoms <- factor(scandinavia, levels = c("Norway", "Denmark", "Sweden"))
@@ -729,11 +743,11 @@ scandinavian_kingdoms
 <!-- The factor tutorial is not yet working - look again soon -->
 <!-- ::: -->
 
-### Objects
+## Data structures
 
 Data in R may be stored in a multitude of object types, but the most important ones are vector, matrix, list, data frame and tibble.
 
-#### Vectors {#sec-vectors}
+### Vectors {#sec-vectors}
 
 A vector is an object that contains one or several values of the *same* data type. 
 For example, the object `vec.char` described below is a vector that contains 3 data elements of the type character. 
@@ -760,7 +774,7 @@ Note that the data type of the whole vector is determined by the type of the ele
 class(temperature)
 ```
 
-##### Coercion
+#### Coercion
 
 If one tries to store data elements of different types in a single vector, all the elements in this vector will be coerced into the type that is the most informative.  
 The ranking is as follows: logical < integer < numeric < character.  
@@ -773,17 +787,17 @@ class(coercion)
 
 As you see here the type of `coercion` is character, in other words the type of the most informative data element.
 
-##### Accessing data elements
+#### Accessing data elements
 
 It is possible to extract specific data elements from a vector based on their position.
-To do so, we use brackets `[` `]`. 
+To do so, we use square brackets `[` `]`. 
 Indicate first the vector name and then the element position(s) between the brackets:
 
 ```{r vector-ret, echo=TRUE}
 temperature[c(2, 6)] 
 ```
 
-Use negative indicies to remove an element.
+Use negative indices to remove an element.
 
 ::: callout-note 
 ## Exercise
@@ -795,7 +809,7 @@ From the vector `month.name`
 - drop the second and fifth elements
 :::
 
-#### Matrices
+### Matrices
 
 A matrix is a two-dimensional object that displays data of the *same* type (numeric, character, etc) in the form of a table. 
 It is built up with the function `matrix()` in which the data is imported either in the form of concatenated data elements (ex: `c(12, 54, 987, 5, ...)`), a series or sequence of data elements (ex: `1:25`), or a vector (ex: `temperature`). 
@@ -811,7 +825,7 @@ neo
 
 
 
-##### Accessing data elements
+#### Accessing data elements
 
 In a matrix, each row is numbered `[x, ]` and each column is numbered `[ , y]`.
 Any of the data elements may be retrieved by using its coordinates `[x, y]` preceded by the name of the matrix:
@@ -830,7 +844,7 @@ neo[ , 3]
 
 
 
-##### About the use of matrices
+#### About the use of matrices
 
 The use of matrices on this website is very limited.
 However, you may meet matrices in other projects, so it is best to know about their existence.
@@ -847,7 +861,7 @@ Make the matix neo as above, then
 - The element in the third column second row.
 :::
 
-#### Lists
+### Lists
 
 A list is an object that contains values of *one or several* data types. 
 It can not only contain single data elements, but also other objects such as vectors, matrices, etc.  
@@ -868,7 +882,7 @@ my_list <- list(string = "one",
 my_list 
 ```
 
-##### Retrieving list elements
+#### Retrieving list elements
 
 You can access list items by position with `[[` notation.
 
@@ -884,7 +898,7 @@ Here we retrieve the element `matrix` in the list `my_list`:
 my_list$matrix
 ```
 
-##### Retrieving single data elements
+#### Retrieving single data elements
 
 Even better, you can retrieve a single data element contained in a list element. 
 Here you will have to write an expression that makes use of both the symbol `$` and the brackets `[` `]`in the proper order. 
@@ -914,18 +928,18 @@ Make a list with three named elements of different types.
  - use `$` notation to extract an element by name.
 :::
 
-#### Data frames and tibbles
+### Data frames and tibbles
 
 A data frame is a two-dimensional object that stores data of *various* types in the form of a table. 
 Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
 
 Until recently, data frames were the main storage objects for research data. 
-Nowadays, tibbles (an evolution of the data frame that appeared in the tidyverse) replace data frames as they are more practical to handle data sets (you will understand why further below).
+Nowadays, tibbles (an evolution of the data frame that appeared in the tidyverse) are replacing data frames as they are more practical for handling data sets (you will understand why further below).
 Because of this trend, we will focus mainly on tibbles here in this section and further on this website.
 It is however likely that you will meet data frames in the course of your studies. 
 Do not worry as we will see how to transform data frames into tibbles.
 
-Tibbles being a standard introduced in `tidyverse`, you must make sure that the package is active before using these objects. 
+Tibbles are standard introduced in `tidyverse`, so you must make sure that the package is active before using these objects. 
 Simply run this command first:
 
 ```{r load tydiverse, echo=TRUE}
@@ -934,7 +948,7 @@ library(tidyverse)
 
 If you have not installed the package yet, have a look at the @sec-tidyverse.
 
-##### Data frames vs. tibbles
+#### Data frames vs. tibbles
 
 The object `df` printed below is a data frame that stores the average temperature recorded monthly in 2017, 2018 and 2019 at Lygra (Vestland, Norway). It is created with the function `data.frame()`.
 
@@ -966,7 +980,7 @@ All in all, tibbles _print_ much better and give more information than data fram
 They also have more predictable behaviour when extracting data from them.
 
 
-##### Retrieving data elements
+#### Retrieving data elements
 
 Similarly to vectors, matrices and lists, one can extract single elements from data frames and tibbles.
 Here, we use brackets `[` `]` to do so:
@@ -993,7 +1007,7 @@ tbl$Avg_temperature
 
 In @sec-working-with-single-tables-in-dplyr you will see an alternative way of manipulating tibbles with the `dplyr` package.
 
-##### Transforming a data frame into a tibble
+#### Transforming a data frame into a tibble
 
 If you have been previously working with data frames, have been given a data frame to work with, or have imported data using functions that create data frames, you may convert them into tibbles by using `as_tibble()`. 
 Here we convert the data frame `df` into a tibble:
@@ -1008,10 +1022,20 @@ You may read more about tibbles [here](https://tibble.tidyverse.org/){target="_b
 You may read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame){target="_blank"}.
 
 ::: callout-note
+## Exercise
+
+Make a tibble with the first column the months of the year, and the second is a sequence of numbers from 1 to 12.
+
+- extract the month column using `$` notation
+:::
+
+
+::: callout-note
 ## Further Reading {- .literature .toc-ignore}
 
 + [R for data science](https://r4ds.had.co.nz/){target="_blank"}
 + [The tidyverse](https://www.tidyverse.org/){target="_blank"}
++ [Advanced R](https://adv-r.hadley.nz/index.html) chapters 1 -- 4
 :::
 
 ::: callout-note
