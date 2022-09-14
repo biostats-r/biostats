@@ -2,16 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.37">
+<meta name="generator" content="quarto-1.1.189">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Working in R - 10&nbsp; Working with single tables in dplyr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -50,7 +55,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -63,7 +68,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -321,44 +326,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       </style>
 <p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
 <br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
-        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#load-the-package" id="toc-load-the-package" class="nav-link active" data-scroll-target="#load-the-package"> <span class="header-section-number">10.0.1</span> Load the package</a></li>
-  <li><a href="#more-feedback-tidylog" id="toc-more-feedback-tidylog" class="nav-link" data-scroll-target="#more-feedback-tidylog"> <span class="header-section-number">10.0.2</span> More feedback <code>tidylog</code></a></li>
-  <li><a href="#the-penguins-dataset" id="toc-the-penguins-dataset" class="nav-link" data-scroll-target="#the-penguins-dataset"> <span class="header-section-number">10.1</span> The <code>penguins</code> dataset</a></li>
+<li><a href="#load-the-package" id="toc-load-the-package" class="nav-link active" data-scroll-target="#load-the-package"><span class="toc-section-number">10.0.1</span>  Load the package</a></li>
+  <li><a href="#more-feedback-tidylog" id="toc-more-feedback-tidylog" class="nav-link" data-scroll-target="#more-feedback-tidylog"><span class="toc-section-number">10.0.2</span>  More feedback <code>tidylog</code></a></li>
+  <li><a href="#the-penguins-dataset" id="toc-the-penguins-dataset" class="nav-link" data-scroll-target="#the-penguins-dataset"><span class="toc-section-number">10.1</span>  The <code>penguins</code> dataset</a></li>
   <li>
-<a href="#selecting-columns-with-select" id="toc-selecting-columns-with-select" class="nav-link" data-scroll-target="#selecting-columns-with-select"> <span class="header-section-number">10.2</span> Selecting columns with <code>select()</code></a>
+<a href="#selecting-columns-with-select" id="toc-selecting-columns-with-select" class="nav-link" data-scroll-target="#selecting-columns-with-select"><span class="toc-section-number">10.2</span>  Selecting columns with <code>select()</code></a>
   <ul class="collapse">
-<li><a href="#sec-select-helpers" id="toc-sec-select-helpers" class="nav-link" data-scroll-target="#sec-select-helpers"> <span class="header-section-number">10.2.1</span> <code>select()</code> helpers</a></li>
+<li><a href="#sec-select-helpers" id="toc-sec-select-helpers" class="nav-link" data-scroll-target="#sec-select-helpers"><span class="toc-section-number">10.2.1</span>  <code>select()</code> helpers</a></li>
   </ul>
 </li>
-  <li><a href="#renaming-columns-with-rename" id="toc-renaming-columns-with-rename" class="nav-link" data-scroll-target="#renaming-columns-with-rename"> <span class="header-section-number">10.3</span> Renaming columns with <code>rename</code></a></li>
-  <li><a href="#moving-columns-with-relocate" id="toc-moving-columns-with-relocate" class="nav-link" data-scroll-target="#moving-columns-with-relocate"> <span class="header-section-number">10.4</span> Moving columns with <code>relocate()</code></a></li>
+  <li><a href="#renaming-columns-with-rename" id="toc-renaming-columns-with-rename" class="nav-link" data-scroll-target="#renaming-columns-with-rename"><span class="toc-section-number">10.3</span>  Renaming columns with <code>rename</code></a></li>
+  <li><a href="#moving-columns-with-relocate" id="toc-moving-columns-with-relocate" class="nav-link" data-scroll-target="#moving-columns-with-relocate"><span class="toc-section-number">10.4</span>  Moving columns with <code>relocate()</code></a></li>
   <li>
-<a href="#filtering-rows-with-filter" id="toc-filtering-rows-with-filter" class="nav-link" data-scroll-target="#filtering-rows-with-filter"> <span class="header-section-number">10.5</span> Filtering rows with <code>filter()</code></a>
+<a href="#filtering-rows-with-filter" id="toc-filtering-rows-with-filter" class="nav-link" data-scroll-target="#filtering-rows-with-filter"><span class="toc-section-number">10.5</span>  Filtering rows with <code>filter()</code></a>
   <ul class="collapse">
-<li><a href="#filtering-on-multiple-criteria" id="toc-filtering-on-multiple-criteria" class="nav-link" data-scroll-target="#filtering-on-multiple-criteria"> <span class="header-section-number">10.5.1</span> Filtering on multiple criteria</a></li>
-  <li><a href="#common-errors" id="toc-common-errors" class="nav-link" data-scroll-target="#common-errors"> <span class="header-section-number">10.5.2</span> Common errors</a></li>
+<li><a href="#filtering-on-multiple-criteria" id="toc-filtering-on-multiple-criteria" class="nav-link" data-scroll-target="#filtering-on-multiple-criteria"><span class="toc-section-number">10.5.1</span>  Filtering on multiple criteria</a></li>
+  <li><a href="#common-errors" id="toc-common-errors" class="nav-link" data-scroll-target="#common-errors"><span class="toc-section-number">10.5.2</span>  Common errors</a></li>
   </ul>
 </li>
-  <li><a href="#slicing-the-data-with-slice" id="toc-slicing-the-data-with-slice" class="nav-link" data-scroll-target="#slicing-the-data-with-slice"> <span class="header-section-number">10.6</span> Slicing the data with <code>slice()</code></a></li>
-  <li><a href="#distinct-rows-with-distinct" id="toc-distinct-rows-with-distinct" class="nav-link" data-scroll-target="#distinct-rows-with-distinct"> <span class="header-section-number">10.7</span> Distinct rows with <code>distinct()</code></a></li>
-  <li><a href="#random-rows" id="toc-random-rows" class="nav-link" data-scroll-target="#random-rows"> <span class="header-section-number">10.8</span> Random rows</a></li>
-  <li><a href="#mutating-and-adding-columns-with-mutate" id="toc-mutating-and-adding-columns-with-mutate" class="nav-link" data-scroll-target="#mutating-and-adding-columns-with-mutate"> <span class="header-section-number">10.9</span> Mutating and adding columns with <code>mutate</code></a></li>
+  <li><a href="#slicing-the-data-with-slice" id="toc-slicing-the-data-with-slice" class="nav-link" data-scroll-target="#slicing-the-data-with-slice"><span class="toc-section-number">10.6</span>  Slicing the data with <code>slice()</code></a></li>
+  <li><a href="#distinct-rows-with-distinct" id="toc-distinct-rows-with-distinct" class="nav-link" data-scroll-target="#distinct-rows-with-distinct"><span class="toc-section-number">10.7</span>  Distinct rows with <code>distinct()</code></a></li>
+  <li><a href="#random-rows" id="toc-random-rows" class="nav-link" data-scroll-target="#random-rows"><span class="toc-section-number">10.8</span>  Random rows</a></li>
+  <li><a href="#mutating-and-adding-columns-with-mutate" id="toc-mutating-and-adding-columns-with-mutate" class="nav-link" data-scroll-target="#mutating-and-adding-columns-with-mutate"><span class="toc-section-number">10.9</span>  Mutating and adding columns with <code>mutate</code></a></li>
   <li>
-<a href="#summarising-data-with-summarise" id="toc-summarising-data-with-summarise" class="nav-link" data-scroll-target="#summarising-data-with-summarise"> <span class="header-section-number">10.10</span> Summarising data with <code>summarise()</code></a>
+<a href="#summarising-data-with-summarise" id="toc-summarising-data-with-summarise" class="nav-link" data-scroll-target="#summarising-data-with-summarise"><span class="toc-section-number">10.10</span>  Summarising data with <code>summarise()</code></a>
   <ul class="collapse">
-<li><a href="#summarising-multiple-columns" id="toc-summarising-multiple-columns" class="nav-link" data-scroll-target="#summarising-multiple-columns"> <span class="header-section-number">10.10.1</span> Summarising multiple columns</a></li>
+<li><a href="#summarising-multiple-columns" id="toc-summarising-multiple-columns" class="nav-link" data-scroll-target="#summarising-multiple-columns"><span class="toc-section-number">10.10.1</span>  Summarising multiple columns</a></li>
   </ul>
 </li>
-  <li><a href="#grouping-data-with-group_by" id="toc-grouping-data-with-group_by" class="nav-link" data-scroll-target="#grouping-data-with-group_by"> <span class="header-section-number">10.11</span> Grouping data with <code>group_by</code></a></li>
-  <li><a href="#sorting-with-arrange" id="toc-sorting-with-arrange" class="nav-link" data-scroll-target="#sorting-with-arrange"> <span class="header-section-number">10.12</span> Sorting with <code>arrange()</code></a></li>
-  <li><a href="#counting-rows-with-count-and-n" id="toc-counting-rows-with-count-and-n" class="nav-link" data-scroll-target="#counting-rows-with-count-and-n"> <span class="header-section-number">10.13</span> Counting rows with <code>count()</code> and <code>n()</code></a></li>
+  <li><a href="#grouping-data-with-group_by" id="toc-grouping-data-with-group_by" class="nav-link" data-scroll-target="#grouping-data-with-group_by"><span class="toc-section-number">10.11</span>  Grouping data with <code>group_by</code></a></li>
+  <li><a href="#sorting-with-arrange" id="toc-sorting-with-arrange" class="nav-link" data-scroll-target="#sorting-with-arrange"><span class="toc-section-number">10.12</span>  Sorting with <code>arrange()</code></a></li>
+  <li><a href="#counting-rows-with-count-and-n" id="toc-counting-rows-with-count-and-n" class="nav-link" data-scroll-target="#counting-rows-with-count-and-n"><span class="toc-section-number">10.13</span>  Counting rows with <code>count()</code> and <code>n()</code></a></li>
   <li>
-<a href="#common-problems" id="toc-common-problems" class="nav-link" data-scroll-target="#common-problems"> <span class="header-section-number">10.14</span> Common problems</a>
+<a href="#common-problems" id="toc-common-problems" class="nav-link" data-scroll-target="#common-problems"><span class="toc-section-number">10.14</span>  Common problems</a>
   <ul class="collapse">
-<li><a href="#non-standard-names" id="toc-non-standard-names" class="nav-link" data-scroll-target="#non-standard-names"> <span class="header-section-number">10.14.1</span> Non standard names</a></li>
+<li><a href="#non-standard-names" id="toc-non-standard-names" class="nav-link" data-scroll-target="#non-standard-names"><span class="toc-section-number">10.14.1</span>  Non standard names</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -1390,6 +1395,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         }
       }
     }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
   }
   const isFileUrl = () => { 
     return window.location.protocol === 'file:';
@@ -1542,7 +1557,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);

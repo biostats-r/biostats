@@ -10,7 +10,7 @@ bioceed_links <- function(dir, front_page = FALSE, quarto = FALSE){
         pattern = '<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">',
         x = f)
       p2 <- grep(
-        pattern= '<nav id="TOC" role="doc-toc">',
+        pattern= '<nav id="TOC" role="doc-toc"',
         x = f)
     }
     else {

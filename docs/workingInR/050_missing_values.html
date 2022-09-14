@@ -2,16 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.37">
+<meta name="generator" content="quarto-1.1.189">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Working in R - 19&nbsp; Handling missing values</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -50,7 +55,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -63,7 +68,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -323,37 +328,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       </style>
 <p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
 <br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
-        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
 <li>
-<a href="#data-handling-with-missing-values" id="toc-data-handling-with-missing-values" class="nav-link active" data-scroll-target="#data-handling-with-missing-values"> <span class="header-section-number">19.1</span> Data handling with missing values</a>
+<a href="#data-handling-with-missing-values" id="toc-data-handling-with-missing-values" class="nav-link active" data-scroll-target="#data-handling-with-missing-values"><span class="toc-section-number">19.1</span>  Data handling with missing values</a>
   <ul class="collapse">
-<li><a href="#detecting-missing-values" id="toc-detecting-missing-values" class="nav-link" data-scroll-target="#detecting-missing-values"> <span class="header-section-number">19.1.1</span> Detecting missing values</a></li>
-  <li><a href="#importing-data-with-missing-values" id="toc-importing-data-with-missing-values" class="nav-link" data-scroll-target="#importing-data-with-missing-values"> <span class="header-section-number">19.1.2</span> Importing data with missing values</a></li>
-  <li><a href="#removing-rows-with-missing-values" id="toc-removing-rows-with-missing-values" class="nav-link" data-scroll-target="#removing-rows-with-missing-values"> <span class="header-section-number">19.1.3</span> Removing rows with missing values</a></li>
-  <li><a href="#sec-replacing-missing-values" id="toc-sec-replacing-missing-values" class="nav-link" data-scroll-target="#sec-replacing-missing-values"> <span class="header-section-number">19.1.4</span> Replacing missing values</a></li>
-  <li><a href="#setting-mising-values" id="toc-setting-mising-values" class="nav-link" data-scroll-target="#setting-mising-values"> <span class="header-section-number">19.1.5</span> Setting mising values</a></li>
-  <li><a href="#missing-values-and-dplyr-filter" id="toc-missing-values-and-dplyr-filter" class="nav-link" data-scroll-target="#missing-values-and-dplyr-filter"> <span class="header-section-number">19.1.6</span> Missing values and dplyr <code>filter()</code></a></li>
-  <li><a href="#missing-values-and-dplyr-if_else-and-case_when" id="toc-missing-values-and-dplyr-if_else-and-case_when" class="nav-link" data-scroll-target="#missing-values-and-dplyr-if_else-and-case_when"> <span class="header-section-number">19.1.7</span> Missing values and dplyr <code>if_else()</code> and <code>case_when()</code></a></li>
+<li><a href="#detecting-missing-values" id="toc-detecting-missing-values" class="nav-link" data-scroll-target="#detecting-missing-values"><span class="toc-section-number">19.1.1</span>  Detecting missing values</a></li>
+  <li><a href="#importing-data-with-missing-values" id="toc-importing-data-with-missing-values" class="nav-link" data-scroll-target="#importing-data-with-missing-values"><span class="toc-section-number">19.1.2</span>  Importing data with missing values</a></li>
+  <li><a href="#removing-rows-with-missing-values" id="toc-removing-rows-with-missing-values" class="nav-link" data-scroll-target="#removing-rows-with-missing-values"><span class="toc-section-number">19.1.3</span>  Removing rows with missing values</a></li>
+  <li><a href="#sec-replacing-missing-values" id="toc-sec-replacing-missing-values" class="nav-link" data-scroll-target="#sec-replacing-missing-values"><span class="toc-section-number">19.1.4</span>  Replacing missing values</a></li>
+  <li><a href="#setting-mising-values" id="toc-setting-mising-values" class="nav-link" data-scroll-target="#setting-mising-values"><span class="toc-section-number">19.1.5</span>  Setting mising values</a></li>
+  <li><a href="#missing-values-and-dplyr-filter" id="toc-missing-values-and-dplyr-filter" class="nav-link" data-scroll-target="#missing-values-and-dplyr-filter"><span class="toc-section-number">19.1.6</span>  Missing values and dplyr <code>filter()</code></a></li>
+  <li><a href="#missing-values-and-dplyr-if_else-and-case_when" id="toc-missing-values-and-dplyr-if_else-and-case_when" class="nav-link" data-scroll-target="#missing-values-and-dplyr-if_else-and-case_when"><span class="toc-section-number">19.1.7</span>  Missing values and dplyr <code>if_else()</code> and <code>case_when()</code></a></li>
   </ul>
 </li>
   <li>
-<a href="#statistics-with-missing-values" id="toc-statistics-with-missing-values" class="nav-link" data-scroll-target="#statistics-with-missing-values"> <span class="header-section-number">19.2</span> Statistics with missing values</a>
+<a href="#statistics-with-missing-values" id="toc-statistics-with-missing-values" class="nav-link" data-scroll-target="#statistics-with-missing-values"><span class="toc-section-number">19.2</span>  Statistics with missing values</a>
   <ul class="collapse">
-<li><a href="#na-arithemetic" id="toc-na-arithemetic" class="nav-link" data-scroll-target="#na-arithemetic"> <span class="header-section-number">19.2.1</span> <code>NA</code> arithemetic</a></li>
-  <li><a href="#na-in-correlations-and-covariances" id="toc-na-in-correlations-and-covariances" class="nav-link" data-scroll-target="#na-in-correlations-and-covariances"> <span class="header-section-number">19.2.2</span> <code>NA</code> in correlations and covariances</a></li>
-  <li><a href="#missing-values-and-regession-models" id="toc-missing-values-and-regession-models" class="nav-link" data-scroll-target="#missing-values-and-regession-models"> <span class="header-section-number">19.2.3</span> Missing values and regession models</a></li>
-  <li><a href="#imputing-missing-values" id="toc-imputing-missing-values" class="nav-link" data-scroll-target="#imputing-missing-values"> <span class="header-section-number">19.2.4</span> Imputing missing values</a></li>
+<li><a href="#na-arithemetic" id="toc-na-arithemetic" class="nav-link" data-scroll-target="#na-arithemetic"><span class="toc-section-number">19.2.1</span>  <code>NA</code> arithemetic</a></li>
+  <li><a href="#na-in-correlations-and-covariances" id="toc-na-in-correlations-and-covariances" class="nav-link" data-scroll-target="#na-in-correlations-and-covariances"><span class="toc-section-number">19.2.2</span>  <code>NA</code> in correlations and covariances</a></li>
+  <li><a href="#missing-values-and-regession-models" id="toc-missing-values-and-regession-models" class="nav-link" data-scroll-target="#missing-values-and-regession-models"><span class="toc-section-number">19.2.3</span>  Missing values and regession models</a></li>
+  <li><a href="#imputing-missing-values" id="toc-imputing-missing-values" class="nav-link" data-scroll-target="#imputing-missing-values"><span class="toc-section-number">19.2.4</span>  Imputing missing values</a></li>
   </ul>
 </li>
-  <li><a href="#missing-values-and-ggplot2" id="toc-missing-values-and-ggplot2" class="nav-link" data-scroll-target="#missing-values-and-ggplot2"> <span class="header-section-number">19.3</span> Missing values and <code>ggplot2</code></a></li>
+  <li><a href="#missing-values-and-ggplot2" id="toc-missing-values-and-ggplot2" class="nav-link" data-scroll-target="#missing-values-and-ggplot2"><span class="toc-section-number">19.3</span>  Missing values and <code>ggplot2</code></a></li>
   <li>
-<a href="#related-concepts" id="toc-related-concepts" class="nav-link" data-scroll-target="#related-concepts"> <span class="header-section-number">19.4</span> Related concepts</a>
+<a href="#related-concepts" id="toc-related-concepts" class="nav-link" data-scroll-target="#related-concepts"><span class="toc-section-number">19.4</span>  Related concepts</a>
   <ul class="collapse">
-<li><a href="#nan" id="toc-nan" class="nav-link" data-scroll-target="#nan"> <span class="header-section-number">19.4.1</span> <code>NaN</code></a></li>
-  <li><a href="#inf" id="toc-inf" class="nav-link" data-scroll-target="#inf"> <span class="header-section-number">19.4.2</span> Inf</a></li>
-  <li><a href="#comparison-of-tests" id="toc-comparison-of-tests" class="nav-link" data-scroll-target="#comparison-of-tests"> <span class="header-section-number">19.4.3</span> Comparison of tests</a></li>
+<li><a href="#nan" id="toc-nan" class="nav-link" data-scroll-target="#nan"><span class="toc-section-number">19.4.1</span>  <code>NaN</code></a></li>
+  <li><a href="#inf" id="toc-inf" class="nav-link" data-scroll-target="#inf"><span class="toc-section-number">19.4.2</span>  Inf</a></li>
+  <li><a href="#comparison-of-tests" id="toc-comparison-of-tests" class="nav-link" data-scroll-target="#comparison-of-tests"><span class="toc-section-number">19.4.3</span>  Comparison of tests</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -894,6 +899,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         }
       }
     }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
   }
   const isFileUrl = () => { 
     return window.location.protocol === 'file:';
@@ -1046,7 +1061,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
