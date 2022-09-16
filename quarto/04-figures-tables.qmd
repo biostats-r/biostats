@@ -76,7 +76,7 @@ It could be written with `paste()` but I prefer `glue::glue()` syntax - the code
 ```{r}
 #| label: fig-r-in-chunk-options
 #| echo: fenced
-#| fig-cap: !expr glue::glue("Bill lengths of {n_distinct(p$species)} species of penguin")
+#| fig-cap: !expr glue::glue("Bill lengths of {n_distinct(penguins$species)} species of penguin")
 #| fig-alt: "A density plot of penguin bill lengths made with ggplot2"
 #| message: false
 #| warning: false
@@ -86,8 +86,37 @@ p <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
 p 
 ```
 
+:::
 
+::: callout-tip
+## Setting default ggplot themes
 
+When you make a ggplot figure, you can specify the theme you want to use.
+For example, to use `theme_classic()`, we could change the previous figure's code to
+
+```{r}
+#| label: fig-theme
+#| echo: true
+#| eval: false
+
+p <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_density() +
+  theme_classic()
+p 
+```
+
+To give all the figures in a document a consistent theme, you can set the default theme near the start of the document, perhaps in the code block where the package are loaded, with `theme_set()`. 
+
+```{r}
+#| label: theme-set
+#| eval: false
+library(tidyverse)
+theme_set(theme_classic())
+```
+
+You can also set the default font size with the `base_size` argument to `theme_classic()`.
+Now we don't need to add `theme_classic()` to every figure.
+You can learn more about themes [here](https://biostats-r.github.io/biostats/workingInR/118_themes.html).
 :::
 
 ## Embedding external images
