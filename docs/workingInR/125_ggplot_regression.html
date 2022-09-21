@@ -361,40 +361,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">penguins</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">geom_smooth</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using method = 'loess' and formula 'y ~ x'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing non-finite values (stat_smooth).</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
-</div>
 <div class="cell-output-display">
 <p><img src="125_ggplot_regression_files/figure-html/smo-default-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>You can change they type of regression model used by <code>geom_smooth()</code> with the <code>method</code> argument. So to show a linear model, use <code>method = "lm"</code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">penguins</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">penguins</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">geom_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing non-finite values (stat_smooth).</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
-</div>
 <div class="cell-output-display">
 <p><img src="125_ggplot_regression_files/figure-html/smo-lm-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>To show a glm, we need to <code>method = "glm"</code> and set the family in the <code>method.args</code> argument.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">SWAP</span>, package<span class="op">=</span> <span class="st">"rioja"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">SWAP</span>, package<span class="op">=</span> <span class="st">"rioja"</span><span class="op">)</span></span>
 <span><span class="va">swap_data</span> <span class="op">&lt;-</span> <span class="fu">bind_cols</span><span class="op">(</span>pH <span class="op">=</span> <span class="va">SWAP</span><span class="op">$</span><span class="va">pH</span>, <span class="va">SWAP</span><span class="op">$</span><span class="va">spec</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">swap_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">pH</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># sign converts data to presence absence</span></span>
@@ -404,9 +386,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span>    method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu">italic</span><span class="op">(</span><span class="va">Tabellaria</span><span class="op">~</span><span class="va">binalis</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
 <div class="cell-output-display">
 <p><img src="125_ggplot_regression_files/figure-html/smo-glm-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -416,26 +395,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>We can also fit a regression model and make predictions. This is most useful for more complex models. For example, if we want to fit a model for the relationship between penguin body mass and bill length with species as a second predictor, we can only do it this way.</p>
 <p>First fit the model</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span> <span class="op">+</span> <span class="va">species</span>, </span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">~</span> <span class="va">body_mass_g</span> <span class="op">+</span> <span class="va">species</span>, </span>
 <span>          data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we need to make predictions. We could do this with <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code>, but it is often easier to use <code>augment()</code> from the <code>broom</code> package as it takes care of missing values better.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#preds &lt;- predict(mod, interval = "confidence", conf.level = 0.95)</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#preds &lt;- predict(mod, interval = "confidence", conf.level = 0.95)</span></span>
 <span></span>
 <span><span class="co"># augment with a lm model</span></span>
 <span><span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="va">mod</span>, interval <span class="op">=</span> <span class="st">"confidence"</span>,  conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we can plot them, using geom_ribbon() and <code>geom_line()</code> to recreate what <code>geom_smooth()</code> produces.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">penguins</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span>, fill <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">penguins</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">body_mass_g</span>, y <span class="op">=</span> <span class="va">bill_length_mm</span>, fill <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">.lower</span>, ymax <span class="op">=</span> <span class="va">.upper</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">preds</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">.fitted</span>, colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">preds</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Body mass g"</span>, y <span class="op">=</span> <span class="st">"Bill length mm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
-</div>
 <div class="cell-output-display">
 <p><img src="125_ggplot_regression_files/figure-html/smo-lm-manual-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -446,7 +422,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>With a poisson model, we can transform the predictions from the link scale to the response scale with the exponential function <code><a href="https://rdrr.io/r/base/Log.html">exp()</a></code>.</p>
 <p>With a binomial model, we need to reverse the logit function. The easiest way to do this is with <code><a href="https://rdrr.io/r/stats/Logistic.html">plogis()</a></code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mod_glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span> <span class="op">~</span> <span class="va">pH</span>, data <span class="op">=</span> <span class="va">swap_data</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mod_glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span> <span class="op">~</span> <span class="va">pH</span>, data <span class="op">=</span> <span class="va">swap_data</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">preds_glm</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="va">mod_glm</span>, type.predict <span class="op">=</span> <span class="st">"link"</span>, se_fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">mutate</span><span class="op">(</span></span>
@@ -457,7 +433,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Now we can plot the predictions.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">swap_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">pH</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># sign converts data to presence absence</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">swap_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">pH</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">TA003A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># sign converts data to presence absence</span></span>
 <span>  <span class="fu">geom_jitter</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0</span>, height <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymax <span class="op">=</span> <span class="va">upper</span>, ymin <span class="op">=</span> <span class="va">lower</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>              data <span class="op">=</span> <span class="va">preds_glm</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
@@ -751,124 +727,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb17" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r setup, include=FALSE}</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/setup.R"</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Regression and ggplot</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Regression lines with `geom_smooth()`</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_smooth()`</span> adds a regression line to a plot. </span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>By default it uses a loess smooth when there are fewer than 1000 observations, and a GAM when there are more.</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>The grey band around the regression line is the confidence interval. </span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>It can be turned off with <span class="in">`se = FALSE`</span>, and changed from the default 95% with the level argument.</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-default}</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>()</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>You can change they type of regression model used by <span class="in">`geom_smooth()`</span> with the <span class="in">`method`</span> argument.</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>So to show a linear model, use <span class="in">`method = "lm"`</span>.</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-lm}</span></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>To show a glm, we need to <span class="in">`method = "glm"`</span> and set the family in the <span class="in">`method.args`</span> argument.</span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-glm}</span></span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SWAP, <span class="at">package=</span> <span class="st">"rioja"</span>)</span>
-<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>swap_data <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(<span class="at">pH =</span> SWAP<span class="sc">$</span>pH, SWAP<span class="sc">$</span>spec)</span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(swap_data, <span class="fu">aes</span>(<span class="at">x =</span> pH, <span class="at">y =</span> <span class="fu">sign</span>(TA003A))) <span class="sc">+</span> <span class="co"># sign converts data to presence absence</span></span>
-<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(</span>
-<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"glm"</span>, </span>
-<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> binomial)) <span class="sc">+</span></span>
-<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(Tabellaria<span class="sc">~</span>binalis))) </span>
-<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Manual plotting of a linear model {#sec-manual-plotting-of-a-linear-model}</span></span>
-<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>We can also fit a regression model and make predictions.</span>
-<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>This is most useful for more complex models.</span>
-<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>For example, if we want to fit a model for the relationship between penguin body mass and bill length with species as a second predictor, we can only do it this way.</span>
-<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>First fit the model</span>
-<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-mod}</span></span>
-<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g <span class="sc">+</span> species, </span>
-<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> penguins)</span>
-<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>Now we need to make predictions.</span>
-<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>We could do this with <span class="in">`predict()`</span>, but it is often easier to use <span class="in">`augment()`</span> from the <span class="in">`broom`</span> package as it takes care of missing values better.</span>
-<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-pred}</span></span>
-<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="co">#preds &lt;- predict(mod, interval = "confidence", conf.level = 0.95)</span></span>
-<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a><span class="co"># augment with a lm model</span></span>
-<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"confidence"</span>,  <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>Now we can plot them, using geom_ribbon() and <span class="in">`geom_line()`</span> to recreate what <span class="in">`geom_smooth()`</span> produces. </span>
-<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-lm-manual}</span></span>
-<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm, <span class="at">fill =</span> species)) <span class="sc">+</span></span>
-<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> species)) <span class="sc">+</span></span>
-<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">data =</span> preds, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted, <span class="at">colour =</span> species), <span class="at">data =</span> preds) <span class="sc">+</span> </span>
-<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Body mass g"</span>, <span class="at">y =</span> <span class="st">"Bill length mm"</span>)</span>
-<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## Manual plotting of generalised linear models</span></span>
-<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a>With a generalised linear model, it is a little more complex as we can get the predictions on the response scale or the transformed link scale. </span>
-<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>If we want confidence intervals, we need to calculate them on the link scale and then transform them back to the response scale.</span>
-<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a>With a poisson model, we can transform the predictions from the link scale to the response scale with the exponential function <span class="in">`exp()`</span>.</span>
-<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>With a binomial model, we need to reverse the logit function. </span>
-<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a>The easiest way to do this is with <span class="in">`plogis()`</span>.</span>
-<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a>mod_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">sign</span>(TA003A) <span class="sc">~</span> pH, <span class="at">data =</span> swap_data, <span class="at">family =</span> binomial)</span>
-<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a>preds_glm <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(mod_glm, <span class="at">type.predict =</span> <span class="st">"link"</span>, <span class="at">se_fit =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">fitted =</span> <span class="fu">plogis</span>(.fitted), </span>
-<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="fu">plogis</span>(.fitted <span class="sc">+</span> .se.fit <span class="sc">*</span> <span class="fl">1.96</span>),</span>
-<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fu">plogis</span>(.fitted <span class="sc">-</span> .se.fit <span class="sc">*</span> <span class="fl">1.96</span>),</span>
-<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>Now we can plot the predictions.</span>
-<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo_glm_manual}</span></span>
-<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(swap_data, <span class="fu">aes</span>(<span class="at">x =</span> pH, <span class="at">y =</span> <span class="fu">sign</span>(TA003A))) <span class="sc">+</span> <span class="co"># sign converts data to presence absence</span></span>
-<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymax =</span> upper, <span class="at">ymin =</span> lower, <span class="at">y =</span> <span class="cn">NULL</span>),</span>
-<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> preds_glm, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fitted),</span>
-<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> preds_glm) <span class="sc">+</span></span>
-<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(Tabellaria<span class="sc">~</span>binalis))) </span>
-<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mixed effect models</span></span>
-<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a>Comming soon ...</span>
-<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
-<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
-<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Richard Telford</span>
-<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a>:::</span>
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r setup, include=FALSE}</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/setup.R"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu"># Regression and ggplot</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## Regression lines with `geom_smooth()`</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_smooth()`</span> adds a regression line to a plot. </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>By default it uses a loess smooth when there are fewer than 1000 observations, and a GAM when there are more.</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>The grey band around the regression line is the confidence interval. </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>It can be turned off with <span class="in">`se = FALSE`</span>, and changed from the default 95% with the level argument.</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-default}</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>()</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>You can change they type of regression model used by <span class="in">`geom_smooth()`</span> with the <span class="in">`method`</span> argument.</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>So to show a linear model, use <span class="in">`method = "lm"`</span>.</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-lm}</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>To show a glm, we need to <span class="in">`method = "glm"`</span> and set the family in the <span class="in">`method.args`</span> argument.</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-glm}</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SWAP, <span class="at">package=</span> <span class="st">"rioja"</span>)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>swap_data <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(<span class="at">pH =</span> SWAP<span class="sc">$</span>pH, SWAP<span class="sc">$</span>spec)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(swap_data, <span class="fu">aes</span>(<span class="at">x =</span> pH, <span class="at">y =</span> <span class="fu">sign</span>(TA003A))) <span class="sc">+</span> <span class="co"># sign converts data to presence absence</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"glm"</span>, </span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> binomial)) <span class="sc">+</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(Tabellaria<span class="sc">~</span>binalis))) </span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Manual plotting of a linear model {#sec-manual-plotting-of-a-linear-model}</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>We can also fit a regression model and make predictions.</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>This is most useful for more complex models.</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>For example, if we want to fit a model for the relationship between penguin body mass and bill length with species as a second predictor, we can only do it this way.</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>First fit the model</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-mod}</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g <span class="sc">+</span> species, </span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> penguins)</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>Now we need to make predictions.</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>We could do this with <span class="in">`predict()`</span>, but it is often easier to use <span class="in">`augment()`</span> from the <span class="in">`broom`</span> package as it takes care of missing values better.</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-pred}</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="co">#preds &lt;- predict(mod, interval = "confidence", conf.level = 0.95)</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a><span class="co"># augment with a lm model</span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"confidence"</span>,  <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>Now we can plot them, using geom_ribbon() and <span class="in">`geom_line()`</span> to recreate what <span class="in">`geom_smooth()`</span> produces. </span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo-lm-manual}</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm, <span class="at">fill =</span> species)) <span class="sc">+</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> species)) <span class="sc">+</span></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">data =</span> preds, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted, <span class="at">colour =</span> species), <span class="at">data =</span> preds) <span class="sc">+</span> </span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Body mass g"</span>, <span class="at">y =</span> <span class="st">"Bill length mm"</span>)</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Manual plotting of generalised linear models</span></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>With a generalised linear model, it is a little more complex as we can get the predictions on the response scale or the transformed link scale. </span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>If we want confidence intervals, we need to calculate them on the link scale and then transform them back to the response scale.</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>With a poisson model, we can transform the predictions from the link scale to the response scale with the exponential function <span class="in">`exp()`</span>.</span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>With a binomial model, we need to reverse the logit function. </span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>The easiest way to do this is with <span class="in">`plogis()`</span>.</span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>mod_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">sign</span>(TA003A) <span class="sc">~</span> pH, <span class="at">data =</span> swap_data, <span class="at">family =</span> binomial)</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>preds_glm <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(mod_glm, <span class="at">type.predict =</span> <span class="st">"link"</span>, <span class="at">se_fit =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">fitted =</span> <span class="fu">plogis</span>(.fitted), </span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="fu">plogis</span>(.fitted <span class="sc">+</span> .se.fit <span class="sc">*</span> <span class="fl">1.96</span>),</span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fu">plogis</span>(.fitted <span class="sc">-</span> .se.fit <span class="sc">*</span> <span class="fl">1.96</span>),</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>Now we can plot the predictions.</span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r smo_glm_manual}</span></span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(swap_data, <span class="fu">aes</span>(<span class="at">x =</span> pH, <span class="at">y =</span> <span class="fu">sign</span>(TA003A))) <span class="sc">+</span> <span class="co"># sign converts data to presence absence</span></span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymax =</span> upper, <span class="at">ymin =</span> lower, <span class="at">y =</span> <span class="cn">NULL</span>),</span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> preds_glm, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fitted),</span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> preds_glm) <span class="sc">+</span></span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(Tabellaria<span class="sc">~</span>binalis))) </span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mixed effect models</span></span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>Comming soon ...</span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Richard Telford</span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
