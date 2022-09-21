@@ -36,7 +36,7 @@ Let us have a look at these terms.
 To produce a figure or plot, we take data values and use elements like dots, squares, lines, and colour to convert the data into a visual graphic.
 There are many different ways to make a figure, but there are some rules that apply in general.
 A plot is always built on data, and a number of other components called aesthetics, geometry and scales.
-These different components combined make up a figure
+These different components combined make up a figure.
 
 
 
@@ -44,7 +44,7 @@ These different components combined make up a figure
 
 The code for to make a scatterplot with the `penguins` dataset from the [`palmerpenguins` package](getting-started-with-r.html#palmerpenguins) looks something like this:
 
-```{r ggplot2-1, fig.height = 3, fig.width=3.5}
+```{r ggplot2-1, fig.height = 3, fig.width=3.5, warning = FALSE}
 ggplot(data = penguins,
        mapping = aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
   geom_point() +
@@ -79,15 +79,15 @@ Now we will describe the different components a ggplot is made of.
 ### Data
 
 To make a figure we use the function `ggplot()`.
-The first argument in this function is for the **data object** containing all the variables that you need to make a figure
-Generally, it is advisable to have the data in a long format.
+The first argument in this function is for the **data object** containing all the variables that you need to make a figure.
+Generally, it is advisable to have the data in a long format (@sec-tidying-data-with-tidyr).
 
 ```{r data1, echo = TRUE, eval = TRUE, fig.height = 3, fig.width = 3}
 ggplot(data = penguins)
 
 ```
 
-The ggplot function will produce an empty plot.
+The `ggplot` function by itself will produce an empty plot.
 
 ### Aesthetics
 
@@ -100,7 +100,9 @@ In the penguin example, if we want to plot the bill length against the bill dept
 As a second aesthetic we have chosen to map species to colour.
 
 ```{r aestetic, eval = TRUE, fig.height = 3, fig.width=3}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
+ggplot(penguins, aes(x = bill_length_mm,
+                     y = bill_depth_mm,
+                     colour = species))
 ```
 
 One thing that might be confusing about the argument colour is that it only allows to be a variable, for example `colour = species` or `colour = island`. 
@@ -118,7 +120,7 @@ See @sec-choosing-your-visualisation for an overview.
 Here, we will use four different geoms to display aspects of the penguins data in different ways.
 The legend is automatically plotted on the right side when needed.
 
-```{r add-geom, fig.keep = 'none', eval = TRUE, fig.height=3, fig.width=3}
+```{r add-geom, fig.keep = 'none', eval = TRUE, fig.height=3, fig.width=3, warning = FALSE}
 p1 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point()
 p2 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
@@ -134,7 +136,7 @@ p3
 p4
 ```
 
-```{r four-geoms, echo = FALSE}
+```{r four-geoms, echo = FALSE, warning=FALSE}
 library(patchwork)
 p1 + labs(title = "geom_point()") + 
   p2 + labs(title = "geom_density2d()") + 
@@ -146,6 +148,7 @@ p1 + labs(title = "geom_point()") +
 ## Exercise
 
 - Make a histogram of the penguins bill length.
+
  <details>
   <summary>Hint</summary>
 ```{r, eval = FALSE}
@@ -154,7 +157,9 @@ ggplot(data = ___, mapping = aes(x = ___)) +
 
 ```
 </details> 
+
 - Make the histogram red.
+
  <details>
   <summary>Hint</summary>
 ```{r, eval = FALSE}
@@ -165,6 +170,7 @@ ggplot(data = ___, mapping = aes(x = ___)) +
 </details> 
 
 - Make a violin plot of the penguins bill length by species.
+
  <details>
   <summary>Hint</summary>
 ```{r, eval = FALSE}
@@ -207,8 +213,10 @@ In other words you can manually change the axis text, labels, ticks, add breaks,
 Here is just a small selection to show what is possible.
 We can log transform the y axis, change the axis titles, and change the colours.
 
-```{r scales, eval = TRUE, fig.height = 3, fig.width=3.5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r scales, eval = TRUE, fig.height = 3, fig.width=3.5, warning = FALSE}
+ggplot(penguins, aes(x = bill_length_mm,
+                     y = bill_depth_mm,
+                     colour = species)) +
   geom_point() +
   scale_y_log10() +
   scale_x_continuous() +
@@ -238,8 +246,10 @@ ggplot(data = ___, mapping = aes(x = ___, y = ___, fill = ___)) +
 
 The axis titles can be renamed, and a title and tag can be added.
 
-```{r labs, eval = TRUE, fig.height = 3, fig.width = 3.5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r labs, eval = TRUE, fig.height = 3, fig.width = 3.5, warning = FALSE}
+ggplot(penguins, aes(x = bill_length_mm,
+                     y = bill_depth_mm,
+                     colour = species)) +
   geom_point() +
   labs(
     x = "Bill depth in mm", 
@@ -272,16 +282,20 @@ violin_plot +
 
 In the next example, we use `facet_wrap()` to split the penguin data into 3 panels, one for each island.
 
-```{r facets, eval = TRUE, fig.height = 3, fig.width=5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r facets, eval = TRUE, fig.height = 3, fig.width=5, warning = FALSE}
+ggplot(penguins, aes(x = bill_length_mm, 
+                     y = bill_depth_mm,
+                     colour = species)) +
   geom_point() +
   facet_wrap(facets = vars(island))
 ```
 
 If you want to split the data by two variables, `facet_grid()` can be useful.
 
-```{r facets-grid, eval = TRUE, fig.height = 3, fig.width=5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r facets-grid, eval = TRUE, fig.height = 3, fig.width=5, warning = FALSE}
+ggplot(penguins, aes(x = bill_length_mm, 
+                     y = bill_depth_mm,
+                     colour = species)) +
   geom_point() +
   facet_grid(rows = vars(island), cols = vars(sex))
 ```
@@ -291,11 +305,12 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 
 - split your scatterplot into facets by sex.
 
+
  <details>
   <summary>Hint</summary>
 ```{r, eval = FALSE}
 scatter_plot +
-  facet_wrap(~___)
+  facet_wrap(vars(___))
  
 ```
 </details> 
@@ -310,10 +325,12 @@ In our example, we will change the axis tile text size, the colour of the axis t
 
 See @sec-themes for more about using themes.
 
-```{r theme, eval = TRUE, , fig.height = 3, fig.width=5}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r theme, eval = TRUE, fig.height = 3, fig.width=5, warning = FALSE}
+ggplot(penguins, aes(x = bill_length_mm, 
+                     y = bill_depth_mm,
+                     colour = species)) +
   geom_point() +
-  facet_wrap(~ island) +
+  facet_wrap(facets = vars(island)) +
   theme_minimal() +
   theme(axis.title = element_text(size = 14),
         axis.text = element_text(colour = "purple"))
@@ -345,19 +362,23 @@ You can imagine the different components (geom, scale, stats) of the plot as dif
 
 For example, you want to plot the data below and the smoother on top, and not the other way round.
 
-```{r wrong-order, fig.keep='none', eval = TRUE, fig.height = 3, fig.width=3.5}
-points_on_top <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r wrong-order, fig.keep='none', eval = TRUE, fig.height = 3, fig.width=3.5, warning = FALSE, message = FALSE}
+points_on_top <- ggplot(penguins, aes(x = bill_length_mm,
+                                      y = bill_depth_mm, 
+                                      colour = species)) +
   geom_smooth() +
   geom_point()
 
-smooth_on_top <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+smooth_on_top <- ggplot(penguins, aes(x = bill_length_mm, 
+                                      y = bill_depth_mm,
+                                      colour = species)) +
   geom_point() +
   geom_smooth() 
 
 points_on_top
 smooth_on_top
 ```
-```{r wrong-order-plot, echo = FALSE, message = FALSE, fig.height = 3, fig.width=6}
+```{r wrong-order-plot, echo = FALSE, message = FALSE, fig.height = 3, fig.width=6, warning = FALSE}
 points_on_top + labs(title = "Points on top") +
   smooth_on_top + labs(title = "Smooth on top") & theme(legend.position = "none")
 
@@ -425,14 +446,16 @@ ggplot(data = penguins) +
 If the geometry is missing `geom_point()`, ggplot will draw a empty plot, with axis labels, but show not data, because you have not defined how to plot the data.
 
 ```{r no-geom, fig.height = 3, fig.width=3.5}
-ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species))
+ggplot(data = penguins, aes(x = bill_length_mm, 
+                            y = bill_depth_mm, 
+                            colour = species))
 ```
 
 ::: callout-note
 ## Exercise
 
 I make lots of mistakes and my plots don't work. 
-Please fix them.
+Please help me fix them.
 
 ```{r, eval = FALSE}
 ggplot(penguins, aes(x = bill_length, y = bill_depth)) |> 
