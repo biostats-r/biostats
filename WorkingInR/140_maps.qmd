@@ -1,0 +1,230 @@
+---
+editor: visual
+---
+
+# Making maps in R
+
+```{r}
+#| label: tidyverse
+#| include: false
+library(tidyverse)
+library(patchwork)
+source("R/setup.R")
+```
+
+Biologists need almost as many maps as geographers, perhaps to show where our field sites are, the range of a species, or the migration path of a bird.
+
+Typically, the data we want to show is added to a base map.
+These can be added to different types of base map
+
+-   vector map showing the coastline, and perhaps political borders, rivers and other features
+
+-   A raster (made of pixels)
+
+```{r}
+
+```
+
+## Vector base maps
+
+### `rnaturalearth`
+
+The `rnaturalearth` package makes [Natural Earth](http://www.naturalearthdata.com/) data available. 
+Natural Earth [features [include](https://www.naturalearthdata.com/features/) coastlines, rivers, bathymetry, political borders, roads and railways at scales  1:10m, 1:50m, and 1:110 million.
+The `rnaturalearth` package includes coastline and country data at the small and medium scale.
+A companion package `rnaturalearthhires` has the large scale (1:10 million) data.
+Other datasets from Natural Earth can be downloaded directly from the [website](https://www.naturalearthdata.com/downloads/) or with `ne_download()`
+
+```{r}
+library(rnaturalearth)
+#install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
+world <- ne_countries(scale = 110, returnclass = "sf") 
+small_scale_map <- ggplot() +
+  geom_sf(data = world) +
+  coord_sf(xlim = c(-20, 50), ylim = c(33, 80)) +
+  ggtitle("Europe")
+
+europe <- ne_countries(scale = 50, returnclass = "sf", continent = "Europe") 
+medium_scale_map <- ggplot() +
+  geom_sf(data = europe) +
+  coord_sf(xlim = c(5, 30), ylim = c(55, 71)) +
+  ggtitle("Norden")
+
+norway <- ne_countries(scale = 10, returnclass = "sf", country = "Norway") 
+
+large_scale_map <- ggplot() +
+  geom_sf(data = norway) +
+  coord_sf(xlim = c(4, 9), ylim = c(59, 62)) +
+  ggtitle("Vestland")
+
+small_scale_map + medium_scale_map + large_scale_map
+```
+
+
+::: callout-tip
+## `sf` and `sp` packages
+
+`sf` and `sp` are both packages for geospatial data.
+`sf` is the newer package that supports the "simple features" standard and is what I recommend, but you will find examples  using the older `sp` package online.
+Choose one, and don't mix them together.
+
+:::
+
+### `ggOceanMaps`
+
+`ggOceanMaps` is, as the name suggests, focused on ocean map, with coastlines, bathymetry and also glaciers.
+`ggOceanMaps` requires `ggOceanMapsData`, which needs to be installed separately 
+
+```{r}
+#| label: install-ggOceanMapsData
+#| eval: false
+remotes::install_github("MikkoVihtakari/ggOceanMapsData")
+```
+
+Now `ggOceanMaps` is ready to use.
+
+```{r}
+#| label: ggOceanMaps
+#| message: false
+library(ggOceanMaps)
+#limits are given longitude min/max, latitude min/max
+basemap(limits = c(-30, 30, 50, 80),
+        bathymetry = TRUE,
+        glaciers = TRUE)
+```
+
+
+## Other vector files
+
+The maps in `rnaturalearth` and `ggOceanMaps` are good and the global and regional scale, but lack resolution for local scale maps, and may lack features we are interested in.
+
+For such maps we need to find alternative resources. 
+These could be a shapefile, GeoJSON or GeoPackage file, all of which can be imported with `sf::st_read()`.
+
+
+
+::: callout-tip
+
+## Shapefiles
+
+A "shapefile" is not one file but collection of several files in the same directory, only of which has the extension ".shp".
+:::
+
+Good sources of data for Norway include: 
+
+- [GeoNorge](https://www.geonorge.no/)
+- [Miljødirektoratet](https://kartkatalog.miljodirektoratet.no/)
+
+This is a map of the fylke of Norway 
+
+```{r}
+library(sf)
+
+fylker <- st_read("data/fylker2021.json")
+
+ggplot(fylker ) + 
+  geom_sf()
+```
+
+## Raster maps
+
+### `ggmap`
+
+The `ggmap` package lets you use Google Maps and other similar maps as a basemap.
+
+::: callout-tip
+##  googlemaps
+
+`ggmap` can use maps and satellite image from Google, but you need to [register](https://mapsplatform.google.com/) for an API key. 
+You shouldn't be charged unless you make a lot of maps (more than 20000 per month).
+:::
+
+```{r}
+#| label: ggmap
+#| message: false
+
+library(ggmap)
+
+bergen <- get_map(
+  location = c(5.24,  60.37, 5.36, 60.41),
+  source = "stamen"           
+)
+ggmap(bergen)
+
+```
+
+
+
+
+
+When deciding what type of map to draw, we need to know what type of data we want to show with the map.
+
+-   points, line, and polygons
+
+-   Shaded political units (a cloropleth map)
+
+-   A grid of values (raster)
+data on maps
+
+point/lines/polygons
+
+::: callout-tip
+## geom_path() vs geom_line()
+
+`geom_path()` draws a line from the first point in the dataset to the second and so on.
+This is useful for plotting on maps (and ordinations).
+
+`geom_line()` draws a line from the left-most point to the next left-most point in the dataset. 
+This is useful for plotting timeseries.
+:::
+
+
+cloropleth
+
+raster
+
+
+converting utm-latlong
+
+::: callout-tip
+## Degrees minutes and seconds
+
+For latitude-longitude data, we recommend using decimal degrees (Bergen is at 60.3807°N, 5.3323°E).
+But archived data can be in all sorts of unhelpful formats, such as degrees minutes and seconds (Bergen is at 60° 22' 50.52" N 5° 19' 56.28" E).
+If you get data like this, you need to convert it to decimal degrees.
+The `parzer` package can help (it is like `lubridate` for latitude-longitude data).
+For example:
+
+```{r}
+#| label: parzer
+
+parzer::parse_lat("60° 22' 50.52''N")
+
+```
+
+
+:::
+
+projections
+
+```{r}
+library(ggspatial)
+
+
+```
+
+
+scalebars northpointer grid
+
+## More map types
+
+### leaflets
+
+Interactive maps
+
+### Cartograms
+
+A cartogram is a map with a distorted geometry to illustrate a variable according to the area of a region.
+These can be made with the `cartogram` package.
+
+
