@@ -47,7 +47,8 @@ A companion package `rnaturalearthhires` has the large scale (1:10 million) data
 Other datasets from Natural Earth can be downloaded directly from the [website](https://www.naturalearthdata.com/downloads/) or with `ne_download()`
 
 ```{r}
-#| label: rnaturalearth
+#| label: rnaturalearth-make
+#| results: hide
 library(rnaturalearth)
 #install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
 world <- ne_countries(scale = 110, returnclass = "sf") 
@@ -69,6 +70,15 @@ large_scale_map <- ggplot() +
   coord_sf(xlim = c(4, 9), ylim = c(59, 62)) +
   ggtitle("Vestland")
 
+small_scale_map
+medium_scale_map
+large_scale_map
+```
+
+
+```{r}
+#| label: rnaturalearth
+#| echo: false
 small_scale_map + medium_scale_map + large_scale_map
 ```
 
@@ -175,7 +185,7 @@ fylker2 <- sf::st_transform(fylker, crs = 4326)
 ::: callout-note
 ## Exercise
 
-Get a `sf` object from `rnaturalearth::rnaturalearth::ne_coastline()` and find out what coordinate reference system it uses.
+Get a `sf` object from `rnaturalearth::ne_coastline()` and find out what coordinate reference system it uses.
 
 :::
 
@@ -197,7 +207,7 @@ You shouldn't be charged unless you make a lot of maps (more than 20000 per mont
 library(ggmap)
 
 bergen <- get_map(
-  location = c(5.24,  60.37, 5.36, 60.41),
+  location = c(5.24, 60.37, 5.36, 60.41), #  left/bottom/right/top
   source = "stamen"           
 )
 ggmap(bergen)
@@ -222,11 +232,12 @@ Rasters can be used to show maps of continuous data, for example, elevation or s
 The `terra` package can import raster images in several formats, including GeoTIFF.
 
 ::: callout-tip
-## `terra` vs `raster` packages
+## `terra` vs `raster` vs `stars` packages
 
-The `terra` package is an update to the `raster` package. 
+The `terra` package is an update to the widely-used `raster` package. 
 It should be faster and easier to use.
 
+`stars` is designed for spatio-temporal arrays. There are some things it cannot do that `terra` can (and vice versa) but has better integration with `sf` and `ggplot2`.
 :::
 
 Rasters imported with `terra` are easy to plot with the base R `plot()` function, but if we want to use `ggplot()`, we have to first convert to an `sf` object.
@@ -237,6 +248,7 @@ Rasters imported with `terra` are easy to plot with the base R `plot()` function
 library(terra)
 
 # import digital elevation model
+# data from https://topotools.cr.usgs.gov/gmted_viewer/viewer.htm
 norway_dem <- rast("data/50N000E_20101117_gmted_med300.tif")
 
 # crop to vestland and convert to sf object
@@ -249,15 +261,34 @@ vestland_dem <- crop(norway_dem, vestland_extent) |>
 names(vestland_dem)[1] <- "Elevation"
 
 # plot
+
 ggplot(vestland_dem) +
   geom_sf(aes(colour = Elevation))
+
 ```
 
 If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with `geom_raster()`. 
 Then `ggplot()` just treats it as regular plot and does not know that it is a map.
 
+<!-- ```{r} -->
+<!-- library(stars) -->
+<!-- dem <- read_stars("data/50N000E_20101117_gmted_med300.tif") -->
 
-## Adding data
+<!-- #crop dem -->
+<!-- bbox <- st_bbox(c(xmin = 4.5, xmax = 9, ymax = 62, ymin = 59), crs = st_crs(4326)) -->
+<!-- dem_cropped <- st_crop(x = dem, y = bbox) -->
+
+
+<!-- ggplot() + -->
+<!--   geom_stars(data = dem_cropped) + -->
+<!--   # geom_sf(data = st_crop(norway, bbox), fill = NA, colour = "white") + -->
+<!--   labs(fill = "Elevation m")  -->
+
+<!-- ``` -->
+
+
+
+## Adding data to the basemap
 
 After deciding what type of base map to draw, we can add the data we want to show with the map.
 This can be
@@ -432,7 +463,8 @@ This inevitably leads to distortions, especially for maps with a large extent.
 Map projections can be set using `coord_sf()`.
 
 ```{r}
-#| label: projections
+#| label: projections-make
+#| results: hide
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
 default <- ggplot(world) + geom_sf()
@@ -446,8 +478,16 @@ lambert <-  ggplot(world) +
   geom_sf() + 
   coord_sf(crs = "+proj=laea")
  
+default
+mollweide
+lambert
+```
+
+
+```{r}
+#| label: projections
+#| echo: false
 default/mollweide/lambert
- 
 ```
 Many of the projections have optional parameters to change, for example, the projection centre.
 
