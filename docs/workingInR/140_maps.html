@@ -352,7 +352,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </ul>
 </li>
   <li>
-<a href="#adding-data" id="toc-adding-data" class="nav-link" data-scroll-target="#adding-data"><span class="toc-section-number">19.3</span>  Adding data</a>
+<a href="#adding-data-to-the-basemap" id="toc-adding-data-to-the-basemap" class="nav-link" data-scroll-target="#adding-data-to-the-basemap"><span class="toc-section-number">19.3</span>  Adding data to the basemap</a>
   <ul class="collapse">
 <li><a href="#pointslinespolygons" id="toc-pointslinespolygons" class="nav-link" data-scroll-target="#pointslinespolygons"><span class="toc-section-number">19.3.1</span>  points/lines/polygons</a></li>
   <li><a href="#cloropleth-maps" id="toc-cloropleth-maps" class="nav-link" data-scroll-target="#cloropleth-maps"><span class="toc-section-number">19.3.2</span>  Cloropleth maps</a></li>
@@ -434,6 +434,8 @@ Terminology
 <span>  <span class="fu">coord_sf</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">9</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">59</span>, <span class="fl">62</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Vestland"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># combine maps with patchwork</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
 <span><span class="va">small_scale_map</span> <span class="op">+</span> <span class="va">medium_scale_map</span> <span class="op">+</span> <span class="va">large_scale_map</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="140_maps_files/figure-html/rnaturalearth-1.png" class="img-fluid" width="672"></p>
@@ -592,7 +594,7 @@ Exercise
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Get a <code>sf</code> object from <code>rnaturalearth::rnaturalearth::ne_coastline()</code> and find out what coordinate reference system it uses.</p>
+<p>Get a <code>sf</code> object from <code><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_coastline.html">rnaturalearth::ne_coastline()</a></code> and find out what coordinate reference system it uses.</p>
 </div>
 </div>
 </section><section id="ggmap" class="level3" data-number="19.1.4"><h3 data-number="19.1.4" class="anchored" data-anchor-id="ggmap">
@@ -616,7 +618,7 @@ googlemaps
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dkahle/ggmap">ggmap</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bergen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html">get_map</a></span><span class="op">(</span></span>
-<span>  location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5.24</span>,  <span class="fl">60.37</span>, <span class="fl">5.36</span>, <span class="fl">60.41</span><span class="op">)</span>,</span>
+<span>  location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5.24</span>, <span class="fl">60.37</span>, <span class="fl">5.36</span>, <span class="fl">60.41</span><span class="op">)</span>, <span class="co">#  left/bottom/right/top</span></span>
 <span>  source <span class="op">=</span> <span class="st">"stamen"</span>           </span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span><span class="op">(</span><span class="va">bergen</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -651,11 +653,12 @@ Exercise
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-<code>terra</code> vs <code>raster</code> packages
+<code>terra</code> vs <code>raster</code> vs <code>stars</code> packages
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <code>terra</code> package is an update to the <code>raster</code> package. It should be faster and easier to use.</p>
+<p>The <code>terra</code> package is an update to the widely-used <code>raster</code> package. It should be faster and easier to use.</p>
+<p><code>stars</code> is designed for spatio-temporal arrays. There are some things it cannot do that <code>terra</code> can (and vice versa) but has better integration with <code>sf</code> and <code>ggplot2</code>.</p>
 </div>
 </div>
 <p>Rasters imported with <code>terra</code> are easy to plot with the base R <code><a href="https://rdrr.io/pkg/terra/man/plot.html">plot()</a></code> function, but if we want to use <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code>, we have to first convert to an <code>sf</code> object.</p>
@@ -663,6 +666,7 @@ Exercise
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/">terra</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># import digital elevation model</span></span>
+<span><span class="co"># data from https://topotools.cr.usgs.gov/gmted_viewer/viewer.htm</span></span>
 <span><span class="va">norway_dem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html">rast</a></span><span class="op">(</span><span class="st">"data/50N000E_20101117_gmted_med300.tif"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># crop to vestland and convert to sf object</span></span>
@@ -675,6 +679,7 @@ Exercise
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">vestland_dem</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Elevation"</span></span>
 <span></span>
 <span><span class="co"># plot</span></span>
+<span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">vestland_dem</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">Elevation</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -682,8 +687,19 @@ Exercise
 </div>
 </div>
 <p>If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code>. Then <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code> just treats it as regular plot and does not know that it is a map.</p>
-</section></section><section id="adding-data" class="level2" data-number="19.3"><h2 data-number="19.3" class="anchored" data-anchor-id="adding-data">
-<span class="header-section-number">19.3</span> Adding data</h2>
+<!-- ```{r} -->
+<!-- library(stars) -->
+<!-- dem <- read_stars("data/50N000E_20101117_gmted_med300.tif") -->
+<!-- #crop dem -->
+<!-- bbox <- st_bbox(c(xmin = 4.5, xmax = 9, ymax = 62, ymin = 59), crs = st_crs(4326)) -->
+<!-- dem_cropped <- st_crop(x = dem, y = bbox) -->
+<!-- ggplot() + -->
+<!--   geom_stars(data = dem_cropped) + -->
+<!--   # geom_sf(data = st_crop(norway, bbox), fill = NA, colour = "white") + -->
+<!--   labs(fill = "Elevation m")  -->
+<!-- ``` -->
+</section></section><section id="adding-data-to-the-basemap" class="level2" data-number="19.3"><h2 data-number="19.3" class="anchored" data-anchor-id="adding-data-to-the-basemap">
+<span class="header-section-number">19.3</span> Adding data to the basemap</h2>
 <p>After deciding what type of base map to draw, we can add the data we want to show with the map. This can be</p>
 <ul>
 <li><p>points, line, and polygons</p></li>
@@ -1240,428 +1256,452 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb29-50"><a href="#cb29-50" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-53"><a href="#cb29-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb29-54"><a href="#cb29-54" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rnaturalearth</span></span>
-<span id="cb29-55"><a href="#cb29-55" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span>
-<span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")</span></span>
-<span id="cb29-57"><a href="#cb29-57" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="dv">110</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>) </span>
-<span id="cb29-58"><a href="#cb29-58" aria-hidden="true" tabindex="-1"></a>small_scale_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb29-59"><a href="#cb29-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> world) <span class="sc">+</span></span>
-<span id="cb29-60"><a href="#cb29-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">50</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">33</span>, <span class="dv">80</span>)) <span class="sc">+</span></span>
-<span id="cb29-61"><a href="#cb29-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Europe"</span>)</span>
-<span id="cb29-62"><a href="#cb29-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-63"><a href="#cb29-63" aria-hidden="true" tabindex="-1"></a>europe <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="dv">50</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>, <span class="at">continent =</span> <span class="st">"Europe"</span>) </span>
-<span id="cb29-64"><a href="#cb29-64" aria-hidden="true" tabindex="-1"></a>medium_scale_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb29-65"><a href="#cb29-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> europe) <span class="sc">+</span></span>
-<span id="cb29-66"><a href="#cb29-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">30</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">71</span>)) <span class="sc">+</span></span>
-<span id="cb29-67"><a href="#cb29-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Norden"</span>)</span>
-<span id="cb29-68"><a href="#cb29-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-69"><a href="#cb29-69" aria-hidden="true" tabindex="-1"></a>norway <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="dv">10</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>, <span class="at">country =</span> <span class="st">"Norway"</span>) </span>
-<span id="cb29-70"><a href="#cb29-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-71"><a href="#cb29-71" aria-hidden="true" tabindex="-1"></a>large_scale_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb29-72"><a href="#cb29-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> norway) <span class="sc">+</span></span>
-<span id="cb29-73"><a href="#cb29-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">9</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">59</span>, <span class="dv">62</span>)) <span class="sc">+</span></span>
-<span id="cb29-74"><a href="#cb29-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Vestland"</span>)</span>
-<span id="cb29-75"><a href="#cb29-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-76"><a href="#cb29-76" aria-hidden="true" tabindex="-1"></a>small_scale_map <span class="sc">+</span> medium_scale_map <span class="sc">+</span> large_scale_map</span>
-<span id="cb29-77"><a href="#cb29-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-78"><a href="#cb29-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-79"><a href="#cb29-79" aria-hidden="true" tabindex="-1"></a><span class="in">`coord_sf()`</span> is used to show only part of the map.</span>
-<span id="cb29-80"><a href="#cb29-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-81"><a href="#cb29-81" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb29-82"><a href="#cb29-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## `sf` and `sp` packages</span></span>
+<span id="cb29-55"><a href="#cb29-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
+<span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span>
+<span id="cb29-57"><a href="#cb29-57" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")</span></span>
+<span id="cb29-58"><a href="#cb29-58" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="dv">110</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>) </span>
+<span id="cb29-59"><a href="#cb29-59" aria-hidden="true" tabindex="-1"></a>small_scale_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-60"><a href="#cb29-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> world) <span class="sc">+</span></span>
+<span id="cb29-61"><a href="#cb29-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">50</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">33</span>, <span class="dv">80</span>)) <span class="sc">+</span></span>
+<span id="cb29-62"><a href="#cb29-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Europe"</span>)</span>
+<span id="cb29-63"><a href="#cb29-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-64"><a href="#cb29-64" aria-hidden="true" tabindex="-1"></a>europe <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="dv">50</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>, <span class="at">continent =</span> <span class="st">"Europe"</span>) </span>
+<span id="cb29-65"><a href="#cb29-65" aria-hidden="true" tabindex="-1"></a>medium_scale_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-66"><a href="#cb29-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> europe) <span class="sc">+</span></span>
+<span id="cb29-67"><a href="#cb29-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">30</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">71</span>)) <span class="sc">+</span></span>
+<span id="cb29-68"><a href="#cb29-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Norden"</span>)</span>
+<span id="cb29-69"><a href="#cb29-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-70"><a href="#cb29-70" aria-hidden="true" tabindex="-1"></a>norway <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="dv">10</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>, <span class="at">country =</span> <span class="st">"Norway"</span>) </span>
+<span id="cb29-71"><a href="#cb29-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-72"><a href="#cb29-72" aria-hidden="true" tabindex="-1"></a>large_scale_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-73"><a href="#cb29-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> norway) <span class="sc">+</span></span>
+<span id="cb29-74"><a href="#cb29-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">9</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">59</span>, <span class="dv">62</span>)) <span class="sc">+</span></span>
+<span id="cb29-75"><a href="#cb29-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Vestland"</span>)</span>
+<span id="cb29-76"><a href="#cb29-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-77"><a href="#cb29-77" aria-hidden="true" tabindex="-1"></a><span class="co"># combine maps with patchwork</span></span>
+<span id="cb29-78"><a href="#cb29-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb29-79"><a href="#cb29-79" aria-hidden="true" tabindex="-1"></a>small_scale_map <span class="sc">+</span> medium_scale_map <span class="sc">+</span> large_scale_map</span>
+<span id="cb29-80"><a href="#cb29-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-81"><a href="#cb29-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-82"><a href="#cb29-82" aria-hidden="true" tabindex="-1"></a><span class="in">`coord_sf()`</span> is used to show only part of the map.</span>
 <span id="cb29-83"><a href="#cb29-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-84"><a href="#cb29-84" aria-hidden="true" tabindex="-1"></a><span class="in">`sf`</span> and <span class="in">`sp`</span> are both packages for geospatial data.</span>
-<span id="cb29-85"><a href="#cb29-85" aria-hidden="true" tabindex="-1"></a><span class="in">`sf`</span> is the newer package that supports the "simple features" standard and is what I recommend, but you will find examples using the older <span class="in">`sp`</span> package online.</span>
-<span id="cb29-86"><a href="#cb29-86" aria-hidden="true" tabindex="-1"></a>Choose one, and don't mix them together.</span>
-<span id="cb29-87"><a href="#cb29-87" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-88"><a href="#cb29-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-89"><a href="#cb29-89" aria-hidden="true" tabindex="-1"></a><span class="fu">### `ggOceanMaps`</span></span>
-<span id="cb29-90"><a href="#cb29-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-91"><a href="#cb29-91" aria-hidden="true" tabindex="-1"></a><span class="in">`ggOceanMaps`</span> is, as the name suggests, focused on ocean map, with coastlines, bathymetry and also glaciers.</span>
-<span id="cb29-92"><a href="#cb29-92" aria-hidden="true" tabindex="-1"></a><span class="in">`ggOceanMaps`</span> requires <span class="in">`ggOceanMapsData`</span>, which needs to be installed separately</span>
+<span id="cb29-84"><a href="#cb29-84" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb29-85"><a href="#cb29-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## `sf` and `sp` packages</span></span>
+<span id="cb29-86"><a href="#cb29-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-87"><a href="#cb29-87" aria-hidden="true" tabindex="-1"></a><span class="in">`sf`</span> and <span class="in">`sp`</span> are both packages for geospatial data.</span>
+<span id="cb29-88"><a href="#cb29-88" aria-hidden="true" tabindex="-1"></a><span class="in">`sf`</span> is the newer package that supports the "simple features" standard and is what I recommend, but you will find examples using the older <span class="in">`sp`</span> package online.</span>
+<span id="cb29-89"><a href="#cb29-89" aria-hidden="true" tabindex="-1"></a>Choose one, and don't mix them together.</span>
+<span id="cb29-90"><a href="#cb29-90" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-91"><a href="#cb29-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-92"><a href="#cb29-92" aria-hidden="true" tabindex="-1"></a><span class="fu">### `ggOceanMaps`</span></span>
 <span id="cb29-93"><a href="#cb29-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-96"><a href="#cb29-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-97"><a href="#cb29-97" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: install-ggOceanMapsData</span></span>
-<span id="cb29-98"><a href="#cb29-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb29-99"><a href="#cb29-99" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"MikkoVihtakari/ggOceanMapsData"</span>)</span>
-<span id="cb29-100"><a href="#cb29-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-101"><a href="#cb29-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-102"><a href="#cb29-102" aria-hidden="true" tabindex="-1"></a>Now <span class="in">`ggOceanMaps`</span> is ready to use.</span>
-<span id="cb29-103"><a href="#cb29-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-106"><a href="#cb29-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-107"><a href="#cb29-107" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: ggOceanMaps</span></span>
-<span id="cb29-108"><a href="#cb29-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb29-109"><a href="#cb29-109" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggOceanMaps)</span>
-<span id="cb29-110"><a href="#cb29-110" aria-hidden="true" tabindex="-1"></a><span class="co">#limits are given longitude min/max, latitude min/max</span></span>
-<span id="cb29-111"><a href="#cb29-111" aria-hidden="true" tabindex="-1"></a><span class="fu">basemap</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">80</span>),</span>
-<span id="cb29-112"><a href="#cb29-112" aria-hidden="true" tabindex="-1"></a>        <span class="at">bathymetry =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb29-113"><a href="#cb29-113" aria-hidden="true" tabindex="-1"></a>        <span class="at">glaciers =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb29-114"><a href="#cb29-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-115"><a href="#cb29-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-116"><a href="#cb29-116" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb29-117"><a href="#cb29-117" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-94"><a href="#cb29-94" aria-hidden="true" tabindex="-1"></a><span class="in">`ggOceanMaps`</span> is, as the name suggests, focused on ocean map, with coastlines, bathymetry and also glaciers.</span>
+<span id="cb29-95"><a href="#cb29-95" aria-hidden="true" tabindex="-1"></a><span class="in">`ggOceanMaps`</span> requires <span class="in">`ggOceanMapsData`</span>, which needs to be installed separately</span>
+<span id="cb29-96"><a href="#cb29-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-99"><a href="#cb29-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-100"><a href="#cb29-100" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: install-ggOceanMapsData</span></span>
+<span id="cb29-101"><a href="#cb29-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb29-102"><a href="#cb29-102" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"MikkoVihtakari/ggOceanMapsData"</span>)</span>
+<span id="cb29-103"><a href="#cb29-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-104"><a href="#cb29-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-105"><a href="#cb29-105" aria-hidden="true" tabindex="-1"></a>Now <span class="in">`ggOceanMaps`</span> is ready to use.</span>
+<span id="cb29-106"><a href="#cb29-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-109"><a href="#cb29-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-110"><a href="#cb29-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: ggOceanMaps</span></span>
+<span id="cb29-111"><a href="#cb29-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb29-112"><a href="#cb29-112" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggOceanMaps)</span>
+<span id="cb29-113"><a href="#cb29-113" aria-hidden="true" tabindex="-1"></a><span class="co">#limits are given longitude min/max, latitude min/max</span></span>
+<span id="cb29-114"><a href="#cb29-114" aria-hidden="true" tabindex="-1"></a><span class="fu">basemap</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">80</span>),</span>
+<span id="cb29-115"><a href="#cb29-115" aria-hidden="true" tabindex="-1"></a>        <span class="at">bathymetry =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb29-116"><a href="#cb29-116" aria-hidden="true" tabindex="-1"></a>        <span class="at">glaciers =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb29-117"><a href="#cb29-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb29-118"><a href="#cb29-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-119"><a href="#cb29-119" aria-hidden="true" tabindex="-1"></a>Make a map of the Nordic Seas using either <span class="in">`rnaturalearth`</span> or <span class="in">`ggOceanMaps`</span>.</span>
-<span id="cb29-120"><a href="#cb29-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-121"><a href="#cb29-121" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-122"><a href="#cb29-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-123"><a href="#cb29-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### Other vector files</span></span>
-<span id="cb29-124"><a href="#cb29-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-125"><a href="#cb29-125" aria-hidden="true" tabindex="-1"></a>The maps in <span class="in">`rnaturalearth`</span> and <span class="in">`ggOceanMaps`</span> are good and the global and regional scale, but lack resolution for local scale maps, and may lack features we are interested in.</span>
-<span id="cb29-126"><a href="#cb29-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-127"><a href="#cb29-127" aria-hidden="true" tabindex="-1"></a>For such maps we need to find alternative resources.</span>
-<span id="cb29-128"><a href="#cb29-128" aria-hidden="true" tabindex="-1"></a>These could be a shapefile, GeoJSON or GeoPackage file, all of which can be imported with <span class="in">`sf::st_read()`</span>.</span>
+<span id="cb29-119"><a href="#cb29-119" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb29-120"><a href="#cb29-120" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-121"><a href="#cb29-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-122"><a href="#cb29-122" aria-hidden="true" tabindex="-1"></a>Make a map of the Nordic Seas using either <span class="in">`rnaturalearth`</span> or <span class="in">`ggOceanMaps`</span>.</span>
+<span id="cb29-123"><a href="#cb29-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-124"><a href="#cb29-124" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-125"><a href="#cb29-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-126"><a href="#cb29-126" aria-hidden="true" tabindex="-1"></a><span class="fu">### Other vector files</span></span>
+<span id="cb29-127"><a href="#cb29-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-128"><a href="#cb29-128" aria-hidden="true" tabindex="-1"></a>The maps in <span class="in">`rnaturalearth`</span> and <span class="in">`ggOceanMaps`</span> are good and the global and regional scale, but lack resolution for local scale maps, and may lack features we are interested in.</span>
 <span id="cb29-129"><a href="#cb29-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-130"><a href="#cb29-130" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb29-131"><a href="#cb29-131" aria-hidden="true" tabindex="-1"></a><span class="fu">## Shapefiles</span></span>
+<span id="cb29-130"><a href="#cb29-130" aria-hidden="true" tabindex="-1"></a>For such maps we need to find alternative resources.</span>
+<span id="cb29-131"><a href="#cb29-131" aria-hidden="true" tabindex="-1"></a>These could be a shapefile, GeoJSON or GeoPackage file, all of which can be imported with <span class="in">`sf::st_read()`</span>.</span>
 <span id="cb29-132"><a href="#cb29-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-133"><a href="#cb29-133" aria-hidden="true" tabindex="-1"></a>A "shapefile" is not one file but collection of several files in the same directory, only of which has the extension ".shp".</span>
-<span id="cb29-134"><a href="#cb29-134" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-133"><a href="#cb29-133" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb29-134"><a href="#cb29-134" aria-hidden="true" tabindex="-1"></a><span class="fu">## Shapefiles</span></span>
 <span id="cb29-135"><a href="#cb29-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-136"><a href="#cb29-136" aria-hidden="true" tabindex="-1"></a>Good sources of data for Norway include:</span>
-<span id="cb29-137"><a href="#cb29-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-138"><a href="#cb29-138" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="co">[</span><span class="ot">GeoNorge</span><span class="co">](https://www.geonorge.no/)</span></span>
-<span id="cb29-139"><a href="#cb29-139" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="co">[</span><span class="ot">Miljødirektoratet</span><span class="co">](https://kartkatalog.miljodirektoratet.no/)</span></span>
+<span id="cb29-136"><a href="#cb29-136" aria-hidden="true" tabindex="-1"></a>A "shapefile" is not one file but collection of several files in the same directory, only of which has the extension ".shp".</span>
+<span id="cb29-137"><a href="#cb29-137" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-138"><a href="#cb29-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-139"><a href="#cb29-139" aria-hidden="true" tabindex="-1"></a>Good sources of data for Norway include:</span>
 <span id="cb29-140"><a href="#cb29-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-141"><a href="#cb29-141" aria-hidden="true" tabindex="-1"></a>This is a map of the fylke of Norway</span>
-<span id="cb29-142"><a href="#cb29-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-145"><a href="#cb29-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-146"><a href="#cb29-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fylker</span></span>
-<span id="cb29-147"><a href="#cb29-147" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb29-148"><a href="#cb29-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-149"><a href="#cb29-149" aria-hidden="true" tabindex="-1"></a>fylker <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/fylker2021.json"</span>)</span>
-<span id="cb29-150"><a href="#cb29-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-151"><a href="#cb29-151" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fylker) <span class="sc">+</span> </span>
-<span id="cb29-152"><a href="#cb29-152" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>()</span>
-<span id="cb29-153"><a href="#cb29-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-154"><a href="#cb29-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-155"><a href="#cb29-155" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb29-156"><a href="#cb29-156" aria-hidden="true" tabindex="-1"></a><span class="fu">## Coordinate reference systems</span></span>
+<span id="cb29-141"><a href="#cb29-141" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="co">[</span><span class="ot">GeoNorge</span><span class="co">](https://www.geonorge.no/)</span></span>
+<span id="cb29-142"><a href="#cb29-142" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="co">[</span><span class="ot">Miljødirektoratet</span><span class="co">](https://kartkatalog.miljodirektoratet.no/)</span></span>
+<span id="cb29-143"><a href="#cb29-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-144"><a href="#cb29-144" aria-hidden="true" tabindex="-1"></a>This is a map of the fylke of Norway</span>
+<span id="cb29-145"><a href="#cb29-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-148"><a href="#cb29-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-149"><a href="#cb29-149" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fylker</span></span>
+<span id="cb29-150"><a href="#cb29-150" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb29-151"><a href="#cb29-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-152"><a href="#cb29-152" aria-hidden="true" tabindex="-1"></a>fylker <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/fylker2021.json"</span>)</span>
+<span id="cb29-153"><a href="#cb29-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-154"><a href="#cb29-154" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fylker) <span class="sc">+</span> </span>
+<span id="cb29-155"><a href="#cb29-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>()</span>
+<span id="cb29-156"><a href="#cb29-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb29-157"><a href="#cb29-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-158"><a href="#cb29-158" aria-hidden="true" tabindex="-1"></a>Most geographic data are given with latitude and longitude, but sometimes, especially for local-regional maps, the data are given as <span class="co">[</span><span class="ot">Universal Transverse Mercator (UTM)</span><span class="co">](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)</span> coordinates instead.</span>
-<span id="cb29-159"><a href="#cb29-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-160"><a href="#cb29-160" aria-hidden="true" tabindex="-1"></a>UTM coordinates are a projection of the spherical Earth onto one of 60 flat surfaces.</span>
-<span id="cb29-161"><a href="#cb29-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-162"><a href="#cb29-162" aria-hidden="true" tabindex="-1"></a>Most modern latitude-longitude data will use the WGS84 geodetic standard.</span>
-<span id="cb29-163"><a href="#cb29-163" aria-hidden="true" tabindex="-1"></a>Older data might use other standards.</span>
+<span id="cb29-158"><a href="#cb29-158" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb29-159"><a href="#cb29-159" aria-hidden="true" tabindex="-1"></a><span class="fu">## Coordinate reference systems</span></span>
+<span id="cb29-160"><a href="#cb29-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-161"><a href="#cb29-161" aria-hidden="true" tabindex="-1"></a>Most geographic data are given with latitude and longitude, but sometimes, especially for local-regional maps, the data are given as <span class="co">[</span><span class="ot">Universal Transverse Mercator (UTM)</span><span class="co">](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)</span> coordinates instead.</span>
+<span id="cb29-162"><a href="#cb29-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-163"><a href="#cb29-163" aria-hidden="true" tabindex="-1"></a>UTM coordinates are a projection of the spherical Earth onto one of 60 flat surfaces.</span>
 <span id="cb29-164"><a href="#cb29-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-165"><a href="#cb29-165" aria-hidden="true" tabindex="-1"></a>You can find the coordinate system of a <span class="in">`sf`</span> class object with <span class="in">`sf::st_crs()`</span>.</span>
-<span id="cb29-166"><a href="#cb29-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-169"><a href="#cb29-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-170"><a href="#cb29-170" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(fylker)</span>
-<span id="cb29-171"><a href="#cb29-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-172"><a href="#cb29-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-173"><a href="#cb29-173" aria-hidden="true" tabindex="-1"></a>This gives a lot of information, the most important is that the coordinate reference systems is UTM zone 33N.</span>
-<span id="cb29-174"><a href="#cb29-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-175"><a href="#cb29-175" aria-hidden="true" tabindex="-1"></a>If we need to change a coordinate reference systems, we can do that with <span class="in">`sf::st_transform()`</span>. </span>
-<span id="cb29-176"><a href="#cb29-176" aria-hidden="true" tabindex="-1"></a>You need to know the EPSG code of the target reference system.</span>
-<span id="cb29-177"><a href="#cb29-177" aria-hidden="true" tabindex="-1"></a>The code for WGS84 is 4326.</span>
-<span id="cb29-178"><a href="#cb29-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-181"><a href="#cb29-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-182"><a href="#cb29-182" aria-hidden="true" tabindex="-1"></a>fylker2 <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(fylker, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb29-183"><a href="#cb29-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-184"><a href="#cb29-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-185"><a href="#cb29-185" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_sf()`</span> will automatically transform coordinate systems (if they are specified).</span>
-<span id="cb29-186"><a href="#cb29-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-187"><a href="#cb29-187" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-188"><a href="#cb29-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-189"><a href="#cb29-189" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb29-190"><a href="#cb29-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-165"><a href="#cb29-165" aria-hidden="true" tabindex="-1"></a>Most modern latitude-longitude data will use the WGS84 geodetic standard.</span>
+<span id="cb29-166"><a href="#cb29-166" aria-hidden="true" tabindex="-1"></a>Older data might use other standards.</span>
+<span id="cb29-167"><a href="#cb29-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-168"><a href="#cb29-168" aria-hidden="true" tabindex="-1"></a>You can find the coordinate system of a <span class="in">`sf`</span> class object with <span class="in">`sf::st_crs()`</span>.</span>
+<span id="cb29-169"><a href="#cb29-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-172"><a href="#cb29-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-173"><a href="#cb29-173" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(fylker)</span>
+<span id="cb29-174"><a href="#cb29-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-175"><a href="#cb29-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-176"><a href="#cb29-176" aria-hidden="true" tabindex="-1"></a>This gives a lot of information, the most important is that the coordinate reference systems is UTM zone 33N.</span>
+<span id="cb29-177"><a href="#cb29-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-178"><a href="#cb29-178" aria-hidden="true" tabindex="-1"></a>If we need to change a coordinate reference systems, we can do that with <span class="in">`sf::st_transform()`</span>. </span>
+<span id="cb29-179"><a href="#cb29-179" aria-hidden="true" tabindex="-1"></a>You need to know the EPSG code of the target reference system.</span>
+<span id="cb29-180"><a href="#cb29-180" aria-hidden="true" tabindex="-1"></a>The code for WGS84 is 4326.</span>
+<span id="cb29-181"><a href="#cb29-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-184"><a href="#cb29-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-185"><a href="#cb29-185" aria-hidden="true" tabindex="-1"></a>fylker2 <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(fylker, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb29-186"><a href="#cb29-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-187"><a href="#cb29-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-188"><a href="#cb29-188" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_sf()`</span> will automatically transform coordinate systems (if they are specified).</span>
+<span id="cb29-189"><a href="#cb29-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-190"><a href="#cb29-190" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb29-191"><a href="#cb29-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-192"><a href="#cb29-192" aria-hidden="true" tabindex="-1"></a>Get a <span class="in">`sf`</span> object from <span class="in">`rnaturalearth::rnaturalearth::ne_coastline()`</span> and find out what coordinate reference system it uses.</span>
-<span id="cb29-193"><a href="#cb29-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-194"><a href="#cb29-194" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-195"><a href="#cb29-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-196"><a href="#cb29-196" aria-hidden="true" tabindex="-1"></a><span class="fu">### `ggmap`</span></span>
-<span id="cb29-197"><a href="#cb29-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-198"><a href="#cb29-198" aria-hidden="true" tabindex="-1"></a>The <span class="in">`ggmap`</span> package lets you use Google Maps and other similar maps as a basemap.</span>
-<span id="cb29-199"><a href="#cb29-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-200"><a href="#cb29-200" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb29-201"><a href="#cb29-201" aria-hidden="true" tabindex="-1"></a><span class="fu">## googlemaps</span></span>
+<span id="cb29-192"><a href="#cb29-192" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb29-193"><a href="#cb29-193" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-194"><a href="#cb29-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-195"><a href="#cb29-195" aria-hidden="true" tabindex="-1"></a>Get a <span class="in">`sf`</span> object from <span class="in">`rnaturalearth::ne_coastline()`</span> and find out what coordinate reference system it uses.</span>
+<span id="cb29-196"><a href="#cb29-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-197"><a href="#cb29-197" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-198"><a href="#cb29-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-199"><a href="#cb29-199" aria-hidden="true" tabindex="-1"></a><span class="fu">### `ggmap`</span></span>
+<span id="cb29-200"><a href="#cb29-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-201"><a href="#cb29-201" aria-hidden="true" tabindex="-1"></a>The <span class="in">`ggmap`</span> package lets you use Google Maps and other similar maps as a basemap.</span>
 <span id="cb29-202"><a href="#cb29-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-203"><a href="#cb29-203" aria-hidden="true" tabindex="-1"></a><span class="in">`ggmap`</span> can use maps and satellite image from Google, but you need to <span class="co">[</span><span class="ot">register</span><span class="co">](https://mapsplatform.google.com/)</span> for an API key.</span>
-<span id="cb29-204"><a href="#cb29-204" aria-hidden="true" tabindex="-1"></a>You shouldn't be charged unless you make a lot of maps (more than 20000 per month).</span>
-<span id="cb29-205"><a href="#cb29-205" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-206"><a href="#cb29-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-209"><a href="#cb29-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-210"><a href="#cb29-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: ggmap</span></span>
-<span id="cb29-211"><a href="#cb29-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb29-212"><a href="#cb29-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-213"><a href="#cb29-213" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggmap)</span>
-<span id="cb29-214"><a href="#cb29-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-215"><a href="#cb29-215" aria-hidden="true" tabindex="-1"></a>bergen <span class="ot">&lt;-</span> <span class="fu">get_map</span>(</span>
-<span id="cb29-216"><a href="#cb29-216" aria-hidden="true" tabindex="-1"></a>  <span class="at">location =</span> <span class="fu">c</span>(<span class="fl">5.24</span>,  <span class="fl">60.37</span>, <span class="fl">5.36</span>, <span class="fl">60.41</span>),</span>
-<span id="cb29-217"><a href="#cb29-217" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"stamen"</span>           </span>
-<span id="cb29-218"><a href="#cb29-218" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-219"><a href="#cb29-219" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(bergen)</span>
-<span id="cb29-220"><a href="#cb29-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-221"><a href="#cb29-221" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-222"><a href="#cb29-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-223"><a href="#cb29-223" aria-hidden="true" tabindex="-1"></a>Maps made with <span class="in">`ggmap`</span> can appear cluttered with unnecessary information.</span>
-<span id="cb29-224"><a href="#cb29-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-225"><a href="#cb29-225" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb29-226"><a href="#cb29-226" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-203"><a href="#cb29-203" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb29-204"><a href="#cb29-204" aria-hidden="true" tabindex="-1"></a><span class="fu">## googlemaps</span></span>
+<span id="cb29-205"><a href="#cb29-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-206"><a href="#cb29-206" aria-hidden="true" tabindex="-1"></a><span class="in">`ggmap`</span> can use maps and satellite image from Google, but you need to <span class="co">[</span><span class="ot">register</span><span class="co">](https://mapsplatform.google.com/)</span> for an API key.</span>
+<span id="cb29-207"><a href="#cb29-207" aria-hidden="true" tabindex="-1"></a>You shouldn't be charged unless you make a lot of maps (more than 20000 per month).</span>
+<span id="cb29-208"><a href="#cb29-208" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-209"><a href="#cb29-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-212"><a href="#cb29-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-213"><a href="#cb29-213" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: ggmap</span></span>
+<span id="cb29-214"><a href="#cb29-214" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb29-215"><a href="#cb29-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-216"><a href="#cb29-216" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggmap)</span>
+<span id="cb29-217"><a href="#cb29-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-218"><a href="#cb29-218" aria-hidden="true" tabindex="-1"></a>bergen <span class="ot">&lt;-</span> <span class="fu">get_map</span>(</span>
+<span id="cb29-219"><a href="#cb29-219" aria-hidden="true" tabindex="-1"></a>  <span class="at">location =</span> <span class="fu">c</span>(<span class="fl">5.24</span>, <span class="fl">60.37</span>, <span class="fl">5.36</span>, <span class="fl">60.41</span>), <span class="co">#  left/bottom/right/top</span></span>
+<span id="cb29-220"><a href="#cb29-220" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"stamen"</span>           </span>
+<span id="cb29-221"><a href="#cb29-221" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-222"><a href="#cb29-222" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(bergen)</span>
+<span id="cb29-223"><a href="#cb29-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-224"><a href="#cb29-224" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-225"><a href="#cb29-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-226"><a href="#cb29-226" aria-hidden="true" tabindex="-1"></a>Maps made with <span class="in">`ggmap`</span> can appear cluttered with unnecessary information.</span>
 <span id="cb29-227"><a href="#cb29-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-228"><a href="#cb29-228" aria-hidden="true" tabindex="-1"></a>Make a map with <span class="in">`ggmap`</span> that shows your favourite holiday destination.</span>
-<span id="cb29-229"><a href="#cb29-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-230"><a href="#cb29-230" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-231"><a href="#cb29-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-232"><a href="#cb29-232" aria-hidden="true" tabindex="-1"></a><span class="fu">## Raster basemaps</span></span>
-<span id="cb29-233"><a href="#cb29-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-234"><a href="#cb29-234" aria-hidden="true" tabindex="-1"></a>Rasters can be used to show maps of continuous data, for example, elevation or sea surface temperature.</span>
-<span id="cb29-235"><a href="#cb29-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-236"><a href="#cb29-236" aria-hidden="true" tabindex="-1"></a><span class="fu">### `terra`</span></span>
-<span id="cb29-237"><a href="#cb29-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-238"><a href="#cb29-238" aria-hidden="true" tabindex="-1"></a>The <span class="in">`terra`</span> package can import raster images in several formats, including GeoTIFF.</span>
-<span id="cb29-239"><a href="#cb29-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-240"><a href="#cb29-240" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb29-241"><a href="#cb29-241" aria-hidden="true" tabindex="-1"></a><span class="fu">## `terra` vs `raster` packages</span></span>
+<span id="cb29-228"><a href="#cb29-228" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb29-229"><a href="#cb29-229" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-230"><a href="#cb29-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-231"><a href="#cb29-231" aria-hidden="true" tabindex="-1"></a>Make a map with <span class="in">`ggmap`</span> that shows your favourite holiday destination.</span>
+<span id="cb29-232"><a href="#cb29-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-233"><a href="#cb29-233" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-234"><a href="#cb29-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-235"><a href="#cb29-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## Raster basemaps</span></span>
+<span id="cb29-236"><a href="#cb29-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-237"><a href="#cb29-237" aria-hidden="true" tabindex="-1"></a>Rasters can be used to show maps of continuous data, for example, elevation or sea surface temperature.</span>
+<span id="cb29-238"><a href="#cb29-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-239"><a href="#cb29-239" aria-hidden="true" tabindex="-1"></a><span class="fu">### `terra`</span></span>
+<span id="cb29-240"><a href="#cb29-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-241"><a href="#cb29-241" aria-hidden="true" tabindex="-1"></a>The <span class="in">`terra`</span> package can import raster images in several formats, including GeoTIFF.</span>
 <span id="cb29-242"><a href="#cb29-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-243"><a href="#cb29-243" aria-hidden="true" tabindex="-1"></a>The <span class="in">`terra`</span> package is an update to the <span class="in">`raster`</span> package. </span>
-<span id="cb29-244"><a href="#cb29-244" aria-hidden="true" tabindex="-1"></a>It should be faster and easier to use.</span>
+<span id="cb29-243"><a href="#cb29-243" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb29-244"><a href="#cb29-244" aria-hidden="true" tabindex="-1"></a><span class="fu">## `terra` vs `raster` vs `stars` packages</span></span>
 <span id="cb29-245"><a href="#cb29-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-246"><a href="#cb29-246" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-247"><a href="#cb29-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-248"><a href="#cb29-248" aria-hidden="true" tabindex="-1"></a>Rasters imported with <span class="in">`terra`</span> are easy to plot with the base R <span class="in">`plot()`</span> function, but if we want to use <span class="in">`ggplot()`</span>, we have to first convert to an <span class="in">`sf`</span> object.</span>
-<span id="cb29-249"><a href="#cb29-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-252"><a href="#cb29-252" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-253"><a href="#cb29-253" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: terra</span></span>
-<span id="cb29-254"><a href="#cb29-254" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb29-255"><a href="#cb29-255" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
-<span id="cb29-256"><a href="#cb29-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-257"><a href="#cb29-257" aria-hidden="true" tabindex="-1"></a><span class="co"># import digital elevation model</span></span>
-<span id="cb29-258"><a href="#cb29-258" aria-hidden="true" tabindex="-1"></a>norway_dem <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"data/50N000E_20101117_gmted_med300.tif"</span>)</span>
-<span id="cb29-259"><a href="#cb29-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-260"><a href="#cb29-260" aria-hidden="true" tabindex="-1"></a><span class="co"># crop to vestland and convert to sf object</span></span>
-<span id="cb29-261"><a href="#cb29-261" aria-hidden="true" tabindex="-1"></a>vestland_extent <span class="ot">&lt;-</span> <span class="fu">ext</span>(<span class="fl">4.5</span>, <span class="dv">9</span>, <span class="dv">59</span>, <span class="dv">62</span>)</span>
-<span id="cb29-262"><a href="#cb29-262" aria-hidden="true" tabindex="-1"></a>vestland_dem <span class="ot">&lt;-</span> <span class="fu">crop</span>(norway_dem, vestland_extent) <span class="sc">|&gt;</span> </span>
-<span id="cb29-263"><a href="#cb29-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.points</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb29-264"><a href="#cb29-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() </span>
-<span id="cb29-265"><a href="#cb29-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-266"><a href="#cb29-266" aria-hidden="true" tabindex="-1"></a><span class="co">#rename the data layer</span></span>
-<span id="cb29-267"><a href="#cb29-267" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vestland_dem)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Elevation"</span></span>
-<span id="cb29-268"><a href="#cb29-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-269"><a href="#cb29-269" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb29-270"><a href="#cb29-270" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vestland_dem) <span class="sc">+</span></span>
-<span id="cb29-271"><a href="#cb29-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">colour =</span> Elevation))</span>
-<span id="cb29-272"><a href="#cb29-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-246"><a href="#cb29-246" aria-hidden="true" tabindex="-1"></a>The <span class="in">`terra`</span> package is an update to the widely-used <span class="in">`raster`</span> package. </span>
+<span id="cb29-247"><a href="#cb29-247" aria-hidden="true" tabindex="-1"></a>It should be faster and easier to use.</span>
+<span id="cb29-248"><a href="#cb29-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-249"><a href="#cb29-249" aria-hidden="true" tabindex="-1"></a><span class="in">`stars`</span> is designed for spatio-temporal arrays. There are some things it cannot do that <span class="in">`terra`</span> can (and vice versa) but has better integration with <span class="in">`sf`</span> and <span class="in">`ggplot2`</span>.</span>
+<span id="cb29-250"><a href="#cb29-250" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-251"><a href="#cb29-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-252"><a href="#cb29-252" aria-hidden="true" tabindex="-1"></a>Rasters imported with <span class="in">`terra`</span> are easy to plot with the base R <span class="in">`plot()`</span> function, but if we want to use <span class="in">`ggplot()`</span>, we have to first convert to an <span class="in">`sf`</span> object.</span>
+<span id="cb29-253"><a href="#cb29-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-256"><a href="#cb29-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-257"><a href="#cb29-257" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: terra</span></span>
+<span id="cb29-258"><a href="#cb29-258" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb29-259"><a href="#cb29-259" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb29-260"><a href="#cb29-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-261"><a href="#cb29-261" aria-hidden="true" tabindex="-1"></a><span class="co"># import digital elevation model</span></span>
+<span id="cb29-262"><a href="#cb29-262" aria-hidden="true" tabindex="-1"></a><span class="co"># data from https://topotools.cr.usgs.gov/gmted_viewer/viewer.htm</span></span>
+<span id="cb29-263"><a href="#cb29-263" aria-hidden="true" tabindex="-1"></a>norway_dem <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"data/50N000E_20101117_gmted_med300.tif"</span>)</span>
+<span id="cb29-264"><a href="#cb29-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-265"><a href="#cb29-265" aria-hidden="true" tabindex="-1"></a><span class="co"># crop to vestland and convert to sf object</span></span>
+<span id="cb29-266"><a href="#cb29-266" aria-hidden="true" tabindex="-1"></a>vestland_extent <span class="ot">&lt;-</span> <span class="fu">ext</span>(<span class="fl">4.5</span>, <span class="dv">9</span>, <span class="dv">59</span>, <span class="dv">62</span>)</span>
+<span id="cb29-267"><a href="#cb29-267" aria-hidden="true" tabindex="-1"></a>vestland_dem <span class="ot">&lt;-</span> <span class="fu">crop</span>(norway_dem, vestland_extent) <span class="sc">|&gt;</span> </span>
+<span id="cb29-268"><a href="#cb29-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.points</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb29-269"><a href="#cb29-269" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() </span>
+<span id="cb29-270"><a href="#cb29-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-271"><a href="#cb29-271" aria-hidden="true" tabindex="-1"></a><span class="co">#rename the data layer</span></span>
+<span id="cb29-272"><a href="#cb29-272" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vestland_dem)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Elevation"</span></span>
 <span id="cb29-273"><a href="#cb29-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-274"><a href="#cb29-274" aria-hidden="true" tabindex="-1"></a>If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with <span class="in">`geom_raster()`</span>. </span>
-<span id="cb29-275"><a href="#cb29-275" aria-hidden="true" tabindex="-1"></a>Then <span class="in">`ggplot()`</span> just treats it as regular plot and does not know that it is a map.</span>
-<span id="cb29-276"><a href="#cb29-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-277"><a href="#cb29-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-278"><a href="#cb29-278" aria-hidden="true" tabindex="-1"></a><span class="fu">## Adding data</span></span>
-<span id="cb29-279"><a href="#cb29-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-280"><a href="#cb29-280" aria-hidden="true" tabindex="-1"></a>After deciding what type of base map to draw, we can add the data we want to show with the map.</span>
-<span id="cb29-281"><a href="#cb29-281" aria-hidden="true" tabindex="-1"></a>This can be</span>
-<span id="cb29-282"><a href="#cb29-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-283"><a href="#cb29-283" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>points, line, and polygons</span>
-<span id="cb29-284"><a href="#cb29-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-285"><a href="#cb29-285" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Shaded political units (a cloropleth map)</span>
-<span id="cb29-286"><a href="#cb29-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-287"><a href="#cb29-287" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A grid of values (raster)</span>
-<span id="cb29-288"><a href="#cb29-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-289"><a href="#cb29-289" aria-hidden="true" tabindex="-1"></a><span class="fu">### points/lines/polygons</span></span>
-<span id="cb29-290"><a href="#cb29-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-291"><a href="#cb29-291" aria-hidden="true" tabindex="-1"></a>Points lines and polygons can be added to the base map.</span>
-<span id="cb29-292"><a href="#cb29-292" aria-hidden="true" tabindex="-1"></a>If the data are already a <span class="in">`sf`</span> object they can be plotted with <span class="in">`geom_sf()`</span>.</span>
-<span id="cb29-293"><a href="#cb29-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-296"><a href="#cb29-296" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-297"><a href="#cb29-297" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: second-sf</span></span>
-<span id="cb29-298"><a href="#cb29-298" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb29-299"><a href="#cb29-299" aria-hidden="true" tabindex="-1"></a><span class="co"># aquaculture sites downloaded from Barentswatch.no/fiskinfo</span></span>
-<span id="cb29-300"><a href="#cb29-300" aria-hidden="true" tabindex="-1"></a>aquaculture <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/flate-ihht-akvakulturregisteret20220928.geojson"</span>)</span>
+<span id="cb29-274"><a href="#cb29-274" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb29-275"><a href="#cb29-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-276"><a href="#cb29-276" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vestland_dem) <span class="sc">+</span></span>
+<span id="cb29-277"><a href="#cb29-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">colour =</span> Elevation))</span>
+<span id="cb29-278"><a href="#cb29-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-279"><a href="#cb29-279" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-280"><a href="#cb29-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-281"><a href="#cb29-281" aria-hidden="true" tabindex="-1"></a>If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with <span class="in">`geom_raster()`</span>. </span>
+<span id="cb29-282"><a href="#cb29-282" aria-hidden="true" tabindex="-1"></a>Then <span class="in">`ggplot()`</span> just treats it as regular plot and does not know that it is a map.</span>
+<span id="cb29-283"><a href="#cb29-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-284"><a href="#cb29-284" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- ```{r} --&gt;</span></span>
+<span id="cb29-285"><a href="#cb29-285" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- library(stars) --&gt;</span></span>
+<span id="cb29-286"><a href="#cb29-286" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- dem &lt;- read_stars("data/50N000E_20101117_gmted_med300.tif") --&gt;</span></span>
+<span id="cb29-287"><a href="#cb29-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-288"><a href="#cb29-288" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- #crop dem --&gt;</span></span>
+<span id="cb29-289"><a href="#cb29-289" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- bbox &lt;- st_bbox(c(xmin = 4.5, xmax = 9, ymax = 62, ymin = 59), crs = st_crs(4326)) --&gt;</span></span>
+<span id="cb29-290"><a href="#cb29-290" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- dem_cropped &lt;- st_crop(x = dem, y = bbox) --&gt;</span></span>
+<span id="cb29-291"><a href="#cb29-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-292"><a href="#cb29-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-293"><a href="#cb29-293" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- ggplot() + --&gt;</span></span>
+<span id="cb29-294"><a href="#cb29-294" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!--   geom_stars(data = dem_cropped) + --&gt;</span></span>
+<span id="cb29-295"><a href="#cb29-295" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!--   # geom_sf(data = st_crop(norway, bbox), fill = NA, colour = "white") + --&gt;</span></span>
+<span id="cb29-296"><a href="#cb29-296" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!--   labs(fill = "Elevation m")  --&gt;</span></span>
+<span id="cb29-297"><a href="#cb29-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-298"><a href="#cb29-298" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- ``` --&gt;</span></span>
+<span id="cb29-299"><a href="#cb29-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-300"><a href="#cb29-300" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-301"><a href="#cb29-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-302"><a href="#cb29-302" aria-hidden="true" tabindex="-1"></a><span class="co"># with rnaturalearth</span></span>
-<span id="cb29-303"><a href="#cb29-303" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb29-304"><a href="#cb29-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> europe) <span class="sc">+</span></span>
-<span id="cb29-305"><a href="#cb29-305" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> aquaculture, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb29-306"><a href="#cb29-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">30</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">71</span>))  </span>
-<span id="cb29-307"><a href="#cb29-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-308"><a href="#cb29-308" aria-hidden="true" tabindex="-1"></a><span class="co"># with ggOceanMaps</span></span>
-<span id="cb29-309"><a href="#cb29-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-310"><a href="#cb29-310" aria-hidden="true" tabindex="-1"></a><span class="fu">basemap</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">80</span>)) <span class="sc">+</span></span>
-<span id="cb29-311"><a href="#cb29-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> aquaculture, <span class="at">colour =</span> <span class="st">"red"</span>)</span>
+<span id="cb29-302"><a href="#cb29-302" aria-hidden="true" tabindex="-1"></a><span class="fu">## Adding data to the basemap</span></span>
+<span id="cb29-303"><a href="#cb29-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-304"><a href="#cb29-304" aria-hidden="true" tabindex="-1"></a>After deciding what type of base map to draw, we can add the data we want to show with the map.</span>
+<span id="cb29-305"><a href="#cb29-305" aria-hidden="true" tabindex="-1"></a>This can be</span>
+<span id="cb29-306"><a href="#cb29-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-307"><a href="#cb29-307" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>points, line, and polygons</span>
+<span id="cb29-308"><a href="#cb29-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-309"><a href="#cb29-309" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Shaded political units (a cloropleth map)</span>
+<span id="cb29-310"><a href="#cb29-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-311"><a href="#cb29-311" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A grid of values (raster)</span>
 <span id="cb29-312"><a href="#cb29-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-313"><a href="#cb29-313" aria-hidden="true" tabindex="-1"></a><span class="co"># with ggmap</span></span>
-<span id="cb29-314"><a href="#cb29-314" aria-hidden="true" tabindex="-1"></a>vestland <span class="ot">&lt;-</span> <span class="fu">get_map</span>(</span>
-<span id="cb29-315"><a href="#cb29-315" aria-hidden="true" tabindex="-1"></a>  <span class="at">location =</span> <span class="fu">c</span>(<span class="dv">4</span>,  <span class="dv">59</span>, <span class="dv">8</span>, <span class="dv">62</span>),</span>
-<span id="cb29-316"><a href="#cb29-316" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"stamen"</span>           </span>
-<span id="cb29-317"><a href="#cb29-317" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-318"><a href="#cb29-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-319"><a href="#cb29-319" aria-hidden="true" tabindex="-1"></a><span class="co"># needs inherit.aes = FALSE</span></span>
-<span id="cb29-320"><a href="#cb29-320" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(vestland) <span class="sc">+</span> </span>
-<span id="cb29-321"><a href="#cb29-321" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_sf</span>(<span class="at">data =</span> aquaculture, <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb29-322"><a href="#cb29-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-323"><a href="#cb29-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-324"><a href="#cb29-324" aria-hidden="true" tabindex="-1"></a>Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom.</span>
-<span id="cb29-325"><a href="#cb29-325" aria-hidden="true" tabindex="-1"></a>So <span class="in">`geom_spatial_point()`</span> rather than <span class="in">`geom_point()`</span></span>
-<span id="cb29-326"><a href="#cb29-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-329"><a href="#cb29-329" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-330"><a href="#cb29-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: geom-spatial-points</span></span>
-<span id="cb29-331"><a href="#cb29-331" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggspatial)</span>
-<span id="cb29-332"><a href="#cb29-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-333"><a href="#cb29-333" aria-hidden="true" tabindex="-1"></a>random_points <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb29-334"><a href="#cb29-334" aria-hidden="true" tabindex="-1"></a>  <span class="at">lat =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="dv">59</span>, <span class="dv">62</span>), </span>
-<span id="cb29-335"><a href="#cb29-335" aria-hidden="true" tabindex="-1"></a>  <span class="at">lon =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">8</span>)) </span>
+<span id="cb29-313"><a href="#cb29-313" aria-hidden="true" tabindex="-1"></a><span class="fu">### points/lines/polygons</span></span>
+<span id="cb29-314"><a href="#cb29-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-315"><a href="#cb29-315" aria-hidden="true" tabindex="-1"></a>Points lines and polygons can be added to the base map.</span>
+<span id="cb29-316"><a href="#cb29-316" aria-hidden="true" tabindex="-1"></a>If the data are already a <span class="in">`sf`</span> object they can be plotted with <span class="in">`geom_sf()`</span>.</span>
+<span id="cb29-317"><a href="#cb29-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-320"><a href="#cb29-320" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-321"><a href="#cb29-321" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: second-sf</span></span>
+<span id="cb29-322"><a href="#cb29-322" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb29-323"><a href="#cb29-323" aria-hidden="true" tabindex="-1"></a><span class="co"># aquaculture sites downloaded from Barentswatch.no/fiskinfo</span></span>
+<span id="cb29-324"><a href="#cb29-324" aria-hidden="true" tabindex="-1"></a>aquaculture <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/flate-ihht-akvakulturregisteret20220928.geojson"</span>)</span>
+<span id="cb29-325"><a href="#cb29-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-326"><a href="#cb29-326" aria-hidden="true" tabindex="-1"></a><span class="co"># with rnaturalearth</span></span>
+<span id="cb29-327"><a href="#cb29-327" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-328"><a href="#cb29-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> europe) <span class="sc">+</span></span>
+<span id="cb29-329"><a href="#cb29-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> aquaculture, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb29-330"><a href="#cb29-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">30</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">71</span>))  </span>
+<span id="cb29-331"><a href="#cb29-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-332"><a href="#cb29-332" aria-hidden="true" tabindex="-1"></a><span class="co"># with ggOceanMaps</span></span>
+<span id="cb29-333"><a href="#cb29-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-334"><a href="#cb29-334" aria-hidden="true" tabindex="-1"></a><span class="fu">basemap</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">80</span>)) <span class="sc">+</span></span>
+<span id="cb29-335"><a href="#cb29-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> aquaculture, <span class="at">colour =</span> <span class="st">"red"</span>)</span>
 <span id="cb29-336"><a href="#cb29-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-337"><a href="#cb29-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-338"><a href="#cb29-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-339"><a href="#cb29-339" aria-hidden="true" tabindex="-1"></a><span class="co"># ggOceanMaps</span></span>
-<span id="cb29-340"><a href="#cb29-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-341"><a href="#cb29-341" aria-hidden="true" tabindex="-1"></a><span class="fu">basemap</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">80</span>)) <span class="sc">+</span></span>
-<span id="cb29-342"><a href="#cb29-342" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatial_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat), </span>
-<span id="cb29-343"><a href="#cb29-343" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> random_points,</span>
-<span id="cb29-344"><a href="#cb29-344" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb29-345"><a href="#cb29-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatial_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat),</span>
-<span id="cb29-346"><a href="#cb29-346" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> random_points, </span>
-<span id="cb29-347"><a href="#cb29-347" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> <span class="st">"red"</span>)</span>
-<span id="cb29-348"><a href="#cb29-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-349"><a href="#cb29-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-350"><a href="#cb29-350" aria-hidden="true" tabindex="-1"></a><span class="co"># with ggmaps. just use `geom_point()` Don't need aes as it expects lat, lon</span></span>
-<span id="cb29-351"><a href="#cb29-351" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(vestland) <span class="sc">+</span> </span>
-<span id="cb29-352"><a href="#cb29-352" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> random_points) <span class="sc">+</span></span>
-<span id="cb29-353"><a href="#cb29-353" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> random_points)</span>
-<span id="cb29-354"><a href="#cb29-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-355"><a href="#cb29-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-356"><a href="#cb29-356" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_spatial_point()`</span> is assuming that the data are latitude-longitude coordinates. </span>
-<span id="cb29-357"><a href="#cb29-357" aria-hidden="true" tabindex="-1"></a>It they are UTM, you will need to use the <span class="in">`crs`</span> argument with the correct <span class="co">[</span><span class="ot">EPSG code</span><span class="co">](https://epsg.io/?q=UTM)</span>.</span>
-<span id="cb29-358"><a href="#cb29-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-359"><a href="#cb29-359" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb29-360"><a href="#cb29-360" aria-hidden="true" tabindex="-1"></a><span class="fu">## geom_path() vs geom_line()</span></span>
+<span id="cb29-337"><a href="#cb29-337" aria-hidden="true" tabindex="-1"></a><span class="co"># with ggmap</span></span>
+<span id="cb29-338"><a href="#cb29-338" aria-hidden="true" tabindex="-1"></a>vestland <span class="ot">&lt;-</span> <span class="fu">get_map</span>(</span>
+<span id="cb29-339"><a href="#cb29-339" aria-hidden="true" tabindex="-1"></a>  <span class="at">location =</span> <span class="fu">c</span>(<span class="dv">4</span>,  <span class="dv">59</span>, <span class="dv">8</span>, <span class="dv">62</span>),</span>
+<span id="cb29-340"><a href="#cb29-340" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"stamen"</span>           </span>
+<span id="cb29-341"><a href="#cb29-341" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-342"><a href="#cb29-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-343"><a href="#cb29-343" aria-hidden="true" tabindex="-1"></a><span class="co"># needs inherit.aes = FALSE</span></span>
+<span id="cb29-344"><a href="#cb29-344" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(vestland) <span class="sc">+</span> </span>
+<span id="cb29-345"><a href="#cb29-345" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_sf</span>(<span class="at">data =</span> aquaculture, <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb29-346"><a href="#cb29-346" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-347"><a href="#cb29-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-348"><a href="#cb29-348" aria-hidden="true" tabindex="-1"></a>Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom.</span>
+<span id="cb29-349"><a href="#cb29-349" aria-hidden="true" tabindex="-1"></a>So <span class="in">`geom_spatial_point()`</span> rather than <span class="in">`geom_point()`</span></span>
+<span id="cb29-350"><a href="#cb29-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-353"><a href="#cb29-353" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-354"><a href="#cb29-354" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: geom-spatial-points</span></span>
+<span id="cb29-355"><a href="#cb29-355" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggspatial)</span>
+<span id="cb29-356"><a href="#cb29-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-357"><a href="#cb29-357" aria-hidden="true" tabindex="-1"></a>random_points <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb29-358"><a href="#cb29-358" aria-hidden="true" tabindex="-1"></a>  <span class="at">lat =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="dv">59</span>, <span class="dv">62</span>), </span>
+<span id="cb29-359"><a href="#cb29-359" aria-hidden="true" tabindex="-1"></a>  <span class="at">lon =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">8</span>)) </span>
+<span id="cb29-360"><a href="#cb29-360" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-361"><a href="#cb29-361" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-362"><a href="#cb29-362" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_path()`</span> draws a line from the first point in the dataset to the second and so on.</span>
-<span id="cb29-363"><a href="#cb29-363" aria-hidden="true" tabindex="-1"></a>This is useful for plotting on maps (and ordinations).</span>
+<span id="cb29-362"><a href="#cb29-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-363"><a href="#cb29-363" aria-hidden="true" tabindex="-1"></a><span class="co"># ggOceanMaps</span></span>
 <span id="cb29-364"><a href="#cb29-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-365"><a href="#cb29-365" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_line()`</span> draws a line from the left-most point to the next left-most point in the dataset.</span>
-<span id="cb29-366"><a href="#cb29-366" aria-hidden="true" tabindex="-1"></a>This is useful for plotting timeseries.</span>
-<span id="cb29-367"><a href="#cb29-367" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-368"><a href="#cb29-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-369"><a href="#cb29-369" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb29-370"><a href="#cb29-370" aria-hidden="true" tabindex="-1"></a><span class="fu">## Degrees minutes and seconds</span></span>
-<span id="cb29-371"><a href="#cb29-371" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-372"><a href="#cb29-372" aria-hidden="true" tabindex="-1"></a>For latitude-longitude data, we recommend using decimal degrees (Bergen is at 60.3807°N, 5.3323°E).</span>
-<span id="cb29-373"><a href="#cb29-373" aria-hidden="true" tabindex="-1"></a>But archived data can be in all sorts of unhelpful formats, such as degrees minutes and seconds (Bergen is at 60° 22' 50.52" N 5° 19' 56.28" E).</span>
-<span id="cb29-374"><a href="#cb29-374" aria-hidden="true" tabindex="-1"></a>If you get data like this, you need to convert it to decimal degrees.</span>
-<span id="cb29-375"><a href="#cb29-375" aria-hidden="true" tabindex="-1"></a>The <span class="in">`parzer`</span> package can help (it is like <span class="in">`lubridate`</span> for latitude-longitude data).</span>
-<span id="cb29-376"><a href="#cb29-376" aria-hidden="true" tabindex="-1"></a>For example:</span>
-<span id="cb29-377"><a href="#cb29-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-380"><a href="#cb29-380" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-381"><a href="#cb29-381" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: parzer</span></span>
+<span id="cb29-365"><a href="#cb29-365" aria-hidden="true" tabindex="-1"></a><span class="fu">basemap</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">80</span>)) <span class="sc">+</span></span>
+<span id="cb29-366"><a href="#cb29-366" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatial_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat), </span>
+<span id="cb29-367"><a href="#cb29-367" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> random_points,</span>
+<span id="cb29-368"><a href="#cb29-368" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb29-369"><a href="#cb29-369" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatial_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat),</span>
+<span id="cb29-370"><a href="#cb29-370" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> random_points, </span>
+<span id="cb29-371"><a href="#cb29-371" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> <span class="st">"red"</span>)</span>
+<span id="cb29-372"><a href="#cb29-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-373"><a href="#cb29-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-374"><a href="#cb29-374" aria-hidden="true" tabindex="-1"></a><span class="co"># with ggmaps. just use `geom_point()` Don't need aes as it expects lat, lon</span></span>
+<span id="cb29-375"><a href="#cb29-375" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(vestland) <span class="sc">+</span> </span>
+<span id="cb29-376"><a href="#cb29-376" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> random_points) <span class="sc">+</span></span>
+<span id="cb29-377"><a href="#cb29-377" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> random_points)</span>
+<span id="cb29-378"><a href="#cb29-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-379"><a href="#cb29-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-380"><a href="#cb29-380" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_spatial_point()`</span> is assuming that the data are latitude-longitude coordinates. </span>
+<span id="cb29-381"><a href="#cb29-381" aria-hidden="true" tabindex="-1"></a>It they are UTM, you will need to use the <span class="in">`crs`</span> argument with the correct <span class="co">[</span><span class="ot">EPSG code</span><span class="co">](https://epsg.io/?q=UTM)</span>.</span>
 <span id="cb29-382"><a href="#cb29-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-383"><a href="#cb29-383" aria-hidden="true" tabindex="-1"></a>parzer<span class="sc">::</span><span class="fu">parse_lat</span>(<span class="st">"60° 22' 50.52''N"</span>)</span>
-<span id="cb29-384"><a href="#cb29-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-385"><a href="#cb29-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-386"><a href="#cb29-386" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-387"><a href="#cb29-387" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-388"><a href="#cb29-388" aria-hidden="true" tabindex="-1"></a>:::callout-note</span>
-<span id="cb29-389"><a href="#cb29-389" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb29-390"><a href="#cb29-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-391"><a href="#cb29-391" aria-hidden="true" tabindex="-1"></a>Download and import the <span class="co">[</span><span class="ot">data</span><span class="co">](https://setac.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fetc.5064&amp;file=etc5064-sup-0002-Supplementary_dataset.xlsx)</span> for <span class="co">[</span><span class="ot">Andvik et al (2021)</span><span class="co">](https://doi.org/10.1002/etc.5064)</span> on contaminants in orca. </span>
+<span id="cb29-383"><a href="#cb29-383" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb29-384"><a href="#cb29-384" aria-hidden="true" tabindex="-1"></a><span class="fu">## geom_path() vs geom_line()</span></span>
+<span id="cb29-385"><a href="#cb29-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-386"><a href="#cb29-386" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_path()`</span> draws a line from the first point in the dataset to the second and so on.</span>
+<span id="cb29-387"><a href="#cb29-387" aria-hidden="true" tabindex="-1"></a>This is useful for plotting on maps (and ordinations).</span>
+<span id="cb29-388"><a href="#cb29-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-389"><a href="#cb29-389" aria-hidden="true" tabindex="-1"></a><span class="in">`geom_line()`</span> draws a line from the left-most point to the next left-most point in the dataset.</span>
+<span id="cb29-390"><a href="#cb29-390" aria-hidden="true" tabindex="-1"></a>This is useful for plotting timeseries.</span>
+<span id="cb29-391"><a href="#cb29-391" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb29-392"><a href="#cb29-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-393"><a href="#cb29-393" aria-hidden="true" tabindex="-1"></a>Make a map to show the hexabromobenzene (HBB) concentrations in the blubber.</span>
-<span id="cb29-394"><a href="#cb29-394" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-395"><a href="#cb29-395" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-396"><a href="#cb29-396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-397"><a href="#cb29-397" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cloropleth maps</span></span>
-<span id="cb29-398"><a href="#cb29-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-399"><a href="#cb29-399" aria-hidden="true" tabindex="-1"></a>Cloropleth maps are useful for plotting data that have been aggregated to a geographic unit (kommune, fylke, country etc).</span>
-<span id="cb29-400"><a href="#cb29-400" aria-hidden="true" tabindex="-1"></a>A <span class="in">`sf`</span> object is a special type of data frame that we can <span class="in">`filter()`</span>, <span class="in">`mutate()`</span> or <span class="in">`left_join()`</span> to other data frames.</span>
-<span id="cb29-401"><a href="#cb29-401" aria-hidden="true" tabindex="-1"></a>We need a tibble with the data that we can join to the <span class="in">`sf`</span> object with the geographic units.</span>
-<span id="cb29-402"><a href="#cb29-402" aria-hidden="true" tabindex="-1"></a>Here, I generate some random data and join it by Fylkesnummer (Fylkesnavn column in fylke is complicated), and plot it by setting <span class="in">`fill`</span> in the <span class="in">`aes`</span>.</span>
-<span id="cb29-403"><a href="#cb29-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-406"><a href="#cb29-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-407"><a href="#cb29-407" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cloropleth</span></span>
-<span id="cb29-408"><a href="#cb29-408" aria-hidden="true" tabindex="-1"></a>random_fylke <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb29-409"><a href="#cb29-409" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fylkesnummer =</span> <span class="fu">c</span>(<span class="st">"38"</span>, <span class="st">"42"</span>, <span class="st">"30"</span>, <span class="st">"11"</span>, <span class="st">"18"</span>, <span class="st">"15"</span>, <span class="st">"46"</span>, <span class="st">"03"</span>, <span class="st">"50"</span>, <span class="st">"54"</span>, <span class="st">"34"</span>),</span>
-<span id="cb29-410"><a href="#cb29-410" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">runif</span>(<span class="dv">11</span>))</span>
+<span id="cb29-393"><a href="#cb29-393" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb29-394"><a href="#cb29-394" aria-hidden="true" tabindex="-1"></a><span class="fu">## Degrees minutes and seconds</span></span>
+<span id="cb29-395"><a href="#cb29-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-396"><a href="#cb29-396" aria-hidden="true" tabindex="-1"></a>For latitude-longitude data, we recommend using decimal degrees (Bergen is at 60.3807°N, 5.3323°E).</span>
+<span id="cb29-397"><a href="#cb29-397" aria-hidden="true" tabindex="-1"></a>But archived data can be in all sorts of unhelpful formats, such as degrees minutes and seconds (Bergen is at 60° 22' 50.52" N 5° 19' 56.28" E).</span>
+<span id="cb29-398"><a href="#cb29-398" aria-hidden="true" tabindex="-1"></a>If you get data like this, you need to convert it to decimal degrees.</span>
+<span id="cb29-399"><a href="#cb29-399" aria-hidden="true" tabindex="-1"></a>The <span class="in">`parzer`</span> package can help (it is like <span class="in">`lubridate`</span> for latitude-longitude data).</span>
+<span id="cb29-400"><a href="#cb29-400" aria-hidden="true" tabindex="-1"></a>For example:</span>
+<span id="cb29-401"><a href="#cb29-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-404"><a href="#cb29-404" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-405"><a href="#cb29-405" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: parzer</span></span>
+<span id="cb29-406"><a href="#cb29-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-407"><a href="#cb29-407" aria-hidden="true" tabindex="-1"></a>parzer<span class="sc">::</span><span class="fu">parse_lat</span>(<span class="st">"60° 22' 50.52''N"</span>)</span>
+<span id="cb29-408"><a href="#cb29-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-409"><a href="#cb29-409" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-410"><a href="#cb29-410" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb29-411"><a href="#cb29-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-412"><a href="#cb29-412" aria-hidden="true" tabindex="-1"></a>fylker <span class="sc">|&gt;</span> <span class="fu">left_join</span>(random_fylke) <span class="sc">|&gt;</span> </span>
-<span id="cb29-413"><a href="#cb29-413" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb29-414"><a href="#cb29-414" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> random))</span>
-<span id="cb29-415"><a href="#cb29-415" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-416"><a href="#cb29-416" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb29-417"><a href="#cb29-417" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-412"><a href="#cb29-412" aria-hidden="true" tabindex="-1"></a>:::callout-note</span>
+<span id="cb29-413"><a href="#cb29-413" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-414"><a href="#cb29-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-415"><a href="#cb29-415" aria-hidden="true" tabindex="-1"></a>Download and import the <span class="co">[</span><span class="ot">data</span><span class="co">](https://setac.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fetc.5064&amp;file=etc5064-sup-0002-Supplementary_dataset.xlsx)</span> for <span class="co">[</span><span class="ot">Andvik et al (2021)</span><span class="co">](https://doi.org/10.1002/etc.5064)</span> on contaminants in orca. </span>
+<span id="cb29-416"><a href="#cb29-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-417"><a href="#cb29-417" aria-hidden="true" tabindex="-1"></a>Make a map to show the hexabromobenzene (HBB) concentrations in the blubber.</span>
 <span id="cb29-418"><a href="#cb29-418" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-419"><a href="#cb29-419" aria-hidden="true" tabindex="-1"></a>With <span class="in">`rnaturalearth`</span> data, make a world map that shows the population (column pop_est) of each country.</span>
+<span id="cb29-419"><a href="#cb29-419" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb29-420"><a href="#cb29-420" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-421"><a href="#cb29-421" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-421"><a href="#cb29-421" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cloropleth maps</span></span>
 <span id="cb29-422"><a href="#cb29-422" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-423"><a href="#cb29-423" aria-hidden="true" tabindex="-1"></a><span class="fu">### raster</span></span>
-<span id="cb29-424"><a href="#cb29-424" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-425"><a href="#cb29-425" aria-hidden="true" tabindex="-1"></a>Raster data, perhaps the output of a model, can also be added to maps, using code similar to that for plotting a raster basemap.</span>
-<span id="cb29-426"><a href="#cb29-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-423"><a href="#cb29-423" aria-hidden="true" tabindex="-1"></a>Cloropleth maps are useful for plotting data that have been aggregated to a geographic unit (kommune, fylke, country etc).</span>
+<span id="cb29-424"><a href="#cb29-424" aria-hidden="true" tabindex="-1"></a>A <span class="in">`sf`</span> object is a special type of data frame that we can <span class="in">`filter()`</span>, <span class="in">`mutate()`</span> or <span class="in">`left_join()`</span> to other data frames.</span>
+<span id="cb29-425"><a href="#cb29-425" aria-hidden="true" tabindex="-1"></a>We need a tibble with the data that we can join to the <span class="in">`sf`</span> object with the geographic units.</span>
+<span id="cb29-426"><a href="#cb29-426" aria-hidden="true" tabindex="-1"></a>Here, I generate some random data and join it by Fylkesnummer (Fylkesnavn column in fylke is complicated), and plot it by setting <span class="in">`fill`</span> in the <span class="in">`aes`</span>.</span>
 <span id="cb29-427"><a href="#cb29-427" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-428"><a href="#cb29-428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-429"><a href="#cb29-429" aria-hidden="true" tabindex="-1"></a><span class="fu">## Scalebars, north pointer etc</span></span>
-<span id="cb29-430"><a href="#cb29-430" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-431"><a href="#cb29-431" aria-hidden="true" tabindex="-1"></a>Scalebars and north pointers can be added with the <span class="in">`ggspatial`</span> package or the <span class="in">`ggsn`</span> package.</span>
-<span id="cb29-432"><a href="#cb29-432" aria-hidden="true" tabindex="-1"></a>North points are not very useful if the map has gridlines as these already indicate north.</span>
-<span id="cb29-433"><a href="#cb29-433" aria-hidden="true" tabindex="-1"></a>A scalebar can be useful, especially for large scale map. On small scale maps, they can be inaccurate as the scale varies.</span>
-<span id="cb29-434"><a href="#cb29-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-437"><a href="#cb29-437" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-438"><a href="#cb29-438" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: annotations</span></span>
-<span id="cb29-439"><a href="#cb29-439" aria-hidden="true" tabindex="-1"></a><span class="co"># with rnaturalearth</span></span>
-<span id="cb29-440"><a href="#cb29-440" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb29-441"><a href="#cb29-441" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> norway) <span class="sc">+</span></span>
-<span id="cb29-442"><a href="#cb29-442" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">9</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">59</span>, <span class="dv">62</span>)) <span class="sc">+</span></span>
-<span id="cb29-443"><a href="#cb29-443" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotation_scale</span>(<span class="at">location =</span> <span class="st">"br"</span>) <span class="co"># br = bottom right</span></span>
-<span id="cb29-444"><a href="#cb29-444" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-445"><a href="#cb29-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-446"><a href="#cb29-446" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hints for maps</span></span>
-<span id="cb29-447"><a href="#cb29-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-448"><a href="#cb29-448" aria-hidden="true" tabindex="-1"></a>Keep it simple. Remove unnecessary features (do you really need to show the bathymetry?) and use appropriate scale data for the base map (too high resolution takes a long time to plot and can look worse).</span>
-<span id="cb29-449"><a href="#cb29-449" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-450"><a href="#cb29-450" aria-hidden="true" tabindex="-1"></a>Use facets as necessary (different species, different years etc).</span>
+<span id="cb29-430"><a href="#cb29-430" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-431"><a href="#cb29-431" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cloropleth</span></span>
+<span id="cb29-432"><a href="#cb29-432" aria-hidden="true" tabindex="-1"></a>random_fylke <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb29-433"><a href="#cb29-433" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fylkesnummer =</span> <span class="fu">c</span>(<span class="st">"38"</span>, <span class="st">"42"</span>, <span class="st">"30"</span>, <span class="st">"11"</span>, <span class="st">"18"</span>, <span class="st">"15"</span>, <span class="st">"46"</span>, <span class="st">"03"</span>, <span class="st">"50"</span>, <span class="st">"54"</span>, <span class="st">"34"</span>),</span>
+<span id="cb29-434"><a href="#cb29-434" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">runif</span>(<span class="dv">11</span>))</span>
+<span id="cb29-435"><a href="#cb29-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-436"><a href="#cb29-436" aria-hidden="true" tabindex="-1"></a>fylker <span class="sc">|&gt;</span> <span class="fu">left_join</span>(random_fylke) <span class="sc">|&gt;</span> </span>
+<span id="cb29-437"><a href="#cb29-437" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-438"><a href="#cb29-438" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> random))</span>
+<span id="cb29-439"><a href="#cb29-439" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-440"><a href="#cb29-440" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb29-441"><a href="#cb29-441" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-442"><a href="#cb29-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-443"><a href="#cb29-443" aria-hidden="true" tabindex="-1"></a>With <span class="in">`rnaturalearth`</span> data, make a world map that shows the population (column pop_est) of each country.</span>
+<span id="cb29-444"><a href="#cb29-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-445"><a href="#cb29-445" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-446"><a href="#cb29-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-447"><a href="#cb29-447" aria-hidden="true" tabindex="-1"></a><span class="fu">### raster</span></span>
+<span id="cb29-448"><a href="#cb29-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-449"><a href="#cb29-449" aria-hidden="true" tabindex="-1"></a>Raster data, perhaps the output of a model, can also be added to maps, using code similar to that for plotting a raster basemap.</span>
+<span id="cb29-450"><a href="#cb29-450" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-451"><a href="#cb29-451" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-452"><a href="#cb29-452" aria-hidden="true" tabindex="-1"></a>If you need multiple colour scales, the <span class="in">`ggnewscale`</span> package can help.</span>
-<span id="cb29-453"><a href="#cb29-453" aria-hidden="true" tabindex="-1"></a>Use inset maps (@sec-combining-plots) to show your location in context.</span>
+<span id="cb29-452"><a href="#cb29-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-453"><a href="#cb29-453" aria-hidden="true" tabindex="-1"></a><span class="fu">## Scalebars, north pointer etc</span></span>
 <span id="cb29-454"><a href="#cb29-454" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-455"><a href="#cb29-455" aria-hidden="true" tabindex="-1"></a><span class="fu">### Projections</span></span>
-<span id="cb29-456"><a href="#cb29-456" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-457"><a href="#cb29-457" aria-hidden="true" tabindex="-1"></a>The Earth is an oblate sphere and needs projecting to plot in two dimensions. </span>
-<span id="cb29-458"><a href="#cb29-458" aria-hidden="true" tabindex="-1"></a>This inevitably leads to distortions, especially for maps with a large extent.</span>
-<span id="cb29-459"><a href="#cb29-459" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Different projections</span><span class="co">](https://proj.org/operations/projections/index.html)</span> have different properties and may be suitable for different purposes or regions.</span>
-<span id="cb29-460"><a href="#cb29-460" aria-hidden="true" tabindex="-1"></a>Map projections can be set using <span class="in">`coord_sf()`</span>.</span>
-<span id="cb29-461"><a href="#cb29-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-464"><a href="#cb29-464" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-465"><a href="#cb29-465" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: projections</span></span>
-<span id="cb29-466"><a href="#cb29-466" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="st">"medium"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>)</span>
-<span id="cb29-467"><a href="#cb29-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-468"><a href="#cb29-468" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(world) <span class="sc">+</span> <span class="fu">geom_sf</span>()</span>
+<span id="cb29-455"><a href="#cb29-455" aria-hidden="true" tabindex="-1"></a>Scalebars and north pointers can be added with the <span class="in">`ggspatial`</span> package or the <span class="in">`ggsn`</span> package.</span>
+<span id="cb29-456"><a href="#cb29-456" aria-hidden="true" tabindex="-1"></a>North points are not very useful if the map has gridlines as these already indicate north.</span>
+<span id="cb29-457"><a href="#cb29-457" aria-hidden="true" tabindex="-1"></a>A scalebar can be useful, especially for large scale map. On small scale maps, they can be inaccurate as the scale varies.</span>
+<span id="cb29-458"><a href="#cb29-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-461"><a href="#cb29-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-462"><a href="#cb29-462" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: annotations</span></span>
+<span id="cb29-463"><a href="#cb29-463" aria-hidden="true" tabindex="-1"></a><span class="co"># with rnaturalearth</span></span>
+<span id="cb29-464"><a href="#cb29-464" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-465"><a href="#cb29-465" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> norway) <span class="sc">+</span></span>
+<span id="cb29-466"><a href="#cb29-466" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">9</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">59</span>, <span class="dv">62</span>)) <span class="sc">+</span></span>
+<span id="cb29-467"><a href="#cb29-467" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotation_scale</span>(<span class="at">location =</span> <span class="st">"br"</span>) <span class="co"># br = bottom right</span></span>
+<span id="cb29-468"><a href="#cb29-468" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb29-469"><a href="#cb29-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-470"><a href="#cb29-470" aria-hidden="true" tabindex="-1"></a>mollweide <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(world) <span class="sc">+</span> </span>
-<span id="cb29-471"><a href="#cb29-471" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span> </span>
-<span id="cb29-472"><a href="#cb29-472" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"+proj=moll"</span>)</span>
+<span id="cb29-470"><a href="#cb29-470" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hints for maps</span></span>
+<span id="cb29-471"><a href="#cb29-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-472"><a href="#cb29-472" aria-hidden="true" tabindex="-1"></a>Keep it simple. Remove unnecessary features (do you really need to show the bathymetry?) and use appropriate scale data for the base map (too high resolution takes a long time to plot and can look worse).</span>
 <span id="cb29-473"><a href="#cb29-473" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-474"><a href="#cb29-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-475"><a href="#cb29-475" aria-hidden="true" tabindex="-1"></a>lambert <span class="ot">&lt;-</span>  <span class="fu">ggplot</span>(world) <span class="sc">+</span> </span>
-<span id="cb29-476"><a href="#cb29-476" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span> </span>
-<span id="cb29-477"><a href="#cb29-477" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"+proj=laea"</span>)</span>
-<span id="cb29-478"><a href="#cb29-478" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb29-479"><a href="#cb29-479" aria-hidden="true" tabindex="-1"></a>default<span class="sc">/</span>mollweide<span class="sc">/</span>lambert</span>
-<span id="cb29-480"><a href="#cb29-480" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb29-481"><a href="#cb29-481" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-482"><a href="#cb29-482" aria-hidden="true" tabindex="-1"></a>Many of the projections have optional parameters to change, for example, the projection centre.</span>
-<span id="cb29-483"><a href="#cb29-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-484"><a href="#cb29-484" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb29-485"><a href="#cb29-485" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb29-486"><a href="#cb29-486" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-487"><a href="#cb29-487" aria-hidden="true" tabindex="-1"></a>Change the projection of one of the small-scale maps you made previously.</span>
-<span id="cb29-488"><a href="#cb29-488" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-489"><a href="#cb29-489" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb29-490"><a href="#cb29-490" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-491"><a href="#cb29-491" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- ## More map types --&gt;</span></span>
+<span id="cb29-474"><a href="#cb29-474" aria-hidden="true" tabindex="-1"></a>Use facets as necessary (different species, different years etc).</span>
+<span id="cb29-475"><a href="#cb29-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-476"><a href="#cb29-476" aria-hidden="true" tabindex="-1"></a>If you need multiple colour scales, the <span class="in">`ggnewscale`</span> package can help.</span>
+<span id="cb29-477"><a href="#cb29-477" aria-hidden="true" tabindex="-1"></a>Use inset maps (@sec-combining-plots) to show your location in context.</span>
+<span id="cb29-478"><a href="#cb29-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-479"><a href="#cb29-479" aria-hidden="true" tabindex="-1"></a><span class="fu">### Projections</span></span>
+<span id="cb29-480"><a href="#cb29-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-481"><a href="#cb29-481" aria-hidden="true" tabindex="-1"></a>The Earth is an oblate sphere and needs projecting to plot in two dimensions. </span>
+<span id="cb29-482"><a href="#cb29-482" aria-hidden="true" tabindex="-1"></a>This inevitably leads to distortions, especially for maps with a large extent.</span>
+<span id="cb29-483"><a href="#cb29-483" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Different projections</span><span class="co">](https://proj.org/operations/projections/index.html)</span> have different properties and may be suitable for different purposes or regions.</span>
+<span id="cb29-484"><a href="#cb29-484" aria-hidden="true" tabindex="-1"></a>Map projections can be set using <span class="in">`coord_sf()`</span>.</span>
+<span id="cb29-485"><a href="#cb29-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-488"><a href="#cb29-488" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-489"><a href="#cb29-489" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: projections</span></span>
+<span id="cb29-490"><a href="#cb29-490" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
+<span id="cb29-491"><a href="#cb29-491" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="st">"medium"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>)</span>
 <span id="cb29-492"><a href="#cb29-492" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-493"><a href="#cb29-493" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- </span><span class="al">###</span><span class="co"> leaflets --&gt;</span></span>
+<span id="cb29-493"><a href="#cb29-493" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(world) <span class="sc">+</span> <span class="fu">geom_sf</span>()</span>
 <span id="cb29-494"><a href="#cb29-494" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-495"><a href="#cb29-495" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- </span><span class="al">###</span><span class="co"> Interactive maps --&gt;</span></span>
-<span id="cb29-496"><a href="#cb29-496" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-497"><a href="#cb29-497" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- projections --&gt;</span></span>
+<span id="cb29-495"><a href="#cb29-495" aria-hidden="true" tabindex="-1"></a>mollweide <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(world) <span class="sc">+</span> </span>
+<span id="cb29-496"><a href="#cb29-496" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span> </span>
+<span id="cb29-497"><a href="#cb29-497" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"+proj=moll"</span>)</span>
 <span id="cb29-498"><a href="#cb29-498" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-499"><a href="#cb29-499" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- </span><span class="al">###</span><span class="co"> Cartograms --&gt;</span></span>
-<span id="cb29-500"><a href="#cb29-500" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-501"><a href="#cb29-501" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- A cartogram is a map with a distorted geometry to illustrate a variable according to the area of a region. --&gt;</span></span>
-<span id="cb29-502"><a href="#cb29-502" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- These can be made with the `cartogram` package. --&gt;</span></span>
+<span id="cb29-499"><a href="#cb29-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-500"><a href="#cb29-500" aria-hidden="true" tabindex="-1"></a>lambert <span class="ot">&lt;-</span>  <span class="fu">ggplot</span>(world) <span class="sc">+</span> </span>
+<span id="cb29-501"><a href="#cb29-501" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span> </span>
+<span id="cb29-502"><a href="#cb29-502" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"+proj=laea"</span>)</span>
+<span id="cb29-503"><a href="#cb29-503" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb29-504"><a href="#cb29-504" aria-hidden="true" tabindex="-1"></a>default<span class="sc">/</span>mollweide<span class="sc">/</span>lambert</span>
+<span id="cb29-505"><a href="#cb29-505" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-506"><a href="#cb29-506" aria-hidden="true" tabindex="-1"></a>Many of the projections have optional parameters to change, for example, the projection centre.</span>
+<span id="cb29-507"><a href="#cb29-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-508"><a href="#cb29-508" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb29-509"><a href="#cb29-509" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb29-510"><a href="#cb29-510" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-511"><a href="#cb29-511" aria-hidden="true" tabindex="-1"></a>Change the projection of one of the small-scale maps you made previously.</span>
+<span id="cb29-512"><a href="#cb29-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-513"><a href="#cb29-513" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-514"><a href="#cb29-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-515"><a href="#cb29-515" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- ## More map types --&gt;</span></span>
+<span id="cb29-516"><a href="#cb29-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-517"><a href="#cb29-517" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- </span><span class="al">###</span><span class="co"> leaflets --&gt;</span></span>
+<span id="cb29-518"><a href="#cb29-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-519"><a href="#cb29-519" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- </span><span class="al">###</span><span class="co"> Interactive maps --&gt;</span></span>
+<span id="cb29-520"><a href="#cb29-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-521"><a href="#cb29-521" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- projections --&gt;</span></span>
+<span id="cb29-522"><a href="#cb29-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-523"><a href="#cb29-523" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- </span><span class="al">###</span><span class="co"> Cartograms --&gt;</span></span>
+<span id="cb29-524"><a href="#cb29-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-525"><a href="#cb29-525" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- A cartogram is a map with a distorted geometry to illustrate a variable according to the area of a region. --&gt;</span></span>
+<span id="cb29-526"><a href="#cb29-526" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- These can be made with the `cartogram` package. --&gt;</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
