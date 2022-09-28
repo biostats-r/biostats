@@ -1,0 +1,472 @@
+---
+editor: visual
+execute:
+  message: false
+---
+
+# Making maps in R
+
+```{r}
+#| label: tidyverse
+#| include: false
+library(tidyverse)
+library(patchwork)
+source("R/setup.R")
+```
+
+Biologists need almost as many maps as geographers, perhaps to show where our field sites are, the range of a species, or the migration path of a bird.
+
+Typically, the data we want to show is added to a base map.
+These can be added to different types of base map
+
+-   vector map showing the coastline, and perhaps political borders, rivers and other features
+
+-   A raster (made of pixels)
+
+::: callout-tip
+## Terminology
+
+Small scale vs large scale? The terminology is confusing!
+
+Map scales are given as a ratio. A world map might have a scale  of 1:100000000. 1 cm on the map represents 100000000 cm on the ground - a ratio of 1/100000000. A small number hence a small-scale map. 
+
+Conversely, a map of a city might have a scale of 1:25000. 1 cm on the map represents 25000 cm on the ground - a ratio of 1/25000. A large number hence a large-scale map. 
+
+Large-scale maps are usually high resolution and cover a small spatial extent.
+:::
+
+
+## Vector base maps
+
+### `rnaturalearth`
+
+The `rnaturalearth` package makes [Natural Earth](http://www.naturalearthdata.com/) data available.
+Natural Earth [features include](https://www.naturalearthdata.com/features/) coastlines, rivers, bathymetry, political borders, roads and railways at scales 1:10m, 1:50m, and 1:110 million.
+The `rnaturalearth` package includes coastline and country data at the small and medium scale.
+A companion package `rnaturalearthhires` has the large scale (1:10 million) data.
+Other datasets from Natural Earth can be downloaded directly from the [website](https://www.naturalearthdata.com/downloads/) or with `ne_download()`
+
+```{r}
+#| label: rnaturalearth
+library(rnaturalearth)
+#install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
+world <- ne_countries(scale = 110, returnclass = "sf") 
+small_scale_map <- ggplot() +
+  geom_sf(data = world) +
+  coord_sf(xlim = c(-20, 50), ylim = c(33, 80)) +
+  ggtitle("Europe")
+
+europe <- ne_countries(scale = 50, returnclass = "sf", continent = "Europe") 
+medium_scale_map <- ggplot() +
+  geom_sf(data = europe) +
+  coord_sf(xlim = c(5, 30), ylim = c(55, 71)) +
+  ggtitle("Norden")
+
+norway <- ne_countries(scale = 10, returnclass = "sf", country = "Norway") 
+
+large_scale_map <- ggplot() +
+  geom_sf(data = norway) +
+  coord_sf(xlim = c(4, 9), ylim = c(59, 62)) +
+  ggtitle("Vestland")
+
+small_scale_map + medium_scale_map + large_scale_map
+```
+
+`coord_sf()` is used to show only part of the map.
+
+::: callout-tip
+## `sf` and `sp` packages
+
+`sf` and `sp` are both packages for geospatial data.
+`sf` is the newer package that supports the "simple features" standard and is what I recommend, but you will find examples using the older `sp` package online.
+Choose one, and don't mix them together.
+:::
+
+### `ggOceanMaps`
+
+`ggOceanMaps` is, as the name suggests, focused on ocean map, with coastlines, bathymetry and also glaciers.
+`ggOceanMaps` requires `ggOceanMapsData`, which needs to be installed separately
+
+```{r}
+#| label: install-ggOceanMapsData
+#| eval: false
+remotes::install_github("MikkoVihtakari/ggOceanMapsData")
+```
+
+Now `ggOceanMaps` is ready to use.
+
+```{r}
+#| label: ggOceanMaps
+#| message: false
+library(ggOceanMaps)
+#limits are given longitude min/max, latitude min/max
+basemap(limits = c(-30, 30, 50, 80),
+        bathymetry = TRUE,
+        glaciers = TRUE)
+```
+
+::: callout-note
+## Exercise
+
+Make a map of the Nordic Seas using either `rnaturalearth` or `ggOceanMaps`.
+
+:::
+
+### Other vector files
+
+The maps in `rnaturalearth` and `ggOceanMaps` are good and the global and regional scale, but lack resolution for local scale maps, and may lack features we are interested in.
+
+For such maps we need to find alternative resources.
+These could be a shapefile, GeoJSON or GeoPackage file, all of which can be imported with `sf::st_read()`.
+
+::: callout-tip
+## Shapefiles
+
+A "shapefile" is not one file but collection of several files in the same directory, only of which has the extension ".shp".
+:::
+
+Good sources of data for Norway include:
+
+-   [GeoNorge](https://www.geonorge.no/)
+-   [Miljødirektoratet](https://kartkatalog.miljodirektoratet.no/)
+
+This is a map of the fylke of Norway
+
+```{r}
+#| label: fylker
+library(sf)
+
+fylker <- st_read("data/fylker2021.json")
+
+ggplot(fylker) + 
+  geom_sf()
+```
+
+::: callout-tip
+## Coordinate reference systems
+
+Most geographic data are given with latitude and longitude, but sometimes, especially for local-regional maps, the data are given as [Universal Transverse Mercator (UTM)](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) coordinates instead.
+
+UTM coordinates are a projection of the spherical Earth onto one of 60 flat surfaces.
+
+Most modern latitude-longitude data will use the WGS84 geodetic standard.
+Older data might use other standards.
+
+You can find the coordinate system of a `sf` class object with `sf::st_crs()`.
+
+```{r}
+sf::st_crs(fylker)
+```
+
+This gives a lot of information, the most important is that the coordinate reference systems is UTM zone 33N.
+
+If we need to change a coordinate reference systems, we can do that with `sf::st_transform()`. 
+You need to know the EPSG code of the target reference system.
+The code for WGS84 is 4326.
+
+```{r}
+fylker2 <- sf::st_transform(fylker, crs = 4326)
+```
+
+`geom_sf()` will automatically transform coordinate systems (if they are specified).
+
+:::
+
+::: callout-note
+## Exercise
+
+Get a `sf` object from `rnaturalearth::rnaturalearth::ne_coastline()` and find out what coordinate reference system it uses.
+
+:::
+
+### `ggmap`
+
+The `ggmap` package lets you use Google Maps and other similar maps as a basemap.
+
+::: callout-tip
+## googlemaps
+
+`ggmap` can use maps and satellite image from Google, but you need to [register](https://mapsplatform.google.com/) for an API key.
+You shouldn't be charged unless you make a lot of maps (more than 20000 per month).
+:::
+
+```{r}
+#| label: ggmap
+#| message: false
+
+library(ggmap)
+
+bergen <- get_map(
+  location = c(5.24,  60.37, 5.36, 60.41),
+  source = "stamen"           
+)
+ggmap(bergen)
+
+```
+
+Maps made with `ggmap` can appear cluttered with unnecessary information.
+
+::: callout-note
+## Exercise
+
+Make a map with `ggmap` that shows your favourite holiday destination.
+
+:::
+
+## Raster basemaps
+
+Rasters can be used to show maps of continuous data, for example, elevation or sea surface temperature.
+
+### `terra`
+
+The `terra` package can import raster images in several formats, including GeoTIFF.
+
+::: callout-tip
+## `terra` vs `raster` packages
+
+The `terra` package is an update to the `raster` package. 
+It should be faster and easier to use.
+
+:::
+
+Rasters imported with `terra` are easy to plot with the base R `plot()` function, but if we want to use `ggplot()`, we have to first convert to an `sf` object.
+
+```{r}
+#| label: terra
+#| message: false
+library(terra)
+
+# import digital elevation model
+norway_dem <- rast("data/50N000E_20101117_gmted_med300.tif")
+
+# crop to vestland and convert to sf object
+vestland_extent <- ext(4.5, 9, 59, 62)
+vestland_dem <- crop(norway_dem, vestland_extent) |> 
+  as.points() |> 
+  st_as_sf() 
+
+#rename the data layer
+names(vestland_dem)[1] <- "Elevation"
+
+# plot
+ggplot(vestland_dem) +
+  geom_sf(aes(colour = Elevation))
+```
+
+If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with `geom_raster()`. 
+Then `ggplot()` just treats it as regular plot and does not know that it is a map.
+
+
+## Adding data
+
+After deciding what type of base map to draw, we can add the data we want to show with the map.
+This can be
+
+-   points, line, and polygons
+
+-   Shaded political units (a cloropleth map)
+
+-   A grid of values (raster)
+
+### points/lines/polygons
+
+Points lines and polygons can be added to the base map.
+If the data are already a `sf` object they can be plotted with `geom_sf()`.
+
+```{r}
+#| label: second-sf
+#| message: false
+# aquaculture sites downloaded from Barentswatch.no/fiskinfo
+aquaculture <- st_read("data/flate-ihht-akvakulturregisteret20220928.geojson")
+
+# with rnaturalearth
+ggplot() +
+  geom_sf(data = europe) +
+  geom_sf(data = aquaculture, colour = "red") +
+  coord_sf(xlim = c(5, 30), ylim = c(55, 71))  
+
+# with ggOceanMaps
+
+basemap(limits = c(-30, 30, 50, 80)) +
+  geom_sf(data = aquaculture, colour = "red")
+
+# with ggmap
+vestland <- get_map(
+  location = c(4,  59, 8, 62),
+  source = "stamen"           
+)
+
+# needs inherit.aes = FALSE
+ggmap(vestland) + 
+ geom_sf(data = aquaculture, colour = "red", inherit.aes = FALSE)
+```
+
+Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom.
+So `geom_spatial_point()` rather than `geom_point()`
+
+```{r}
+#| label: geom-spatial-points
+library(ggspatial)
+
+random_points <- tibble(
+  lat = runif(n = 10, 59, 62), 
+  lon = runif(n = 10, 5, 8)) 
+
+
+
+# ggOceanMaps
+
+basemap(limits = c(-30, 30, 50, 80)) +
+  geom_spatial_point(aes(x = lon, y = lat), 
+             data = random_points,
+             colour = "red") +
+  geom_spatial_path(aes(x = lon, y = lat),
+            data = random_points, 
+            colour = "red")
+
+
+# with ggmaps. just use `geom_point()` Don't need aes as it expects lat, lon
+ggmap(vestland) + 
+  geom_point(data = random_points) +
+  geom_path(data = random_points)
+```
+
+`geom_spatial_point()` is assuming that the data are latitude-longitude coordinates. 
+It they are UTM, you will need to use the `crs` argument with the correct [EPSG code](https://epsg.io/?q=UTM).
+
+::: callout-tip
+## geom_path() vs geom_line()
+
+`geom_path()` draws a line from the first point in the dataset to the second and so on.
+This is useful for plotting on maps (and ordinations).
+
+`geom_line()` draws a line from the left-most point to the next left-most point in the dataset.
+This is useful for plotting timeseries.
+:::
+
+::: callout-tip
+## Degrees minutes and seconds
+
+For latitude-longitude data, we recommend using decimal degrees (Bergen is at 60.3807°N, 5.3323°E).
+But archived data can be in all sorts of unhelpful formats, such as degrees minutes and seconds (Bergen is at 60° 22' 50.52" N 5° 19' 56.28" E).
+If you get data like this, you need to convert it to decimal degrees.
+The `parzer` package can help (it is like `lubridate` for latitude-longitude data).
+For example:
+
+```{r}
+#| label: parzer
+
+parzer::parse_lat("60° 22' 50.52''N")
+
+```
+:::
+
+:::callout-note
+## Exercise
+
+Download and import the [data](https://setac.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fetc.5064&file=etc5064-sup-0002-Supplementary_dataset.xlsx) for [Andvik et al (2021)](https://doi.org/10.1002/etc.5064) on contaminants in orca. 
+
+Make a map to show the hexabromobenzene (HBB) concentrations in the blubber.
+
+:::
+
+### Cloropleth maps
+
+Cloropleth maps are useful for plotting data that have been aggregated to a geographic unit (kommune, fylke, country etc).
+A `sf` object is a special type of data frame that we can `filter()`, `mutate()` or `left_join()` to other data frames.
+We need a tibble with the data that we can join to the `sf` object with the geographic units.
+Here, I generate some random data and join it by Fylkesnummer (Fylkesnavn column in fylke is complicated), and plot it by setting `fill` in the `aes`.
+
+```{r}
+#| label: cloropleth
+random_fylke <- tibble(
+  Fylkesnummer = c("38", "42", "30", "11", "18", "15", "46", "03", "50", "54", "34"),
+  random = runif(11))
+
+fylker |> left_join(random_fylke) |> 
+  ggplot() +
+  geom_sf(aes(fill = random))
+```
+::: callout-note
+## Exercise
+
+With `rnaturalearth` data, make a world map that shows the population (column pop_est) of each country.
+
+:::
+
+### raster
+
+Raster data, perhaps the output of a model, can also be added to maps, using code similar to that for plotting a raster basemap.
+
+
+
+## Scalebars, north pointer etc
+
+Scalebars and north pointers can be added with the `ggspatial` package or the `ggsn` package.
+North points are not very useful if the map has gridlines as these already indicate north.
+A scalebar can be useful, especially for large scale map. On small scale maps, they can be inaccurate as the scale varies.
+
+```{r}
+#| label: annotations
+# with rnaturalearth
+ggplot() +
+  geom_sf(data = norway) +
+  coord_sf(xlim = c(4, 9), ylim = c(59, 62)) +
+  annotation_scale(location = "br") # br = bottom right
+```
+
+## Hints for maps
+
+Keep it simple. Remove unnecessary features (do you really need to show the bathymetry?) and use appropriate scale data for the base map (too high resolution takes a long time to plot and can look worse).
+
+Use facets as necessary (different species, different years etc).
+
+If you need multiple colour scales, the `ggnewscale` package can help.
+Use inset maps (@sec-combining-plots) to show your location in context.
+
+### Projections
+
+The Earth is an oblate sphere and needs projecting to plot in two dimensions. 
+This inevitably leads to distortions, especially for maps with a large extent.
+[Different projections](https://proj.org/operations/projections/index.html) have different properties and may be suitable for different purposes or regions.
+Map projections can be set using `coord_sf()`.
+
+```{r}
+#| label: projections
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+default <- ggplot(world) + geom_sf()
+
+mollweide <- ggplot(world) + 
+  geom_sf() + 
+  coord_sf(crs = "+proj=moll")
+
+
+lambert <-  ggplot(world) + 
+  geom_sf() + 
+  coord_sf(crs = "+proj=laea")
+ 
+default/mollweide/lambert
+ 
+```
+Many of the projections have optional parameters to change, for example, the projection centre.
+
+::: callout-note
+## Exercise
+
+Change the projection of one of the small-scale maps you made previously.
+
+:::
+
+<!-- ## More map types -->
+
+<!-- ### leaflets -->
+
+<!-- ### Interactive maps -->
+
+<!-- projections -->
+
+<!-- ### Cartograms -->
+
+<!-- A cartogram is a map with a distorted geometry to illustrate a variable according to the area of a region. -->
+<!-- These can be made with the `cartogram` package. -->
