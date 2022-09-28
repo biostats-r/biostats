@@ -47,7 +47,7 @@ A companion package `rnaturalearthhires` has the large scale (1:10 million) data
 Other datasets from Natural Earth can be downloaded directly from the [website](https://www.naturalearthdata.com/downloads/) or with `ne_download()`
 
 ```{r}
-#| label: rnaturalearth-make
+#| label: rnaturalearth
 #| results: hide
 library(rnaturalearth)
 #install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
@@ -70,15 +70,8 @@ large_scale_map <- ggplot() +
   coord_sf(xlim = c(4, 9), ylim = c(59, 62)) +
   ggtitle("Vestland")
 
-small_scale_map
-medium_scale_map
-large_scale_map
-```
-
-
-```{r}
-#| label: rnaturalearth
-#| echo: false
+# combine maps with patchwork
+library(patchwork)
 small_scale_map + medium_scale_map + large_scale_map
 ```
 
@@ -463,7 +456,7 @@ This inevitably leads to distortions, especially for maps with a large extent.
 Map projections can be set using `coord_sf()`.
 
 ```{r}
-#| label: projections-make
+#| label: projections
 #| results: hide
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
@@ -478,15 +471,6 @@ lambert <-  ggplot(world) +
   geom_sf() + 
   coord_sf(crs = "+proj=laea")
  
-default
-mollweide
-lambert
-```
-
-
-```{r}
-#| label: projections
-#| echo: false
 default/mollweide/lambert
 ```
 Many of the projections have optional parameters to change, for example, the projection centre.
