@@ -21,20 +21,27 @@ These can be added to different types of base map
 
 -   vector map showing the coastline, and perhaps political borders, rivers and other features
 
+-   A map made of downloaded ties (similar to how Google maps works)
+
 -   A raster (made of pixels)
 
 ::: callout-tip
 ## Terminology
 
-Small scale vs large scale? The terminology is confusing!
+Small scale vs large scale?
+The terminology is confusing!
 
-Map scales are given as a ratio. A world map might have a scale  of 1:100000000. 1 cm on the map represents 100000000 cm on the ground - a ratio of 1/100000000. A small number hence a small-scale map. 
+Map scales are given as a ratio.
+A world map might have a scale of 1:100000000.
+1 cm on the map represents 100000000 cm on the ground - a ratio of 1/100000000.
+A small number hence a small-scale map.
 
-Conversely, a map of a city might have a scale of 1:25000. 1 cm on the map represents 25000 cm on the ground - a ratio of 1/25000. A large number hence a large-scale map. 
+Conversely, a map of a city might have a scale of 1:25000.
+1 cm on the map represents 25000 cm on the ground - a ratio of 1/25000.
+A large number hence a large-scale map.
 
 Large-scale maps are usually high resolution and cover a small spatial extent.
 :::
-
 
 ## Vector base maps
 
@@ -112,7 +119,6 @@ basemap(limits = c(-30, 30, 50, 80),
 ## Exercise
 
 Make a map of the Nordic Seas using either `rnaturalearth` or `ggOceanMaps`.
-
 :::
 
 ### Other vector files
@@ -163,7 +169,7 @@ sf::st_crs(fylker)
 
 This gives a lot of information, the most important is that the coordinate reference systems is UTM zone 33N.
 
-If we need to change a coordinate reference systems, we can do that with `sf::st_transform()`. 
+If we need to change a coordinate reference systems, we can do that with `sf::st_transform()`.
 You need to know the EPSG code of the target reference system.
 The code for WGS84 is 4326.
 
@@ -172,17 +178,71 @@ fylker2 <- sf::st_transform(fylker, crs = 4326)
 ```
 
 `geom_sf()` will automatically transform coordinate systems (if they are specified).
-
 :::
 
 ::: callout-note
 ## Exercise
 
 Get a `sf` object from `rnaturalearth::ne_coastline()` and find out what coordinate reference system it uses.
-
 :::
 
-### `ggmap`
+## Tiled basemaps
+
+Tiled basemaps can be used with either `ggspatial` or `ggmap` packages. 
+I would generally recommend using `ggspatial` as it is consistent with the other mapping tools used here.
+If you use a tiled map background, you should attribute the source (e.g., "Copyright OpenStreetMap contributors" when using an OpenStreetMap-based tiles).
+
+## `ggspatial`
+
+We can add a tiled-basemap to a plot with `annotation_map_tile()`.
+Here, we need to use `coord_sf()` to set the map extent and coordinate reference system as we have not added any `sf` layers with `geom_sf()`.
+Downloaded tiles will be stored in the maps directory (which you may need to make first).
+
+```{r}
+#| fig-width: 8
+#| message: false
+
+ggplot() +
+  annotation_map_tile(
+    type = "osm", 
+    cachedir = "maps/", 
+    zoomin = -1) + # sets the zoom level relative to the default
+  coord_sf(
+    xlim = c(4, 8), 
+    ylim = c(59, 62),
+    crs = 4326)
+
+
+```
+Several different types of maps are available (see `rosm::osm.types()`) and more can be added.
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| message: false
+# rosm::osm.types()
+c("osm", "stamenwatercolor", "cartodark", "cartolight") |> 
+  map(~{
+    ggplot() +
+      annotation_map_tile(
+        type = .x, 
+        cachedir = "maps/", 
+        zoomin = -1) +
+      coord_sf(
+        xlim = c(5.24, 5.36), 
+        ylim = c(60.37, 60.41),
+        crs = 4326) +
+      ggtitle(.x) +
+      theme(axis.text = element_blank(),
+            axis.ticks = element_blank(), 
+            title = element_text(size = 10), 
+            plot.margin = margin(1, 1, 1, 1))
+}) |> 
+  patchwork::wrap_plots()
+
+```
+
+## `ggmap`
 
 The `ggmap` package lets you use Google Maps and other similar maps as a basemap.
 
@@ -212,8 +272,7 @@ Maps made with `ggmap` can appear cluttered with unnecessary information.
 ::: callout-note
 ## Exercise
 
-Make a map with `ggmap` that shows your favourite holiday destination.
-
+Make a tiled map that shows your favourite holiday destination.
 :::
 
 ## Raster basemaps
@@ -227,10 +286,11 @@ The `terra` package can import raster images in several formats, including GeoTI
 ::: callout-tip
 ## `terra` vs `raster` vs `stars` packages
 
-The `terra` package is an update to the widely-used `raster` package. 
+The `terra` package is an update to the widely-used `raster` package.
 It should be faster and easier to use.
 
-`stars` is designed for spatio-temporal arrays. There are some things it cannot do that `terra` can (and vice versa) but has better integration with `sf` and `ggplot2`.
+`stars` is designed for spatio-temporal arrays.
+There are some things it cannot do that `terra` can (and vice versa) but has better integration with `sf` and `ggplot2`.
 :::
 
 Rasters imported with `terra` are easy to plot with the base R `plot()` function, but if we want to use `ggplot()`, we have to first convert to an `sf` object.
@@ -260,26 +320,30 @@ ggplot(vestland_dem) +
 
 ```
 
-If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with `geom_raster()`. 
+If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with `geom_raster()`.
 Then `ggplot()` just treats it as regular plot and does not know that it is a map.
 
 <!-- ```{r} -->
+
 <!-- library(stars) -->
+
 <!-- dem <- read_stars("data/50N000E_20101117_gmted_med300.tif") -->
 
 <!-- #crop dem -->
+
 <!-- bbox <- st_bbox(c(xmin = 4.5, xmax = 9, ymax = 62, ymin = 59), crs = st_crs(4326)) -->
+
 <!-- dem_cropped <- st_crop(x = dem, y = bbox) -->
 
-
 <!-- ggplot() + -->
+
 <!--   geom_stars(data = dem_cropped) + -->
+
 <!--   # geom_sf(data = st_crop(norway, bbox), fill = NA, colour = "white") + -->
+
 <!--   labs(fill = "Elevation m")  -->
 
 <!-- ``` -->
-
-
 
 ## Adding data to the basemap
 
@@ -355,7 +419,7 @@ ggmap(vestland) +
   geom_path(data = random_points)
 ```
 
-`geom_spatial_point()` is assuming that the data are latitude-longitude coordinates. 
+`geom_spatial_point()` is assuming that the data are latitude-longitude coordinates.
 It they are UTM, you will need to use the `crs` argument with the correct [EPSG code](https://epsg.io/?q=UTM).
 
 ::: callout-tip
@@ -385,13 +449,12 @@ parzer::parse_lat("60° 22' 50.52''N")
 ```
 :::
 
-:::callout-note
+::: callout-note
 ## Exercise
 
-Download and import the [data](https://setac.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fetc.5064&file=etc5064-sup-0002-Supplementary_dataset.xlsx) for [Andvik et al (2021)](https://doi.org/10.1002/etc.5064) on contaminants in orca. 
+Download and import the [data](https://setac.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fetc.5064&file=etc5064-sup-0002-Supplementary_dataset.xlsx) for [Andvik et al (2021)](https://doi.org/10.1002/etc.5064) on contaminants in orca.
 
 Make a map to show the hexabromobenzene (HBB) concentrations in the blubber.
-
 :::
 
 ### Cloropleth maps
@@ -411,24 +474,23 @@ fylker |> left_join(random_fylke) |>
   ggplot() +
   geom_sf(aes(fill = random))
 ```
+
 ::: callout-note
 ## Exercise
 
 With `rnaturalearth` data, make a world map that shows the population (column pop_est) of each country.
-
 :::
 
 ### raster
 
 Raster data, perhaps the output of a model, can also be added to maps, using code similar to that for plotting a raster basemap.
 
-
-
 ## Scalebars, north pointer etc
 
 Scalebars and north pointers can be added with the `ggspatial` package or the `ggsn` package.
 North points are not very useful if the map has gridlines as these already indicate north.
-A scalebar can be useful, especially for large scale map. On small scale maps, they can be inaccurate as the scale varies.
+A scalebar can be useful, especially for large scale map.
+On small scale maps, they can be inaccurate as the scale varies.
 
 ```{r}
 #| label: annotations
@@ -441,7 +503,8 @@ ggplot() +
 
 ## Hints for maps
 
-Keep it simple. Remove unnecessary features (do you really need to show the bathymetry?) and use appropriate scale data for the base map (too high resolution takes a long time to plot and can look worse).
+Keep it simple.
+Remove unnecessary features (do you really need to show the bathymetry?) and use appropriate scale data for the base map (too high resolution takes a long time to plot and can look worse).
 
 Use facets as necessary (different species, different years etc).
 
@@ -450,7 +513,7 @@ Use inset maps (@sec-combining-plots) to show your location in context.
 
 ### Projections
 
-The Earth is an oblate sphere and needs projecting to plot in two dimensions. 
+The Earth is an oblate sphere and needs projecting to plot in two dimensions.
 This inevitably leads to distortions, especially for maps with a large extent.
 [Different projections](https://proj.org/operations/projections/index.html) have different properties and may be suitable for different purposes or regions.
 Map projections can be set using `coord_sf()`.
@@ -473,13 +536,13 @@ lambert <-  ggplot(world) +
  
 default/mollweide/lambert
 ```
+
 Many of the projections have optional parameters to change, for example, the projection centre.
 
 ::: callout-note
 ## Exercise
 
 Change the projection of one of the small-scale maps you made previously.
-
 :::
 
 <!-- ## More map types -->
@@ -493,4 +556,18 @@ Change the projection of one of the small-scale maps you made previously.
 <!-- ### Cartograms -->
 
 <!-- A cartogram is a map with a distorted geometry to illustrate a variable according to the area of a region. -->
+
 <!-- These can be made with the `cartogram` package. -->
+
+::: callout-note
+## Further reading
+
+-   [Spatial Data Science](https://r-spatial.org/book/)
+-   [Visualizing geospatial data](https://clauswilke.com/dataviz/geospatial-data.html)
+:::
+
+::: column-margin
+### Contributors {.unlisted .unnumbered}
+
+-   Richard Telford
+:::
