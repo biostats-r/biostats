@@ -192,13 +192,14 @@ Tiled basemaps can be used with either `ggspatial` or `ggmap` packages.
 I would generally recommend using `ggspatial` as it is consistent with the other mapping tools used here.
 If you use a tiled map background, you should attribute the source (e.g., "Copyright OpenStreetMap contributors" when using an OpenStreetMap-based tiles).
 
-## `ggspatial`
+### `ggspatial`
 
 We can add a tiled-basemap to a plot with `annotation_map_tile()`.
 Here, we need to use `coord_sf()` to set the map extent and coordinate reference system as we have not added any `sf` layers with `geom_sf()`.
 Downloaded tiles will be stored in the maps directory (which you may need to make first).
 
 ```{r}
+#| label: anotation-map-tile
 #| fig-width: 8
 #| message: false
 
@@ -210,13 +211,14 @@ ggplot() +
   coord_sf(
     xlim = c(4, 8), 
     ylim = c(59, 62),
-    crs = 4326)
+    crs = 4326) # EPSG code for WGS84
 
 
 ```
 Several different types of maps are available (see `rosm::osm.types()`) and more can be added.
 
 ```{r}
+#| label: map-providers
 #| echo: false
 #| fig-width: 8
 #| message: false
@@ -235,14 +237,14 @@ c("osm", "stamenwatercolor", "cartodark", "cartolight") |>
       ggtitle(.x) +
       theme(axis.text = element_blank(),
             axis.ticks = element_blank(), 
-            title = element_text(size = 10), 
+            title = element_text(size = 11), 
             plot.margin = margin(1, 1, 1, 1))
 }) |> 
   patchwork::wrap_plots()
 
 ```
 
-## `ggmap`
+### `ggmap`
 
 The `ggmap` package lets you use Google Maps and other similar maps as a basemap.
 
@@ -394,6 +396,7 @@ So `geom_spatial_point()` rather than `geom_point()`
 
 ```{r}
 #| label: geom-spatial-points
+#| message: false
 library(ggspatial)
 
 random_points <- tibble(
@@ -466,6 +469,7 @@ Here, I generate some random data and join it by Fylkesnummer (Fylkesnavn column
 
 ```{r}
 #| label: cloropleth
+#| message: false
 random_fylke <- tibble(
   Fylkesnummer = c("38", "42", "30", "11", "18", "15", "46", "03", "50", "54", "34"),
   random = runif(11))
