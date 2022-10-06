@@ -1,0 +1,230 @@
+# Anova
+
+# Before you start {.facta}
+
+You should be familiar with basic statistical theory, basics of R, continuous and  categorical data, hypothesis testing, statistical modelling, and linear models.
+
+## Introduction
+
+Analysis of variance (ANOVA) is a statistical test used to look at differences in means between groups.
+
+The development of ANOVA was historically associated with the development of experimental design, and especially factorial experiments (an experiment to study the effect of two or more factors (categorical predictors) simultaneously on a response variable). It was introduced by the statistician and evolutionary biologist Ronald Fisher. Let's have a look at one of Fisher's own examples:
+
+•	**Experimental design (Figure1)**: a field which had received a dressing of dung, was divided into 36 patches. Within these 36 patches, 12 varieties of potatoes were grown, each variety was grown in 3 patches scattered over the field. Each patch was sub-divided into three lines, one of which received an additional basal dressing only. The other two lines received additional dressings of sulphate and chloride of potash, respectively.
+
+•	**Research question:**   do these varieties have different yields (weight per plant)?  Do these treatments influence these yields?  And are the effects of the treatments different between these varieties of potatoes? 
+
+•	**Data**: is a 12 (variety)-by-9 (treatment per patch) table of potato weights ("yield in lbs. per plant").
+
+</br>
+
+<img src="./figures/figure1.png" width=80%>
+
+*Figure 1: Schematic representation of Fisher’s experiment. The different colors represent the 12 varieties; the 36 squares correspond to the different patches; each patch includes 3 different lines which correspond to the 3 treatments inside each patch (see 1st patch): extra basal dressing in white (BD), sulfate in light green (SO₄²-) and chloride of potash in light orange (KCl). Created by Safa. Chaabani*
+
+ANOVA is used when you have a categorical independent/ predictor/ explanatory variable (with two or more levels; these levels are the treatment in Fisher’s experiment above) and a continuous dependent/response variable (this is yield in Fisher’s example). It is used to test for differences in the means of the response variable broken down by the levels (for example: groups/ sub-populations/ treatments…) of the predictor variable.
+
+Categorical variables can be divided into two types (see Figure 2): Nominal (no particular order) and Ordinal (ordered). 
+
+</br>
+
+<img src="./figures/figure2.png" width=80%>
+
+*Figure 2: Examples of categorical variables.Created by Safa.Chaabani.*
+
+</br>
+ 
+**Example questions from Fisher's experiment:** 
+
+*Do the varieties have different yields (weight per plant)?
+
+*Do these treatments influence these yields?
+
+*Are the effects of the treatments different between these varieties of potatoes? 
+
+
+</br>
+
+## Why is ANOVA called “Analysis of Variance”?
+
+As we said before, ANOVA is all about comparing differences in means among three or more groups in a sample. So, why is ANOVA called “Analysis of Variance” instead of “Analysis of Means”?
+
+The simple answer is: because it analyses variances to compare the means. It estimates a variance and, based on the variance, it allows us to make a conclusion about the comparison of means.
+
+ So, the question is: What does comparing means have to do with variability? In fact, by asking “are the means different?”, we are asking whether the variance between the means of the predictor’s levels/ groups is large compared to the overall variance of the data. We explain this concept more on the rest of this page. 
+ 
+To answer the question, we use two types of variance:
+
+•	**within-group variability:** the variance of the individual observations within a group.
+
+•	**between-group variability:** the variance between the means of the groups
+
+ANOVA compares the between-group variance to the within-group variance. If the former is large compared to the latter, then there is evidence of meaningful difference in the response variable means between the different predictor’s levels/ groups. If the former is small relative to the latter, then there is much less evidence.
+
+
+## <i class="far fa-question-circle"></i> Which questions? 
+ 
+Example questions you can answer with  ANOVA:
+ 
+ *	Do students from a given college consistently outperform students from other colleges?
+ 
+*	Is there a difference in average waiting room times for a set of three different hospitals?
+
+*	Does the presence of other people have an influence on the amount of time taken for a person to help someone in distress (“bystander effect” experiment by Darley and Latané (1969))?
+</br>
+
+The key feature of these examples is that each individual in the dataset falls into a group described by a (categorical) grouping variable (e.g. hospital or college) and for each individual we measure some continuous outcome (e.g. waiting time or grades).
+
+The first two questions are asking about a difference between mean values of some outcome (students’ grades or waiting room time) across multiple groups (colleges or hospitals). 
+
+The last question appears to have no obvious groupings. However, the experimenters answered the question by defining as a grouping variable the number of other people in the room (0, 2, or 4). 
+
+</br>
+
+## Type of data (Anova vs t-test/z-test)
+
+ANOVA is similar in application to techniques such as t-test and z-test .
+ANOVA can be used to look at the difference in mean between two groups. However, it is best applied when more than two groups are being compared.  
+
+A Student’s t-test can only be used for two groups, therefore, if you have more than two groups you may end up with a lot of pair comparisons, which is problematic. The ANOVA, on the other hand, will give a single number (the F-statistic) to help us support, or reject, the null hypothesis.
+
+</br>
+
+<img src="./figures/figure3.png" width=80%>
+
+*Figure 3:Example of data that can be used for ANOVA. The response variable is the number of hours spent in waiting room, and the categorical predictor is the hospital (A, B or C). By Rebecca Barter (2017).*
+
+</br>
+
+## <i class="fas fa-table"></i> The theory of ANOVA {.tabset .tabset-fade}
+
+</br>
+
+### Theory
+
+</br>
+
+#### Assumptions
+
+The use of this statistical technique involves three key assumptions:
+
+**Assumption 1:** Independence of the data among and within groups or samples. Which means samples should be selected randomly. This is ensured during the study design phase.
+
+**Assumption 2:** Normal distribution of the residuals. Can be checked using plots like normal QQ-plot or using a normality test (e.g. Kolmogorov-Smirnov or the Shapiro-Wilk test).
+
+**Assumption 3:** Homogeneity of variances: each group has the same variance. Can be tested using common tests, such as the Bartlett test.
+
+As mentioned before, ANOVA compares the between-group variability to the within-group variability. The basic idea is that if the between-group variance is greater than the within-group variance (residual or unexplained variation), then we have evidence that the difference between the groups is not simply reflecting random noise or due to chance. You can consider this as a signal (between-group variance) to noise (within-group variance) ratio. We want more signal relative to the noise.
+
+In order to compare the variances for an ANOVA, we can construct something called an ANOVA table. It includes several different components. 
+
+**between group sum of squares (SSb):** the squared distances from the group means to the grand mean (average of all individual plants)
+
+**within group sum of squares (SSe):** the squared distances from each individual to their group mean.
+
+Quantifying the within and between group variability is typically done by calculating a mean sum of squares (MS), which is created by dividing sum of squares by the degrees of freedom (number of observations - 1).
+
+To spell it out mathematically, we can write these entities as they are represented in the ANOVA table below. 
+
+```{r add-data, echo=FALSE, message=FALSE, warning=FALSE}
+library(kableExtra)
+
+table1<-read.csv("./Files/table1.csv",header=T,sep=";")
+colnames(table1)[1]<-"Source of variation"
+table1 %>%
+  kbl(align = "c") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "responsive"))%>%
+  row_spec(0, color = "black", background = "white") %>%
+
+  row_spec(1, background = "white")%>%
+row_spec(2, background = "lightgrey")%>%
+  row_spec(3, background = "white")
+```
+
+
+Where df is the degrees of freedom, SS is the sum of squares, MS is the mean sum of squares, F is the Fisher test statistics (more details later), m is the number of categories or groups, n is the total number of observations, Y or $Y_{ij}$ is the jth observation in the ith group, $\bar{Y}\ $ is the sample mean of the observed data for each  group or category, $\bar{\bar{Y}}\ $  is  the grand mean of all the observations in the dataset.  
+
+
+### Worked example
+
+Let’s consider an experiment designed to test plant yields from a control and two different fertiliser treatments. The plants from each group were collected, and the dry weight of the plants are measured (grams).  Figure 4 illustrates two possible outcomes of this experiment and gives an example of the between- and within- group variability. 
+
+```{r echo=T, fig.show='hide',message=FALSE, warning=FALSE, include=T}
+
+
+## This script is to reproduce Figure 4 in R
+
+PlantGrowth<-read.csv("./Files/plgrowth.csv",header=T,sep=",")
+
+PlantGrowth2<-read.csv("./Files/plgrowth2.csv",header=T,sep=";")
+
+library(ggplot2)
+library(grid)
+library(pBrackets) 
+library(gridExtra)
+
+
+annotation <- data.frame(
+  x = c(2.6,2.8),
+  y = c(4.5,5.5),
+  label = c("Within", "Between")
+)
+annotation1 <- data.frame(
+  x = c(1.6,2.6),
+  y = c(5.25,5.1),
+  label = c("Within", "Between")
+)
+
+plot1<-ggplot(PlantGrowth, aes(x = group, y = weight))+
+   geom_point(fill="blue")+ 
+  geom_segment(aes(x=0.9,y=5.032, xend=1.1,yend=5.032), color="red", size=2)+
+   geom_segment(aes(x=1.9,y=4.661, xend=2.1,yend=4.661), color="red", size=2)+
+  geom_segment(aes(x=2.9,y=5.526, xend=3.1,yend=5.526), color="red", size=2)+
+  geom_text(data=annotation1, aes( x=x, y=y, label=label), color="black",size=3 , fontface="bold" )+
+  theme_bw()+labs( title="A",y="Weight (g)", x = "Group")
+
+
+plot2<-ggplot(PlantGrowth2, aes(x = group, y = weight)) +
+geom_point()+ geom_segment(aes(x=0.9,y=5.32, xend=1.1,yend=5.32), color="red", size=2)+
+ geom_segment(aes(x=1.9,y=4.56, xend=2.1,yend=4.56), color="red", size=2)+
+  geom_segment(aes(x=2.9,y=6.43, xend=3.1,yend=6.43), color="red", size=2)+
+  geom_text(data=annotation, aes( x=x, y=y, label=label),                 
+            color="black", 
+            size=3 , fontface="bold" )+
+  theme_bw()+labs(title = "B",y="", x = "Group")
+
+
+grid.arrange(plot1, plot2,ncol=2)
+
+grid.brackets(93, 55, 93, 224, lwd=2, col="darkolivegreen3")
+grid.brackets(229, 108, 229, 185, lwd=2, col="mediumorchid4")
+
+grid.brackets(498, 82, 498, 233, lwd=2, col="mediumorchid4")
+grid.brackets(424, 197, 424, 274, lwd=2, col="darkolivegreen3")
+
+```
+
+</br>
+
+<img src="./figures/fig44.png" width=80%>
+
+*Figure 4: Plant weights (g) (y-axis) from the fertilizer experiment. The red lines correspond to the groups means, the dots correspond to the individual observations inside each group: (x-axis) control, treatment 1 and treatment 2. In Figure A, there is low between group variation compared to the residual (unexplained) variation (variability between < variability within); In Figure B, there is high variation between-groups compared to the residual (unexplained) variation (variability between> variability within). Data by Safa Chaabani.*
+
+</br>
+
+<img src="./figures/fig6.png" width=90%>
+
+*Figure 5:Example of calculation of SSt, SSb and SSe: the dashed blue line is the average of all observations or grand mean $\bar{\bar{Y}}$. The red lines are the groups means ($\bar{Y}$ctr; $\bar{Y}$trt1 and $\bar{Y}$trt2). The three groups have 10 observations each $(n_i=10)$, and the total number of observations is then n=30. In this example: SSt= $\sum (observation- grand mean)^2$. SSb =$\sum (n_i )(group mean- grand mean)^2$. SSe= $\sum (observation- group mean)^2$. Created by Safa Chaabani.*
+
+</br>
+
+## <i class="fas fa-table"></i> F-tests {.tabset .tabset-fade}
+
+### Theory
+
+The F-statistic is a ratio of two variances. In ANOVA, the F-test is used to determine whether group means are equal (the null hypothesis), and it is the ratio of between to within mean sum of squares (MSb/MSe). 
+The basic structure of the statistical test is similar to a signal-to-noise ratio. The ‘signal’ corresponds to a measure of the difference between the groups. The ‘noise’ is essentially the standard error (of the difference). The standard error (SE) of a difference measure is directly related to the variation within the groups, and inversely to the square root of the sample size (n).
+
+$$ 
+Noise\ or\ (SE)\ =\frac{\sigma}{\sqrt(n)}
+$$
