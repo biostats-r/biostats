@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.37">
+<meta name="generator" content="quarto-0.9.592">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Statistics in R - 5&nbsp; Binomial generalized linear models</title>
+<title>Statistics in R - 8&nbsp; Binomial generalized linear models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -84,6 +84,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./2.X_mle.html" rel="next">
 <link href="./2.X_introduction_to_GLMs.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -94,8 +95,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -120,7 +121,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span>
+<span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -165,44 +166,74 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Descriptive statistics</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Introduction</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.2_descriptive_statistics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></a>
+  <a href="./0.1_introduction_to_stats.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to statistics</span></a>
   </div>
 </li>
-      </ul>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0.2_types_of_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Types of data</span></a>
+  </div>
+</li>
+    </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Regression models</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Descriptive statistics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.1_simple_linear_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></a>
+  <a href="./1.0_descriptive_statistics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Regression models</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.X_introduction_to_GLMs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></a>
+  <a href="./2.1_simple_linear_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.X_binomial_GLM.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></a>
+  <a href="./2.2_anova.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Anova</span></a>
   </div>
 </li>
-      </ul>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2.X_introduction_to_GLMs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2.X_binomial_GLM.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2.X_mle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Maximum likelihood estimation”</span></a>
+  </div>
+</li>
+    </ul>
 </li>
     </ul>
 </div>
@@ -210,48 +241,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">5.1</span> Introduction</a></li>
-  <li><a href="#which-questions" id="toc-which-questions" class="nav-link" data-scroll-target="#which-questions"> <span class="header-section-number">5.2</span> <i class="far fa-question-circle"></i> Which questions?</a></li>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">8.1</span> Introduction</a></li>
+  <li><a href="#which-questions" id="toc-which-questions" class="nav-link" data-scroll-target="#which-questions"> <span class="header-section-number">8.2</span> <i class="far fa-question-circle"></i> Which questions?</a></li>
   <li>
-<a href="#type-of-data" id="toc-type-of-data" class="nav-link" data-scroll-target="#type-of-data"> <span class="header-section-number">5.3</span> <i class="fas fa-table"></i> Type of data</a>
+<a href="#type-of-data" id="toc-type-of-data" class="nav-link" data-scroll-target="#type-of-data"> <span class="header-section-number">8.3</span> <i class="fas fa-table"></i> Type of data</a>
   <ul class="collapse">
-<li><a href="#theory" id="toc-theory" class="nav-link" data-scroll-target="#theory"> <span class="header-section-number">5.3.1</span> Theory</a></li>
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"> <span class="header-section-number">5.3.2</span> Worked example</a></li>
+<li><a href="#theory" id="toc-theory" class="nav-link" data-scroll-target="#theory"> <span class="header-section-number">8.3.1</span> Theory</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"> <span class="header-section-number">8.3.2</span> Worked example</a></li>
   </ul>
 </li>
   <li>
-<a href="#model-details" id="toc-model-details" class="nav-link" data-scroll-target="#model-details"> <span class="header-section-number">5.4</span> <i class="fas fa-project-diagram"></i> Model details</a>
+<a href="#model-details" id="toc-model-details" class="nav-link" data-scroll-target="#model-details"> <span class="header-section-number">8.4</span> <i class="fas fa-project-diagram"></i> Model details</a>
   <ul class="collapse">
-<li><a href="#theory-1" id="toc-theory-1" class="nav-link" data-scroll-target="#theory-1"> <span class="header-section-number">5.4.1</span> Theory</a></li>
-  <li><a href="#worked-example-1" id="toc-worked-example-1" class="nav-link" data-scroll-target="#worked-example-1"> <span class="header-section-number">5.4.2</span> Worked example</a></li>
+<li><a href="#theory-1" id="toc-theory-1" class="nav-link" data-scroll-target="#theory-1"> <span class="header-section-number">8.4.1</span> Theory</a></li>
+  <li><a href="#worked-example-1" id="toc-worked-example-1" class="nav-link" data-scroll-target="#worked-example-1"> <span class="header-section-number">8.4.2</span> Worked example</a></li>
   </ul>
 </li>
   <li>
-<a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters"> <span class="header-section-number">5.5</span> <i class="fas fa-laptop"></i> Parameters</a>
+<a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters"> <span class="header-section-number">8.5</span> <i class="fas fa-laptop"></i> Parameters</a>
   <ul class="collapse">
-<li><a href="#theory-2" id="toc-theory-2" class="nav-link" data-scroll-target="#theory-2"> <span class="header-section-number">5.5.1</span> Theory</a></li>
-  <li><a href="#worked-example-2" id="toc-worked-example-2" class="nav-link" data-scroll-target="#worked-example-2"> <span class="header-section-number">5.5.2</span> Worked example</a></li>
+<li><a href="#theory-2" id="toc-theory-2" class="nav-link" data-scroll-target="#theory-2"> <span class="header-section-number">8.5.1</span> Theory</a></li>
+  <li><a href="#worked-example-2" id="toc-worked-example-2" class="nav-link" data-scroll-target="#worked-example-2"> <span class="header-section-number">8.5.2</span> Worked example</a></li>
   </ul>
 </li>
   <li>
-<a href="#quantify-uncertainty" id="toc-quantify-uncertainty" class="nav-link" data-scroll-target="#quantify-uncertainty"> <span class="header-section-number">5.6</span> <i class="fas fa-arrows-alt-h"></i> Quantify uncertainty</a>
+<a href="#quantify-uncertainty" id="toc-quantify-uncertainty" class="nav-link" data-scroll-target="#quantify-uncertainty"> <span class="header-section-number">8.6</span> <i class="fas fa-arrows-alt-h"></i> Quantify uncertainty</a>
   <ul class="collapse">
-<li><a href="#theory-3" id="toc-theory-3" class="nav-link" data-scroll-target="#theory-3"> <span class="header-section-number">5.6.1</span> Theory</a></li>
-  <li><a href="#worked-example-3" id="toc-worked-example-3" class="nav-link" data-scroll-target="#worked-example-3"> <span class="header-section-number">5.6.2</span> Worked example</a></li>
+<li><a href="#theory-3" id="toc-theory-3" class="nav-link" data-scroll-target="#theory-3"> <span class="header-section-number">8.6.1</span> Theory</a></li>
+  <li><a href="#worked-example-3" id="toc-worked-example-3" class="nav-link" data-scroll-target="#worked-example-3"> <span class="header-section-number">8.6.2</span> Worked example</a></li>
   </ul>
 </li>
   <li>
-<a href="#model-checking" id="toc-model-checking" class="nav-link" data-scroll-target="#model-checking"> <span class="header-section-number">5.7</span> <i class="fas fa-tasks"></i> Model checking</a>
+<a href="#model-checking" id="toc-model-checking" class="nav-link" data-scroll-target="#model-checking"> <span class="header-section-number">8.7</span> <i class="fas fa-tasks"></i> Model checking</a>
   <ul class="collapse">
-<li><a href="#theory-4" id="toc-theory-4" class="nav-link" data-scroll-target="#theory-4"> <span class="header-section-number">5.7.1</span> Theory</a></li>
-  <li><a href="#worked-example-4" id="toc-worked-example-4" class="nav-link" data-scroll-target="#worked-example-4"> <span class="header-section-number">5.7.2</span> Worked example</a></li>
+<li><a href="#theory-4" id="toc-theory-4" class="nav-link" data-scroll-target="#theory-4"> <span class="header-section-number">8.7.1</span> Theory</a></li>
+  <li><a href="#worked-example-4" id="toc-worked-example-4" class="nav-link" data-scroll-target="#worked-example-4"> <span class="header-section-number">8.7.2</span> Worked example</a></li>
   </ul>
 </li>
   <li>
-<a href="#draw-conclusions" id="toc-draw-conclusions" class="nav-link" data-scroll-target="#draw-conclusions"> <span class="header-section-number">5.8</span> <i class="far fa-lightbulb"></i> Draw conclusions</a>
+<a href="#draw-conclusions" id="toc-draw-conclusions" class="nav-link" data-scroll-target="#draw-conclusions"> <span class="header-section-number">8.8</span> <i class="far fa-lightbulb"></i> Draw conclusions</a>
   <ul class="collapse">
-<li><a href="#theory-5" id="toc-theory-5" class="nav-link" data-scroll-target="#theory-5"> <span class="header-section-number">5.8.1</span> Theory</a></li>
-  <li><a href="#worked-example-5" id="toc-worked-example-5" class="nav-link" data-scroll-target="#worked-example-5"> <span class="header-section-number">5.8.2</span> Worked example</a></li>
+<li><a href="#theory-5" id="toc-theory-5" class="nav-link" data-scroll-target="#theory-5"> <span class="header-section-number">8.8.1</span> Theory</a></li>
+  <li><a href="#worked-example-5" id="toc-worked-example-5" class="nav-link" data-scroll-target="#worked-example-5"> <span class="header-section-number">8.8.2</span> Worked example</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -259,7 +290,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title d-none d-lg-block">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span>
+<span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span>
 </h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
@@ -286,8 +317,8 @@ Before you start
 <p>You should also review the basics of the Binomial distribution <a href="">here</a>. EGS: ADD LINK.</p>
 </div>
 </div>
-<section id="introduction" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="introduction">
-<span class="header-section-number">5.1</span> Introduction</h2>
+<section id="introduction" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="introduction">
+<span class="header-section-number">8.1</span> Introduction</h2>
 <p>In this section, we will look at how we can use a Binomial Generalized Linear Model (GLM) to analyze data with a binary response and numeric explanatory variables.</p>
 <p></p>
 <p>On this page, we focus on one particular type of GLM, the Binomial GLM. The Binomial GLM fits a non-linear line to:</p>
@@ -301,7 +332,7 @@ Before you start
 <div class="cell-output-display">
 <div id="fig-nonlinear-plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-nonlinear-plot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.1: Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data.</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.1: Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -310,8 +341,8 @@ Before you start
 <p>A large number of the models that are used in biological research are GLMs. This is because a lot of biological data would not meet the assumptions required for a linear model, for example survival data, occupancy data, or presence of a particular gene are all examples of binary responses.</p>
 <p>As a result of their wide usage, GLMs are a key part of modern quantitative biology!</p>
 <p></p>
-</section><section id="which-questions" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="which-questions">
-<span class="header-section-number">5.2</span> <i class="far fa-question-circle"></i> Which questions?</h2>
+</section><section id="which-questions" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="which-questions">
+<span class="header-section-number">8.2</span> <i class="far fa-question-circle"></i> Which questions?</h2>
 <p>Example questions that can be answered with the Binomial GLM:</p>
 <p>Inference</p>
 <ul>
@@ -323,11 +354,11 @@ Before you start
 <li>What is the mortality of beetles exposed to different concentrations of carbon disulfide <span class="math inline">\(CS_2\)</span>?</li>
 </ul>
 <p></p>
-</section><section id="type-of-data" class="level2 tabset tabset-fade" data-number="5.3"><h2 class="tabset tabset-fade anchored" data-number="5.3" data-anchor-id="type-of-data">
-<span class="header-section-number">5.3</span> <i class="fas fa-table"></i> Type of data</h2>
+</section><section id="type-of-data" class="level2 tabset tabset-fade" data-number="8.3"><h2 class="tabset tabset-fade anchored" data-number="8.3" data-anchor-id="type-of-data">
+<span class="header-section-number">8.3</span> <i class="fas fa-table"></i> Type of data</h2>
 <p></p>
-<section id="theory" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="theory">
-<span class="header-section-number">5.3.1</span> Theory</h3>
+<section id="theory" class="level3" data-number="8.3.1"><h3 data-number="8.3.1" class="anchored" data-anchor-id="theory">
+<span class="header-section-number">8.3.1</span> Theory</h3>
 <p>As mentioned above, in a Binomial GLM the response data are always the result of binary trials. The values of the response variable should have either only two outcomes or be the result of many trials (a number of successes and number of failures or a proportion). Examples of this type of data would be:</p>
 <ul>
 <li>Number that survived and number that died</li>
@@ -338,15 +369,15 @@ Before you start
 </ul>
 <p>Just as was stated for the linear models, <strong>always remember to check that the way your variables are classified in R is the same as the format you expect.</strong></p>
 <p>In this case, there are several options that will work. The response variable <span class="math inline">\(Y\)</span> can be stored as a factor, an integer, or as a continuous numeric variable.</p>
-</section><section id="worked-example" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="worked-example">
-<span class="header-section-number">5.3.2</span> Worked example</h3>
+</section><section id="worked-example" class="level3" data-number="8.3.2"><h3 data-number="8.3.2" class="anchored" data-anchor-id="worked-example">
+<span class="header-section-number">8.3.2</span> Worked example</h3>
 <p>For this worked example, we will try to find out if/how body weight (kg) influences the survival probability of Soay sheep.</p>
 <div class="cell">
 
 </div>
 <p>Biologically, it is expected that smaller sheep would find it harder to survive harsh winters as they have fewer reserves (such as body fat) than larger sheep.</p>
-<section id="introduction-to-the-data" class="level4" data-number="5.3.2.1"><h4 data-number="5.3.2.1" class="anchored" data-anchor-id="introduction-to-the-data">
-<span class="header-section-number">5.3.2.1</span> Introduction to the data</h4>
+<section id="introduction-to-the-data" class="level4" data-number="8.3.2.1"><h4 data-number="8.3.2.1" class="anchored" data-anchor-id="introduction-to-the-data">
+<span class="header-section-number">8.3.2.1</span> Introduction to the data</h4>
 <p>This data for this example are from 1986 to 1996 for a population of Soay sheep from the St.&nbsp;Kilda islands in Scotland, UK.<br>
 They have been monitored following a standardised protocol since 1985. Each year the sheep are caught, weighed, and the population size is counted. Information on the project can be found <a href="http://soaysheep.biology.ed.ac.uk/">here</a>. These data are open source and can be found in the appendix of this <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/j.1600-0706.2012.00035.">paper</a> EGS: CITE COULSON 2012.</p>
 <p>The data consists of five variables:</p>
@@ -358,7 +389,7 @@ They have been monitored following a standardised protocol since 1985. Each year
 <li>Population size (PopSize) - number of females counted that year</li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sheep_data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sheep_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,328 × 5
     Year   Age Survival Weight PopSize
@@ -381,23 +412,23 @@ They have been monitored following a standardised protocol since 1985. Each year
 <p>To begin the analysis, let us first have a look at the data after it has been imported. We do this by looking at the raw data and making a plot. It can be easier to see the data if we jitter it because many data points sit on top of each other.</p>
 <p>EGS: NEED TO ADD LINE TO READ IN DATA YOU CAN GET IT FROM THE PAPER LINK ABOVE THEN HOST IT.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot1</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span> <span class="fu">geom_point</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">+</span></span>
-<span> <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight of sheep (kg)"</span>,</span>
-<span>      y <span class="op">=</span> <span class="st">"Survival of sheep"</span>,</span>
-<span>      tag <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">plot2</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span> <span class="fu">geom_jitter</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">+</span></span>
-<span> <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight of sheep (kg)"</span>,</span>
-<span>      y <span class="op">=</span> <span class="st">"Survival of sheep"</span>,</span>
-<span>      tag <span class="op">=</span> <span class="st">"b"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">plot1</span> <span class="op">+</span> <span class="va">plot2</span> <span class="op">+</span> <span class="fu">plot_layout</span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">plot1</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+ <span class="fu">geom_point</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">+</span>
+ <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight of sheep (kg)"</span>,
+      y <span class="op">=</span> <span class="st">"Survival of sheep"</span>,
+      tag <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span>
+
+<span class="va">plot2</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+ <span class="fu">geom_jitter</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">+</span>
+ <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight of sheep (kg)"</span>,
+      y <span class="op">=</span> <span class="st">"Survival of sheep"</span>,
+      tag <span class="op">=</span> <span class="st">"b"</span><span class="op">)</span>
+
+<span class="va">plot1</span> <span class="op">+</span> <span class="va">plot2</span> <span class="op">+</span> <span class="fu">plot_layout</span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-sheep-data-plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-sheep-data-plot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.2: Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.2: Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -405,11 +436,11 @@ They have been monitored following a standardised protocol since 1985. Each year
 <p>Since we are interested in <strong>whether weight (kg) influences the survival of sheep</strong>, we will need two of the five variables in the data: <code>Weight</code> and <code>Survival</code>. We will not need <code>Year</code>, <code>PopSize</code> and <code>Age</code>.</p>
 <p>The response variable then is <code>Survival</code>, which is a binary variable (it has two outcomes 0/1). The explanatory variable is <code>Weight</code>, which is continuous numeric.</p>
 <p></p>
-</section></section></section><section id="model-details" class="level2 tabset tabset-fade" data-number="5.4"><h2 class="tabset tabset-fade anchored" data-number="5.4" data-anchor-id="model-details">
-<span class="header-section-number">5.4</span> <i class="fas fa-project-diagram"></i> Model details</h2>
+</section></section></section><section id="model-details" class="level2 tabset tabset-fade" data-number="8.4"><h2 class="tabset tabset-fade anchored" data-number="8.4" data-anchor-id="model-details">
+<span class="header-section-number">8.4</span> <i class="fas fa-project-diagram"></i> Model details</h2>
 <p></p>
-<section id="theory-1" class="level3" data-number="5.4.1"><h3 data-number="5.4.1" class="anchored" data-anchor-id="theory-1">
-<span class="header-section-number">5.4.1</span> Theory</h3>
+<section id="theory-1" class="level3" data-number="8.4.1"><h3 data-number="8.4.1" class="anchored" data-anchor-id="theory-1">
+<span class="header-section-number">8.4.1</span> Theory</h3>
 <p></p>
 <p>A Binomial GLM is just like all other statistical models, it aims to represent mathematically how the data that are being modelled were generated. In this case, it is assumed that the data were generated by a Binomial distribution and influenced by a relationship with some explanatory variables.</p>
 <p>The sections below detail the three components of a GLM and describe what form they take for the Binomial GLM:</p>
@@ -543,26 +574,26 @@ log(\lambda) = log(-log(1-p))
 <p>Both modes of fitting are shown below.</p>
 <p></p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">### single trial version</span></span>
-<span></span>
-<span><span class="va">glm_model_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">response</span> <span class="op">~</span> <span class="va">explanatory</span>, data <span class="op">=</span> <span class="va">your_data</span>,</span>
-<span>                     family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">### multiple trials version</span></span>
-<span></span>
-<span><span class="va">glm_multiple_trials</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">successes</span>, <span class="va">failures</span><span class="op">)</span> <span class="op">~</span> <span class="va">explanatory</span>, </span>
-<span>                           data <span class="op">=</span> <span class="va">example_data2</span>,</span>
-<span>                     family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">### single trial version</span>
+
+<span class="va">glm_model_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">response</span> <span class="op">~</span> <span class="va">explanatory</span>, data <span class="op">=</span> <span class="va">your_data</span>,
+                     family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co">### multiple trials version</span>
+
+<span class="va">glm_multiple_trials</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">successes</span>, <span class="va">failures</span><span class="op">)</span> <span class="op">~</span> <span class="va">explanatory</span>, 
+                           data <span class="op">=</span> <span class="va">example_data2</span>,
+                     family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Running the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> as illustrated above runs the GLM and saves the output as a <code>glm_model_object</code>.</p>
 <p>We can then view our results from the model object by using the function <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code>. This will take the output of the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>, the model object, as its argument and extracts the maximum likelihood estimates of <span style="color:orange"><span class="math inline">\(\alpha\)</span></span> and <span style="color:blue"><span class="math inline">\(\beta\)</span></span>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) explanatory 
  -1.5908333   0.2032877 </code></pre>
 </div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_multiple_trials</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_multiple_trials</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> (Intercept)  explanatory 
  0.487107213 -0.005335974 </code></pre>
@@ -570,31 +601,31 @@ log(\lambda) = log(-log(1-p))
 </div>
 <p>You can see that the format of the output is the same regardless of whether it is a Binomial GLM on a set of single trials, or multiple trials.</p>
 <p></p>
-</section><section id="worked-example-1" class="level3" data-number="5.4.2"><h3 data-number="5.4.2" class="anchored" data-anchor-id="worked-example-1">
-<span class="header-section-number">5.4.2</span> Worked example</h3>
+</section><section id="worked-example-1" class="level3" data-number="8.4.2"><h3 data-number="8.4.2" class="anchored" data-anchor-id="worked-example-1">
+<span class="header-section-number">8.4.2</span> Worked example</h3>
 <p></p>
 <p>This worked example demonstrates how to fit a GLM in <span class="math inline">\(R\)</span> using the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> function for the Soay sheep data example. This is an example of a single trial question.</p>
 <p>In this example, we are asking: <strong>Does body weight affect the survival probability of sheep?</strong></p>
 <p>The survival of the sheep (0 or 1) is the response (<span class="math inline">\(Y\)</span>) and body weight (kg) (<span class="math inline">\(X\)</span>) is the explanatory variable.</p>
 <p>We put these variables in the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> function in the below format.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sheep_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">Survival</span> <span class="op">~</span> <span class="va">Weight</span>, data <span class="op">=</span> <span class="va">sheep_data</span>, </span>
-<span>                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sheep_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">Survival</span> <span class="op">~</span> <span class="va">Weight</span>, data <span class="op">=</span> <span class="va">sheep_data</span>, 
+                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We have run the model and have assigned it to an object name. A logit link was used as these data do not come from a latent continuous variable or from counts, so we can use the default/canonical link function here.</p>
 <p>Let us take a look at the maximum likelihood estimates of our model parameters (<span style="color:orange"><span class="math inline">\(\alpha\)</span></span>, <span style="color:blue"><span class="math inline">\(\beta\)</span></span>) using the <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)      Weight 
  -2.1197077   0.1817796 </code></pre>
 </div>
 </div>
-</section></section><section id="parameters" class="level2 tabset tabset-fade" data-number="5.5"><h2 class="tabset tabset-fade anchored" data-number="5.5" data-anchor-id="parameters">
-<span class="header-section-number">5.5</span> <i class="fas fa-laptop"></i> Parameters</h2>
+</section></section><section id="parameters" class="level2 tabset tabset-fade" data-number="8.5"><h2 class="tabset tabset-fade anchored" data-number="8.5" data-anchor-id="parameters">
+<span class="header-section-number">8.5</span> <i class="fas fa-laptop"></i> Parameters</h2>
 <p></p>
-<section id="theory-2" class="level3" data-number="5.5.1"><h3 data-number="5.5.1" class="anchored" data-anchor-id="theory-2">
-<span class="header-section-number">5.5.1</span> Theory</h3>
+<section id="theory-2" class="level3" data-number="8.5.1"><h3 data-number="8.5.1" class="anchored" data-anchor-id="theory-2">
+<span class="header-section-number">8.5.1</span> Theory</h3>
 <p>We introduced the model parameters of a Binomial GLM in the model theory section above: <span style="color:orange"><span class="math inline">\(\alpha\)</span></span> = the intercept; <span style="color:blue"><span class="math inline">\(\beta_i\)</span></span> = the slope of the model line (steepness/gradient).</p>
 <p></p>
 <p><strong>But what do these parameters really mean?</strong></p>
@@ -631,7 +662,7 @@ p = \frac{1}{1 + e^{- \eta}} = \frac{1}{1 + e^{-(\color{orange}\alpha + \color{b
 <div class="cell-output-display">
 <div id="fig-log-odds-plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-log-odds-plot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.3: Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.3: Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -646,16 +677,16 @@ p = \frac{1}{1+e^{-(\alpha)}}
 \]</span></p>
 <p>This can be done in R.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># estimate of the intercept on logit scale (log odds of y)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># estimate of the intercept on logit scale (log odds of y)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) 
   -1.590833 </code></pre>
 </div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># convert to response scale (a probability of success)</span></span>
-<span></span>
-<span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># convert to response scale (a probability of success)</span>
+
+<span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) 
   0.1692667 </code></pre>
@@ -663,39 +694,39 @@ p = \frac{1}{1+e^{-(\alpha)}}
 </div>
 <p></p>
 <p><strong><span style="color:blue"><span class="math inline">\(\beta\)</span>, the slope</span></strong></p>
-<p>On the response scale the slope parameter has a somewhat different meaning. On the logit scale, the slope captured a linear relationship. However, on the response scale, the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is not linear. As a result, the gradient of the model line will be different for different <span class="math inline">\(X\)</span> values (see <a href="#fig-response-scale-example">Figure&nbsp;<span>5.4</span></a>).</p>
+<p>On the response scale the slope parameter has a somewhat different meaning. On the logit scale, the slope captured a linear relationship. However, on the response scale, the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is not linear. As a result, the gradient of the model line will be different for different <span class="math inline">\(X\)</span> values (see <a href="#fig-response-scale-example">Figure&nbsp;<span>8.4</span></a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-response-scale-example" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-response-scale-example-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.4: Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.4: Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p></p>
 <p>The estimate of the <span class="math inline">\(\beta\)</span> coefficient on the logit scale, will tell you about the strength and direction of the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. This is the case even though this relationship will not be linear on the response scale.</p>
-<p>To see the change in slope of the model line on the response scale you can predict values of <span class="math inline">\(Y\)</span> on the response scale and either plot the relationship (like above in <a href="#fig-response-scale-example">Figure&nbsp;<span>5.4</span></a>) or simply look at the change between two <span class="math inline">\(X\)</span> values.</p>
+<p>To see the change in slope of the model line on the response scale you can predict values of <span class="math inline">\(Y\)</span> on the response scale and either plot the relationship (like above in <a href="#fig-response-scale-example">Figure&nbsp;<span>8.4</span></a>) or simply look at the change between two <span class="math inline">\(X\)</span> values.</p>
 <p>e.g.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predict log odds of Y when X = 2 or X = 3</span></span>
-<span><span class="co"># use a linear equation for this</span></span>
-<span></span>
-<span><span class="va">odds_y_x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">odds_y_x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="fl">3</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># estimate of probability of success when X = 2</span></span>
-<span><span class="co"># take inverse of the logit link</span></span>
-<span></span>
-<span><span class="va">prob_X2</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">odds_y_x2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># estimate of probability of success when X = 3</span></span>
-<span></span>
-<span><span class="va">prob_X3</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">odds_y_x3</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># slope from X = 2 to X = 3 on response scale</span></span>
-<span></span>
-<span><span class="va">prob_X3</span> <span class="op">-</span> <span class="va">prob_X2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># predict log odds of Y when X = 2 or X = 3</span>
+<span class="co"># use a linear equation for this</span>
+
+<span class="va">odds_y_x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span>
+<span class="va">odds_y_x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="fl">3</span><span class="op">)</span>
+
+<span class="co"># estimate of probability of success when X = 2</span>
+<span class="co"># take inverse of the logit link</span>
+
+<span class="va">prob_X2</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">odds_y_x2</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># estimate of probability of success when X = 3</span>
+
+<span class="va">prob_X3</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">odds_y_x3</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># slope from X = 2 to X = 3 on response scale</span>
+
+<span class="va">prob_X3</span> <span class="op">-</span> <span class="va">prob_X2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) 
  0.03841184 </code></pre>
@@ -703,15 +734,15 @@ p = \frac{1}{1+e^{-(\alpha)}}
 </div>
 <p>If you were to repeat the example above for <span class="math inline">\(X\)</span> = 10 and <span class="math inline">\(X\)</span> = 11, you would not get the same slope on the response scale. Even though it is the same on the logit scale.</p>
 <p></p>
-</section><section id="worked-example-2" class="level3" data-number="5.5.2"><h3 data-number="5.5.2" class="anchored" data-anchor-id="worked-example-2">
-<span class="header-section-number">5.5.2</span> Worked example</h3>
+</section><section id="worked-example-2" class="level3" data-number="8.5.2"><h3 data-number="8.5.2" class="anchored" data-anchor-id="worked-example-2">
+<span class="header-section-number">8.5.2</span> Worked example</h3>
 <p>In the previous section, we fit a Binomial GLM using the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> function and looked at the estimates of some parameters using the <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code> function. In this section, we will use the model theory to interpret what those parameters mean.</p>
-<section id="the-intercept" class="level4" data-number="5.5.2.1"><h4 data-number="5.5.2.1" class="anchored" data-anchor-id="the-intercept">
-<span class="header-section-number">5.5.2.1</span> <span style="color:orange">The intercept</span>
+<section id="the-intercept" class="level4" data-number="8.5.2.1"><h4 data-number="8.5.2.1" class="anchored" data-anchor-id="the-intercept">
+<span class="header-section-number">8.5.2.1</span> <span style="color:orange">The intercept</span>
 </h4>
 <p>For our sheep data model, the estimate of the intercept is:</p>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) 
   -2.119708 </code></pre>
@@ -720,7 +751,7 @@ p = \frac{1}{1+e^{-(\alpha)}}
 <p>This is the estimate of the log odds of survival for a sheep which has a body weight of 0 kg. The intercept estimate is a log odds of -2.1197077 of survival for a sheep that weighs 0 kg.</p>
 <p>To get the probability of survival for a sheep with a body weight of 0 kg we need to convert these estimates to the response scale using the code below:</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) 
    0.107196 </code></pre>
@@ -728,12 +759,12 @@ p = \frac{1}{1+e^{-(\alpha)}}
 </div>
 <p>In other words, the survival probability of a sheep is 0.107196 when their weight is 0 kg.</p>
 <p>In this example, the intercept is not very interesting, as it does not make a lot of biological sense to know the expected survival probability of sheep when their weight is 0 kg. A sheep born at anytime will weigh more than 0 kg.</p>
-</section><section id="the-slope" class="level4" data-number="5.5.2.2"><h4 data-number="5.5.2.2" class="anchored" data-anchor-id="the-slope">
-<span class="header-section-number">5.5.2.2</span> <span style="color:blue">The slope</span>
+</section><section id="the-slope" class="level4" data-number="8.5.2.2"><h4 data-number="8.5.2.2" class="anchored" data-anchor-id="the-slope">
+<span class="header-section-number">8.5.2.2</span> <span style="color:blue">The slope</span>
 </h4>
 <p>The estimate of the slope of the relationship between body weight and survival probability is interesting to us since it can tell us the direction and the strength of the effect of body weight on survival of the sheep.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Weight 
 0.1817796 </code></pre>
@@ -741,8 +772,8 @@ p = \frac{1}{1+e^{-(\alpha)}}
 </div>
 <p>In this case, our model estimates that the log odds of the survival of the sheep increases by 0.1817796 when the weight of the sheep increases by 1 kg. This shows a positive relationship between body weight and survival probability.</p>
 <p>To see what this effect looks like on the response scale, it is easiest to plot the results using predictions on the response scale (response scale). This is what we do below.</p>
-</section><section id="plotting-the-results" class="level4" data-number="5.5.2.3"><h4 data-number="5.5.2.3" class="anchored" data-anchor-id="plotting-the-results">
-<span class="header-section-number">5.5.2.3</span> Plotting the Results</h4>
+</section><section id="plotting-the-results" class="level4" data-number="8.5.2.3"><h4 data-number="8.5.2.3" class="anchored" data-anchor-id="plotting-the-results">
+<span class="header-section-number">8.5.2.3</span> Plotting the Results</h4>
 <p>As well as looking at the maximum likelihood estimates of the parameters from the Binomial GLM, we can also plot the results. This is especially useful for interpreting the results on the response data scale.</p>
 <p>To do this, we use the <code>ggplot()</code> with <code>geom_line()</code> and the <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> function.</p>
 <p>To make the first plot, we will only need to use two arguments:</p>
@@ -754,29 +785,29 @@ p = \frac{1}{1+e^{-(\alpha)}}
 </ul>
 <p>We will make predictions on both the link and response scale so that we can compare the results.</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sheep_data</span> <span class="op">&lt;-</span> <span class="fu">mutate</span><span class="op">(</span><span class="va">sheep_data</span>, </span>
-<span>                     predictions_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>, </span>
-<span>                                            type <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span>,</span>
-<span>                     predictions_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>, </span>
-<span>                                            type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sheep_data</span> <span class="op">&lt;-</span> <span class="fu">mutate</span><span class="op">(</span><span class="va">sheep_data</span>, 
+                     predictions_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>, 
+                                            type <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span>,
+                     predictions_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>, 
+                                            type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Once we have created predictions of <span class="math inline">\(Y\)</span> from the model object, we can plot these using <code>geom_line()</code> as in the code below.</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">link</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Weight</span>, y<span class="op">=</span><span class="va">predictions_link</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y<span class="op">=</span><span class="va">predictions_link</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight (kg)"</span>, y <span class="op">=</span> <span class="st">"Log Odds of Survival"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">response</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Weight</span>, y<span class="op">=</span><span class="va">Survival</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_jitter</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>              height <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y<span class="op">=</span><span class="va">predictions_response</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight (kg)"</span>, y <span class="op">=</span><span class="st">"Survival Probability"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">link</span> <span class="op">+</span> <span class="va">response</span> <span class="op">+</span> <span class="fu">plot_layout</span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">link</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Weight</span>, y<span class="op">=</span><span class="va">predictions_link</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y<span class="op">=</span><span class="va">predictions_link</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight (kg)"</span>, y <span class="op">=</span> <span class="st">"Log Odds of Survival"</span><span class="op">)</span>
+
+<span class="va">response</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sheep_data</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Weight</span>, y<span class="op">=</span><span class="va">Survival</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_jitter</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>,
+              height <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y<span class="op">=</span><span class="va">predictions_response</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Weight (kg)"</span>, y <span class="op">=</span><span class="st">"Survival Probability"</span><span class="op">)</span>
+
+<span class="va">link</span> <span class="op">+</span> <span class="va">response</span> <span class="op">+</span> <span class="fu">plot_layout</span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-sheep-preditions1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-sheep-preditions1-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.5: a) Plot of fitted GLM line on the logit scale b) Plot of jittered raw data and fitted GLM line for the soay sheep data on the response scale</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.5: a) Plot of fitted GLM line on the logit scale b) Plot of jittered raw data and fitted GLM line for the soay sheep data on the response scale</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -784,11 +815,11 @@ p = \frac{1}{1+e^{-(\alpha)}}
 <p></p>
 <p>In the next section, we will look at how to add uncertainty to these plots and our interpretation.</p>
 <p></p>
-</section></section></section><section id="quantify-uncertainty" class="level2 tabset tabset-fade" data-number="5.6"><h2 class="tabset tabset-fade anchored" data-number="5.6" data-anchor-id="quantify-uncertainty">
-<span class="header-section-number">5.6</span> <i class="fas fa-arrows-alt-h"></i> Quantify uncertainty</h2>
+</section></section></section><section id="quantify-uncertainty" class="level2 tabset tabset-fade" data-number="8.6"><h2 class="tabset tabset-fade anchored" data-number="8.6" data-anchor-id="quantify-uncertainty">
+<span class="header-section-number">8.6</span> <i class="fas fa-arrows-alt-h"></i> Quantify uncertainty</h2>
 <p></p>
-<section id="theory-3" class="level3" data-number="5.6.1"><h3 data-number="5.6.1" class="anchored" data-anchor-id="theory-3">
-<span class="header-section-number">5.6.1</span> Theory</h3>
+<section id="theory-3" class="level3" data-number="8.6.1"><h3 data-number="8.6.1" class="anchored" data-anchor-id="theory-3">
+<span class="header-section-number">8.6.1</span> Theory</h3>
 <p>As was discussed for linear models, statistics does not give a single correct answer. When we estimate the parameters in our statistical model, there will be many plausible parameters that could have produced our observed data. In these cases, some of the parameters will be more likely than the others to have generated the observed data.</p>
 <p>The Binomial GLM is no exception. We will have to consider and present the uncertainty in the parameters we estimate.</p>
 <p>The <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>function uses maximum likelihood estimation for the parameter estimation. Therefore, our consideration of uncertainty for these models are discussed <a href="link%20to%20ML%20page">here</a>. We will therefore quantify uncertainty using <em>standard errors</em>, <em>confidence intervals</em> and <em>prediction intervals</em> which should be familiar to you but head to the <a href="">uncertainty</a> pages if you need a recap.</p>
@@ -797,7 +828,7 @@ p = \frac{1}{1+e^{-(\alpha)}}
 <p><strong>Uncertainty in the estimates of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span></strong></p>
 <p>To find the standard errors for the estimates of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> we can use <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> function. This takes the model object from the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> as its argument. It outputs a big table with lots of information. The first line gives the formula used for the model object. The second line shows the summary of the residuals of the model and the standard errors are shown in the second column of the third part, <code>Coefficients:</code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -842,7 +873,7 @@ LowerCI = estimate - (1.96 SE) \\
 <p></p>
 <p>Using the <code><a href="https://rdrr.io/r/stats/confint.html">confint()</a></code> function it is possible to display the 95% confidence intervals for the intercept and slope.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  2.5 %     97.5 %
 (Intercept) -2.68608847 -0.6222264
@@ -852,7 +883,7 @@ explanatory  0.09118142  0.3320830</code></pre>
 <p></p>
 <p><strong>Plotting uncertainty in <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span></strong></p>
 <p>The above section has shown how you can quantify uncertainty in the line parameters of a Binomial GLM as numbers. But often in science, it is clearer to show these things visually.</p>
-<p>We can add the confidence intervals to <a href="#fig-log-odds-plot">Figure&nbsp;<span>5.3</span></a> showing our GLM fitted line. This can be done either on the link scale or the response scale.</p>
+<p>We can add the confidence intervals to <a href="#fig-log-odds-plot">Figure&nbsp;<span>8.3</span></a> showing our GLM fitted line. This can be done either on the link scale or the response scale.</p>
 <p>To do this, we need to generate new predictions with the <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> function. We also need to calculate the upper and lower confidence interval bounds using the standard error.</p>
 <p>This is a little different to using <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> for a linear model object. For GLMs there are some different arguments. The key arguments are:</p>
 <ul>
@@ -864,37 +895,37 @@ explanatory  0.09118142  0.3320830</code></pre>
 <p></p>
 <p>The <code>interval</code> argument that was used for linear model objects to specify a prediction or a confidence interval does not work for predictions on a GLM object. Therefore, the standard errors presented are for a 95% confidence interval.</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># First create the new data to predict for </span></span>
-<span><span class="co"># This example generates 100 values of the explanatory variable from min to max</span></span>
-<span></span>
-<span><span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>explanatory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">$</span><span class="va">explanatory</span><span class="op">)</span>,</span>
-<span>                                        <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">$</span><span class="va">explanatory</span><span class="op">)</span>,</span>
-<span>                                        length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Then add predictions to the newdata for the link and response scale</span></span>
-<span><span class="co"># REMEMBER the confidence intervals too, you can access these by taking the </span></span>
-<span><span class="co"># $se.fit of the results of `predict`, $fit is the mean prediction</span></span>
-<span></span>
-<span><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="va">newdata</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>predictions_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, </span>
-<span>                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, </span>
-<span>                                                         type<span class="op">=</span><span class="st">"link"</span>, </span>
-<span>                                                         se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,</span>
-<span>                              SE_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, </span>
-<span>                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, </span>
-<span>                                                         type<span class="op">=</span><span class="st">"link"</span>, </span>
-<span>                                                         se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span>,</span>
-<span>                              predictions_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, </span>
-<span>                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, </span>
-<span>                                                         type<span class="op">=</span><span class="st">"response"</span>, se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,</span>
-<span>                              SE_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, </span>
-<span>                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, </span>
-<span>                                                         type<span class="op">=</span><span class="st">"response"</span>,</span>
-<span>                                                         se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>                <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="va">predictions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># First create the new data to predict for </span>
+<span class="co"># This example generates 100 values of the explanatory variable from min to max</span>
+
+<span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>explanatory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">$</span><span class="va">explanatory</span><span class="op">)</span>,
+                                        <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">$</span><span class="va">explanatory</span><span class="op">)</span>,
+                                        length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># Then add predictions to the newdata for the link and response scale</span>
+<span class="co"># REMEMBER the confidence intervals too, you can access these by taking the </span>
+<span class="co"># $se.fit of the results of `predict`, $fit is the mean prediction</span>
+
+<span class="va">predictions</span> <span class="op">&lt;-</span> <span class="va">newdata</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>predictions_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, 
+                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, 
+                                                         type<span class="op">=</span><span class="st">"link"</span>, 
+                                                         se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,
+                              SE_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, 
+                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, 
+                                                         type<span class="op">=</span><span class="st">"link"</span>, 
+                                                         se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span>,
+                              predictions_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, 
+                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, 
+                                                         type<span class="op">=</span><span class="st">"response"</span>, se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,
+                              SE_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">glm_model_object</span>, 
+                                                         newdata <span class="op">=</span> <span class="va">newdata</span>, 
+                                                         type<span class="op">=</span><span class="st">"response"</span>,
+                                                         se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span> <span class="op">%&gt;%</span>
+                <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span>
+
+
+
+<span class="va">predictions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 100 × 5
    explanatory predictions_link SE_link predictions_response SE_response
@@ -918,56 +949,56 @@ explanatory  0.09118142  0.3320830</code></pre>
 <p>Then you can plot these. Remember these are confidence intervals not prediction intervals. The <code>predict</code> function will not give prediction intervals for a GLM. In fact, it is not always an easy or sensible thing to create in this context, especially for a Binomial GLM. When the mean prediction is close to 0 or 1, the prediction interval can easily fill the whole possible value space (i.e.&nbsp;span from 0 right to 1), which is not very logical and is hard to interpret.</p>
 <p>To get the upper and lower bounds of the confidence interval from a GLM using <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> you need to calculate the bounds yourself. You need to add or subtract 1.96 times the standard error from the mean prediction.</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="va">predictions</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>upper_ci_link <span class="op">=</span> <span class="va">predictions_link</span> <span class="op">+</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_link</span><span class="op">)</span>,</span>
-<span>                                      lower_ci_link <span class="op">=</span> <span class="va">predictions_link</span> <span class="op">-</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_link</span><span class="op">)</span>,</span>
-<span>                                      upper_ci_response <span class="op">=</span> <span class="va">predictions_response</span> <span class="op">+</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_response</span><span class="op">)</span>,</span>
-<span>                                      lower_ci_response <span class="op">=</span> <span class="va">predictions_response</span> <span class="op">-</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_response</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># plot predictions on the link scale </span></span>
-<span></span>
-<span><span class="va">example_predictions_link</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">predictions</span>, </span>
-<span>                                 <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, </span>
-<span>                                     y <span class="op">=</span> <span class="va">predictions_link</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>color<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lower_ci_link</span>, </span>
-<span>                  ymax <span class="op">=</span> <span class="va">upper_ci_link</span><span class="op">)</span>, </span>
-<span>              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A. Predictions on link scale"</span>,</span>
-<span>       y <span class="op">=</span> <span class="st">"Log odds of response"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Explanatory"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># For this plot, the base can be the response data</span></span>
-<span><span class="va">example_predictions_response</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_jitter</span><span class="op">(</span>data <span class="op">=</span> <span class="va">example_data</span>, </span>
-<span>              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, y <span class="op">=</span> <span class="va">response</span><span class="op">)</span>, </span>
-<span>              colour <span class="op">=</span> <span class="st">"grey"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_ribbon</span><span class="op">(</span>data <span class="op">=</span> <span class="va">predictions</span>,</span>
-<span>              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>,</span>
-<span>                  ymin <span class="op">=</span> <span class="va">lower_ci_response</span>, </span>
-<span>                  ymax <span class="op">=</span> <span class="va">upper_ci_response</span><span class="op">)</span>, </span>
-<span>              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">predictions</span>, </span>
-<span>            <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, y <span class="op">=</span> <span class="va">predictions_response</span><span class="op">)</span>, </span>
-<span>            colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"B. Predictions on response scale"</span>,</span>
-<span>       y <span class="op">=</span> <span class="st">"Probability"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Explanatory"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">example_predictions_link</span> <span class="op">+</span> <span class="va">example_predictions_response</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="va">predictions</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>upper_ci_link <span class="op">=</span> <span class="va">predictions_link</span> <span class="op">+</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_link</span><span class="op">)</span>,
+                                      lower_ci_link <span class="op">=</span> <span class="va">predictions_link</span> <span class="op">-</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_link</span><span class="op">)</span>,
+                                      upper_ci_response <span class="op">=</span> <span class="va">predictions_response</span> <span class="op">+</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_response</span><span class="op">)</span>,
+                                      lower_ci_response <span class="op">=</span> <span class="va">predictions_response</span> <span class="op">-</span> <span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">SE_response</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># plot predictions on the link scale </span>
+
+<span class="va">example_predictions_link</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">predictions</span>, 
+                                 <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, 
+                                     y <span class="op">=</span> <span class="va">predictions_link</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span>color<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lower_ci_link</span>, 
+                  ymax <span class="op">=</span> <span class="va">upper_ci_link</span><span class="op">)</span>, 
+              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A. Predictions on link scale"</span>,
+       y <span class="op">=</span> <span class="st">"Log odds of response"</span>,
+       x <span class="op">=</span> <span class="st">"Explanatory"</span><span class="op">)</span>
+
+<span class="co"># For this plot, the base can be the response data</span>
+<span class="va">example_predictions_response</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_jitter</span><span class="op">(</span>data <span class="op">=</span> <span class="va">example_data</span>, 
+              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, y <span class="op">=</span> <span class="va">response</span><span class="op">)</span>, 
+              colour <span class="op">=</span> <span class="st">"grey"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_ribbon</span><span class="op">(</span>data <span class="op">=</span> <span class="va">predictions</span>,
+              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>,
+                  ymin <span class="op">=</span> <span class="va">lower_ci_response</span>, 
+                  ymax <span class="op">=</span> <span class="va">upper_ci_response</span><span class="op">)</span>, 
+              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">predictions</span>, 
+            <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, y <span class="op">=</span> <span class="va">predictions_response</span><span class="op">)</span>, 
+            colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"B. Predictions on response scale"</span>,
+       y <span class="op">=</span> <span class="st">"Probability"</span>,
+       x <span class="op">=</span> <span class="st">"Explanatory"</span><span class="op">)</span>
+
+<span class="va">example_predictions_link</span> <span class="op">+</span> <span class="va">example_predictions_response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-plot_ci_example" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-plot_ci_example-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.6: Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the response scale (B)</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.6: Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the response scale (B)</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-</section><section id="worked-example-3" class="level3" data-number="5.6.2"><h3 data-number="5.6.2" class="anchored" data-anchor-id="worked-example-3">
-<span class="header-section-number">5.6.2</span> Worked example</h3>
+</section><section id="worked-example-3" class="level3" data-number="8.6.2"><h3 data-number="8.6.2" class="anchored" data-anchor-id="worked-example-3">
+<span class="header-section-number">8.6.2</span> Worked example</h3>
 <p>At the end of the last section, we created of our sheep model and looked at the estimated model line. Now we will add uncertainty to that plot.</p>
 <p>First, we should look at the confidence intervals of our parameter estimates.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            2.5 % 97.5 %
 (Intercept) -2.63  -1.62
@@ -977,106 +1008,106 @@ Weight       0.15   0.21</code></pre>
 <p>The confidence interval has been rounded to two decimal places to make it easier to read.</p>
 <p>To add these intervals to the plot, we need to make new predictions including the upper and lower bounds of the prediction interval. We will do this on the link scale and the response response scale.</p>
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># first make some new data to predict for</span></span>
-<span><span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">sheep_data</span><span class="op">$</span><span class="va">Weight</span><span class="op">)</span>,</span>
-<span>               <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">sheep_data</span><span class="op">$</span><span class="va">Weight</span><span class="op">)</span>,</span>
-<span>               length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sheep_predictions</span> <span class="op">&lt;-</span> <span class="va">newdata</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>predictions_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"link"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,</span>
-<span>            <span class="co"># the next lines add the lower and upper ci bounds</span></span>
-<span>            lower_ci_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"link"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">-</span> </span>
-<span>                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"link"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>,</span>
-<span>            upper_ci_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>, </span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"link"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">+</span> </span>
-<span>                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"link"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>,</span>
-<span>            <span class="co"># then predict on the response scale</span></span>
-<span>            predictions_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"response"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,</span>
-<span>            <span class="co"># and add the confidence interval bounds</span></span>
-<span>            lower_ci_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>, </span>
-<span>                                    type<span class="op">=</span><span class="st">"response"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">-</span> </span>
-<span>                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"response"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>,</span>
-<span>            upper_ci_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>, </span>
-<span>                                    type<span class="op">=</span><span class="st">"response"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">+</span> </span>
-<span>                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,</span>
-<span>                                    <span class="va">newdata</span>,</span>
-<span>                                    type<span class="op">=</span><span class="st">"response"</span>, </span>
-<span>                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># first make some new data to predict for</span>
+<span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">sheep_data</span><span class="op">$</span><span class="va">Weight</span><span class="op">)</span>,
+               <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">sheep_data</span><span class="op">$</span><span class="va">Weight</span><span class="op">)</span>,
+               length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">sheep_predictions</span> <span class="op">&lt;-</span> <span class="va">newdata</span> <span class="op">%&gt;%</span> 
+  <span class="fu">mutate</span><span class="op">(</span>predictions_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"link"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,
+            <span class="co"># the next lines add the lower and upper ci bounds</span>
+            lower_ci_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"link"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">-</span> 
+                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"link"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>,
+            upper_ci_link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>, 
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"link"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">+</span> 
+                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"link"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>,
+            <span class="co"># then predict on the response scale</span>
+            predictions_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"response"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>,
+            <span class="co"># and add the confidence interval bounds</span>
+            lower_ci_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>, 
+                                    type<span class="op">=</span><span class="st">"response"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">-</span> 
+                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"response"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>,
+            upper_ci_response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>, 
+                                    type<span class="op">=</span><span class="st">"response"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span> <span class="op">+</span> 
+                                    <span class="op">(</span><span class="fl">1.96</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">sheep_model</span>,
+                                    <span class="va">newdata</span>,
+                                    type<span class="op">=</span><span class="st">"response"</span>, 
+                                    se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p></p>
 <p>Once we have created predictions of <span class="math inline">\(Y\)</span> from the model object, we can plot them using <code>geom_line()</code> and <code>geom_ribbon()</code> as in the code below.</p>
 <div class="cell">
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Plot of Confidence Intervals on the link scale</span></span>
-<span></span>
-<span><span class="va">sheep_predictions_link</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>, </span>
-<span>                                 <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, </span>
-<span>                                     y <span class="op">=</span> <span class="va">predictions_link</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>color<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lower_ci_link</span>, </span>
-<span>                  ymax <span class="op">=</span> <span class="va">upper_ci_link</span><span class="op">)</span>, </span>
-<span>              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A. Predictions on link scale"</span>,</span>
-<span>       y <span class="op">=</span> <span class="st">"Log odds of survival"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Body weight (kg)"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># For this plot, the base can be the response data</span></span>
-<span><span class="va">sheep_predictions_response</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_jitter</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_data</span>, </span>
-<span>              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span>, </span>
-<span>              colour <span class="op">=</span> <span class="st">"grey"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_ribbon</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>,</span>
-<span>              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>,</span>
-<span>                  ymin <span class="op">=</span> <span class="va">lower_ci_response</span>, </span>
-<span>                  ymax <span class="op">=</span> <span class="va">upper_ci_response</span><span class="op">)</span>, </span>
-<span>              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>, </span>
-<span>            <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">predictions_response</span><span class="op">)</span>, </span>
-<span>            colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"B. Predictions on response scale"</span>,</span>
-<span>       y <span class="op">=</span> <span class="st">"Probability of survival"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Body weight (kg)"</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">sheep_predictions_link</span> <span class="op">+</span> <span class="va">sheep_predictions_response</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># Plot of Confidence Intervals on the link scale</span>
+
+<span class="va">sheep_predictions_link</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>, 
+                                 <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, 
+                                     y <span class="op">=</span> <span class="va">predictions_link</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span>color<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lower_ci_link</span>, 
+                  ymax <span class="op">=</span> <span class="va">upper_ci_link</span><span class="op">)</span>, 
+              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A. Predictions on link scale"</span>,
+       y <span class="op">=</span> <span class="st">"Log odds of survival"</span>,
+       x <span class="op">=</span> <span class="st">"Body weight (kg)"</span><span class="op">)</span>
+
+<span class="co"># For this plot, the base can be the response data</span>
+<span class="va">sheep_predictions_response</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_jitter</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_data</span>, 
+              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span>, 
+              colour <span class="op">=</span> <span class="st">"grey"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_ribbon</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>,
+              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>,
+                  ymin <span class="op">=</span> <span class="va">lower_ci_response</span>, 
+                  ymax <span class="op">=</span> <span class="va">upper_ci_response</span><span class="op">)</span>, 
+              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>, 
+            <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">predictions_response</span><span class="op">)</span>, 
+            colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"B. Predictions on response scale"</span>,
+       y <span class="op">=</span> <span class="st">"Probability of survival"</span>,
+       x <span class="op">=</span> <span class="st">"Body weight (kg)"</span><span class="op">)</span>
+
+
+<span class="va">sheep_predictions_link</span> <span class="op">+</span> <span class="va">sheep_predictions_response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-sheep_predictions_plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-sheep_predictions_plot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.7: A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.7: A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p>It can be observed from the figure above that the confidence intervals for the predictions around <span class="math inline">\(1\)</span> are very narrower. This means that as we get closer to the true classification (0 or 1), we are able to estimate them with much certainty.</p>
 <p></p>
-</section></section><section id="model-checking" class="level2 tabset tabset-fade" data-number="5.7"><h2 class="tabset tabset-fade anchored" data-number="5.7" data-anchor-id="model-checking">
-<span class="header-section-number">5.7</span> <i class="fas fa-tasks"></i> Model checking</h2>
+</section></section><section id="model-checking" class="level2 tabset tabset-fade" data-number="8.7"><h2 class="tabset tabset-fade anchored" data-number="8.7" data-anchor-id="model-checking">
+<span class="header-section-number">8.7</span> <i class="fas fa-tasks"></i> Model checking</h2>
 <p></p>
-<section id="theory-4" class="level3" data-number="5.7.1"><h3 data-number="5.7.1" class="anchored" data-anchor-id="theory-4">
-<span class="header-section-number">5.7.1</span> Theory</h3>
+<section id="theory-4" class="level3" data-number="8.7.1"><h3 data-number="8.7.1" class="anchored" data-anchor-id="theory-4">
+<span class="header-section-number">8.7.1</span> Theory</h3>
 <p>Until this point, we have run a Binomial GLM, got parameter estimates and quantified uncertainty. Next, <strong>we will look at how to know if the model is any good.</strong> To do this, we need to check if the assumptions for a Binomial GLM are met for our data.</p>
 <p></p>
 <p>To check the assumptions of a Binomial GLM, we will follow the same procedure as for GLMs more broadly. For a reminder of this, go back to the <a href="">Introduction to GLMs page</a>.</p>
@@ -1090,17 +1121,17 @@ Weight       0.15   0.21</code></pre>
 <p></p>
 <p>To do this, we can re-plot the example plot from the section above.</p>
 <div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">example_predictions_response</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions and data on response scale"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">example_predictions_response</span> <span class="op">+</span>
+    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions and data on response scale"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-example_predictions_plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-example_predictions_plot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.8: plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.8: plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>If you look carefully at <a href="#fig-example_predictions_plot">Figure&nbsp;<span>5.8</span></a> you can see that there are more data points that are 0 for the response for negative values of the explanatory variable. As the values of the explanatory variable increase, we find progressively more 1 values for the response. Therefore, we would expect a model line that that an intercept of close to 0 on the response scale and then shows a positive relationship between x and y, reaching an asymptote (levelling off) at a response value of 1 at the extreme end of the observed values of the explanatory variable (around 20). This is exactly what the fitted model line does! Therefore, in this case, it is possible to see that the model fits the data quite well.</p>
+<p>If you look carefully at <a href="#fig-example_predictions_plot">Figure&nbsp;<span>8.8</span></a> you can see that there are more data points that are 0 for the response for negative values of the explanatory variable. As the values of the explanatory variable increase, we find progressively more 1 values for the response. Therefore, we would expect a model line that that an intercept of close to 0 on the response scale and then shows a positive relationship between x and y, reaching an asymptote (levelling off) at a response value of 1 at the extreme end of the observed values of the explanatory variable (around 20). This is exactly what the fitted model line does! Therefore, in this case, it is possible to see that the model fits the data quite well.</p>
 <p></p>
 <p>Note that if you had proportional data or those from multiple trials that the data points might be distributed around the fitted line.</p>
 <p>Then it would be possible to also test:</p>
@@ -1108,15 +1139,15 @@ Weight       0.15   0.21</code></pre>
 <li>whether the data points are evenly distributed around the fitted line</li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, y <span class="op">=</span> <span class="va">successes</span><span class="op">/</span><span class="op">(</span><span class="va">successes</span> <span class="op">+</span> <span class="va">failures</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>       data <span class="op">=</span> <span class="va">example_data2</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_point</span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_smooth</span><span class="op">(</span>method<span class="op">=</span><span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>, method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>family<span class="op">=</span><span class="st">"binomial"</span><span class="op">)</span>, </span>
-<span>              se<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">explanatory</span>, y <span class="op">=</span> <span class="va">successes</span><span class="op">/</span><span class="op">(</span><span class="va">successes</span> <span class="op">+</span> <span class="va">failures</span><span class="op">)</span><span class="op">)</span>, 
+       data <span class="op">=</span> <span class="va">example_data2</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_point</span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_smooth</span><span class="op">(</span>method<span class="op">=</span><span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>, method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>family<span class="op">=</span><span class="st">"binomial"</span><span class="op">)</span>, 
+              se<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-example_predictions_plot_proportion" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-example_predictions_plot_proportion-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.9: plot of the fitted GLM line on the response scale with proportional response, including 95% confidence interval (grey)</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.9: plot of the fitted GLM line on the response scale with proportional response, including 95% confidence interval (grey)</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1139,7 +1170,7 @@ Weight       0.15   0.21</code></pre>
 <p></p>
 <p>The deviance values are found in <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> at the bottom of the table</p>
 <div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_model_object</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1170,20 +1201,20 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <p>For the example above the <strong>Deviance ratio = 124.79/98 = 1.2733673.</strong></p>
 <p>This value is a bit above 1, but much lower than 2, so the dispersion assumption seems to be met in the example.</p>
 <p></p>
-</section><section id="worked-example-4" class="level3" data-number="5.7.2"><h3 data-number="5.7.2" class="anchored" data-anchor-id="worked-example-4">
-<span class="header-section-number">5.7.2</span> Worked example</h3>
+</section><section id="worked-example-4" class="level3" data-number="8.7.2"><h3 data-number="8.7.2" class="anchored" data-anchor-id="worked-example-4">
+<span class="header-section-number">8.7.2</span> Worked example</h3>
 <p></p>
 <p>Using the theory covered in the previous section, we can now check our sheepModel to ensure that it meets the assumptions of a Binomial GLM.</p>
 <p></p>
 <p>First, we will look again at <strong>the plot of the model predictions and the data together.</strong></p>
 <p></p>
 <div class="cell">
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sheep_predictions_response</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions on response scale"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sheep_predictions_response</span> <span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions on response scale"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-sheep_predictions_plot2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-sheep_predictions_plot2-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.10: Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.10: Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1191,25 +1222,25 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <p></p>
 <p>The fit of this model is perhaps a little harder than the example in the theory section. This is partly caused because there is more data, so it overlaps a lot.</p>
 <div class="cell">
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_jitter</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_data</span>, </span>
-<span>              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span>, </span>
-<span>              colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_ribbon</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>,</span>
-<span>              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>,</span>
-<span>                  ymin <span class="op">=</span> <span class="va">lower_ci_response</span>, </span>
-<span>                  ymax <span class="op">=</span> <span class="va">upper_ci_response</span><span class="op">)</span>, </span>
-<span>              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>, </span>
-<span>            <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">predictions_response</span><span class="op">)</span>, </span>
-<span>            colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions on response scale"</span>,</span>
-<span>       y <span class="op">=</span> <span class="st">"Probability of survival"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Body weight (kg)"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_jitter</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_data</span>, 
+              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">Survival</span><span class="op">)</span>, 
+              colour <span class="op">=</span> <span class="st">"grey70"</span>, size <span class="op">=</span> <span class="fl">2</span>, height <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_ribbon</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>,
+              <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>,
+                  ymin <span class="op">=</span> <span class="va">lower_ci_response</span>, 
+                  ymax <span class="op">=</span> <span class="va">upper_ci_response</span><span class="op">)</span>, 
+              alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sheep_predictions</span>, 
+            <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Weight</span>, y <span class="op">=</span> <span class="va">predictions_response</span><span class="op">)</span>, 
+            colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions on response scale"</span>,
+       y <span class="op">=</span> <span class="st">"Probability of survival"</span>,
+       x <span class="op">=</span> <span class="st">"Body weight (kg)"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-sheep_predictions_plot3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-sheep_predictions_plot3-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.11: Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.11: Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1220,7 +1251,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <p></p>
 <p>Next, we should <strong>check overdispersion.</strong></p>
 <div class="cell">
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">sheep_model</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1253,10 +1284,10 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <p></p>
 <p>In the next section we will interpret our results.</p>
 <p></p>
-</section></section><section id="draw-conclusions" class="level2 tabset tabset-fade page-columns page-full" data-number="5.8"><h2 class="tabset tabset-fade anchored" data-number="5.8" data-anchor-id="draw-conclusions">
-<span class="header-section-number">5.8</span> <i class="far fa-lightbulb"></i> Draw conclusions</h2>
-<section id="theory-5" class="level3" data-number="5.8.1"><h3 data-number="5.8.1" class="anchored" data-anchor-id="theory-5">
-<span class="header-section-number">5.8.1</span> Theory</h3>
+</section></section><section id="draw-conclusions" class="level2 tabset tabset-fade page-columns page-full" data-number="8.8"><h2 class="tabset tabset-fade anchored" data-number="8.8" data-anchor-id="draw-conclusions">
+<span class="header-section-number">8.8</span> <i class="far fa-lightbulb"></i> Draw conclusions</h2>
+<section id="theory-5" class="level3" data-number="8.8.1"><h3 data-number="8.8.1" class="anchored" data-anchor-id="theory-5">
+<span class="header-section-number">8.8.1</span> Theory</h3>
 <p></p>
 <p>In the previous sections you learned how to run a Binomial GLM, what the parameters of the model mean, how to quantify uncertainty in the parameters, and how to check the assumptions of the model. Now, we can bring everything together to draw some conclusions.</p>
 <p></p>
@@ -1268,8 +1299,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <li>Discussion of next directions</li>
 </ul>
 <p></p>
-</section><section id="worked-example-5" class="level3" data-number="5.8.2"><h3 data-number="5.8.2" class="anchored" data-anchor-id="worked-example-5">
-<span class="header-section-number">5.8.2</span> Worked example</h3>
+</section><section id="worked-example-5" class="level3" data-number="8.8.2"><h3 data-number="8.8.2" class="anchored" data-anchor-id="worked-example-5">
+<span class="header-section-number">8.8.2</span> Worked example</h3>
 <p></p>
 <p>This is the final section of our analysis of the data on survival of sheep. We will now bring together all of the results we have obtained and draw a conclusion following the same format as the in the theory section.</p>
 <p>A reminder, we were asking: <strong>Does weight influence survival of Soay sheep?</strong></p>
@@ -1277,12 +1308,12 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <p>The maximum likelihood estimate of the relationship between weight and survival probability is 0.1817796. In other words, for every 1 kg increase in body weight, the log-odds of the survival of the sheep increases by 0.18.</p>
 <p>On the response scale this increase is non-linear and is better shown with a graph.</p>
 <div class="cell">
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sheep_predictions_response</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions on response scale"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sheep_predictions_response</span> <span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model predictions on response scale"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-sheep_predictions_plot4" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="2.X_binomial_GLM_files/figure-html/fig-sheep_predictions_plot4-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure 5.12: Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8.12: Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1334,24 +1365,6 @@ Further reading
 <li>Bob O’Hara</li>
 </ul></section></div></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
   const disableStylesheet = (stylesheets) => {
     for (let i=0; i < stylesheets.length; i++) {
       const stylesheet = stylesheets[i];
@@ -1381,14 +1394,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     manageTransitions('#quarto-margin-sidebar .nav-link', false);
     if (alternate) {
       enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
-        }
-      }
     } else {
       disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
     }
     manageTransitions('#quarto-margin-sidebar .nav-link', true);
     // Switch the toggles
@@ -1584,10 +1591,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./2.X_introduction_to_GLMs.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./2.X_mle.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Maximum likelihood estimation”</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb46" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Binomial generalized linear models</span></span>

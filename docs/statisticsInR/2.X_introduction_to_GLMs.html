@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.37">
+<meta name="generator" content="quarto-0.9.592">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Statistics in R - 4&nbsp; Introduction to generalised linear models</title>
+<title>Statistics in R - 7&nbsp; Introduction to generalised linear models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -85,7 +85,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./2.X_binomial_GLM.html" rel="next">
-<link href="./2.1_simple_linear_regression.html" rel="prev">
+<link href="./2.2_anova.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -95,8 +95,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -121,7 +121,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span>
+<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -166,44 +166,74 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Descriptive statistics</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Introduction</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.2_descriptive_statistics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></a>
+  <a href="./0.1_introduction_to_stats.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to statistics</span></a>
   </div>
 </li>
-      </ul>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0.2_types_of_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Types of data</span></a>
+  </div>
+</li>
+    </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Regression models</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Descriptive statistics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.1_simple_linear_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></a>
+  <a href="./1.0_descriptive_statistics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Regression models</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.X_introduction_to_GLMs.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></a>
+  <a href="./2.1_simple_linear_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.X_binomial_GLM.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></a>
+  <a href="./2.2_anova.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Anova</span></a>
   </div>
 </li>
-      </ul>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2.X_introduction_to_GLMs.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2.X_binomial_GLM.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2.X_mle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Maximum likelihood estimation”</span></a>
+  </div>
+</li>
+    </ul>
 </li>
     </ul>
 </div>
@@ -211,14 +241,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">4.1</span> Introduction</a></li>
-  <li><a href="#model-checking" id="toc-model-checking" class="nav-link" data-scroll-target="#model-checking"> <span class="header-section-number">4.2</span> <i class="fas fa-tasks"></i> Model checking</a></li>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">7.1</span> Introduction</a></li>
+  <li><a href="#model-checking" id="toc-model-checking" class="nav-link" data-scroll-target="#model-checking"> <span class="header-section-number">7.2</span> <i class="fas fa-tasks"></i> Model checking</a></li>
   </ul></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title d-none d-lg-block">
-<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span>
+<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span>
 </h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
@@ -244,8 +274,8 @@ Before you start
 <p>Before reading this page, you should be comfortable with basic statistical theory, using R, continuous and categorical data, and <strong>linear models</strong>.</p>
 </div>
 </div>
-<section id="introduction" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="introduction">
-<span class="header-section-number">4.1</span> Introduction</h2>
+<section id="introduction" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="introduction">
+<span class="header-section-number">7.1</span> Introduction</h2>
 <p>This model builds on from the standard linear models covered on these pages <a href="">1</a>, <a href="">2</a>, <a href="">3</a>. GLMs are similar to the linear models conceptually and in R, but are much more flexible. GLMs are actually the general case of linear models, hence their name (generalised linear models).</p>
 <p>Like the linear regression, the GLM also has two motivations. <strong>inference</strong> and <strong>prediction</strong>. But as the name suggests, it is more general than the standard linear models (used for linear regression, ANOVA, and analyses with categorical and continuous variables).</p>
 <p></p>
@@ -259,8 +289,8 @@ Before you start
 </ul>
 <p>While some of these violations could be addressed by transformation of the response to try and improve linearity or equalise the variance - this is not always possible or preferable. The GLM makes it possible to account for violations of linearity and variance of residuals in a single model without changing the response. This is especially useful when you know that the response data will not follow a normal distribution e.g.&nbsp;if they are binary results or derive from counting. In these cases, different distributions will better represent the data generation process than the normal distribution used in the linear model.</p>
 <p></p>
-</section><section id="model-checking" class="level2 tabset tabset-fade page-columns page-full" data-number="4.2"><h2 class="tabset tabset-fade anchored" data-number="4.2" data-anchor-id="model-checking">
-<span class="header-section-number">4.2</span> <i class="fas fa-tasks"></i> Model checking</h2>
+</section><section id="model-checking" class="level2 tabset tabset-fade page-columns page-full" data-number="7.2"><h2 class="tabset tabset-fade anchored" data-number="7.2" data-anchor-id="model-checking">
+<span class="header-section-number">7.2</span> <i class="fas fa-tasks"></i> Model checking</h2>
 <p>For linear models, we used <strong>residuals vs fitted plots</strong> to check for equal variance and linearity, <strong>normal Q-Q plots</strong> to check for normality of residuals and the <strong>Cooks distance</strong> to check for the outliers.</p>
 <p>For GLMs things are a little different since GLMs have non-normal and non-constant variance (for Binomial and Poisson distributions the variance is controlled by the mean).</p>
 <p>To account for the non-constant variance and be able to use diagnostic plots to check if model assumptions are met, the residuals of a GLM need to be altered. There are two ways of doing this: <strong>Pearson</strong> and <strong>Deviance</strong> residuals. These are not perfect in any way. These measures scale the residuals by the variance. Once we have scaled the residuals in this way to account for non-equal variance, they should be approximately normal.</p>
@@ -271,7 +301,7 @@ Res_p = \frac{y_i - \hat{\mu}}{\sigma_x}.
 \]</span></p>
 <p>In <span class="math inline">\(R\)</span>, the Pearson residuals are obtained by:</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">residuals_pearson</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">glm_model_object</span>, type <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">residuals_pearson</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">glm_model_object</span>, type <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Pearson residuals follow a chi-squared (<span class="math inline">\(\chi^2\)</span>) distribution.</p>
 <p><strong>Deviance Residuals</strong></p>
@@ -283,7 +313,7 @@ Res_D = sign(y_i - \hat{\mu})\sqrt{d_i}
 <p>The deviance residuals are the default in the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>.</p>
 <p>In <span class="math inline">\(R\)</span>, the Deviance residuals are obtained by:</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">residuals_deviance</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">glm_model_object</span>, type <span class="op">=</span> <span class="st">"deviance"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">residuals_deviance</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">glm_model_object</span>, type <span class="op">=</span> <span class="st">"deviance"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p></p>
 <p>THEN SHOW SOME EXAMPLES AND SHOW IT IS NOT PERFECT. SO, INSTEAD WE CHECK OVERDISPERSION AND PLOT PREDICTIONS VS DATA.</p>
@@ -308,14 +338,14 @@ Res_D = sign(y_i - \hat{\mu})\sqrt{d_i}
 </ol>
 <p>The first option is a bigger problem and something we need to correct for, if we find it.</p>
 <p></p>
-<section id="how-do-we-check-for-overdispersion" class="level4" data-number="4.2.0.1"><h4 data-number="4.2.0.1" class="anchored" data-anchor-id="how-do-we-check-for-overdispersion">
-<span class="header-section-number">4.2.0.1</span> How do we check for overdispersion?</h4>
+<section id="how-do-we-check-for-overdispersion" class="level4" data-number="7.2.0.1"><h4 data-number="7.2.0.1" class="anchored" data-anchor-id="how-do-we-check-for-overdispersion">
+<span class="header-section-number">7.2.0.1</span> How do we check for overdispersion?</h4>
 <p>To check for overdispersion in GLMs we need to calculate the deviance. To do this we <strong>take the ratio of residual deviance and residual degrees of freedom.</strong></p>
 <p>Our assumption is that the deviance = 1. So, we want a value close to that. &gt;1.2 indicates a potential problem.</p>
 <p></p>
 <p>We can find these deviance values in <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> they are in the final paragraph of the output as discussed back in Part C. (<a href="https://ntnu.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=7e1471ec-82ed-4309-ad83-acfd00e7d1e1">link</a>) e.g.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">PhoenixModel</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">PhoenixModel</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -358,24 +388,6 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <p>Emily G Simmonds</p>
 </section></div></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
   const disableStylesheet = (stylesheets) => {
     for (let i=0; i < stylesheets.length; i++) {
       const stylesheet = stylesheets[i];
@@ -405,14 +417,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     manageTransitions('#quarto-margin-sidebar .nav-link', false);
     if (alternate) {
       enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
-        }
-      }
     } else {
       disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
     }
     manageTransitions('#quarto-margin-sidebar .nav-link', true);
     // Switch the toggles
@@ -607,13 +613,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./2.1_simple_linear_regression.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></span>
+      <a href="./2.2_anova.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Anova</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./2.X_binomial_GLM.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
