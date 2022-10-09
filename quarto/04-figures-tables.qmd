@@ -151,30 +151,65 @@ You can make tables in markdown by hand (the <kbd>/</kbd> insert tool helps a lo
 Simple tables can be made with the function `knitr::kable`.
 Several packages, including `kableExtra` and `gt` can make beautiful tables.
 
+The block label need to start with `tbl-` if the main caption and table number are to be shown.  
+
 ### kable
 
 ```{r kable}
+#| echo: fenced
+#| label: tbl-kable
+#| tbl-cap: Simple tables with `kable()` 
 
-knitr::kable(x = slice(penguins, 1:5), #the data for the table
-             caption = "The top penguins" # the caption
-)
+knitr::kable(x = slice(penguins, 1:5)) # show first 5 rows
 ```
 
 ### gt
 
 The [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) package can make more elaborate tables than `knitr::kable()`.
 
-```{r gt}
+
+```{{r}}
 #| label: tbl-gt
-#| tbl-cap: Tables with gt
+#| tbl-cap: Tables with `gt()`
+#| tbl-subcap: 
+#|    - "Basic `gt()` table"
+#|    - "`gt()` table with more features"
 library(gt)
 penguins |>
   slice(1:5) |> # get top few rows only
-  gt(caption = "Basic gt table")
+  gt()
 
 penguins |>
   slice(1:5) |>
-  gt(caption = "gt table with more features") |>
+  gt() |>
+  cols_label(species = "Species",           # Display column headers
+             island = "Island",
+             bill_length_mm = "Length mm",
+             bill_depth_mm  = "Depth mm",
+             flipper_length_mm = "Flipper length mm",
+             body_mass_g = "Body mass g", 
+             sex = "Sex", 
+             year = "Year") |>
+  tab_spanner(label = "Bill", columns = c(bill_length_mm, bill_depth_mm)) |>
+  tab_spanner(label = "Body", columns = c(flipper_length_mm, body_mass_g))
+```
+
+
+```{r}
+#| echo: false
+#| label: tbl-gt2
+#| tbl-cap: Tables with `gt`
+#| tbl-subcap: 
+#|    - "Basic gt table"
+#|    - "gt table with more features"
+library(gt)
+penguins |>
+  slice(1:5) |> # get top few rows only
+  gt()
+
+penguins |>
+  slice(1:5) |>
+  gt() |>
   cols_label(species = "Species",           # Display column headers
              island = "Island",
              bill_length_mm = "Length mm",
