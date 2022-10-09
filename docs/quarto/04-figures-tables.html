@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.2.198">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Enough Markdown to Write a Thesis - 4&nbsp; Figures, tables and equations</title>
 <style>
@@ -296,6 +296,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -469,15 +470,21 @@ Setting default ggplot themes
 <span class="header-section-number">4.3</span> Tables</h2>
 <p>You can make tables in markdown by hand (the <kbd>/</kbd> insert tool helps a lot), but it often so much easier to use R.</p>
 <p>Simple tables can be made with the function <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable</a></code>. Several packages, including <code>kableExtra</code> and <code>gt</code> can make beautiful tables.</p>
+<p>The block label need to start with <code>tbl-</code> if the main caption and table number are to be shown.</p>
 <section id="kable" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="kable">
 <span class="header-section-number">4.3.1</span> kable</h3>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, <span class="co">#the data for the table</span></span>
-<span>             caption <span class="op">=</span> <span class="st">"The top penguins"</span> <span class="co"># the caption</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r kable}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-kable</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Simple tables with `kable()`</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">x =</span> <span class="fu">slice</span>(penguins, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)) <span class="co"># show first 5 rows</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
+<div id="tbl-kable" class="anchored">
 <table class="table table-sm table-striped">
-<caption>The top penguins</caption>
+<caption>Table&nbsp;4.1: Simple tables with <code>kable()</code>
+</caption>
 <colgroup>
 <col style="width: 8%">
 <col style="width: 11%">
@@ -553,40 +560,48 @@ Setting default ggplot themes
 </table>
 </div>
 </div>
+</div>
 </section><section id="gt" class="level3" data-number="4.3.2"><h3 data-number="4.3.2" class="anchored" data-anchor-id="gt">
 <span class="header-section-number">4.3.2</span> gt</h3>
 <p>The <a href="https://gt.rstudio.com/articles/intro-creating-gt-tables.html"><code>gt</code></a> package can make more elaborate tables than <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable()</a></code>.</p>
-<div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gt.rstudio.com/">gt</a></span><span class="op">)</span></span>
-<span><span class="va">penguins</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># get top few rows only</span></span>
-<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Basic gt table"</span><span class="op">)</span></span>
-<span><span class="va">penguins</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"gt table with more features"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/cols_label.html">cols_label</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Species"</span>,           <span class="co"># Display column headers</span></span>
-<span>             island <span class="op">=</span> <span class="st">"Island"</span>,</span>
-<span>             bill_length_mm <span class="op">=</span> <span class="st">"Length mm"</span>,</span>
-<span>             bill_depth_mm  <span class="op">=</span> <span class="st">"Depth mm"</span>,</span>
-<span>             flipper_length_mm <span class="op">=</span> <span class="st">"Flipper length mm"</span>,</span>
-<span>             body_mass_g <span class="op">=</span> <span class="st">"Body mass g"</span>, </span>
-<span>             sex <span class="op">=</span> <span class="st">"Sex"</span>, </span>
-<span>             year <span class="op">=</span> <span class="st">"Year"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_spanner.html">tab_spanner</a></span><span class="op">(</span>label <span class="op">=</span> <span class="st">"Bill"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_spanner.html">tab_spanner</a></span><span class="op">(</span>label <span class="op">=</span> <span class="st">"Body"</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">flipper_length_mm</span>, <span class="va">body_mass_g</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="tbl-gt" class="cell tbl-parent quarto-layout-panel anchored">
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-gt</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Tables with `gt()`</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-subcap: </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#|    - "Basic `gt()` table"</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#|    - "`gt()` table with more features"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="co"># get top few rows only</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">species =</span> <span class="st">"Species"</span>,           <span class="co"># Display column headers</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">island =</span> <span class="st">"Island"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_length_mm =</span> <span class="st">"Length mm"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_depth_mm  =</span> <span class="st">"Depth mm"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">flipper_length_mm =</span> <span class="st">"Flipper length mm"</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">body_mass_g =</span> <span class="st">"Body mass g"</span>, </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">sex =</span> <span class="st">"Sex"</span>, </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>             <span class="at">year =</span> <span class="st">"Year"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Bill"</span>, <span class="at">columns =</span> <span class="fu">c</span>(bill_length_mm, bill_depth_mm)) <span class="sc">|&gt;</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Body"</span>, <span class="at">columns =</span> <span class="fu">c</span>(flipper_length_mm, body_mass_g))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-gt2" class="cell tbl-parent quarto-layout-panel anchored">
 <div class="panel-caption table-caption">
-<p>Table&nbsp;4.1: Tables with gt</p>
+<p>Table&nbsp;4.2: Tables with <code>gt</code></p>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div id="tbl-gt-1" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-gt" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-gt2-1" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-gt2" style="flex-basis: 100.0%;justify-content: center;">
 
-<div id="zfnktegnhc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="nqpahpyvps" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#zfnktegnhc) .gt_table {
+:where(#nqpahpyvps) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -611,7 +626,7 @@ Setting default ggplot themes
   border-left-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_heading {
+:where(#nqpahpyvps) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -623,7 +638,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_title {
+:where(#nqpahpyvps) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -635,7 +650,7 @@ Setting default ggplot themes
   border-bottom-width: 0;
 }
 
-:where(#zfnktegnhc) .gt_subtitle {
+:where(#nqpahpyvps) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -647,13 +662,13 @@ Setting default ggplot themes
   border-top-width: 0;
 }
 
-:where(#zfnktegnhc) .gt_bottom_border {
+:where(#nqpahpyvps) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_col_headings {
+:where(#nqpahpyvps) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -668,7 +683,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_col_heading {
+:where(#nqpahpyvps) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -688,7 +703,7 @@ Setting default ggplot themes
   overflow-x: hidden;
 }
 
-:where(#zfnktegnhc) .gt_column_spanner_outer {
+:where(#nqpahpyvps) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -700,15 +715,15 @@ Setting default ggplot themes
   padding-right: 4px;
 }
 
-:where(#zfnktegnhc) .gt_column_spanner_outer:first-child {
+:where(#nqpahpyvps) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#zfnktegnhc) .gt_column_spanner_outer:last-child {
+:where(#nqpahpyvps) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#zfnktegnhc) .gt_column_spanner {
+:where(#nqpahpyvps) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -720,7 +735,7 @@ Setting default ggplot themes
   width: 100%;
 }
 
-:where(#zfnktegnhc) .gt_group_heading {
+:where(#nqpahpyvps) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -745,7 +760,7 @@ Setting default ggplot themes
   vertical-align: middle;
 }
 
-:where(#zfnktegnhc) .gt_empty_group_heading {
+:where(#nqpahpyvps) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -760,15 +775,15 @@ Setting default ggplot themes
   vertical-align: middle;
 }
 
-:where(#zfnktegnhc) .gt_from_md > :first-child {
+:where(#nqpahpyvps) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#zfnktegnhc) .gt_from_md > :last-child {
+:where(#nqpahpyvps) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#zfnktegnhc) .gt_row {
+:where(#nqpahpyvps) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -787,7 +802,7 @@ Setting default ggplot themes
   overflow-x: hidden;
 }
 
-:where(#zfnktegnhc) .gt_stub {
+:where(#nqpahpyvps) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -800,7 +815,7 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#zfnktegnhc) .gt_stub_row_group {
+:where(#nqpahpyvps) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -814,11 +829,11 @@ Setting default ggplot themes
   vertical-align: top;
 }
 
-:where(#zfnktegnhc) .gt_row_group_first td {
+:where(#nqpahpyvps) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#zfnktegnhc) .gt_summary_row {
+:where(#nqpahpyvps) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -828,16 +843,16 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#zfnktegnhc) .gt_first_summary_row {
+:where(#nqpahpyvps) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_first_summary_row.thick {
+:where(#nqpahpyvps) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#zfnktegnhc) .gt_last_summary_row {
+:where(#nqpahpyvps) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -847,7 +862,7 @@ Setting default ggplot themes
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_grand_summary_row {
+:where(#nqpahpyvps) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -857,7 +872,7 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#zfnktegnhc) .gt_first_grand_summary_row {
+:where(#nqpahpyvps) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -867,11 +882,11 @@ Setting default ggplot themes
   border-top-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_striped {
+:where(#nqpahpyvps) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#zfnktegnhc) .gt_table_body {
+:where(#nqpahpyvps) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -880,7 +895,7 @@ Setting default ggplot themes
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_footnotes {
+:where(#nqpahpyvps) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -894,7 +909,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_footnote {
+:where(#nqpahpyvps) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -903,7 +918,7 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#zfnktegnhc) .gt_sourcenotes {
+:where(#nqpahpyvps) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -917,7 +932,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#zfnktegnhc) .gt_sourcenote {
+:where(#nqpahpyvps) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -925,36 +940,36 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#zfnktegnhc) .gt_left {
+:where(#nqpahpyvps) .gt_left {
   text-align: left;
 }
 
-:where(#zfnktegnhc) .gt_center {
+:where(#nqpahpyvps) .gt_center {
   text-align: center;
 }
 
-:where(#zfnktegnhc) .gt_right {
+:where(#nqpahpyvps) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#zfnktegnhc) .gt_font_normal {
+:where(#nqpahpyvps) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#zfnktegnhc) .gt_font_bold {
+:where(#nqpahpyvps) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#zfnktegnhc) .gt_font_italic {
+:where(#nqpahpyvps) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#zfnktegnhc) .gt_super {
+:where(#nqpahpyvps) .gt_super {
   font-size: 65%;
 }
 
-:where(#zfnktegnhc) .gt_two_val_uncert {
+:where(#nqpahpyvps) .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -963,38 +978,38 @@ Setting default ggplot themes
   margin-left: 0.1em;
 }
 
-:where(#zfnktegnhc) .gt_footnote_marks {
+:where(#nqpahpyvps) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#zfnktegnhc) .gt_asterisk {
+:where(#nqpahpyvps) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#zfnktegnhc) .gt_slash_mark {
+:where(#nqpahpyvps) .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-:where(#zfnktegnhc) .gt_fraction_numerator {
+:where(#nqpahpyvps) .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-:where(#zfnktegnhc) .gt_fraction_denominator {
+:where(#nqpahpyvps) .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
 }
 </style>
 <table class="gt_table">
-<caption>(a) Basic gt table</caption>
+<caption>(a) Basic gt table </caption>
   
   <thead class="gt_col_headings"><tr>
 <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">species</th>
@@ -1063,14 +1078,14 @@ Setting default ggplot themes
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div id="tbl-gt-2" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-gt" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-gt2-2" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-gt2" style="flex-basis: 100.0%;justify-content: center;">
 
-<div id="cxvizhuzbb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="mbiqyfoygm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#cxvizhuzbb) .gt_table {
+:where(#mbiqyfoygm) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1095,7 +1110,7 @@ Setting default ggplot themes
   border-left-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_heading {
+:where(#mbiqyfoygm) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1107,7 +1122,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_title {
+:where(#mbiqyfoygm) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1119,7 +1134,7 @@ Setting default ggplot themes
   border-bottom-width: 0;
 }
 
-:where(#cxvizhuzbb) .gt_subtitle {
+:where(#mbiqyfoygm) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1131,13 +1146,13 @@ Setting default ggplot themes
   border-top-width: 0;
 }
 
-:where(#cxvizhuzbb) .gt_bottom_border {
+:where(#mbiqyfoygm) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_col_headings {
+:where(#mbiqyfoygm) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1152,7 +1167,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_col_heading {
+:where(#mbiqyfoygm) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1172,7 +1187,7 @@ Setting default ggplot themes
   overflow-x: hidden;
 }
 
-:where(#cxvizhuzbb) .gt_column_spanner_outer {
+:where(#mbiqyfoygm) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1184,15 +1199,15 @@ Setting default ggplot themes
   padding-right: 4px;
 }
 
-:where(#cxvizhuzbb) .gt_column_spanner_outer:first-child {
+:where(#mbiqyfoygm) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#cxvizhuzbb) .gt_column_spanner_outer:last-child {
+:where(#mbiqyfoygm) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#cxvizhuzbb) .gt_column_spanner {
+:where(#mbiqyfoygm) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1204,7 +1219,7 @@ Setting default ggplot themes
   width: 100%;
 }
 
-:where(#cxvizhuzbb) .gt_group_heading {
+:where(#mbiqyfoygm) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1229,7 +1244,7 @@ Setting default ggplot themes
   vertical-align: middle;
 }
 
-:where(#cxvizhuzbb) .gt_empty_group_heading {
+:where(#mbiqyfoygm) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1244,15 +1259,15 @@ Setting default ggplot themes
   vertical-align: middle;
 }
 
-:where(#cxvizhuzbb) .gt_from_md > :first-child {
+:where(#mbiqyfoygm) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#cxvizhuzbb) .gt_from_md > :last-child {
+:where(#mbiqyfoygm) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#cxvizhuzbb) .gt_row {
+:where(#mbiqyfoygm) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1271,7 +1286,7 @@ Setting default ggplot themes
   overflow-x: hidden;
 }
 
-:where(#cxvizhuzbb) .gt_stub {
+:where(#mbiqyfoygm) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1284,7 +1299,7 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#cxvizhuzbb) .gt_stub_row_group {
+:where(#mbiqyfoygm) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1298,11 +1313,11 @@ Setting default ggplot themes
   vertical-align: top;
 }
 
-:where(#cxvizhuzbb) .gt_row_group_first td {
+:where(#mbiqyfoygm) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#cxvizhuzbb) .gt_summary_row {
+:where(#mbiqyfoygm) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1312,16 +1327,16 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#cxvizhuzbb) .gt_first_summary_row {
+:where(#mbiqyfoygm) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_first_summary_row.thick {
+:where(#mbiqyfoygm) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#cxvizhuzbb) .gt_last_summary_row {
+:where(#mbiqyfoygm) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1331,7 +1346,7 @@ Setting default ggplot themes
   border-bottom-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_grand_summary_row {
+:where(#mbiqyfoygm) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1341,7 +1356,7 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#cxvizhuzbb) .gt_first_grand_summary_row {
+:where(#mbiqyfoygm) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1351,11 +1366,11 @@ Setting default ggplot themes
   border-top-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_striped {
+:where(#mbiqyfoygm) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#cxvizhuzbb) .gt_table_body {
+:where(#mbiqyfoygm) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1364,7 +1379,7 @@ Setting default ggplot themes
   border-bottom-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_footnotes {
+:where(#mbiqyfoygm) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1378,7 +1393,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_footnote {
+:where(#mbiqyfoygm) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1387,7 +1402,7 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#cxvizhuzbb) .gt_sourcenotes {
+:where(#mbiqyfoygm) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1401,7 +1416,7 @@ Setting default ggplot themes
   border-right-color: #D3D3D3;
 }
 
-:where(#cxvizhuzbb) .gt_sourcenote {
+:where(#mbiqyfoygm) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1409,36 +1424,36 @@ Setting default ggplot themes
   padding-right: 5px;
 }
 
-:where(#cxvizhuzbb) .gt_left {
+:where(#mbiqyfoygm) .gt_left {
   text-align: left;
 }
 
-:where(#cxvizhuzbb) .gt_center {
+:where(#mbiqyfoygm) .gt_center {
   text-align: center;
 }
 
-:where(#cxvizhuzbb) .gt_right {
+:where(#mbiqyfoygm) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#cxvizhuzbb) .gt_font_normal {
+:where(#mbiqyfoygm) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#cxvizhuzbb) .gt_font_bold {
+:where(#mbiqyfoygm) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#cxvizhuzbb) .gt_font_italic {
+:where(#mbiqyfoygm) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#cxvizhuzbb) .gt_super {
+:where(#mbiqyfoygm) .gt_super {
   font-size: 65%;
 }
 
-:where(#cxvizhuzbb) .gt_two_val_uncert {
+:where(#mbiqyfoygm) .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -1447,38 +1462,38 @@ Setting default ggplot themes
   margin-left: 0.1em;
 }
 
-:where(#cxvizhuzbb) .gt_footnote_marks {
+:where(#mbiqyfoygm) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#cxvizhuzbb) .gt_asterisk {
+:where(#mbiqyfoygm) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#cxvizhuzbb) .gt_slash_mark {
+:where(#mbiqyfoygm) .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-:where(#cxvizhuzbb) .gt_fraction_numerator {
+:where(#mbiqyfoygm) .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-:where(#cxvizhuzbb) .gt_fraction_denominator {
+:where(#mbiqyfoygm) .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
 }
 </style>
 <table class="gt_table">
-<caption>(b) gt table with more features</caption>
+<caption>(b) gt table with more features </caption>
   
   <thead class="gt_col_headings">
 <tr>
@@ -1553,7 +1568,6 @@ Setting default ggplot themes
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 </div>
@@ -1793,7 +1807,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   // Switch to dark mode if need be
   if (hasAlternateSentinel()) {
     toggleColorMode(true);
-  } 
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1815,7 +1831,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -1902,24 +1935,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
@@ -2086,135 +2137,170 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a>Simple tables can be made with the function <span class="in">`knitr::kable`</span>.</span>
 <span id="cb12-162"><a href="#cb12-162" aria-hidden="true" tabindex="-1"></a>Several packages, including <span class="in">`kableExtra`</span> and <span class="in">`gt`</span> can make beautiful tables.</span>
 <span id="cb12-163"><a href="#cb12-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a><span class="fu">### kable</span></span>
+<span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a>The block label need to start with <span class="in">`tbl-`</span> if the main caption and table number are to be shown.  </span>
 <span id="cb12-165"><a href="#cb12-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-166"><a href="#cb12-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{r kable}</span></span>
+<span id="cb12-166"><a href="#cb12-166" aria-hidden="true" tabindex="-1"></a><span class="fu">### kable</span></span>
 <span id="cb12-167"><a href="#cb12-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-168"><a href="#cb12-168" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">x =</span> <span class="fu">slice</span>(penguins, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), <span class="co">#the data for the table</span></span>
-<span id="cb12-169"><a href="#cb12-169" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"The top penguins"</span> <span class="co"># the caption</span></span>
-<span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-168"><a href="#cb12-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r kable}</span></span>
+<span id="cb12-169"><a href="#cb12-169" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: fenced</span></span>
+<span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-kable</span></span>
+<span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Simple tables with `kable()` </span></span>
 <span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a><span class="fu">### gt</span></span>
-<span id="cb12-174"><a href="#cb12-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-175"><a href="#cb12-175" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">`gt`</span><span class="co">](https://gt.rstudio.com/articles/intro-creating-gt-tables.html)</span> package can make more elaborate tables than <span class="in">`knitr::kable()`</span>.</span>
-<span id="cb12-176"><a href="#cb12-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-177"><a href="#cb12-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r gt}</span></span>
-<span id="cb12-178"><a href="#cb12-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-gt</span></span>
-<span id="cb12-179"><a href="#cb12-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Tables with gt</span></span>
-<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb12-181"><a href="#cb12-181" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb12-182"><a href="#cb12-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="co"># get top few rows only</span></span>
-<span id="cb12-183"><a href="#cb12-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">caption =</span> <span class="st">"Basic gt table"</span>)</span>
-<span id="cb12-184"><a href="#cb12-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-185"><a href="#cb12-185" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb12-186"><a href="#cb12-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">caption =</span> <span class="st">"gt table with more features"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">species =</span> <span class="st">"Species"</span>,           <span class="co"># Display column headers</span></span>
-<span id="cb12-189"><a href="#cb12-189" aria-hidden="true" tabindex="-1"></a>             <span class="at">island =</span> <span class="st">"Island"</span>,</span>
-<span id="cb12-190"><a href="#cb12-190" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_length_mm =</span> <span class="st">"Length mm"</span>,</span>
-<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_depth_mm  =</span> <span class="st">"Depth mm"</span>,</span>
-<span id="cb12-192"><a href="#cb12-192" aria-hidden="true" tabindex="-1"></a>             <span class="at">flipper_length_mm =</span> <span class="st">"Flipper length mm"</span>,</span>
-<span id="cb12-193"><a href="#cb12-193" aria-hidden="true" tabindex="-1"></a>             <span class="at">body_mass_g =</span> <span class="st">"Body mass g"</span>, </span>
-<span id="cb12-194"><a href="#cb12-194" aria-hidden="true" tabindex="-1"></a>             <span class="at">sex =</span> <span class="st">"Sex"</span>, </span>
-<span id="cb12-195"><a href="#cb12-195" aria-hidden="true" tabindex="-1"></a>             <span class="at">year =</span> <span class="st">"Year"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-196"><a href="#cb12-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Bill"</span>, <span class="at">columns =</span> <span class="fu">c</span>(bill_length_mm, bill_depth_mm)) <span class="sc">|&gt;</span></span>
-<span id="cb12-197"><a href="#cb12-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Body"</span>, <span class="at">columns =</span> <span class="fu">c</span>(flipper_length_mm, body_mass_g))</span>
-<span id="cb12-198"><a href="#cb12-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-199"><a href="#cb12-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-200"><a href="#cb12-200" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb12-201"><a href="#cb12-201" aria-hidden="true" tabindex="-1"></a><span class="fu">## Number of decimal places</span></span>
-<span id="cb12-202"><a href="#cb12-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-203"><a href="#cb12-203" aria-hidden="true" tabindex="-1"></a>When reporting real numbers (i.e. numbers that have a decimal part), you need to decide how many digits to display.</span>
-<span id="cb12-204"><a href="#cb12-204" aria-hidden="true" tabindex="-1"></a>Be careful not to show spurious precision.</span>
-<span id="cb12-205"><a href="#cb12-205" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`round()`</span> to remove unwanted decimals, or <span class="in">`gt::fmt_number()`</span> to clean up one or more columns in a table. </span>
-<span id="cb12-206"><a href="#cb12-206" aria-hidden="true" tabindex="-1"></a>To control the default number of decimals across the whole document, use <span class="in">`options(digits = 2)`</span> in the first chunk.</span>
-<span id="cb12-207"><a href="#cb12-207" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb12-208"><a href="#cb12-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-209"><a href="#cb12-209" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb12-210"><a href="#cb12-210" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb12-211"><a href="#cb12-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-212"><a href="#cb12-212" aria-hidden="true" tabindex="-1"></a>Write a code block to make a table showing the mean leaf thickness and its standard deviation for each treatment.</span>
-<span id="cb12-213"><a href="#cb12-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-214"><a href="#cb12-214" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;details&gt;</span></span>
-<span id="cb12-215"><a href="#cb12-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-216"><a href="#cb12-216" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;summary&gt;</span></span>
-<span id="cb12-217"><a href="#cb12-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-218"><a href="#cb12-218" aria-hidden="true" tabindex="-1"></a>Hint</span>
-<span id="cb12-219"><a href="#cb12-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-220"><a href="#cb12-220" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/summary&gt;</span></span>
+<span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">x =</span> <span class="fu">slice</span>(penguins, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)) <span class="co"># show first 5 rows</span></span>
+<span id="cb12-174"><a href="#cb12-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-175"><a href="#cb12-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-176"><a href="#cb12-176" aria-hidden="true" tabindex="-1"></a><span class="fu">### gt</span></span>
+<span id="cb12-177"><a href="#cb12-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-178"><a href="#cb12-178" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">`gt`</span><span class="co">](https://gt.rstudio.com/articles/intro-creating-gt-tables.html)</span> package can make more elaborate tables than <span class="in">`knitr::kable()`</span>.</span>
+<span id="cb12-179"><a href="#cb12-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-181"><a href="#cb12-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-182"><a href="#cb12-182" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-gt</span></span>
+<span id="cb12-183"><a href="#cb12-183" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Tables with `gt()`</span></span>
+<span id="cb12-184"><a href="#cb12-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-subcap: </span></span>
+<span id="cb12-185"><a href="#cb12-185" aria-hidden="true" tabindex="-1"></a><span class="co">#|    - "Basic `gt()` table"</span></span>
+<span id="cb12-186"><a href="#cb12-186" aria-hidden="true" tabindex="-1"></a><span class="co">#|    - "`gt()` table with more features"</span></span>
+<span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb12-189"><a href="#cb12-189" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="co"># get top few rows only</span></span>
+<span id="cb12-190"><a href="#cb12-190" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span>
+<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-192"><a href="#cb12-192" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb12-193"><a href="#cb12-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-194"><a href="#cb12-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb12-195"><a href="#cb12-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">species =</span> <span class="st">"Species"</span>,           <span class="co"># Display column headers</span></span>
+<span id="cb12-196"><a href="#cb12-196" aria-hidden="true" tabindex="-1"></a>             <span class="at">island =</span> <span class="st">"Island"</span>,</span>
+<span id="cb12-197"><a href="#cb12-197" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_length_mm =</span> <span class="st">"Length mm"</span>,</span>
+<span id="cb12-198"><a href="#cb12-198" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_depth_mm  =</span> <span class="st">"Depth mm"</span>,</span>
+<span id="cb12-199"><a href="#cb12-199" aria-hidden="true" tabindex="-1"></a>             <span class="at">flipper_length_mm =</span> <span class="st">"Flipper length mm"</span>,</span>
+<span id="cb12-200"><a href="#cb12-200" aria-hidden="true" tabindex="-1"></a>             <span class="at">body_mass_g =</span> <span class="st">"Body mass g"</span>, </span>
+<span id="cb12-201"><a href="#cb12-201" aria-hidden="true" tabindex="-1"></a>             <span class="at">sex =</span> <span class="st">"Sex"</span>, </span>
+<span id="cb12-202"><a href="#cb12-202" aria-hidden="true" tabindex="-1"></a>             <span class="at">year =</span> <span class="st">"Year"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-203"><a href="#cb12-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Bill"</span>, <span class="at">columns =</span> <span class="fu">c</span>(bill_length_mm, bill_depth_mm)) <span class="sc">|&gt;</span></span>
+<span id="cb12-204"><a href="#cb12-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Body"</span>, <span class="at">columns =</span> <span class="fu">c</span>(flipper_length_mm, body_mass_g))</span>
+<span id="cb12-205"><a href="#cb12-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-206"><a href="#cb12-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-207"><a href="#cb12-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-210"><a href="#cb12-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-211"><a href="#cb12-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb12-212"><a href="#cb12-212" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-gt2</span></span>
+<span id="cb12-213"><a href="#cb12-213" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Tables with `gt`</span></span>
+<span id="cb12-214"><a href="#cb12-214" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-subcap: </span></span>
+<span id="cb12-215"><a href="#cb12-215" aria-hidden="true" tabindex="-1"></a><span class="co">#|    - "Basic gt table"</span></span>
+<span id="cb12-216"><a href="#cb12-216" aria-hidden="true" tabindex="-1"></a><span class="co">#|    - "gt table with more features"</span></span>
+<span id="cb12-217"><a href="#cb12-217" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb12-218"><a href="#cb12-218" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb12-219"><a href="#cb12-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="co"># get top few rows only</span></span>
+<span id="cb12-220"><a href="#cb12-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span>
 <span id="cb12-221"><a href="#cb12-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-222"><a href="#cb12-222" aria-hidden="true" tabindex="-1"></a><span class="in">`sd()`</span> for standard deviation</span>
-<span id="cb12-223"><a href="#cb12-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-224"><a href="#cb12-224" aria-hidden="true" tabindex="-1"></a><span class="in">`group_by()`</span> and <span class="in">`summarise()`</span> then use any of the table making functions.</span>
-<span id="cb12-225"><a href="#cb12-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/details&gt;</span></span>
-<span id="cb12-227"><a href="#cb12-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-228"><a href="#cb12-228" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb12-229"><a href="#cb12-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-230"><a href="#cb12-230" aria-hidden="true" tabindex="-1"></a><span class="fu">## Equations</span></span>
-<span id="cb12-231"><a href="#cb12-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-232"><a href="#cb12-232" aria-hidden="true" tabindex="-1"></a>Equations are embedded in a pair of dollar symbols.</span>
-<span id="cb12-233"><a href="#cb12-233" aria-hidden="true" tabindex="-1"></a>RStudio will show a preview of the equation as you type it.</span>
-<span id="cb12-234"><a href="#cb12-234" aria-hidden="true" tabindex="-1"></a>Equations are written with <span class="co">[</span><span class="ot">LaTeX notation</span><span class="co">](https://en.wikibooks.org/wiki/LaTeX/Mathematics)</span>.</span>
-<span id="cb12-235"><a href="#cb12-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-236"><a href="#cb12-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r equations, echo = FALSE, message = FALSE}</span></span>
-<span id="cb12-237"><a href="#cb12-237" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="st">'</span></span>
-<span id="cb12-238"><a href="#cb12-238" aria-hidden="true" tabindex="-1"></a><span class="st">What, How, Output</span></span>
-<span id="cb12-239"><a href="#cb12-239" aria-hidden="true" tabindex="-1"></a><span class="st">"Lower-case Greek letters", "`$</span><span class="sc">\\</span><span class="st">sigma$`", "$</span><span class="sc">\\</span><span class="st">sigma$"</span></span>
-<span id="cb12-240"><a href="#cb12-240" aria-hidden="true" tabindex="-1"></a><span class="st">"Upper-Case Greek Letters", "`$</span><span class="sc">\\</span><span class="st">Sigma$`", "$</span><span class="sc">\\</span><span class="st">Sigma$"</span></span>
-<span id="cb12-241"><a href="#cb12-241" aria-hidden="true" tabindex="-1"></a><span class="st">"Subscript", "`$</span><span class="sc">\\</span><span class="st">beta_{0}$`", "$</span><span class="sc">\\</span><span class="st">beta_{0}$"</span></span>
-<span id="cb12-242"><a href="#cb12-242" aria-hidden="true" tabindex="-1"></a><span class="st">"Superscript", "`$</span><span class="sc">\\</span><span class="st">chi^{2}$`", "$</span><span class="sc">\\</span><span class="st">chi^{2}$"</span></span>
-<span id="cb12-243"><a href="#cb12-243" aria-hidden="true" tabindex="-1"></a><span class="st">"Fractions", "`$</span><span class="sc">\\</span><span class="st">frac{1}{2}$`", "$</span><span class="sc">\\</span><span class="st">frac{1}{2}$"</span></span>
-<span id="cb12-244"><a href="#cb12-244" aria-hidden="true" tabindex="-1"></a><span class="st">"Roots", "`$</span><span class="sc">\\</span><span class="st">sqrt{4} = 2$`", "$</span><span class="sc">\\</span><span class="st">sqrt{4} = 2$"'</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-245"><a href="#cb12-245" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span>
-<span id="cb12-246"><a href="#cb12-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-247"><a href="#cb12-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-248"><a href="#cb12-248" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;br&gt;</span></span>
-<span id="cb12-249"><a href="#cb12-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-250"><a href="#cb12-250" aria-hidden="true" tabindex="-1"></a>Here is an example of using an inline equation.</span>
-<span id="cb12-251"><a href="#cb12-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-252"><a href="#cb12-252" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
-<span id="cb12-253"><a href="#cb12-253" aria-hidden="true" tabindex="-1"></a>The $\delta^{13}C$ value ...</span>
-<span id="cb12-254"><a href="#cb12-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-255"><a href="#cb12-255" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"bg-success"</span><span class="kw">&gt;</span></span>
-<span id="cb12-256"><a href="#cb12-256" aria-hidden="true" tabindex="-1"></a>The $\delta^{13}C$ value ...</span>
-<span id="cb12-257"><a href="#cb12-257" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+<span id="cb12-222"><a href="#cb12-222" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb12-223"><a href="#cb12-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-224"><a href="#cb12-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb12-225"><a href="#cb12-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">species =</span> <span class="st">"Species"</span>,           <span class="co"># Display column headers</span></span>
+<span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a>             <span class="at">island =</span> <span class="st">"Island"</span>,</span>
+<span id="cb12-227"><a href="#cb12-227" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_length_mm =</span> <span class="st">"Length mm"</span>,</span>
+<span id="cb12-228"><a href="#cb12-228" aria-hidden="true" tabindex="-1"></a>             <span class="at">bill_depth_mm  =</span> <span class="st">"Depth mm"</span>,</span>
+<span id="cb12-229"><a href="#cb12-229" aria-hidden="true" tabindex="-1"></a>             <span class="at">flipper_length_mm =</span> <span class="st">"Flipper length mm"</span>,</span>
+<span id="cb12-230"><a href="#cb12-230" aria-hidden="true" tabindex="-1"></a>             <span class="at">body_mass_g =</span> <span class="st">"Body mass g"</span>, </span>
+<span id="cb12-231"><a href="#cb12-231" aria-hidden="true" tabindex="-1"></a>             <span class="at">sex =</span> <span class="st">"Sex"</span>, </span>
+<span id="cb12-232"><a href="#cb12-232" aria-hidden="true" tabindex="-1"></a>             <span class="at">year =</span> <span class="st">"Year"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-233"><a href="#cb12-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Bill"</span>, <span class="at">columns =</span> <span class="fu">c</span>(bill_length_mm, bill_depth_mm)) <span class="sc">|&gt;</span></span>
+<span id="cb12-234"><a href="#cb12-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Body"</span>, <span class="at">columns =</span> <span class="fu">c</span>(flipper_length_mm, body_mass_g))</span>
+<span id="cb12-235"><a href="#cb12-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-236"><a href="#cb12-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-237"><a href="#cb12-237" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb12-238"><a href="#cb12-238" aria-hidden="true" tabindex="-1"></a><span class="fu">## Number of decimal places</span></span>
+<span id="cb12-239"><a href="#cb12-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-240"><a href="#cb12-240" aria-hidden="true" tabindex="-1"></a>When reporting real numbers (i.e. numbers that have a decimal part), you need to decide how many digits to display.</span>
+<span id="cb12-241"><a href="#cb12-241" aria-hidden="true" tabindex="-1"></a>Be careful not to show spurious precision.</span>
+<span id="cb12-242"><a href="#cb12-242" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`round()`</span> to remove unwanted decimals, or <span class="in">`gt::fmt_number()`</span> to clean up one or more columns in a table. </span>
+<span id="cb12-243"><a href="#cb12-243" aria-hidden="true" tabindex="-1"></a>To control the default number of decimals across the whole document, use <span class="in">`options(digits = 2)`</span> in the first chunk.</span>
+<span id="cb12-244"><a href="#cb12-244" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-245"><a href="#cb12-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-246"><a href="#cb12-246" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb12-247"><a href="#cb12-247" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb12-248"><a href="#cb12-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-249"><a href="#cb12-249" aria-hidden="true" tabindex="-1"></a>Write a code block to make a table showing the mean leaf thickness and its standard deviation for each treatment.</span>
+<span id="cb12-250"><a href="#cb12-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-251"><a href="#cb12-251" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;details&gt;</span></span>
+<span id="cb12-252"><a href="#cb12-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-253"><a href="#cb12-253" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;summary&gt;</span></span>
+<span id="cb12-254"><a href="#cb12-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-255"><a href="#cb12-255" aria-hidden="true" tabindex="-1"></a>Hint</span>
+<span id="cb12-256"><a href="#cb12-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-257"><a href="#cb12-257" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/summary&gt;</span></span>
 <span id="cb12-258"><a href="#cb12-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-259"><a href="#cb12-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-260"><a href="#cb12-260" aria-hidden="true" tabindex="-1"></a>A double dollar enclosure gives the equation its own line.</span>
-<span id="cb12-261"><a href="#cb12-261" aria-hidden="true" tabindex="-1"></a>For example, this is the equation of a standard deviation that uses several different elements.</span>
+<span id="cb12-259"><a href="#cb12-259" aria-hidden="true" tabindex="-1"></a><span class="in">`sd()`</span> for standard deviation</span>
+<span id="cb12-260"><a href="#cb12-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-261"><a href="#cb12-261" aria-hidden="true" tabindex="-1"></a><span class="in">`group_by()`</span> and <span class="in">`summarise()`</span> then use any of the table making functions.</span>
 <span id="cb12-262"><a href="#cb12-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-263"><a href="#cb12-263" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
-<span id="cb12-264"><a href="#cb12-264" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb12-265"><a href="#cb12-265" aria-hidden="true" tabindex="-1"></a>SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}</span>
-<span id="cb12-266"><a href="#cb12-266" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb12-267"><a href="#cb12-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-263"><a href="#cb12-263" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/details&gt;</span></span>
+<span id="cb12-264"><a href="#cb12-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-265"><a href="#cb12-265" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-266"><a href="#cb12-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-267"><a href="#cb12-267" aria-hidden="true" tabindex="-1"></a><span class="fu">## Equations</span></span>
 <span id="cb12-268"><a href="#cb12-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-269"><a href="#cb12-269" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb12-270"><a href="#cb12-270" aria-hidden="true" tabindex="-1"></a>SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}</span>
-<span id="cb12-271"><a href="#cb12-271" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-269"><a href="#cb12-269" aria-hidden="true" tabindex="-1"></a>Equations are embedded in a pair of dollar symbols.</span>
+<span id="cb12-270"><a href="#cb12-270" aria-hidden="true" tabindex="-1"></a>RStudio will show a preview of the equation as you type it.</span>
+<span id="cb12-271"><a href="#cb12-271" aria-hidden="true" tabindex="-1"></a>Equations are written with <span class="co">[</span><span class="ot">LaTeX notation</span><span class="co">](https://en.wikibooks.org/wiki/LaTeX/Mathematics)</span>.</span>
 <span id="cb12-272"><a href="#cb12-272" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-273"><a href="#cb12-273" aria-hidden="true" tabindex="-1"></a>When making a complex formula, build one element at a time, often starting in the middle, rather than trying to get it all working at once.</span>
-<span id="cb12-274"><a href="#cb12-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-275"><a href="#cb12-275" aria-hidden="true" tabindex="-1"></a><span class="fu">## Chemistry</span></span>
-<span id="cb12-276"><a href="#cb12-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-277"><a href="#cb12-277" aria-hidden="true" tabindex="-1"></a>Equations are printed in an italic font, which is not great for chemical formulae.</span>
-<span id="cb12-278"><a href="#cb12-278" aria-hidden="true" tabindex="-1"></a>We can fix this with the <span class="in">`\mathrm`</span> LaTeX command which forces roman typeface.</span>
-<span id="cb12-279"><a href="#cb12-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-280"><a href="#cb12-280" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
-<span id="cb12-281"><a href="#cb12-281" aria-hidden="true" tabindex="-1"></a>Sulphate $\mathrm{SO_4^{2-}}$</span>
-<span id="cb12-282"><a href="#cb12-282" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-283"><a href="#cb12-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-284"><a href="#cb12-284" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"bg-success"</span><span class="kw">&gt;</span></span>
-<span id="cb12-285"><a href="#cb12-285" aria-hidden="true" tabindex="-1"></a>Sulphate $\mathrm{SO_4^{2-}}$</span>
-<span id="cb12-286"><a href="#cb12-286" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
-<span id="cb12-287"><a href="#cb12-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-288"><a href="#cb12-288" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
-<span id="cb12-289"><a href="#cb12-289" aria-hidden="true" tabindex="-1"></a>$$\mathrm{CO_3^{2-} + H^+ \rightleftharpoons HCO_3^{2-}}$$</span>
-<span id="cb12-290"><a href="#cb12-290" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-291"><a href="#cb12-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-292"><a href="#cb12-292" aria-hidden="true" tabindex="-1"></a>$$\mathrm{CO_3^{2-} + H^+ \rightleftharpoons HCO_3^{2-}}$$</span>
+<span id="cb12-273"><a href="#cb12-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{r equations, echo = FALSE, message = FALSE}</span></span>
+<span id="cb12-274"><a href="#cb12-274" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="st">'</span></span>
+<span id="cb12-275"><a href="#cb12-275" aria-hidden="true" tabindex="-1"></a><span class="st">What, How, Output</span></span>
+<span id="cb12-276"><a href="#cb12-276" aria-hidden="true" tabindex="-1"></a><span class="st">"Lower-case Greek letters", "`$</span><span class="sc">\\</span><span class="st">sigma$`", "$</span><span class="sc">\\</span><span class="st">sigma$"</span></span>
+<span id="cb12-277"><a href="#cb12-277" aria-hidden="true" tabindex="-1"></a><span class="st">"Upper-Case Greek Letters", "`$</span><span class="sc">\\</span><span class="st">Sigma$`", "$</span><span class="sc">\\</span><span class="st">Sigma$"</span></span>
+<span id="cb12-278"><a href="#cb12-278" aria-hidden="true" tabindex="-1"></a><span class="st">"Subscript", "`$</span><span class="sc">\\</span><span class="st">beta_{0}$`", "$</span><span class="sc">\\</span><span class="st">beta_{0}$"</span></span>
+<span id="cb12-279"><a href="#cb12-279" aria-hidden="true" tabindex="-1"></a><span class="st">"Superscript", "`$</span><span class="sc">\\</span><span class="st">chi^{2}$`", "$</span><span class="sc">\\</span><span class="st">chi^{2}$"</span></span>
+<span id="cb12-280"><a href="#cb12-280" aria-hidden="true" tabindex="-1"></a><span class="st">"Fractions", "`$</span><span class="sc">\\</span><span class="st">frac{1}{2}$`", "$</span><span class="sc">\\</span><span class="st">frac{1}{2}$"</span></span>
+<span id="cb12-281"><a href="#cb12-281" aria-hidden="true" tabindex="-1"></a><span class="st">"Roots", "`$</span><span class="sc">\\</span><span class="st">sqrt{4} = 2$`", "$</span><span class="sc">\\</span><span class="st">sqrt{4} = 2$"'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-282"><a href="#cb12-282" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span>
+<span id="cb12-283"><a href="#cb12-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-284"><a href="#cb12-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-285"><a href="#cb12-285" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;br&gt;</span></span>
+<span id="cb12-286"><a href="#cb12-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-287"><a href="#cb12-287" aria-hidden="true" tabindex="-1"></a>Here is an example of using an inline equation.</span>
+<span id="cb12-288"><a href="#cb12-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-289"><a href="#cb12-289" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
+<span id="cb12-290"><a href="#cb12-290" aria-hidden="true" tabindex="-1"></a>The $\delta^{13}C$ value ...</span>
+<span id="cb12-291"><a href="#cb12-291" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-292"><a href="#cb12-292" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"bg-success"</span><span class="kw">&gt;</span></span>
+<span id="cb12-293"><a href="#cb12-293" aria-hidden="true" tabindex="-1"></a>The $\delta^{13}C$ value ...</span>
+<span id="cb12-294"><a href="#cb12-294" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+<span id="cb12-295"><a href="#cb12-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-296"><a href="#cb12-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-297"><a href="#cb12-297" aria-hidden="true" tabindex="-1"></a>A double dollar enclosure gives the equation its own line.</span>
+<span id="cb12-298"><a href="#cb12-298" aria-hidden="true" tabindex="-1"></a>For example, this is the equation of a standard deviation that uses several different elements.</span>
+<span id="cb12-299"><a href="#cb12-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-300"><a href="#cb12-300" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
+<span id="cb12-301"><a href="#cb12-301" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-302"><a href="#cb12-302" aria-hidden="true" tabindex="-1"></a>SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}</span>
+<span id="cb12-303"><a href="#cb12-303" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-304"><a href="#cb12-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-305"><a href="#cb12-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-306"><a href="#cb12-306" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-307"><a href="#cb12-307" aria-hidden="true" tabindex="-1"></a>SD = \sqrt{\frac{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}{n-1}}</span>
+<span id="cb12-308"><a href="#cb12-308" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-309"><a href="#cb12-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-310"><a href="#cb12-310" aria-hidden="true" tabindex="-1"></a>When making a complex formula, build one element at a time, often starting in the middle, rather than trying to get it all working at once.</span>
+<span id="cb12-311"><a href="#cb12-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-312"><a href="#cb12-312" aria-hidden="true" tabindex="-1"></a><span class="fu">## Chemistry</span></span>
+<span id="cb12-313"><a href="#cb12-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-314"><a href="#cb12-314" aria-hidden="true" tabindex="-1"></a>Equations are printed in an italic font, which is not great for chemical formulae.</span>
+<span id="cb12-315"><a href="#cb12-315" aria-hidden="true" tabindex="-1"></a>We can fix this with the <span class="in">`\mathrm`</span> LaTeX command which forces roman typeface.</span>
+<span id="cb12-316"><a href="#cb12-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-317"><a href="#cb12-317" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
+<span id="cb12-318"><a href="#cb12-318" aria-hidden="true" tabindex="-1"></a>Sulphate $\mathrm{SO_4^{2-}}$</span>
+<span id="cb12-319"><a href="#cb12-319" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-320"><a href="#cb12-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-321"><a href="#cb12-321" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"bg-success"</span><span class="kw">&gt;</span></span>
+<span id="cb12-322"><a href="#cb12-322" aria-hidden="true" tabindex="-1"></a>Sulphate $\mathrm{SO_4^{2-}}$</span>
+<span id="cb12-323"><a href="#cb12-323" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+<span id="cb12-324"><a href="#cb12-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-325"><a href="#cb12-325" aria-hidden="true" tabindex="-1"></a><span class="in">``` markdown</span></span>
+<span id="cb12-326"><a href="#cb12-326" aria-hidden="true" tabindex="-1"></a>$$\mathrm{CO_3^{2-} + H^+ \rightleftharpoons HCO_3^{2-}}$$</span>
+<span id="cb12-327"><a href="#cb12-327" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-328"><a href="#cb12-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-329"><a href="#cb12-329" aria-hidden="true" tabindex="-1"></a>$$\mathrm{CO_3^{2-} + H^+ \rightleftharpoons HCO_3^{2-}}$$</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
