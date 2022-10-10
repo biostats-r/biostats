@@ -15,7 +15,7 @@ source("../Templates/biostats_theme.R")
 ::: callout-note
 ## In this chapter, you will
 
-- learn the basics of using quarto
+-   learn the basics of using quarto
 :::
 
 ## YAML
@@ -42,8 +42,6 @@ YAML is sensitive to white space.
 For example, you must have the space after the colon.
 :::
 
-
-
 ::: callout-tip
 ## Today's date
 
@@ -59,7 +57,7 @@ date: today
 :::
 
 ::: callout-note
-## Exercise 
+## Exercise
 
 Add date and author keys to the YAML of your svalbard_traits quarto document so that the rendered document shows today's date and your name.
 :::
@@ -184,23 +182,23 @@ For example:
 }
 </style>
 ```
-+------------------------------+--------------------------------+
-| Markdown Syntax              | Output                         |
-+==============================+================================+
++------------------------------+--------------------------------------------+
+| Markdown Syntax              | Output                                     |
++==============================+============================================+
 |     # Header 1               | # Header 1 {.unnumbered .heading-output}   |
-+------------------------------+--------------------------------+
++------------------------------+--------------------------------------------+
 |     ## Header 2              | ## Header 2 {.unnumbered .heading-output}  |
-+------------------------------+--------------------------------+
++------------------------------+--------------------------------------------+
 |     ### Header 3             | ### Header 3 {.unnumbered .heading-output} |
-+------------------------------+--------------------------------+
-| \*italics\* and \*\*bold\*\* | *italics* and **bold**         |
-+------------------------------+--------------------------------+
-| superscript m\^2\^           | superscript m^2^               |
-+------------------------------+--------------------------------+
-| subscript CO\~2\~            | subscript CO~2~                |
-+------------------------------+--------------------------------+
-| \`verbatim code\`            | `verbatim code`                |
-+------------------------------+--------------------------------+
++------------------------------+--------------------------------------------+
+| \*italics\* and \*\*bold\*\* | *italics* and **bold**                     |
++------------------------------+--------------------------------------------+
+| superscript m\^2\^           | superscript m^2^                           |
++------------------------------+--------------------------------------------+
+| subscript CO\~2\~            | subscript CO~2~                            |
++------------------------------+--------------------------------------------+
+| \`verbatim code\`            | `verbatim code`                            |
++------------------------------+--------------------------------------------+
 
 ::: callout-tip
 ## Escaping characters
@@ -219,15 +217,9 @@ Se [denne](https://quarto.org/docs/authoring/language.html) siden om hvordan man
 You can change the spell checker language for the current project from the RStudio menu with
 
 <ol class="breadcrumb">
-<li class="breadcrumb-item">
-Tools
-</li>
-<li class="breadcrumb-item">
-Project options...
-</li>
-<li class="breadcrumb-item">
-Spelling
-</li>
+<li class="breadcrumb-item">Tools</li>
+<li class="breadcrumb-item">Project options...</li>
+<li class="breadcrumb-item">Spelling</li>
 </ol>
 
 You can also change the global options to change the language for all projects.
@@ -244,7 +236,7 @@ Fix this and render the document to check the formatting has worked.
 
 Code in an quarto document is contained in code blocks.
 
-This is a code chunk that loads the penguin data from the `palmerpenguins` package.
+This is a code block that loads the penguin data from the `palmerpenguins` package.
 
 ```{r}
 #| echo: fenced
@@ -295,16 +287,14 @@ knitr::include_graphics("Pics/run-chunk.png")
 
 Run all the blocks in the document.
 
-Now double click on the object called `bistorta` in the RStudio Environment tab so you can view it. 
+Now double click on the object called `bistorta` in the RStudio Environment tab so you can view it.
 These are the data we are working with.
-
-
 :::
 
 ::: callout-note
 ## Exercise
 
-Make a new code block (or blocks) that make a plot showing the effect of the treatment on _Bistorta_ leaf thickness.
+Make a new code block (or blocks) that make a plot showing the effect of the treatment on *Bistorta* leaf thickness.
 
 <details>
 
@@ -348,18 +338,128 @@ The white space in the block options is critical.
 There are lots of block options, but only a few that you will need to use frequently.
 Here are some and their default.
 
--   `echo` (`true`) Show the chunk's code in the output.
--   `eval` (`true`) Run the chunk code.
--   `include` (`true`) Include the output of the chunk in the document.
+-   `echo` (`true`) Show the block's code in the output.
+-   `eval` (`true`) Run the block's code.
+-   `include` (`true`) Include the output of the block in the document.
 -   `message` (`true`) Include messages from R.
 -   `warning` (`true`) Include warnings from R.
+-   `output` (`true`) How and whether to include results.
 -   `error` (`false`) If `true`, includes any error message and carries on. If `false`, stops knitting when there is an error in R code.
 
 I leave `message` and `warning` as `true` while I am writing the document, so I can see any possible problems, and set them to `false` when I render the final version.
 
 I sometimes find it useful to set `error` to `true` as can make it easier to debug any errors in the code.
 
-Chunk options for figures are shown in @sec-figure-chunk-options.
+Some of these block options interact.
+Use the following widget, which initially shows the defaults, to explore what is shown with the most commonly used options.
+
+::: {style="background-color: lightgrey;  padding:5px; border: 2px solid darkgrey;"}
+**Select your block options**
+
+```{r}
+#| label: chunk-option-setup
+#| echo: false
+#| layout-ncol: 2
+library(reactable)
+library(crosstalk)
+
+block_options <- crossing(eval = c(TRUE, FALSE), 
+         echo = c(TRUE, FALSE), 
+         message = c(TRUE, FALSE), 
+         warning = c(TRUE, FALSE), 
+         include = c(TRUE, FALSE), 
+         output = c("true", "asis", "false")) |> 
+  mutate(
+    Code = if_else(echo & include, "shown", "hidden"),
+    Messages = case_when(
+      !eval ~ "none",
+      !include ~ "hidden",
+      !message ~ "hidden",
+      TRUE ~ "shown"
+    ),
+    Warnings = case_when(
+      !eval ~ "none",
+      !include ~ "hidden",
+      !warning ~ "hidden",
+      TRUE ~ "shown"
+    ),
+    `Text, figures & tables` = case_when(
+      !eval ~ "none",
+      !include ~ "hidden",
+      output == "false" ~ "hidden",
+      output == "asis" ~ "raw markdown",
+      TRUE ~ "shown"
+    )
+  ) |> 
+  mutate(across(eval:include, tolower),
+         across(eval:include, factor, levels = c("true", "false")),
+         output = factor(output, levels = c("true", "asis", "false")))
+
+# make crosstalk shared data
+data <- SharedData$new(block_options)
+
+# make select input
+filter_select("eval", "eval", data, ~eval, multiple = FALSE)
+filter_select("include", "include", data, ~include, multiple = FALSE)
+
+```
+
+```{r}
+#| label: chunk-option-selects
+#| echo: false
+#| layout-ncol: 4
+filter_select("echo", "echo", data, ~echo, multiple = FALSE)
+filter_select("message", "message", data, ~message, multiple = FALSE)
+filter_select("warning", "warning", data, ~warning, multiple = FALSE)
+filter_select("output", "output", data, ~output, multiple = FALSE)
+```
+
+
+**Block output**
+
+```{r}
+#| echo: false
+reactable(data,
+          minRows = 1,
+          pagination = FALSE,
+          showPageInfo = FALSE,
+          outlined = TRUE,
+
+          columns = list(
+             eval = colDef(show = FALSE),
+             echo = colDef(show = FALSE),
+             message = colDef(show = FALSE),
+             warning = colDef(show = FALSE), 
+             include = colDef(show = FALSE), 
+             output = colDef(show = FALSE),  
+             Code = colDef(show = TRUE),
+             Messages = colDef(show = TRUE),  
+             Warnings = colDef(show = TRUE), 
+            `Text, figures & tables` = colDef(show = TRUE)
+          ), 
+          theme = reactableTheme(
+            backgroundColor = "#C8C0CF"
+  ))
+```
+
+```{js echo = FALSE}
+
+function filter_default() {
+
+  document.getElementById("eval").getElementsByClassName("selectized")[0].selectize.setValue("true", false);
+  document.getElementById("echo").getElementsByClassName("selectized")[0].selectize.setValue("true", false);
+  document.getElementById("message").getElementsByClassName("selectized")[0].selectize.setValue("true", false);
+  document.getElementById("warning").getElementsByClassName("selectized")[0].selectize.setValue("true", false);
+  document.getElementById("include").getElementsByClassName("selectized")[0].selectize.setValue("true", false);
+    document.getElementById("output").getElementsByClassName("selectized")[0].selectize.setValue("true", false);
+ }
+$(document).ready(filter_default);
+//document.addEventListener("load", filter_default);
+
+```
+:::
+
+Block options for figures are shown in @sec-figure-chunk-options.
 
 For more options see <https://quarto.org/docs/computations/execution-options.html>
 
@@ -394,13 +494,12 @@ execute:
 Use global block options to stop the code from showing in the report.
 :::
 
-
 ### Block labels
 
 It is a good idea to give code blocks labels which you can do with the `label` option.
 If you don't, they will automatically be called "unnamed-chunk-n" where "n" is a incrementing number.
-This is inconvenient for debugging (you need to work out which chunk is "unnamed-chunk-38") and for working with any image files generated by the document.
-In section @sec-cross-referencing you will see how to use chunk names to cross-reference figures and tables in your document.
+This is inconvenient for debugging (you need to work out which block is "unnamed-chunk-38") and for working with any image files generated by the document.
+In section @sec-cross-referencing you will see how to use block names to cross-reference figures and tables in your document.
 
 #### Rules for block labels
 
@@ -417,6 +516,7 @@ They will cause all sorts of strange problems.
 ### Hiding a block
 
 If a block has a lot of code, it can be useful to hide it to make it easier to navigate the document.
+It will still be rendered.
 The grey arrow next to the line numbers will do this.
 Sections of text can also be hidden.
 
@@ -444,10 +544,9 @@ cat("Seven times six is `r 7 * 6`")
 cat("\n```")
 ```
 
-<div class="bg-success">
+::: bg-success
 Seven times six is `r 7 * 6`
-</div>
-
+:::
 
 In the visual editor, you can make inline code by clicking on the `</>` icon.
 
@@ -464,9 +563,9 @@ cat("`r english::Words(7 * 6)` is the answer to seven times six.")
 cat("\n```")
 ```
 
-<div class="bg-success">
+::: bg-success
 `r english::Words(7 * 6)` is the answer to seven times six.
-</div>
+:::
 :::
 
 It is best to keep inline code short to keep the text readable.
@@ -503,14 +602,12 @@ r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).")
 cat("\n```")
 ```
 
-<div class="bg-success">
+::: bg-success
 Bill length and body mass in Adelie penguins are positively correlated, r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).
-</div>
-
+:::
 
 ::: callout-note
 ## Exercise
 
-Use some inline R code to report the number of leaf thickness measurements for _Bistorta vivipera_.
-
+Use some inline R code to report the number of leaf thickness measurements for *Bistorta vivipera*.
 :::
