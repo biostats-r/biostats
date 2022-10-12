@@ -75,4 +75,9 @@ fs::dir_delete("quarto/demo_presentation_files/")
 
 # Statistics in R
 quarto::quarto_render("StatisticsInR")
+bioceed_links("docs/data_collection", quarto = TRUE)
+
+
+# Data collection
+quarto::quarto_render("DataCollection")
 bioceed_links("docs/statisticsInR", quarto = TRUE)
