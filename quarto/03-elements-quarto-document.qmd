@@ -353,7 +353,7 @@ I sometimes find it useful to set `error` to `true` as can make it easier to deb
 Some of these block options interact.
 Use the following widget, which initially shows the defaults, to explore what is shown with the most commonly used options.
 
-::: {style="background-color: lightgrey;  padding:5px; border: 2px solid darkgrey;"}
+::: {style="background-color: gainsboro;  padding:5px; border: 2px solid darkgrey;"}
 **Select your block options**
 
 ```{r}
@@ -361,7 +361,7 @@ Use the following widget, which initially shows the defaults, to explore what is
 #| echo: false
 #| layout-ncol: 2
 library(reactable)
-library(crosstalk)
+library(crosstalk) # remotes::install_github("richardjtelford/crosstalk@no-all)
 
 block_options <- crossing(eval = c(TRUE, FALSE), 
          echo = c(TRUE, FALSE), 
@@ -424,6 +424,13 @@ reactable(data,
           pagination = FALSE,
           showPageInfo = FALSE,
           outlined = TRUE,
+          defaultColDef = colDef(
+             style = function(value) {
+               cols <- c("hidden" = "#bce2f7", "shown" = "#bdf7bc", "none" = "#f7c0bc", "raw markdown" = "#bdf7bc")
+              colour <- as.vector(cols[value])
+        list(background = colour)
+      }
+          ),
 
           columns = list(
              eval = colDef(show = FALSE),
@@ -438,7 +445,7 @@ reactable(data,
             `Text, figures & tables` = colDef(show = TRUE)
           ), 
           theme = reactableTheme(
-            backgroundColor = "#C8C0CF"
+            backgroundColor = "lightgrey"
   ))
 ```
 
