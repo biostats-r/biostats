@@ -5,12 +5,25 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-library(palmerpenguins)
 library(tidyverse)
 source("../Templates/biostats_theme.R")
 ```
 
 # Figures, tables and equations
+
+
+```{r}
+#| label: data
+#| include: false
+
+traits <- read_delim("data/PFTC4_Svalbard_2018_ITEX_Traits.csv") 
+
+# filter out height data
+trait_height <- traits |> 
+  filter(Trait == "Plant_Height_cm") |> 
+  drop_na(Treatment)
+```
+
 
 ::: callout-note
 ## In this chapter, you will
@@ -28,11 +41,12 @@ If you make the plot with ggplot, remember to print it.
 #| echo: fenced
 #| label: fig-histogram
 #| fig-cap: "An embedded figure"
-#| fig-alt: "A histogram of penguin bill lengths made with ggplot2"
+#| fig-alt: "A histogram of plant heights made with ggplot2"
 #| message: false
 #| warning: false
-p <- ggplot(penguins, aes(x = bill_length_mm)) +
-  geom_histogram()
+p <- ggplot(trait_height, aes(x = Value)) +
+  geom_histogram(boundary = 0) +
+  labs(x = "Height cm")
 p # remember to print the plot
 ```
 
@@ -76,13 +90,14 @@ It could be written with `paste()` but I prefer `glue::glue()` syntax - the code
 ```{r}
 #| label: fig-r-in-chunk-options
 #| echo: fenced
-#| fig-cap: !expr glue::glue("Bill lengths of {n_distinct(penguins$species)} species of penguin")
-#| fig-alt: "A density plot of penguin bill lengths made with ggplot2"
+#| fig-cap: !expr glue::glue("Heights of the {nrow(trait_height)} plants measured")
+#| fig-alt: "A density plot of plant heights made with ggplot2"
 #| message: false
 #| warning: false
 
-p <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
-  geom_density()
+p <- ggplot(trait_height, aes(x = Value, fill = Treatment)) +
+  geom_density(bounds = c(0, Inf), alpha = 0.5) +
+  labs(x = "Plant height cm", y = "Density")
 p 
 ```
 
@@ -99,8 +114,9 @@ For example, to use `theme_classic()`, we could change the previous figure's cod
 #| echo: true
 #| eval: false
 
-p <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
-  geom_density() +
+p <- ggplot(trait_height, aes(x = Value, fill = Treatment)) +
+  geom_density(bounds = c(0, Inf), alpha = 0.5) +
+  labs(x = "Plant height cm", y = "Density") +
   theme_classic()
 p 
 ```
@@ -141,7 +157,7 @@ Alternatively, you can use `knitr::include_graphics()` in a regular code block.
 knitr::include_graphics("Pics/Marine_diatoms_SEM2.jpg")
 ```
 
-Use the `out.width` and `out.height` chunk options to set the display size of the figure.
+Use the `out-width` and `out-height` chunk options to set the display size of the figure.
 
 
 ## Tables
@@ -160,7 +176,12 @@ The block label need to start with `tbl-` if the main caption and table number a
 #| label: tbl-kable
 #| tbl-cap: Simple tables with `kable()` 
 
-knitr::kable(x = slice(penguins, 1:5)) # show first 5 rows
+trait_height_summary <- trait_height |> 
+  group_by(Taxon) |> 
+  summarise(mean = mean(Value), sd = sd(Value), n = n()) |> 
+  filter(n > 10) 
+
+  knitr::kable(trait_height_summary) # show first 5 rows
 ```
 
 ### gt
@@ -170,57 +191,44 @@ The [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) packag
 
 ```{{r}}
 #| label: tbl-gt
+#| echo: fenced
 #| tbl-cap: Tables with `gt()`
 #| tbl-subcap: 
 #|    - "Basic `gt()` table"
 #|    - "`gt()` table with more features"
 library(gt)
-penguins |>
-  slice(1:5) |> # get top few rows only
+trait_height_summary |> 
   gt()
 
-penguins |>
-  slice(1:5) |>
-  gt() |>
-  cols_label(species = "Species",           # Display column headers
-             island = "Island",
-             bill_length_mm = "Length mm",
-             bill_depth_mm  = "Depth mm",
-             flipper_length_mm = "Flipper length mm",
-             body_mass_g = "Body mass g", 
-             sex = "Sex", 
-             year = "Year") |>
-  tab_spanner(label = "Bill", columns = c(bill_length_mm, bill_depth_mm)) |>
-  tab_spanner(label = "Body", columns = c(flipper_length_mm, body_mass_g))
+trait_height_summary|> 
+  gt() |> 
+  cols_label(mean = "Mean",           # Display column headers
+             sd = "Standard deviation",
+             n = "Number") |>
+  fmt_number(columns = c(mean, sd)) |> 
+  tab_spanner(label = "Height", columns = c(mean, sd))
 ```
-
 
 ```{r}
+#| label: tbl-gt
 #| echo: false
-#| label: tbl-gt2
-#| tbl-cap: Tables with `gt`
+#| tbl-cap: Tables with `gt()`
 #| tbl-subcap: 
-#|    - "Basic gt table"
-#|    - "gt table with more features"
+#|    - "Basic `gt()` table"
+#|    - "`gt()` table with more features"
 library(gt)
-penguins |>
-  slice(1:5) |> # get top few rows only
+trait_height_summary |> 
   gt()
 
-penguins |>
-  slice(1:5) |>
-  gt() |>
-  cols_label(species = "Species",           # Display column headers
-             island = "Island",
-             bill_length_mm = "Length mm",
-             bill_depth_mm  = "Depth mm",
-             flipper_length_mm = "Flipper length mm",
-             body_mass_g = "Body mass g", 
-             sex = "Sex", 
-             year = "Year") |>
-  tab_spanner(label = "Bill", columns = c(bill_length_mm, bill_depth_mm)) |>
-  tab_spanner(label = "Body", columns = c(flipper_length_mm, body_mass_g))
+trait_height_summary|> 
+  gt() |> 
+  cols_label(mean = "Mean",           # Display column headers
+             sd = "Standard deviation",
+             n = "Number") |>
+  fmt_number(columns = c(mean, sd)) |> 
+  tab_spanner(label = "Height", columns = c(mean, sd))
 ```
+
 
 ::: callout-tip
 ## Number of decimal places

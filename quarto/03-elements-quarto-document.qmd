@@ -5,7 +5,6 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-library(palmerpenguins)
 library(tidyverse)
 source("../Templates/biostats_theme.R")
 ```
@@ -236,17 +235,18 @@ Fix this and render the document to check the formatting has worked.
 
 Code in an quarto document is contained in code blocks.
 
-This is a code block that loads the penguin data from the `palmerpenguins` package.
+This is a code block that loads the `tidyverse` package.
 
 ```{r}
 #| echo: fenced
-data(penguins, package = "palmerpenguins")
+library(tidyverse)
 ```
 
 It starts with three back-ticks, followed by braces.
 Inside the braces, the "r" indicates that this block is in the R language.
 Next, on a new line, is the body of the code block.
 The block ends with three back-ticks on their own line.
+
 In the visual editor, you won't see the back-ticks, but the code block will start with `{r}` and have a grey background.
 
 ```{r}
@@ -272,6 +272,7 @@ We will just work with R code blocks, but it is possible to run block in other l
 Code in blocks will be run when the document is rendered (unless `eval: false`), but it is also useful to run the code interactively to check that it works.
 You can do this by clicking on the green play buttons at the top-right of the block (@fig-run-pic) or from the Run button above the document.
 If the code depends on previous block, the grey/green icon will run them all.
+
 
 ```{r}
 #| label: fig-run-pic
@@ -311,16 +312,14 @@ You will need to look at the data.
 Code block options control how the blocks work and how any output is treated.
 Options are given in special comments at the top of the block.
 
+
 ```{r}
 #| echo: fenced
-#| label: penguins-bill-body
-#| warning: false
-#| fig-cap: "The figure caption"
-#| fig-alt: Plot of penguin bill length against body mass by species 
+#| label: load-data
+#| message: false
 
-library(ggplot2)
-ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
-  geom_point()
+# load data
+traits <- read_delim("data/PFTC4_Svalbard_2018_ITEX_Traits.csv") 
 ```
 
 ::: callout-important
@@ -578,27 +577,26 @@ cat("\n```")
 :::
 
 It is best to keep inline code short to keep the text readable.
-One trick is to do all necessary calculations in a previous code block, so only the name of the object with the result needs to be in the inline code.
+
+::: callout-tip
+## Making a list to shorten inline code
+
+One trick to shorten inline code is to do all necessary calculations in a previous code block, so only the name of the object with the result needs to be in the inline code.
 If there are many results to report, consider storing them in a list as in the following example.
 
-```{r penguin-stats}
-# calculate correlation between bill length an body mass for Adelie penguins
-cor_adelie <- cor.test(
-  ~ bill_length_mm + body_mass_g,
-  data = penguins,
-  subset = species == "Adelie")
+```{r trait-stats}
+#| label: height-info
 
-adelie_list <- list(
-  #degrees of freedom
-  df = cor_adelie$parameter,
-  # extract correlation and round
-  est = round(cor_adelie$estimate, 2),
-  #format p.value with an "=" if the first character is not "<".
-  #See the characters tutorial for more on the stringr package and regular expressions.
-  p_val = str_replace(
-    string = format.pval(cor_adelie$p.value, eps = 0.001),
-    pattern = "^(?!<)",
-    replacement = "= ")
+# filter out height data
+trait_height <- traits |> 
+  filter(Trait == "Plant_Height_cm") |> 
+  drop_na(Treatment)
+
+# make list summarising height data
+height_info <- list(
+  n = nrow(trait_height),
+  min = min(trait_height$Value),
+  max = max(trait_height$Value)
 )
 ```
 
@@ -606,13 +604,50 @@ adelie_list <- list(
 #| echo: false
 #| results: asis
 cat("``` markdown\n")
-cat("Bill length and body mass in Adelie penguins are positively correlated,
-r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).")
+cat("We measured `r height_info$n` plants. 
+The minimum height was `r height_info$min` cm and the maximum `r height_info$max` cm.")
 cat("\n```")
 ```
 
 ::: bg-success
-Bill length and body mass in Adelie penguins are positively correlated, r = `r adelie_list$est` (df = `r adelie_list$df`, p `r adelie_list$p_val`).
+We measured `r height_info$n` plants. 
+The minimum height was `r height_info$min` cm and the maximum `r height_info$max` cm.
+:::
+:::
+
+::: callout-tip
+
+## glue chunks inline code.
+
+You can also use a `glue` chunk with the `glue` package. 
+This might be useful when there is a lot of inline R, or if you want to test it before you render the document.
+
+First we need to load the `glue` package
+
+```{r}
+#| label: glue
+library(glue)
+```
+
+The we can use a `glue` chunk with the chunk option `output: asis` to format the output as raw markdown.
+R code is put inside braces `{}`.
+
+```{{glue}}
+#| label: glue-example
+#| echo: fenced
+#| output: asis
+We measured {height_info$n} plants. The minimum height was {height_info$min} cm and the maximum {height_info$max} cm.
+```
+
+
+```{glue}
+#| label: glue-example-active
+#| echo: false
+#| class-output: bg-success
+We measured {height_info$n} plants. The minimum height was {height_info$min} cm and the maximum {height_info$max} cm.
+```
+
+Only one line of text per `glue` chunk.
 :::
 
 ::: callout-note
@@ -620,3 +655,5 @@ Bill length and body mass in Adelie penguins are positively correlated, r = `r a
 
 Use some inline R code to report the number of leaf thickness measurements for *Bistorta vivipera*.
 :::
+
+
