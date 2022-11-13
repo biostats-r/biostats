@@ -1,10 +1,21 @@
 ```{r setup, include=FALSE}
-library(palmerpenguins)
 library(tidyverse)
 source("../Templates/biostats_theme.R")
 ```
 
 # Cross-referencing {#sec-cross-referencing}
+
+```{r}
+#| label: data
+#| include: false
+
+traits <- read_delim("data/PFTC4_Svalbard_2018_ITEX_Traits.csv") 
+
+# filter out height data
+trait_height <- traits |> 
+  filter(Trait == "Plant_Height_cm") |> 
+  drop_na(Treatment)
+```
 
 ::: callout-note
 ## In this chapter, you will
@@ -20,32 +31,32 @@ The block that made the figure or table needs to have a label that starts with `
 
 ```{r}
 #| echo: fenced
-#| label: fig-penguin-dens
-#| fig-cap: Histogram of penguin body mass
-#| fig-alt: Histogram of penguin body mass made with ggplot2
+#| label: fig-height-violin
+#| fig-cap: Violin plot of plant heights
+#| fig-alt: Violin plot of plant heights made with ggplot2
 #| warning: false
 
-penguins |>
-  ggplot(aes(x = flipper_length_mm, fill = species)) +
-  geom_density(alpha = 0.7) +
-  scale_fill_brewer(palette = "Set1")
+trait_height |>
+  ggplot(aes(x = Treatment, y = Value)) +
+  geom_violin(fill = "grey") +
+  labs(y = "Plant Height cm")
 ```
 
 To cross-reference the figure made by the above chunk, we need to use this notation.
 
 ``` markdown
-Penguins are cool (@fig-penguin-dens)
+Plant traits are cool (@fig-height-violin)
 ```
 <div class="bg-success">
-Penguins are cool (@fig-penguin-dens)
+Plant traits are cool (@fig-height-violin)
 </div>
 
 If you type an <kbd>\@</kbd> in the visual editor it will make suggestion. If, in the visual editor, it does not show up in a smaller blue font, something has gone wrong. Delete it and make sure there is a space before the <kbd>\@</kbd>.
 
-To refer to a table made by a block labelled `tbl-penguin-results`, you would use
+To refer to a table made by a block labelled `tbl-traits-results`, you would use
 
 ``` markdown
-Penguins are cool (@tbl-penguin-results))
+Plant traits are cool (@tbl-traits-results))
 ```
 
 If you get the chunk name wrong, there will be a warning when the document in knitted, and question marks shown where the reference should be.
