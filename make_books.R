@@ -45,7 +45,7 @@ quarto::quarto_render("frontpage")
 bioceed_links("docs/", front_page = TRUE, quarto = TRUE)
 
 # Git and GitHub
-quarto::quarto_render("DataManagement", quarto = TRUE)
+quarto::quarto_render("DataManagement")
 bioceed_links("docs/github", quarto = TRUE)
 
 
