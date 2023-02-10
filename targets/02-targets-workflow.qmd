@@ -1,0 +1,205 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# Targets workflow
+
+::: callout-note
+## In this chapter, you will
+
+- learn the basic targets workflow
+- build your own targets pipeline
+
+:::
+
+In this chapter we will go through the basic workflow of a targets pipeline.
+For this, we will use plant trait data from Svalbard from a previous exercise on reproducible documents (ref).
+If you have done this exercise already, you can skip the next step, otherwise follow the instructions below to download the R project.
+
+::: callout-note
+## Exercise
+
+To download the data and quarto document, you need to run
+
+```{r}
+#| eval: false
+
+#install.packages("usethis") # if you don't have it already.
+usethis::use_course("https://github.com/biostats-r/targets_workflow_svalbard")
+
+```
+
+Then follow the instructions.
+This will open the targets_workflow_svalbard Rstudio project.
+
+Open the file **svalbard_traits.qmd** and render it.
+This should open a html file with text, data, data analysis and figures.
+We will turn this analysis into a targets pipeline.
+Read the book and follow the instructions in the exercises.
+:::
+
+
+## File structure
+
+An target pipeline has a specific file structure including a `_targets.R` file, functions, and data.
+
+- _target.R
+- R
+  - functions
+- data
+
+
+```{r}
+#| label: file-structure
+#| echo: false
+
+#knitr::include_graphics("Pics/file_structure.png")
+
+```
+
+
+## _target.R script file
+
+The `_targets.R` file is is a special file that configures and defines the pipeline.
+
+The `use_targets()` function can set up the targets file.
+
+The `_targets.R` file should contain the following components:
+
+- load the packages that are needed to run the pipeline including targets. Use `tar_option()` to define all the packages.
+
+- load all the custom functions using `source(R/functions/my_function.R)`
+
+- the pipeline, a list of target objects that are created with `tar_target()`. Each target is a step of the workflow, for example importing data, an analysis or a figure.
+
+
+```{r}
+#| label: target-script
+#| eval: false
+#| echo: true
+
+# load libraries
+library(targets)
+library(tarchetypes)
+tar_option_set(packages = c("readr", "dplyr", "ggplot2"))
+
+# load functions
+source("R/functions/my_function.R")
+
+# pipeline
+list(
+  tar_target(file, "data.csv", format = "file"),
+  tar_target(data, get_file(file)),
+  tar_target(model, fit_model(data)),
+  tar_target(plot, plot_model(model, data))
+)
+
+```
+
+::: callout-note
+## Exercise
+
+Go to your R project and set up a targets file.
+:::
+
+
+## Functions
+
+In a targets pipeline everything is done with functions.
+
+::: callout-note
+## Exercise
+
+Make functions for the analysis and the figure.
+
+Tip for how to make a function...
+
+my_function <- function(data){
+  data
+}
+:::
+
+
+### targets objects
+
+list of target objects (data, result, figure)
+
+create target objects with tar_target()
+
+```{r}
+#| label: target-objects
+#| eval: false
+#| echo: true
+#| 
+list(
+  
+# Bootstrapping
+  tar_target(
+    name = trait_mean,
+    command = make_bootstrapping(community, traits)
+  ),
+  # make figure
+  tar_target(
+    name = trait_mean_figure,
+    command = make_trait_mean_figure(trait_results, trait_mean)
+  )
+)
+
+```
+
+
+::: callout-note
+## Exercise
+
+Move x to an object
+:::
+
+
+### The output
+
+Each target is a step of the workflow and will be stored as a value in the _targets/objects/
+
+```{r}
+#| label: render-output
+#| eval: false
+#| echo: true
+
+list(
+# render ms
+tar_render(name = ms, path = "manuscript/manuscript.qmd")
+)
+```
+
+
+### manuscript.qmd file
+
+
+### Run the pipeline
+
+Can make a separate make.R file.
+
+The `tar_make()` function looks for a file called "_targets.R" in the working directory and runs the pipeline.
+
+```{r}
+#| label: run-pipeline
+#| eval: false
+#| echo: true
+
+library("targets")
+
+# make the targets that are out of date
+
+tar_make()
+
+```
+
+
+### Inspect the pipeline
+
+Use `tar_manifest(fields = all_of("command"))` to check for errors.
+
+And `tar_visnetwork()` to visualise the dependency graph.
+
+

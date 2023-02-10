@@ -78,6 +78,9 @@ quarto::quarto_render("StatisticsInR")
 bioceed_links("docs/statisticsInR", quarto = TRUE)
 
 
+quarto::quarto_render("targets")
+bioceed_links("docs/targets", quarto = TRUE)
+
 
 # Data collection
 quarto::quarto_render("DataCollection")
