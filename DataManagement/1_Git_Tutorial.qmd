@@ -8,7 +8,7 @@ editor_options:
 
 ## Basic workflow
 
-Let's start with explaining the basic workflow briefly.
+Let's start by briefly explaining the basic workflow.
 On GitHub you can make **repositories**, which is a kind of project.
 Your online repository, or short repo, is called **remote**.
 To use your repository, you need to **clone** it locally onto your computer and it is then called **local**.
@@ -195,6 +195,13 @@ This workflow is useful if you already have an RStudio project on your computer 
 
 If you are making a new RStudio project, tick the "Create a git repository" box in the New Project Wizard.
 
+```{r}
+#| label: fig-new-project-with-git
+#| fig-cap: The create a git repository tick-box
+#| fig-alt: Screenshot of RStudio showing window for making a new RStudio project with git option highlighted
+knitr::include_graphics("Pics/gittutorial/5_new_project_with_git.png")
+```
+
 Otherwise, in RStudio, create a git repo for your project with
 
 ```{r init, eval = FALSE, echo = TRUE}
@@ -298,13 +305,22 @@ git_default_branch_configure(name = "main")
 -   Set up the project to use GitHub, push the committed files and view them on GitHub.
 :::
 
+After one commit, your repo will have the following structure.
+
+```{mermaid}
+%%| label: fig-mermaid-init
+%%| fig-cap: Representation of your git repo with a single commit on the main branch. HEAD denotes the active version.
+gitGraph
+   commit id: "a" tag: "HEAD" 
+```
+
+
 ## Stage, commit and push {#sec-stage-commit-push}
 
 If you create or edit a file in your repository and save the changes the file will appear in the **Git** panel.
-There will be two yellow boxes with **question marks** if you add a file, a blue box with a **M** if you edit a file that has already been committed.
-And a red box with a **D** if you delete a file.
-You can also move files and they will show up as deleted **and** added in the new place.
-Once you have staged (ticking the box by the file name) both the deleted and new file, the icon will become a purple **R**.
+There will be two yellow **question marks** [**?**]{style="background-color: #fac835;color: white; padding:3px;"} [**?**]{style="background-color: #fac835;color: white; padding:3px;"} if you add a file; a blue [**M**]{style="background-color: #4088db; color: white; padding:3px;"} if you edit a file that has already been committed; a red [**D**]{style="background-color: red;color: white; padding:3px;"} if you delete a file.
+If you move files and they will show up as deleted **and** added in the new place.
+Once you have staged (ticking the box by the file name) both the deleted and new file, the icon will become a purple [**R**]{style="background-color: purple;color: white; padding:3px;"}.
 
 ```{r}
 #| label: fig-changed-files
@@ -337,6 +353,17 @@ It will help you later if you are searching for a specific **commit**.
 Note that you need to tick all files that you want to **commit**.
 
 Click **Commit** to save the changes which creates a permanent snapshot of the file in the Git directory along with a message that describe the changes you made in this file.
+
+After several commit, your repo will have the following structure.
+
+```{mermaid}
+%%| label: fig-mermaid-commits
+%%| fig-cap: Representation of your git repo after three commits.
+gitGraph
+   commit id: "a"
+   commit id: "b"
+   commit id: "c" tag: "HEAD" 
+```
 
 ### Some rules
 
@@ -402,7 +429,7 @@ knitr::include_graphics("Pics/gittutorial/22_workflow2.png")
 ```
 
 Regular **pulling** and **pushing** is very important if you are working on the same files to avoid **merge conflicts**.
-A **merge conflict** occurs when two people are modifying the same file at the same time.
+A **merge conflict** (@sec-merge-conflicts) occurs when two people are modifying the same file at the same time.
 Such a conflict can be resolved, but it is tedious and best avoid.
 We strongly suggest to use forks and branches when collaborating on a project (see @sec-collaborating-with-forks Collaborating with forks tutorial for more details).
 
