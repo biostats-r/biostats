@@ -296,6 +296,20 @@ Exercise
 <p>Save an edit to your favourite file (or delete it), and commit the change. Reset this change to restore the original file.</p>
 </div>
 </div>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Time travel is dangerous!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Changing the history of work that is only in your local repo (i.e.&nbsp;work you have not yet pushed to GitHub) with, for example, <code>git reset</code> or <code>git rebase</code>, can be dangerous, so take care.</p>
+<p>Changing the history of work that has been pushed to GitHub can make a <strong>real mess</strong> for your collaborators as their version of history will differ from yours. So avoid using <code>git reset</code>, <code>git rebase</code> or other history-changing commands on work that has been pushed if others are working on the same branch.</p>
+</div>
+</div>
 </section><section id="removing-any-commit" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="removing-any-commit">
 <span class="header-section-number">5.3</span> Removing any commit</h2>
 <p>Sometimes you don’t want to undo the last commit, but one from far back in the history of the repo.</p>
@@ -344,7 +358,22 @@ Exercise
 </div>
 </div>
 </div>
-<p>If we omit the <code>--no-edit</code> argument, git will open the vim editor (unless you have changed the default editor) to change the commit message. If you do open vim accidentally, the command <code>:q</code> will quit without saving, and <code>:wq</code> will save and quit.</p>
+<p>If we omit the <code>--no-edit</code> argument, git will open the Vim editor (unless you have changed the default editor) to change the commit message.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Vim
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://www.vim.org/">Vim</a> is a very powerful text editor. However, it is probably unlike any other text editor you have used before and it not intuitive to use.</p>
+<p>If you do open vim accidentally, the command <code>:q</code> will quit without saving, and <code>:wq</code> will save and quit.</p>
+<p>If you want to learn how to use Vim, you can start <code>vimtutor</code> in the terminal, or try <a href="https://github.com/iggredible/Learn-Vim">Learn-Vim</a>.</p>
+</div>
+</div>
 <p>One common reason for wanting to undo a commit is that we have committed a file that we shouldn’t have (update that .gitignore!), perhaps a <a href="https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github">file so large</a> it cannot be pushed to GitHub. <code>git revert</code> will not help in this case. It will undo the effect of the commit adding the file by adding a commit that deletes the file, but the file is still in the repo, just not at HEAD. To remove this file, we have a few options.</p>
 <p>We could use the <code>git rebase</code> command to remove the bad commit. <code>git rebase</code> rewrites the history of the repo and is potentially dangerous. Use with care (make a backup first).</p>
 <p>The syntax we need for this case (rebase can do much more) is like this</p>
@@ -850,190 +879,211 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## Removing any commit</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>:::callout-important</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## Time travel is dangerous!</span></span>
 <span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>Sometimes you don't want to undo the last commit, but one from far back in the history of the repo.</span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>Changing the history of work that is only in your local repo (i.e. work you have not yet pushed to GitHub) with, for example, <span class="in">`git reset`</span> or <span class="in">`git rebase`</span>, can be dangerous, so take care.</span>
 <span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>The safest solution is <span class="in">`git revert`</span> which will make a commit that reverses the commit we want to remove. </span>
-<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>We need to identify the commits we want to remove. </span>
-<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>If they are recent, we can use <span class="in">`HEAD~3`</span> notation, but for older commits it is probably easier to use the SHA codes for each commit (the SHA hash codes are 40 characters long, but we only need the first few provided they are unique).</span>
-<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>You can find these in the git history tab.</span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>Changing the history of work that has been pushed to GitHub can make a **real mess** for your collaborators as their version of history will differ from yours.</span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>So avoid using <span class="in">`git reset`</span>, <span class="in">`git rebase`</span> or other history-changing commands on work that has been pushed if others are working on the same branch.</span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>%%| label: fig<span class="ot">-r</span>evert1</span>
-<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>%%| fig<span class="ot">-c</span>ap: Representation of a git repo showing the commit messages <span class="ot">and</span> SHA codes.</span>
-<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>gitGraph</span>
-<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">A</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">5f5e100</span><span class="ot">"</span></span>
-<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">B</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">4d70467</span><span class="ot">"</span></span>
-<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">C</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">ee6b605</span><span class="ot">"</span></span>
-<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>If in the repo in @fig-revert1 we want to revert the commit with a commit message "B" and SHA 4d70467, we can use</span>
-<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset 4d70467 <span class="at">--no-edit</span></span>
-<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a>The repo will now look like @fig-revert2.</span>
-<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>%%| label: fig<span class="ot">-r</span>evert2</span>
-<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>%%| fig<span class="ot">-c</span>ap: Representation of a git repo after running revert. Commit with message <span class="ot">'</span><span class="ss">Revert "B"</span><span class="ot">'</span> is the inverse of commit B.</span>
-<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>gitGraph</span>
-<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">A</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">5f5e100</span><span class="ot">"</span></span>
-<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">B</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">4d70467</span><span class="ot">"</span></span>
-<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">C</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">ee6b605</span><span class="ot">"</span></span>
-<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">Revert 'B'</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">598cef0</span><span class="ot">"</span></span>
-<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a>If we omit the <span class="in">`--no-edit`</span> argument, git will open the vim editor (unless you have changed the default editor) to change the commit message.</span>
-<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>If you do open vim accidentally, the command <span class="in">`:q`</span> will quit without saving, and <span class="in">`:wq`</span> will save and quit.</span>
-<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>One common reason for wanting to undo a commit is that we have committed a file that we shouldn't have (update that .gitignore!), perhaps a <span class="co">[</span><span class="ot">file so large</span><span class="co">](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)</span> it cannot be pushed to GitHub.</span>
-<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a><span class="in">`git revert`</span> will not help in this case.</span>
-<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>It will undo the effect of the commit adding the file by adding a commit that deletes the file, but the file is still in the repo, just not at HEAD.</span>
-<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>To remove this file, we have a few options.</span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## Removing any commit</span></span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>Sometimes you don't want to undo the last commit, but one from far back in the history of the repo.</span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>The safest solution is <span class="in">`git revert`</span> which will make a commit that reverses the commit we want to remove. </span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>We need to identify the commits we want to remove. </span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>If they are recent, we can use <span class="in">`HEAD~3`</span> notation, but for older commits it is probably easier to use the SHA codes for each commit (the SHA hash codes are 40 characters long, but we only need the first few provided they are unique).</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>You can find these in the git history tab.</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>%%| label: fig<span class="ot">-r</span>evert1</span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>%%| fig<span class="ot">-c</span>ap: Representation of a git repo showing the commit messages <span class="ot">and</span> SHA codes.</span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>gitGraph</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">A</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">5f5e100</span><span class="ot">"</span></span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">B</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">4d70467</span><span class="ot">"</span></span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">C</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">ee6b605</span><span class="ot">"</span></span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a>If in the repo in @fig-revert1 we want to revert the commit with a commit message "B" and SHA 4d70467, we can use</span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset 4d70467 <span class="at">--no-edit</span></span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>The repo will now look like @fig-revert2.</span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a>%%| label: fig<span class="ot">-r</span>evert2</span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>%%| fig<span class="ot">-c</span>ap: Representation of a git repo after running revert. Commit with message <span class="ot">'</span><span class="ss">Revert "B"</span><span class="ot">'</span> is the inverse of commit B.</span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>gitGraph</span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">A</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">5f5e100</span><span class="ot">"</span></span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">B</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">4d70467</span><span class="ot">"</span></span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">C</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">ee6b605</span><span class="ot">"</span></span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">Revert 'B'</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">598cef0</span><span class="ot">"</span></span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>We could use the <span class="in">`git rebase`</span> command to remove the bad commit. </span>
-<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a><span class="in">`git rebase`</span> rewrites the history of the repo and is potentially dangerous. </span>
-<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>Use with care (make a backup first).</span>
-<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>The syntax we need for this case (rebase can do much more) is like this</span>
-<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">--onto</span> <span class="op">&lt;</span>new_parent<span class="op">&gt;</span> <span class="op">&lt;</span>old_parent<span class="op">&gt;</span></span>
-<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>If we omit the <span class="in">`--no-edit`</span> argument, git will open the Vim editor (unless you have changed the default editor) to change the commit message.</span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## Vim</span></span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Vim</span><span class="co">](https://www.vim.org/)</span> is a very powerful text editor.</span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a>However, it is probably unlike any other text editor you have used before and it not intuitive to use.</span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>If you do open vim accidentally, the command <span class="in">`:q`</span> will quit without saving, and <span class="in">`:wq`</span> will save and quit.</span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a>If you want to learn how to use Vim, you can start <span class="in">`vimtutor`</span> in the terminal, or try <span class="co">[</span><span class="ot">Learn-Vim</span><span class="co">](https://github.com/iggredible/Learn-Vim)</span>.</span>
 <span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>Commit new_parent will be retained, and anything more recent than old_parent. </span>
-<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>We can use the SHA codes or both parents, or use an ancestry reference for the new_parent.</span>
-<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>So to remove commit B from @fig-revert1, we could use to make the repo look like @fig-rebase</span>
-<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>One common reason for wanting to undo a commit is that we have committed a file that we shouldn't have (update that .gitignore!), perhaps a <span class="co">[</span><span class="ot">file so large</span><span class="co">](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)</span> it cannot be pushed to GitHub.</span>
+<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a><span class="in">`git revert`</span> will not help in this case.</span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>It will undo the effect of the commit adding the file by adding a commit that deletes the file, but the file is still in the repo, just not at HEAD.</span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>To remove this file, we have a few options.</span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>We could use the <span class="in">`git rebase`</span> command to remove the bad commit. </span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a><span class="in">`git rebase`</span> rewrites the history of the repo and is potentially dangerous. </span>
+<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a>Use with care (make a backup first).</span>
 <span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">--onto</span> 4d70467~1 4d70467</span>
-<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a><span class="co"># equivalent to</span></span>
-<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a><span class="co"># git rebase --onto 5f5e100 4d70467</span></span>
-<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>%%| label: fig<span class="ot">-r</span>ebase</span>
-<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>%%| fig<span class="ot">-c</span>ap: Representation of a git repo after running rebase.</span>
-<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>gitGraph</span>
-<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">A</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">5f5e100e</span><span class="ot">"</span></span>
-<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">C</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">ee6b6051</span><span class="ot">"</span></span>
-<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a>If the large file has been committed several times, or has been committed with other files you want to keep, <span class="in">`git rebase`</span> might not be the best solution. </span>
-<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="in">`git filter-branch`</span> is an alternative git based tool, but this can be slow and complex to use.</span>
-<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">BFG repo cleaner</span><span class="co">](https://rtyley.github.io/bfg-repo-cleaner/)</span> is a better solution in many cases.</span>
+<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>The syntax we need for this case (rebase can do much more) is like this</span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">--onto</span> <span class="op">&lt;</span>new_parent<span class="op">&gt;</span> <span class="op">&lt;</span>old_parent<span class="op">&gt;</span></span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>Commit new_parent will be retained, and anything more recent than old_parent. </span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>We can use the SHA codes or both parents, or use an ancestry reference for the new_parent.</span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a>So to remove commit B from @fig-revert1, we could use to make the repo look like @fig-rebase</span>
+<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
 <span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixing merge conflicts {#sec-merge-conflicts}</span></span>
-<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a>A **merge conflict** can occur when there are two versions of the same file.</span>
-<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a>This might occur if when you pull edited files from GitHub, or when you try merging branches or pull requests.</span>
-<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a>The goal is to avoid such conflicts, or at least minimise them, and a good strategy for this is to commit often, work in small steps, push and pull regularly.</span>
-<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a>But **merge conflicts** cannot always be avoided. If it should happen you will get notified with a message something like this</span>
-<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a><span class="in">    CONFLICT (content): Merge conflict in R/dragon_analysis.R</span></span>
-<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a>First, do not panic.</span>
-<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a>This message simply tells you that you cannot do the merge and there is a merge conflict in the "dragon_analysis.R" file.</span>
-<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a>Go the the file with the merge conflict, which will look like this:</span>
-<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a><span class="in">    ### Dragon analysis ###</span></span>
-<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a><span class="in">    library("broom")</span></span>
+<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">--onto</span> 4d70467~1 4d70467</span>
+<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a><span class="co"># equivalent to</span></span>
+<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a><span class="co"># git rebase --onto 5f5e100 4d70467</span></span>
+<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a>%%| label: fig<span class="ot">-r</span>ebase</span>
+<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a>%%| fig<span class="ot">-c</span>ap: Representation of a git repo after running rebase.</span>
+<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a>gitGraph</span>
+<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">A</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">5f5e100e</span><span class="ot">"</span></span>
+<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a>   commit id: <span class="ot">"</span><span class="st">C</span><span class="ot">"</span> tag: <span class="ot">"</span><span class="st">ee6b6051</span><span class="ot">"</span></span>
+<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a>If the large file has been committed several times, or has been committed with other files you want to keep, <span class="in">`git rebase`</span> might not be the best solution. </span>
+<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a><span class="in">`git filter-branch`</span> is an alternative git based tool, but this can be slow and complex to use.</span>
+<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">BFG repo cleaner</span><span class="co">](https://rtyley.github.io/bfg-repo-cleaner/)</span> is a better solution in many cases.</span>
+<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a><span class="in">    # Import data</span></span>
-<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a><span class="in">    source("R/import_dragon_data.R")</span></span>
+<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixing merge conflicts {#sec-merge-conflicts}</span></span>
+<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a><span class="in">    # Run model</span></span>
+<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a>A **merge conflict** can occur when there are two versions of the same file.</span>
+<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a>This might occur if when you pull edited files from GitHub, or when you try merging branches or pull requests.</span>
 <span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;&lt;&lt;&lt;&lt;&lt; HEAD:dragon_analysis </span></span>
-<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a><span class="in">    mod &lt;- lm(body_size ~ body_length, data = dragon)</span></span>
-<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a><span class="in">    ======</span></span>
-<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a><span class="in">      mod &lt;- lm(body_size ~ body_length * temperature, data = dragon)</span></span>
-<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt;&gt;&gt;&gt;&gt; issue-5:dragon_analysis </span></span>
+<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a>The goal is to avoid such conflicts, or at least minimise them, and a good strategy for this is to commit often, work in small steps, push and pull regularly.</span>
+<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a>But **merge conflicts** cannot always be avoided. If it should happen you will get notified with a message something like this</span>
+<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a><span class="in">    CONFLICT (content): Merge conflict in R/dragon_analysis.R</span></span>
 <span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a><span class="in">    tidy(mod)</span></span>
-<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a>In this file the **merge conflict** starts with <span class="in">`&lt;&lt;&lt;&lt;&lt;&lt; HEAD:dragon_analysis`</span> indicating the name of the file.</span>
-<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a>Then the two different versions of the code are shown, and separated by <span class="in">`======`</span>.</span>
-<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a>Finally, <span class="in">`&gt;&gt;&gt;&gt;&gt;&gt;&gt; issue-5:dragon_analysis`</span> indicates the end of the merge conflict.</span>
-<span id="cb9-226"><a href="#cb9-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a>To resolve the conflict, you have to edit this section and remove the conflicting parts.</span>
-<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a>Basically, choose one of the versions or combine them.</span>
-<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a>Also remove the conflict markers <span class="in">`&lt;&lt;&lt;&lt;&lt;&lt;`</span>, <span class="in">`======`</span> and <span class="in">`&gt;&gt;&gt;&gt;&gt;&gt;`</span>.</span>
-<span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a><span class="in">    ### Dragon analysis ###</span></span>
+<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a>First, do not panic.</span>
+<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a>This message simply tells you that you cannot do the merge and there is a merge conflict in the "dragon_analysis.R" file.</span>
+<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a>Go the the file with the merge conflict, which will look like this:</span>
+<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-226"><a href="#cb9-226" aria-hidden="true" tabindex="-1"></a><span class="in">    ### Dragon analysis ###</span></span>
+<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a><span class="in">    library("broom")</span></span>
+<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a><span class="in">    # Import data</span></span>
+<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a><span class="in">    source("R/import_dragon_data.R")</span></span>
 <span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a><span class="in">    library("broom")</span></span>
-<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a><span class="in">    # Import data</span></span>
-<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a><span class="in">    source("R/import_dragon_data.R")</span></span>
-<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a><span class="in">    # Run model</span></span>
-<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a><span class="in">    mod &lt;- lm(body_size ~ body_length * temperature, data = dragon)</span></span>
+<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a><span class="in">    # Run model</span></span>
+<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;&lt;&lt;&lt;&lt;&lt; HEAD:dragon_analysis </span></span>
+<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a><span class="in">    mod &lt;- lm(body_size ~ body_length, data = dragon)</span></span>
+<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a><span class="in">    ======</span></span>
+<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a><span class="in">      mod &lt;- lm(body_size ~ body_length * temperature, data = dragon)</span></span>
+<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt;&gt;&gt;&gt;&gt; issue-5:dragon_analysis </span></span>
 <span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a><span class="in">    tidy(mod)</span></span>
 <span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a>Save the file, **commit**, switch to the **main branch**, **merge** and **push** to GitHub.</span>
-<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a>:::callout-note</span>
-<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a>In this exercise, we are going to deliberately cause, and then resolve a merge conflict.</span>
-<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Open a file in your repo on GitHub and edit it by clicking on the pencil icon above the file. </span>
-<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a>When you have edited the file, commit the changes at the bottom of the page.</span>
+<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a>In this file the **merge conflict** starts with <span class="in">`&lt;&lt;&lt;&lt;&lt;&lt; HEAD:dragon_analysis`</span> indicating the name of the file.</span>
+<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a>Then the two different versions of the code are shown, and separated by <span class="in">`======`</span>.</span>
+<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a>Finally, <span class="in">`&gt;&gt;&gt;&gt;&gt;&gt;&gt; issue-5:dragon_analysis`</span> indicates the end of the merge conflict.</span>
+<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a>To resolve the conflict, you have to edit this section and remove the conflicting parts.</span>
+<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a>Basically, choose one of the versions or combine them.</span>
+<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a>Also remove the conflict markers <span class="in">`&lt;&lt;&lt;&lt;&lt;&lt;`</span>, <span class="in">`======`</span> and <span class="in">`&gt;&gt;&gt;&gt;&gt;&gt;`</span>.</span>
+<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a><span class="in">    ### Dragon analysis ###</span></span>
 <span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Now edit the same part of the same file in your local repo.</span>
+<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a><span class="in">    library("broom")</span></span>
 <span id="cb9-255"><a href="#cb9-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Pull the remote repo. Git should complain there is a merge conflict. </span>
-<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Fix the merge conflict, choosing which version of the code you want to keep.</span>
-<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-262"><a href="#cb9-262" aria-hidden="true" tabindex="-1"></a><span class="fu">## Burn it all down</span></span>
-<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a>If you make a complete mess of your local repo, the pragmatic solution might be to make a backup of your repo, then clone a clean copy of the repo from from GitHub, and copy files from the backup to the clean repo as required.</span>
-<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-268"><a href="#cb9-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-269"><a href="#cb9-269" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-xkcd-git</span></span>
-<span id="cb9-270"><a href="#cb9-270" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: A pragmatic solution to git problems? Cartoon from [xkcd](https://xkcd.com/1597/).</span></span>
-<span id="cb9-271"><a href="#cb9-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: xkcd cartoon showing protagonist exhauting the theory of git's distributed graph theory tree model, then saying that when he gets errors he deletes the project and downloads a fresh copy.</span></span>
-<span id="cb9-272"><a href="#cb9-272" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 50%</span></span>
-<span id="cb9-273"><a href="#cb9-273" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/git.png"</span>)</span>
-<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-276"><a href="#cb9-276" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb9-277"><a href="#cb9-277" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further reading {.unnumbered .literature .toc-ignore}</span></span>
+<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a><span class="in">    # Import data</span></span>
+<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a><span class="in">    source("R/import_dragon_data.R")</span></span>
+<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a><span class="in">    # Run model</span></span>
+<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a><span class="in">    mod &lt;- lm(body_size ~ body_length * temperature, data = dragon)</span></span>
+<span id="cb9-262"><a href="#cb9-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a><span class="in">    tidy(mod)</span></span>
+<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a>Save the file, **commit**, switch to the **main branch**, **merge** and **push** to GitHub.</span>
+<span id="cb9-266"><a href="#cb9-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-267"><a href="#cb9-267" aria-hidden="true" tabindex="-1"></a>:::callout-note</span>
+<span id="cb9-268"><a href="#cb9-268" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb9-269"><a href="#cb9-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-270"><a href="#cb9-270" aria-hidden="true" tabindex="-1"></a>In this exercise, we are going to deliberately cause, and then resolve a merge conflict.</span>
+<span id="cb9-271"><a href="#cb9-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-272"><a href="#cb9-272" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Open a file in your repo on GitHub and edit it by clicking on the pencil icon above the file. </span>
+<span id="cb9-273"><a href="#cb9-273" aria-hidden="true" tabindex="-1"></a>When you have edited the file, commit the changes at the bottom of the page.</span>
+<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Now edit the same part of the same file in your local repo.</span>
+<span id="cb9-276"><a href="#cb9-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-277"><a href="#cb9-277" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Pull the remote repo. Git should complain there is a merge conflict. </span>
 <span id="cb9-278"><a href="#cb9-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-279"><a href="#cb9-279" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">**Happy Git**</span><span class="co">](https://happygitwithr.com/)</span> provides instructions for how to getting started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong. </span>
-<span id="cb9-280"><a href="#cb9-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-281"><a href="#cb9-281" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">**Git flight rules**</span><span class="co">](https://github.com/k88hudson/git-flight-rules)</span> are an exhaustive resource for what to do when things go wrong. </span>
-<span id="cb9-282"><a href="#cb9-282" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-279"><a href="#cb9-279" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Fix the merge conflict, choosing which version of the code you want to keep.</span>
+<span id="cb9-280"><a href="#cb9-280" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-281"><a href="#cb9-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-282"><a href="#cb9-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-283"><a href="#cb9-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## Burn it all down</span></span>
+<span id="cb9-284"><a href="#cb9-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-285"><a href="#cb9-285" aria-hidden="true" tabindex="-1"></a>If you make a complete mess of your local repo, the pragmatic solution might be to make a backup of your repo, then clone a clean copy of the repo from from GitHub, and copy files from the backup to the clean repo as required.</span>
+<span id="cb9-286"><a href="#cb9-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-289"><a href="#cb9-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-290"><a href="#cb9-290" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-xkcd-git</span></span>
+<span id="cb9-291"><a href="#cb9-291" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: A pragmatic solution to git problems? Cartoon from [xkcd](https://xkcd.com/1597/).</span></span>
+<span id="cb9-292"><a href="#cb9-292" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: xkcd cartoon showing protagonist exhauting the theory of git's distributed graph theory tree model, then saying that when he gets errors he deletes the project and downloads a fresh copy.</span></span>
+<span id="cb9-293"><a href="#cb9-293" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 50%</span></span>
+<span id="cb9-294"><a href="#cb9-294" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/git.png"</span>)</span>
+<span id="cb9-295"><a href="#cb9-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-296"><a href="#cb9-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-297"><a href="#cb9-297" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb9-298"><a href="#cb9-298" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further reading {.unnumbered .literature .toc-ignore}</span></span>
+<span id="cb9-299"><a href="#cb9-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-300"><a href="#cb9-300" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">**Happy Git**</span><span class="co">](https://happygitwithr.com/)</span> provides instructions for how to getting started with Git, R and RStudio, explains the workflows and useful tips for when things go wrong. </span>
+<span id="cb9-301"><a href="#cb9-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-302"><a href="#cb9-302" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">**Git flight rules**</span><span class="co">](https://github.com/k88hudson/git-flight-rules)</span> are an exhaustive resource for what to do when things go wrong. </span>
+<span id="cb9-303"><a href="#cb9-303" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
