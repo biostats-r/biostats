@@ -21,7 +21,7 @@ These can be added to different types of base map
 
 -   vector map showing the coastline, and perhaps political borders, rivers and other features
 
--   A map made of downloaded ties (similar to how Google maps works)
+-   A map made of downloaded tiles (similar to how Google maps works)
 
 -   A raster (made of pixels)
 
@@ -139,12 +139,14 @@ Good sources of data for Norway include:
 -   [GeoNorge](https://www.geonorge.no/)
 -   [Miljødirektoratet](https://kartkatalog.miljodirektoratet.no/)
 
-This is a map of the fylke of Norway
+This is a map of the fylke of Norway.
 
 ```{r}
 #| label: fylker
 library(sf)
 
+# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2021-klippet-etter-kyst/f08fca3c-33ee-49b9-be9f-028ebba5e460)
+# This map will be out of date when fylker are reorganised
 fylker <- st_read("data/fylker2021.json")
 
 ggplot(fylker) + 
@@ -180,16 +182,11 @@ fylker2 <- sf::st_transform(fylker, crs = 4326)
 `geom_sf()` will automatically transform coordinate systems (if they are specified).
 :::
 
-::: callout-note
-## Exercise
-
-Get a `sf` object from `rnaturalearth::ne_coastline()` and find out what coordinate reference system it uses.
-:::
-
 ## Tiled basemaps
 
-Tiled basemaps can be used with either `ggspatial` or `ggmap` packages. 
+Tiled basemaps can be used with either `ggspatial` or `ggmap` packages.
 I would generally recommend using `ggspatial` as it is consistent with the other mapping tools used here.
+
 If you use a tiled map background, you should attribute the source (e.g., "Copyright OpenStreetMap contributors" when using an OpenStreetMap-based tiles).
 
 ### `ggspatial`
@@ -215,6 +212,7 @@ ggplot() +
 
 
 ```
+
 Several different types of maps are available (see `rosm::osm.types()`) and more can be added.
 
 ```{r}
@@ -554,8 +552,6 @@ Change the projection of one of the small-scale maps you made previously.
 <!-- ### leaflets -->
 
 <!-- ### Interactive maps -->
-
-<!-- projections -->
 
 <!-- ### Cartograms -->
 
