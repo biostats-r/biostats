@@ -21,7 +21,7 @@ These can be added to different types of base map
 
 -   vector map showing the coastline, and perhaps political borders, rivers and other features
 
--   A map made of downloaded ties (similar to how Google maps works)
+-   A map made of downloaded tiles (similar to how Google maps works)
 
 -   A raster (made of pixels)
 
@@ -57,7 +57,7 @@ Other datasets from Natural Earth can be downloaded directly from the [website](
 #| label: rnaturalearth
 #| results: hide
 library(rnaturalearth)
-#install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
+# install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
 world <- ne_countries(scale = 110, returnclass = "sf") 
 small_scale_map <- ggplot() +
   geom_sf(data = world) +
@@ -88,9 +88,41 @@ small_scale_map + medium_scale_map + large_scale_map
 ## `sf` and `sp` packages
 
 `sf` and `sp` are both packages for geospatial data.
-`sf` is the newer package that supports the "simple features" standard and is what I recommend, but you will find examples using the older `sp` package online.
-Choose one, and don't mix them together.
+`sf` is the newer package that supports the "simple features" standard and is what I strongly recommend.
 :::
+
+::: callout-tip
+
+## Rivers and lakes
+
+Sometimes the coastline and national borders are sufficient.
+Sometimes they aren't very informative and you want to add more features, such as rivers, lakes  and cities.
+This can be done with data from [Natural Earth](http://www.naturalearthdata.com/) (or other sources).
+
+```{r}
+#| label: fig-lakes-rivers
+#| fig-cap: Lakes and rivers
+
+# download if needed
+if(!file.exists("maps/ne_10m_rivers_europe.shp")){
+  ne_download(scale = 10, type = "rivers_lake_centerlines", category = "physical", 
+            destdir = "maps/", load = FALSE) # major rivers
+  ne_download(scale = 10, type = "lakes", category = "physical", 
+            destdir = "maps/", load = FALSE) # major lakes
+}
+
+rivers <- ne_load(scale = 10, type = "rivers_lake_centerlines", destdir = "maps", returnclass = "sf")
+lakes <- ne_load(scale = 10, type = "lakes", destdir = "maps", returnclass = "sf")
+
+ggplot() +
+  geom_sf(data = europe) +
+  geom_sf(data = rivers, colour = "blue", linewidth = 0.2) + 
+  geom_sf(data = lakes, fill = "lightblue") + 
+  coord_sf(xlim = c(5, 30), ylim = c(55, 71))
+```
+Extra rivers and lakes for Europe and N. America are available from Natural Earth, but for a large-scale map, other data sets may be better, for example from [Noregs vassdrags- og energidirektorat](http://nedlasting.nve.no/gis/).
+:::
+
 
 ### `ggOceanMaps`
 
@@ -139,12 +171,14 @@ Good sources of data for Norway include:
 -   [GeoNorge](https://www.geonorge.no/)
 -   [Miljødirektoratet](https://kartkatalog.miljodirektoratet.no/)
 
-This is a map of the fylke of Norway
+This is a map of the fylke of Norway.
 
 ```{r}
 #| label: fylker
 library(sf)
 
+# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2021-klippet-etter-kyst/f08fca3c-33ee-49b9-be9f-028ebba5e460)
+# This map will be out of date when fylker are reorganised
 fylker <- st_read("data/fylker2021.json")
 
 ggplot(fylker) + 
@@ -170,7 +204,7 @@ sf::st_crs(fylker)
 This gives a lot of information, the most important is that the coordinate reference systems is UTM zone 33N.
 
 If we need to change a coordinate reference systems, we can do that with `sf::st_transform()`.
-You need to know the EPSG code of the target reference system.
+You need to know the [EPSG](https://epsg.io/) code of the target reference system, or the wkt.
 The code for WGS84 is 4326.
 
 ```{r}
@@ -180,16 +214,11 @@ fylker2 <- sf::st_transform(fylker, crs = 4326)
 `geom_sf()` will automatically transform coordinate systems (if they are specified).
 :::
 
-::: callout-note
-## Exercise
-
-Get a `sf` object from `rnaturalearth::ne_coastline()` and find out what coordinate reference system it uses.
-:::
-
 ## Tiled basemaps
 
-Tiled basemaps can be used with either `ggspatial` or `ggmap` packages. 
-I would generally recommend using `ggspatial` as it is consistent with the other mapping tools used here.
+Tiled basemaps can be used with either `ggspatial` or `ggmap` packages.
+I recommend using `ggspatial` as it is consistent with the other mapping tools used here.
+
 If you use a tiled map background, you should attribute the source (e.g., "Copyright OpenStreetMap contributors" when using an OpenStreetMap-based tiles).
 
 ### `ggspatial`
@@ -209,12 +238,12 @@ ggplot() +
     cachedir = "maps/", 
     zoomin = -1) + # sets the zoom level relative to the default
   coord_sf(
-    xlim = c(4, 8), 
-    ylim = c(59, 62),
+    xlim = c(4.5, 6), 
+    ylim = c(60.5, 61),
     crs = 4326) # EPSG code for WGS84
 
-
 ```
+
 Several different types of maps are available (see `rosm::osm.types()`) and more can be added.
 
 ```{r}
@@ -269,7 +298,8 @@ ggmap(bergen)
 
 ```
 
-Maps made with `ggmap` can appear cluttered with unnecessary information.
+Maps made with a tiled background can appear cluttered with unnecessary information. 
+They are probably best for small areas.
 
 ::: callout-note
 ## Exercise
@@ -392,44 +422,34 @@ ggmap(vestland) +
 ```
 
 Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom.
-So `geom_spatial_point()` rather than `geom_point()`
+So `geom_spatial_point()` rather than `geom_point()` and `geom_spatial_path()` rather than `geom_path()`
 
 ```{r}
 #| label: geom-spatial-points
 #| message: false
 library(ggspatial)
 
-random_points <- tibble(
-  lat = runif(n = 10, 59, 62), 
-  lon = runif(n = 10, 5, 8)) 
-
-
+# GPS tracking data of osprey. Data from https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.w6m905qt2
+osprey <- read_delim("maps/osprey/06982.txt", 
+                     locale = locale(decimal_mark = ",")) |> 
+  janitor::clean_names()
 
 # ggOceanMaps
 
-basemap(limits = c(-30, 30, 50, 80)) +
-  geom_spatial_point(aes(x = lon, y = lat), 
-             data = random_points,
-             colour = "red") +
-  geom_spatial_path(aes(x = lon, y = lat),
-            data = random_points, 
-            colour = "red")
-
-
-# with ggmaps. just use `geom_point()` Don't need aes as it expects lat, lon
-ggmap(vestland) + 
-  geom_point(data = random_points) +
-  geom_path(data = random_points)
+basemap(data = osprey) +
+  geom_spatial_path(aes(x = longitude_e, y = latitude_n, colour = speed),
+            data = osprey, linewidth = 1) +
+  labs(colour = expression(Speed~km~h^{-1}))
 ```
 
-`geom_spatial_point()` is assuming that the data are latitude-longitude coordinates.
+`geom_spatial_point()` assumes that the data are latitude-longitude coordinates.
 It they are UTM, you will need to use the `crs` argument with the correct [EPSG code](https://epsg.io/?q=UTM).
 
 ::: callout-tip
 ## geom_path() vs geom_line()
 
 `geom_path()` draws a line from the first point in the dataset to the second and so on.
-This is useful for plotting on maps (and ordinations).
+This is useful for plotting on maps with `geom_spatial_path()` (and ordinations).
 
 `geom_line()` draws a line from the left-most point to the next left-most point in the dataset.
 This is useful for plotting timeseries.
@@ -465,19 +485,56 @@ Make a map to show the hexabromobenzene (HBB) concentrations in the blubber.
 Cloropleth maps are useful for plotting data that have been aggregated to a geographic unit (kommune, fylke, country etc).
 A `sf` object is a special type of data frame that we can `filter()`, `mutate()` or `left_join()` to other data frames.
 We need a tibble with the data that we can join to the `sf` object with the geographic units.
-Here, I generate some random data and join it by Fylkesnummer (Fylkesnavn column in fylke is complicated), and plot it by setting `fill` in the `aes`.
+Here, I use data on 2021 phosphorous discharge in municipal wastewater from [SSB](https://www.ssb.no/en/statbank/table/05280/) and join it by Fylkesnummer, and plot it by setting `fill` in the `aes`.
 
 ```{r}
-#| label: cloropleth
+#| label: fig-cloropleth
 #| message: false
-random_fylke <- tibble(
-  Fylkesnummer = c("38", "42", "30", "11", "18", "15", "46", "03", "50", "54", "34"),
-  random = runif(11))
+#| fig-cap: Total phosphate discharge in municipal wastewater by fylke.
+p_discharge <- readxl::read_excel(path = "data/05280_20230421-012359.xlsx",
+                                  skip = 4, n_max = 11) |>
+  janitor::clean_names() |> 
+  separate_wider_regex(
+    cols = x1, # split fist column
+    patterns = c(Fylkesnummer = "\\d{2}", " ", Fylkesnavn = ".*"))# using regular expressions
+# \\d{2} = 2 numbers, " " = space, ".*" = any number of any character, ie everything else
 
-fylker |> left_join(random_fylke) |> 
-  ggplot() +
-  geom_sf(aes(fill = random))
+# join to fylker
+fylker_discharge <- fylker |> left_join(p_discharge, by = "Fylkesnummer")
+
+ggplot(fylker_discharge) +
+  geom_sf(aes(fill = total_discharge)) +
+  labs(fill = "Wastewater\nP discharge\n(tonnes)")
 ```
+
+::: callout-tip
+
+## Cartograms
+
+Sometimes cloropleth maps can be misleading. 
+An alternative is to warp space so that the area of each region is proportional to the value. 
+This is a cartogram, which can be made with the `cartogram` package.
+```{r}
+#| label: fig-cartogram
+#| message: false
+#| fig-cap: Cartogram showing total phosphate discharge in municipal wastewater by fylke.
+
+library(cartogram)
+
+# simplify sf object for speed
+fylker_discharge_sim <- sf::st_simplify(fylker_discharge, dTolerance = 1000)
+
+# make cartogram
+kart <- cartogram_cont(fylker_discharge_sim, weight = "total_discharge", itermax = 5)
+
+# plot cartogram
+ggplot(kart) +
+  geom_sf(aes(fill = total_discharge)) +
+  labs(fill = "Wastewater\nP discharge\ntonnes") +
+  theme(legend.position = c(.99, .01), 
+        legend.justification = c(1, 0))
+```
+:::
 
 ::: callout-note
 ## Exercise
@@ -520,7 +577,9 @@ Use inset maps (@sec-combining-plots) to show your location in context.
 The Earth is an oblate sphere and needs projecting to plot in two dimensions.
 This inevitably leads to distortions, especially for maps with a large extent.
 [Different projections](https://proj.org/operations/projections/index.html) have different properties and may be suitable for different purposes or regions.
-Map projections can be set using `coord_sf()`.
+`ggOceanMaps` can automatically select a projection based on the location, otherwise the map projection can be set using `coord_sf()`.
+
+The [projection wizard](https://projectionwizard.org/#) can help choose a projection for a given area (copy the PROJ string).
 
 ```{r}
 #| label: projections
@@ -529,19 +588,27 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 
 default <- ggplot(world) + geom_sf()
 
-mollweide <- ggplot(world) + 
+mollweide <- ggplot(world) + # Equal-area world map projection
   geom_sf() + 
-  coord_sf(crs = "+proj=moll")
+  coord_sf(crs = "+proj=moll") # projection specified with a 'proj' string
 
+sf_use_s2(FALSE) # might need to turn spherical geometry for some projections
+polar_lambert <-  world |> 
+  # !important - don't crop to tightly or crop lines will show in plot
+  st_crop(y = c(xmin = -180, ymin = 50, xmax = 180, ymax = 90)) |> 
+  ggplot() + # Transverse cylindrical equal-area
+  geom_sf() +
+#   coord_sf(crs = "+proj=moll")
+  # projection specified with a proj string
+  coord_sf(crs = '+proj=laea +lon_0=14.4140625 +lat_0=90 +datum=WGS84 +units=m +no_defs', 
+           ylim = c(100000, -3500000), # xlim/ylim in units of projection
+           xlim = c(-2000000, 2000000)) # here in metres
 
-lambert <-  ggplot(world) + 
-  geom_sf() + 
-  coord_sf(crs = "+proj=laea")
- 
-default/mollweide/lambert
+default/mollweide/polar_lambert
 ```
 
-Many of the projections have optional parameters to change, for example, the projection centre.
+
+
 
 ::: callout-note
 ## Exercise
@@ -549,19 +616,17 @@ Many of the projections have optional parameters to change, for example, the pro
 Change the projection of one of the small-scale maps you made previously.
 :::
 
-<!-- ## More map types -->
-
-<!-- ### leaflets -->
 
 <!-- ### Interactive maps -->
+<!-- ### leaflets -->
 
-<!-- projections -->
 
-<!-- ### Cartograms -->
 
-<!-- A cartogram is a map with a distorted geometry to illustrate a variable according to the area of a region. -->
+<!-- ### coords on projected maps -->
 
-<!-- These can be made with the `cartogram` package. -->
+<!-- better geom_path map -->
+<!-- new example exercise -->
+
 
 ::: callout-note
 ## Further reading
