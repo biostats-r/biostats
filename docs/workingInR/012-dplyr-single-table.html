@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.3.340">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Working in R - 10&nbsp; Working with single tables in dplyr</title>
+<title>Working in R - 11&nbsp; Working with single tables in dplyr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -14,9 +14,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -43,43 +44,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -126,248 +97,297 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Working with single tables in <code>dplyr</code></span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-pipes.html">Data manipulation with the tidyverse</a></li><li class="breadcrumb-item"><a href="./012-dplyr-single-table.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Working with single tables in `dplyr`</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Working in R</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
-    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
 <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
-            <i class="bi bi-bi-twitter pe-1"></i>
-          Twitter
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
-            <i class="bi bi-bi-facebook pe-1"></i>
-          Facebook
-          </a>
-        </li>
-    </ul>
-<a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Setting up R and RStudio</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Setting up R and RStudio</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./0010_Getting_Started_with_RStudio.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Installing and configuring R and RStudio</span></a>
+  <a href="./0010_Getting_Started_with_RStudio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Installing and configuring R and RStudio</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./0011_projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">RStudio projects</span></a>
+  <a href="./0011_projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">RStudio projects</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./0012_scripts.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Working with a script</span></a>
+  <a href="./0012_scripts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Working with a script</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./0013_packages.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Installing packages</span></a>
+  <a href="./0013_packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Installing packages</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0014-quiz-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Set-up quiz</span></span></a>
   </div>
 </li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">First steps in R</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">First steps in R</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./002_First_Steps_in_R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">First steps in R</span></a>
+  <a href="./002_First_Steps_in_R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">First steps in R</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./005_Importing_Data_in_R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Importing data in R</span></a>
+  <a href="./005_Importing_Data_in_R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Importing data in R</span></span></a>
   </div>
 </li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Data manipulation with the tidyverse</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Data manipulation with the tidyverse</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./010-pipes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pipes</span></a>
+  <a href="./010-pipes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pipes</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./011-tidyr-pivot.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></a>
+  <a href="./011-tidyr-pivot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./012-dplyr-single-table.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Working with single tables in <code>dplyr</code></span></a>
+  <a href="./012-dplyr-single-table.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Working with single tables in <code>dplyr</code></span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./013-dplyr-multiple-tables.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Working with multiple tables in <code>dplyr</code></span></a>
+  <a href="./013-dplyr-multiple-tables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Working with multiple tables in <code>dplyr</code></span></span></a>
   </div>
 </li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Data Visualisation</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Data Visualisation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./100_why_data_visualisation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Why is data visualization important?</span></a>
+  <a href="./100_why_data_visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Why is data visualization important?</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./101_getting_started_with_ggplot.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Getting started with ggplot</span></a>
+  <a href="./101_getting_started_with_ggplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Getting started with ggplot</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./103_different_types_of_vizualization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Choosing your visualisation</span></a>
+  <a href="./103_different_types_of_vizualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Choosing your visualisation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./118_themes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Themes</span></a>
+  <a href="./118_themes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Themes</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./120_colour_shape_linetypes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Colours, shapes and linetypes</span></a>
+  <a href="./120_colour_shape_linetypes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Colours, shapes and linetypes</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./125_ggplot_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Regression and ggplot</span></a>
+  <a href="./125_ggplot_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Regression and ggplot</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./130_patchwork.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Combining plots</span></a>
+  <a href="./130_patchwork.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Combining plots</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./140_maps.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Making maps in R</span></a>
+  <a href="./140_maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Making maps in R</span></span></a>
   </div>
 </li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Other Topics</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Other Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./050_missing_values.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Handling missing values</span></a>
+  <a href="./050_missing_values.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Handling missing values</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./060_bestiary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Bestiary of Brackets and other R notation</span></a>
+  <a href="./060_bestiary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Bestiary of Brackets and other R notation</span></span></a>
   </div>
 </li>
       </ul>
 </li>
     </ul>
 </div>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<style>
+               img.site-logo {
+  height: auto;
+  width: 95%;
+}
+      </style>
+<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
+<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#load-the-package" id="toc-load-the-package" class="nav-link active" data-scroll-target="#load-the-package"><span class="toc-section-number">10.0.1</span>  Load the package</a></li>
-  <li><a href="#more-feedback-tidylog" id="toc-more-feedback-tidylog" class="nav-link" data-scroll-target="#more-feedback-tidylog"><span class="toc-section-number">10.0.2</span>  More feedback <code>tidylog</code></a></li>
-  <li><a href="#the-penguins-dataset" id="toc-the-penguins-dataset" class="nav-link" data-scroll-target="#the-penguins-dataset"><span class="toc-section-number">10.1</span>  The <code>penguins</code> dataset</a></li>
+<li><a href="#load-the-package" id="toc-load-the-package" class="nav-link active" data-scroll-target="#load-the-package"><span class="header-section-number">11.0.1</span> Load the package</a></li>
+  <li><a href="#more-feedback-tidylog" id="toc-more-feedback-tidylog" class="nav-link" data-scroll-target="#more-feedback-tidylog"><span class="header-section-number">11.0.2</span> More feedback <code>tidylog</code></a></li>
+  <li><a href="#the-penguins-dataset" id="toc-the-penguins-dataset" class="nav-link" data-scroll-target="#the-penguins-dataset"><span class="header-section-number">11.1</span> The <code>penguins</code> dataset</a></li>
   <li>
-<a href="#selecting-columns-with-select" id="toc-selecting-columns-with-select" class="nav-link" data-scroll-target="#selecting-columns-with-select"><span class="toc-section-number">10.2</span>  Selecting columns with <code>select()</code></a>
+<a href="#selecting-columns-with-select" id="toc-selecting-columns-with-select" class="nav-link" data-scroll-target="#selecting-columns-with-select"><span class="header-section-number">11.2</span> Selecting columns with <code>select()</code></a>
   <ul class="collapse">
-<li><a href="#sec-select-helpers" id="toc-sec-select-helpers" class="nav-link" data-scroll-target="#sec-select-helpers"><span class="toc-section-number">10.2.1</span>  <code>select()</code> helpers</a></li>
+<li><a href="#sec-select-helpers" id="toc-sec-select-helpers" class="nav-link" data-scroll-target="#sec-select-helpers"><span class="header-section-number">11.2.1</span> <code>select()</code> helpers</a></li>
   </ul>
 </li>
-  <li><a href="#renaming-columns-with-rename" id="toc-renaming-columns-with-rename" class="nav-link" data-scroll-target="#renaming-columns-with-rename"><span class="toc-section-number">10.3</span>  Renaming columns with <code>rename</code></a></li>
-  <li><a href="#moving-columns-with-relocate" id="toc-moving-columns-with-relocate" class="nav-link" data-scroll-target="#moving-columns-with-relocate"><span class="toc-section-number">10.4</span>  Moving columns with <code>relocate()</code></a></li>
+  <li><a href="#renaming-columns-with-rename" id="toc-renaming-columns-with-rename" class="nav-link" data-scroll-target="#renaming-columns-with-rename"><span class="header-section-number">11.3</span> Renaming columns with <code>rename</code></a></li>
+  <li><a href="#moving-columns-with-relocate" id="toc-moving-columns-with-relocate" class="nav-link" data-scroll-target="#moving-columns-with-relocate"><span class="header-section-number">11.4</span> Moving columns with <code>relocate()</code></a></li>
   <li>
-<a href="#filtering-rows-with-filter" id="toc-filtering-rows-with-filter" class="nav-link" data-scroll-target="#filtering-rows-with-filter"><span class="toc-section-number">10.5</span>  Filtering rows with <code>filter()</code></a>
+<a href="#filtering-rows-with-filter" id="toc-filtering-rows-with-filter" class="nav-link" data-scroll-target="#filtering-rows-with-filter"><span class="header-section-number">11.5</span> Filtering rows with <code>filter()</code></a>
   <ul class="collapse">
-<li><a href="#filtering-on-multiple-criteria" id="toc-filtering-on-multiple-criteria" class="nav-link" data-scroll-target="#filtering-on-multiple-criteria"><span class="toc-section-number">10.5.1</span>  Filtering on multiple criteria</a></li>
-  <li><a href="#common-errors" id="toc-common-errors" class="nav-link" data-scroll-target="#common-errors"><span class="toc-section-number">10.5.2</span>  Common errors</a></li>
+<li><a href="#filtering-on-multiple-criteria" id="toc-filtering-on-multiple-criteria" class="nav-link" data-scroll-target="#filtering-on-multiple-criteria"><span class="header-section-number">11.5.1</span> Filtering on multiple criteria</a></li>
+  <li><a href="#common-errors" id="toc-common-errors" class="nav-link" data-scroll-target="#common-errors"><span class="header-section-number">11.5.2</span> Common errors</a></li>
   </ul>
 </li>
-  <li><a href="#slicing-the-data-with-slice" id="toc-slicing-the-data-with-slice" class="nav-link" data-scroll-target="#slicing-the-data-with-slice"><span class="toc-section-number">10.6</span>  Slicing the data with <code>slice()</code></a></li>
-  <li><a href="#distinct-rows-with-distinct" id="toc-distinct-rows-with-distinct" class="nav-link" data-scroll-target="#distinct-rows-with-distinct"><span class="toc-section-number">10.7</span>  Distinct rows with <code>distinct()</code></a></li>
-  <li><a href="#random-rows" id="toc-random-rows" class="nav-link" data-scroll-target="#random-rows"><span class="toc-section-number">10.8</span>  Random rows</a></li>
-  <li><a href="#mutating-and-adding-columns-with-mutate" id="toc-mutating-and-adding-columns-with-mutate" class="nav-link" data-scroll-target="#mutating-and-adding-columns-with-mutate"><span class="toc-section-number">10.9</span>  Mutating and adding columns with <code>mutate</code></a></li>
+  <li><a href="#slicing-the-data-with-slice" id="toc-slicing-the-data-with-slice" class="nav-link" data-scroll-target="#slicing-the-data-with-slice"><span class="header-section-number">11.6</span> Slicing the data with <code>slice()</code></a></li>
+  <li><a href="#distinct-rows-with-distinct" id="toc-distinct-rows-with-distinct" class="nav-link" data-scroll-target="#distinct-rows-with-distinct"><span class="header-section-number">11.7</span> Distinct rows with <code>distinct()</code></a></li>
+  <li><a href="#random-rows" id="toc-random-rows" class="nav-link" data-scroll-target="#random-rows"><span class="header-section-number">11.8</span> Random rows</a></li>
+  <li><a href="#mutating-and-adding-columns-with-mutate" id="toc-mutating-and-adding-columns-with-mutate" class="nav-link" data-scroll-target="#mutating-and-adding-columns-with-mutate"><span class="header-section-number">11.9</span> Mutating and adding columns with <code>mutate</code></a></li>
   <li>
-<a href="#summarising-data-with-summarise" id="toc-summarising-data-with-summarise" class="nav-link" data-scroll-target="#summarising-data-with-summarise"><span class="toc-section-number">10.10</span>  Summarising data with <code>summarise()</code></a>
+<a href="#summarising-data-with-summarise" id="toc-summarising-data-with-summarise" class="nav-link" data-scroll-target="#summarising-data-with-summarise"><span class="header-section-number">11.10</span> Summarising data with <code>summarise()</code></a>
   <ul class="collapse">
-<li><a href="#summarising-multiple-columns" id="toc-summarising-multiple-columns" class="nav-link" data-scroll-target="#summarising-multiple-columns"><span class="toc-section-number">10.10.1</span>  Summarising multiple columns</a></li>
+<li><a href="#summarising-multiple-columns" id="toc-summarising-multiple-columns" class="nav-link" data-scroll-target="#summarising-multiple-columns"><span class="header-section-number">11.10.1</span> Summarising multiple columns</a></li>
   </ul>
 </li>
-  <li><a href="#grouping-data-with-group_by" id="toc-grouping-data-with-group_by" class="nav-link" data-scroll-target="#grouping-data-with-group_by"><span class="toc-section-number">10.11</span>  Grouping data with <code>group_by</code></a></li>
-  <li><a href="#sorting-with-arrange" id="toc-sorting-with-arrange" class="nav-link" data-scroll-target="#sorting-with-arrange"><span class="toc-section-number">10.12</span>  Sorting with <code>arrange()</code></a></li>
-  <li><a href="#counting-rows-with-count-and-n" id="toc-counting-rows-with-count-and-n" class="nav-link" data-scroll-target="#counting-rows-with-count-and-n"><span class="toc-section-number">10.13</span>  Counting rows with <code>count()</code> and <code>n()</code></a></li>
+  <li><a href="#grouping-data-with-group_by" id="toc-grouping-data-with-group_by" class="nav-link" data-scroll-target="#grouping-data-with-group_by"><span class="header-section-number">11.11</span> Grouping data with <code>group_by</code></a></li>
+  <li><a href="#sorting-with-arrange" id="toc-sorting-with-arrange" class="nav-link" data-scroll-target="#sorting-with-arrange"><span class="header-section-number">11.12</span> Sorting with <code>arrange()</code></a></li>
+  <li><a href="#counting-rows-with-count-and-n" id="toc-counting-rows-with-count-and-n" class="nav-link" data-scroll-target="#counting-rows-with-count-and-n"><span class="header-section-number">11.13</span> Counting rows with <code>count()</code> and <code>n()</code></a></li>
   <li>
-<a href="#common-problems" id="toc-common-problems" class="nav-link" data-scroll-target="#common-problems"><span class="toc-section-number">10.14</span>  Common problems</a>
+<a href="#common-problems" id="toc-common-problems" class="nav-link" data-scroll-target="#common-problems"><span class="header-section-number">11.14</span> Common problems</a>
   <ul class="collapse">
-<li><a href="#non-standard-names" id="toc-non-standard-names" class="nav-link" data-scroll-target="#non-standard-names"><span class="toc-section-number">10.14.1</span>  Non standard names</a></li>
+<li><a href="#non-standard-names" id="toc-non-standard-names" class="nav-link" data-scroll-target="#non-standard-names"><span class="header-section-number">11.14.1</span> Non standard names</a></li>
   </ul>
 </li>
   </ul></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span id="sec-working-with-single-tables-in-dplyr" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Working with single tables in <code>dplyr</code></span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-working-with-single-tables-in-dplyr" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Working with single tables in <code>dplyr</code></span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -375,6 +395,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -383,8 +404,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This tutorial will show you how to manipulate data frames using the <code>dplyr</code> package, part of <code>tidyverse</code>.</p>
 <p>Everything that can be done with <code>dplyr</code> can be done with base R. The <code>dplyr</code> solution is usually easier to write and understand, and can be faster.</p>
 <p>There are many function in <code>dplyr</code>, this tutorial focuses on the functions I find most useful.</p>
-<section id="load-the-package" class="level3" data-number="10.0.1"><h3 data-number="10.0.1" class="anchored" data-anchor-id="load-the-package">
-<span class="header-section-number">10.0.1</span> Load the package</h3>
+<section id="load-the-package" class="level3" data-number="11.0.1"><h3 data-number="11.0.1" class="anchored" data-anchor-id="load-the-package">
+<span class="header-section-number">11.0.1</span> Load the package</h3>
 <p>You can load <code>dplyr</code> with</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://dplyr.tidyverse.org">"dplyr"</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -393,16 +414,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://tidyverse.tidyverse.org">"tidyverse"</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="more-feedback-tidylog" class="level3" data-number="10.0.2"><h3 data-number="10.0.2" class="anchored" data-anchor-id="more-feedback-tidylog">
-<span class="header-section-number">10.0.2</span> More feedback <code>tidylog</code>
+</section><section id="more-feedback-tidylog" class="level3" data-number="11.0.2"><h3 data-number="11.0.2" class="anchored" data-anchor-id="more-feedback-tidylog">
+<span class="header-section-number">11.0.2</span> More feedback <code>tidylog</code>
 </h3>
 <p>We can get more feedback on what <code>dplyr</code> functions have done to the data by loading the <code>tidylog</code> package.</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/elbersb/tidylog/">"tidylog"</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>More than once, <code>tidylog</code> has helped identified bugs in my code.</p>
-</section><section id="the-penguins-dataset" class="level2" data-number="10.1"><h2 data-number="10.1" class="anchored" data-anchor-id="the-penguins-dataset">
-<span class="header-section-number">10.1</span> The <code>penguins</code> dataset</h2>
+</section><section id="the-penguins-dataset" class="level2" data-number="11.1"><h2 data-number="11.1" class="anchored" data-anchor-id="the-penguins-dataset">
+<span class="header-section-number">11.1</span> The <code>penguins</code> dataset</h2>
 <p>This tutorial will use the <code>penguins</code> dataset from the <a href="https://github.com/allisonhorst/palmerpenguins"><code>palmerpenguins</code> package</a>. This dataset includes measurements of three species of penguin.</p>
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Load the data</span></span>
@@ -419,15 +440,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 # … with 341 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
 </div>
 </div>
-</section><section id="selecting-columns-with-select" class="level2" data-number="10.2"><h2 data-number="10.2" class="anchored" data-anchor-id="selecting-columns-with-select">
-<span class="header-section-number">10.2</span> Selecting columns with <code>select()</code>
+</section><section id="selecting-columns-with-select" class="level2" data-number="11.2"><h2 data-number="11.2" class="anchored" data-anchor-id="selecting-columns-with-select">
+<span class="header-section-number">11.2</span> Selecting columns with <code>select()</code>
 </h2>
-<p>You can choose which columns of the data frame you want with <code>select()</code>.</p>
+<p>You can choose which columns of the data frame you want with <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code>.</p>
 <p>The first argument is the data, which is supplied by the pipe <code>|&gt;</code>, the next arguments are the names of the columns you want. The names do not need quote marks.</p>
 <div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#select species, bill_length_mm &amp; bill_depth_mm</span></span>
 <span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">species</span>, <span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>select: dropped 5 variables (island, flipper_length_mm, body_mass_g, sex, year)</code></pre>
 </div>
@@ -456,12 +477,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Remember that if you want to use the output of this code in a further analysis, you need to assign it to an object name with <code>&lt;-</code>.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -483,13 +504,13 @@ Hint
 </details>
 </div>
 </div>
-<section id="sec-select-helpers" class="level3" data-number="10.2.1"><h3 data-number="10.2.1" class="anchored" data-anchor-id="sec-select-helpers">
-<span class="header-section-number">10.2.1</span> <code>select()</code> helpers</h3>
+<section id="sec-select-helpers" class="level3" data-number="11.2.1"><h3 data-number="11.2.1" class="anchored" data-anchor-id="sec-select-helpers">
+<span class="header-section-number">11.2.1</span> <code>select()</code> helpers</h3>
 <p>Sometimes we don’t want to write out the names of all the columns we want to select. We might not even know them all in advance. Fortunately there are some helper functions.</p>
-<p>If you want to <code>select()</code> adjacent columns, you can use the notation <code>first:last</code>.</p>
+<p>If you want to <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> adjacent columns, you can use the notation <code>first:last</code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#select species to bill_depth_mm</span></span>
-<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="va">species</span><span class="op">:</span><span class="va">bill_depth_mm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">species</span><span class="op">:</span><span class="va">bill_depth_mm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>select: dropped 4 variables (flipper_length_mm, body_mass_g, sex, year)</code></pre>
 </div>
@@ -506,7 +527,7 @@ Hint
 <p>Sometimes it is easier to remove the columns you don’t want. You can do this by putting a <code>-</code> in front of the column name.</p>
 <div class="cell">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#select everything but year and sex</span></span>
-<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">year</span>, <span class="op">-</span><span class="va">sex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">year</span>, <span class="op">-</span><span class="va">sex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>select: dropped 2 variables (sex, year)</code></pre>
 </div>
@@ -523,7 +544,7 @@ Hint
 <p>If there is a pattern to the column names that we want to select (or remove), there are some helper functions. For example, to select columns that start with “bill”, we can use <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#select bill_length_mm &amp; bill_depth_mm" </span></span>
-<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"bill"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"bill"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>select: dropped 6 variables (species, island, flipper_length_mm, body_mass_g, sex, …)</code></pre>
 </div>
@@ -538,9 +559,9 @@ Hint
 </div>
 </div>
 <p>Conversely, if we want to select all columns that end with “mm”, we can use <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">ends_with()</a></code>. <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains()</a></code> is more flexible and <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches()</a></code> is the most powerful of the helper functions, using regular expressions to identify the columns (see the regular expression tutorial).</p>
-<p>Sometimes, you might want to select all the columns of a certain type. For example, to select all the numeric columns we can use the <code>is.numeric</code> function inside <code>select()</code> with the helper <code>where()</code>.</p>
+<p>Sometimes, you might want to select all the columns of a certain type. For example, to select all the numeric columns we can use the <code>is.numeric</code> function inside <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> with the helper <code><a href="https://tidyselect.r-lib.org/reference/where.html">where()</a></code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="co"># No brackets on the function</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="co"># No brackets on the function</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>select: dropped 3 variables (species, island, sex)</code></pre>
 </div>
@@ -557,12 +578,12 @@ Hint
 <p>Other <code>is.*</code> functions exist, for example, <code>is.character</code> for text.</p>
 <p>You can also select columns by number (1 being the first column), but this is generally a bad idea because it makes the code difficult to understand and if a new column is added, or the column order is changed, the code will break.</p>
 <p>Which of these strategies works best is context dependent.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -590,12 +611,12 @@ Hint
 </details>
 </div>
 </div>
-</section></section><section id="renaming-columns-with-rename" class="level2" data-number="10.3"><h2 data-number="10.3" class="anchored" data-anchor-id="renaming-columns-with-rename">
-<span class="header-section-number">10.3</span> Renaming columns with <code>rename</code>
+</section></section><section id="renaming-columns-with-rename" class="level2" data-number="11.3"><h2 data-number="11.3" class="anchored" data-anchor-id="renaming-columns-with-rename">
+<span class="header-section-number">11.3</span> Renaming columns with <code>rename</code>
 </h2>
-<p>You can use <code>rename()</code> to rename columns</p>
+<p>You can use <code><a href="https://dplyr.tidyverse.org/reference/rename.html">rename()</a></code> to rename columns</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">rename</span><span class="op">(</span>Species <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Species <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>rename: renamed one variable (Species)</code></pre>
 </div>
@@ -610,9 +631,9 @@ Hint
 </div>
 </div>
 <p>The syntax is <code>new_name = current_name</code>.</p>
-<p>You can also rename a column when selecting. This is convenient if you are using <code>select()</code> anyway.</p>
+<p>You can also rename a column when selecting. This is convenient if you are using <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> anyway.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span>Species <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>Species <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>select: renamed one variable (Species) and dropped 7 variables</code></pre>
 </div>
@@ -626,12 +647,12 @@ Hint
 # … with 341 more rows</code></pre>
 </div>
 </div>
-</section><section id="moving-columns-with-relocate" class="level2" data-number="10.4"><h2 data-number="10.4" class="anchored" data-anchor-id="moving-columns-with-relocate">
-<span class="header-section-number">10.4</span> Moving columns with <code>relocate()</code>
+</section><section id="moving-columns-with-relocate" class="level2" data-number="11.4"><h2 data-number="11.4" class="anchored" data-anchor-id="moving-columns-with-relocate">
+<span class="header-section-number">11.4</span> Moving columns with <code>relocate()</code>
 </h2>
 <p>Sometimes it is useful to reorder the columns. This is never necessary for data analysis or plotting, but can be needed when making a table for presentation.</p>
 <div class="cell">
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">relocate</span><span class="op">(</span><span class="va">island</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html">relocate</a></span><span class="op">(</span><span class="va">island</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>relocate: columns reordered (island, species, bill_length_mm, bill_depth_mm, flipper_length_mm, …)</code></pre>
 </div>
@@ -646,13 +667,13 @@ Hint
 </div>
 </div>
 <p>The default is to move the named column first, the <code>.before</code> and <code>.after</code> arguments let you move the column into any position.</p>
-</section><section id="filtering-rows-with-filter" class="level2" data-number="10.5"><h2 data-number="10.5" class="anchored" data-anchor-id="filtering-rows-with-filter">
-<span class="header-section-number">10.5</span> Filtering rows with <code>filter()</code>
+</section><section id="filtering-rows-with-filter" class="level2" data-number="11.5"><h2 data-number="11.5" class="anchored" data-anchor-id="filtering-rows-with-filter">
+<span class="header-section-number">11.5</span> Filtering rows with <code>filter()</code>
 </h2>
 <p>Filtering rows that meet some condition is a very common task.</p>
 <p>For example, to filter rows of <code>penguins</code> that have a bill length greater than 40 mm, we can use</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">filter</span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>filter: removed 102 rows (30%), 242 rows remaining</code></pre>
 </div>
@@ -722,7 +743,7 @@ Hint
 </ul>
 <div class="cell">
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">filter</span><span class="op">(</span><span class="va">species</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Adelie"</span>, <span class="st">"Chinstrap"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Adelie"</span>, <span class="st">"Chinstrap"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>filter: removed 124 rows (36%), 220 rows remaining</code></pre>
 </div>
@@ -737,7 +758,7 @@ Hint
 </div>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#equivalent to </span></span>
 <span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">filter</span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="st">"Adelie"</span> <span class="op">|</span> <span class="va">species</span> <span class="op">==</span> <span class="st">"Chinstrap"</span><span class="op">)</span> <span class="co"># with many alternatives, this gets long</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="st">"Adelie"</span> <span class="op">|</span> <span class="va">species</span> <span class="op">==</span> <span class="st">"Chinstrap"</span><span class="op">)</span> <span class="co"># with many alternatives, this gets long</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>filter: removed 124 rows (36%), 220 rows remaining</code></pre>
 </div>
@@ -751,13 +772,13 @@ Hint
 # … with 217 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
 </div>
 </div>
-<section id="filtering-on-multiple-criteria" class="level3" data-number="10.5.1"><h3 data-number="10.5.1" class="anchored" data-anchor-id="filtering-on-multiple-criteria">
-<span class="header-section-number">10.5.1</span> Filtering on multiple criteria</h3>
+<section id="filtering-on-multiple-criteria" class="level3" data-number="11.5.1"><h3 data-number="11.5.1" class="anchored" data-anchor-id="filtering-on-multiple-criteria">
+<span class="header-section-number">11.5.1</span> Filtering on multiple criteria</h3>
 <p>If we want to filter on multiple criteria, we need to decide whether we want all criteria to be <code>TRUE</code> (AND in Boolean logic), or for one or more to be <code>TRUE</code> (OR in Boolean logic).</p>
 <p>If we want all criteria to be <code>TRUE</code>, we can separate them by a comma (or by an <code>&amp;</code> if you want to be explicit).</p>
 <div class="cell">
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">filter</span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span>, <span class="va">bill_depth_mm</span> <span class="op">&gt;</span> <span class="fl">18</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span>, <span class="va">bill_depth_mm</span> <span class="op">&gt;</span> <span class="fl">18</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>filter: removed 263 rows (76%), 81 rows remaining</code></pre>
 </div>
@@ -774,7 +795,7 @@ Hint
 <p>If we want rows where any of the criteria is <code>TRUE</code>, we can separate them by a <code>|</code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">filter</span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span> <span class="op">|</span> <span class="va">bill_depth_mm</span> <span class="op">&gt;</span> <span class="fl">18</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span> <span class="op">|</span> <span class="va">bill_depth_mm</span> <span class="op">&gt;</span> <span class="fl">18</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>filter: removed 53 rows (15%), 291 rows remaining</code></pre>
 </div>
@@ -790,7 +811,7 @@ Hint
 </div>
 <p>We can negate a criterion by putting <code>!</code> in front of it. So to filter rows that do not have bills longer than 40 mm we can use</p>
 <div class="cell">
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">filter</span><span class="op">(</span><span class="op">!</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">bill_length_mm</span> <span class="op">&gt;</span> <span class="fl">40</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>filter: removed 244 rows (71%), 100 rows remaining</code></pre>
 </div>
@@ -805,11 +826,11 @@ Hint
 </div>
 </div>
 <p>Of course, in this example, we could also use <code>&lt;=</code> as the test.</p>
-</section><section id="common-errors" class="level3" data-number="10.5.2"><h3 data-number="10.5.2" class="anchored" data-anchor-id="common-errors">
-<span class="header-section-number">10.5.2</span> Common errors</h3>
+</section><section id="common-errors" class="level3" data-number="11.5.2"><h3 data-number="11.5.2" class="anchored" data-anchor-id="common-errors">
+<span class="header-section-number">11.5.2</span> Common errors</h3>
 <p>The commonest error is to use a single <code>=</code> rather than <code>==</code>. Only the latter is a test of equality. If you do this, the error message is quite helpful.</p>
 <div class="cell">
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">filter</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Chinstrap"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Chinstrap"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `.fun()`:
 ! We detected a named input.
@@ -819,7 +840,7 @@ Hint
 </div>
 <p>Another common error is to forget to quote any strings.</p>
 <div class="cell">
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">filter</span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="va">Chinstrap</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="va">Chinstrap</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `.fun()`:
 ! Problem while computing `..1 = species == Chinstrap`.
@@ -827,12 +848,12 @@ Caused by error:
 ! object 'Chinstrap' not found</code></pre>
 </div>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -866,12 +887,12 @@ Hint
 </details>
 </div>
 </div>
-</section></section><section id="slicing-the-data-with-slice" class="level2" data-number="10.6"><h2 data-number="10.6" class="anchored" data-anchor-id="slicing-the-data-with-slice">
-<span class="header-section-number">10.6</span> Slicing the data with <code>slice()</code>
+</section></section><section id="slicing-the-data-with-slice" class="level2" data-number="11.6"><h2 data-number="11.6" class="anchored" data-anchor-id="slicing-the-data-with-slice">
+<span class="header-section-number">11.6</span> Slicing the data with <code>slice()</code>
 </h2>
 <p>Sometimes it is useful to extract rows by row number.</p>
 <div class="cell">
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">slice</span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>slice: removed 339 rows (99%), 5 rows remaining</code></pre>
 </div>
@@ -887,13 +908,13 @@ Hint
 # … with 1 more variable: year &lt;int&gt;</code></pre>
 </div>
 </div>
-<p>You can use negative numbers to remove rows. Be careful using <code>slice()</code> as if the data change, different rows may be returned.</p>
-</section><section id="distinct-rows-with-distinct" class="level2" data-number="10.7"><h2 data-number="10.7" class="anchored" data-anchor-id="distinct-rows-with-distinct">
-<span class="header-section-number">10.7</span> Distinct rows with <code>distinct()</code>
+<p>You can use negative numbers to remove rows. Be careful using <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice()</a></code> as if the data change, different rows may be returned.</p>
+</section><section id="distinct-rows-with-distinct" class="level2" data-number="11.7"><h2 data-number="11.7" class="anchored" data-anchor-id="distinct-rows-with-distinct">
+<span class="header-section-number">11.7</span> Distinct rows with <code>distinct()</code>
 </h2>
-<p>If there are duplicates in the data, we can remove these with <code>distinct()</code>. <code>distinct()</code> with no extra arguments will remove duplicate rows.</p>
+<p>If there are duplicates in the data, we can remove these with <code><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct()</a></code>. <code><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct()</a></code> with no extra arguments will remove duplicate rows.</p>
 <div class="cell">
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">distinct</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>distinct: no rows removed</code></pre>
 </div>
@@ -909,7 +930,7 @@ Hint
 </div>
 <p>If we are only interested in some of the columns, we can supply the names of these columns.</p>
 <div class="cell">
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">distinct</span><span class="op">(</span><span class="va">island</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">island</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>distinct: removed 341 rows (99%), 3 rows remaining</code></pre>
 </div>
@@ -923,12 +944,12 @@ Hint
 </div>
 </div>
 <p>Other columns will be removed unless the argument <code>.keep_all = TRUE</code> is used.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -946,11 +967,11 @@ Hint
 </details>
 </div>
 </div>
-</section><section id="random-rows" class="level2" data-number="10.8"><h2 data-number="10.8" class="anchored" data-anchor-id="random-rows">
-<span class="header-section-number">10.8</span> Random rows</h2>
-<p>Sometimes you want to sample rows at random from a data.frame. This can be done with <code>slice_sample()</code>. This can either sample a constant <em>n</em> rows or constant fraction of the rows depending on whether the <code>n</code> or <code>prop</code> argument is used.</p>
+</section><section id="random-rows" class="level2" data-number="11.8"><h2 data-number="11.8" class="anchored" data-anchor-id="random-rows">
+<span class="header-section-number">11.8</span> Random rows</h2>
+<p>Sometimes you want to sample rows at random from a data.frame. This can be done with <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample()</a></code>. This can either sample a constant <em>n</em> rows or constant fraction of the rows depending on whether the <code>n</code> or <code>prop</code> argument is used.</p>
 <div class="cell">
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">slice_sample</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>slice_sample: removed 334 rows (97%), 10 rows remaining</code></pre>
 </div>
@@ -971,14 +992,14 @@ Hint
 # … with 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 </div>
 </div>
-</section><section id="mutating-and-adding-columns-with-mutate" class="level2" data-number="10.9"><h2 data-number="10.9" class="anchored" data-anchor-id="mutating-and-adding-columns-with-mutate">
-<span class="header-section-number">10.9</span> Mutating and adding columns with <code>mutate</code>
+</section><section id="mutating-and-adding-columns-with-mutate" class="level2" data-number="11.9"><h2 data-number="11.9" class="anchored" data-anchor-id="mutating-and-adding-columns-with-mutate">
+<span class="header-section-number">11.9</span> Mutating and adding columns with <code>mutate</code>
 </h2>
-<p>The function <code>mutate()</code> can add an new column or replace an existing one.</p>
+<p>The function <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> can add an new column or replace an existing one.</p>
 <p>To make a new column called <code>body_mass_kg</code> we can use</p>
 <div class="cell">
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>body_mass_kg <span class="op">=</span> <span class="va">body_mass_g</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>body_mass_kg <span class="op">=</span> <span class="va">body_mass_g</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>mutate: new variable 'body_mass_kg' (double) with 95 unique values and 1% NA</code></pre>
 </div>
@@ -993,17 +1014,17 @@ Hint
 </div>
 </div>
 <p>There are lots of functions that are useful to use with mutate. Any function that returns either a single value or as many values as are in the data can be used.</p>
-<p><code>mutate()</code> is very useful when cleaning data.</p>
+<p><code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> is very useful when cleaning data.</p>
 <ul>
 <li>See text manipulation tutorial for cleaning text with the <code>stringr</code> package.</li>
 <li>See date and time tutorial for cleaning dates and times with the <code>lubridate</code> package.</li>
 </ul>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -1023,12 +1044,12 @@ Hint
 </details>
 </div>
 </div>
-</section><section id="summarising-data-with-summarise" class="level2" data-number="10.10"><h2 data-number="10.10" class="anchored" data-anchor-id="summarising-data-with-summarise">
-<span class="header-section-number">10.10</span> Summarising data with <code>summarise()</code>
+</section><section id="summarising-data-with-summarise" class="level2" data-number="11.10"><h2 data-number="11.10" class="anchored" data-anchor-id="summarising-data-with-summarise">
+<span class="header-section-number">11.10</span> Summarising data with <code>summarise()</code>
 </h2>
-<p><code>summarise()</code> lets us summarise data. We can use it if we want to calculate a summary statistic of the data. Remember to separate arguments with a comma.</p>
+<p><code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> lets us summarise data. We can use it if we want to calculate a summary statistic of the data. Remember to separate arguments with a comma.</p>
 <div class="cell">
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu">summarise</span><span class="op">(</span></span>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
 <span>  flipper_len_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">flipper_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, </span>
 <span>  flipper_len_sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">flipper_length_mm</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1042,13 +1063,13 @@ Hint
 1             201.           14.1</code></pre>
 </div>
 </div>
-<p>Only the columns created in the <code>summarise()</code> and any grouping columns (see below) will be kept.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<p>Only the columns created in the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> and any grouping columns (see below) will be kept.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -1066,12 +1087,12 @@ Hint
 </details>
 </div>
 </div>
-<section id="summarising-multiple-columns" class="level3" data-number="10.10.1"><h3 data-number="10.10.1" class="anchored" data-anchor-id="summarising-multiple-columns">
-<span class="header-section-number">10.10.1</span> Summarising multiple columns</h3>
+<section id="summarising-multiple-columns" class="level3" data-number="11.10.1"><h3 data-number="11.10.1" class="anchored" data-anchor-id="summarising-multiple-columns">
+<span class="header-section-number">11.10.1</span> Summarising multiple columns</h3>
 <p>Sometimes you want to summarise multiple columns at the same time. This can be done with the <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> helper function. <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> needs to be told which columns to process and what function or functions to use.</p>
 <div class="cell">
 <div class="sourceCode" id="cb86"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span></span>
-<span>   <span class="fu">summarise</span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span>, .fns <span class="op">=</span> <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span><span class="op">)</span>, .fns <span class="op">=</span> <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>summarise: now one row and 2 columns, ungrouped</code></pre>
 </div>
@@ -1083,7 +1104,7 @@ Hint
 </div>
 <div class="sourceCode" id="cb89"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#using a list of functions</span></span>
 <span><span class="va">penguins</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">summarise</span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span>.cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"bill"</span><span class="op">)</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="va">sd</span>, mean <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span>.cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"bill"</span><span class="op">)</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="va">sd</span>, mean <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>summarise: now one row and 4 columns, ungrouped</code></pre>
 </div>
@@ -1094,16 +1115,16 @@ Hint
 1              5.46                43.9             1.97               17.2</code></pre>
 </div>
 </div>
-<p>You can also use <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> with <code>mutate()</code> to mutate several columns at the same time.</p>
-</section></section><section id="grouping-data-with-group_by" class="level2" data-number="10.11"><h2 data-number="10.11" class="anchored" data-anchor-id="grouping-data-with-group_by">
-<span class="header-section-number">10.11</span> Grouping data with <code>group_by</code>
+<p>You can also use <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> to mutate several columns at the same time.</p>
+</section></section><section id="grouping-data-with-group_by" class="level2" data-number="11.11"><h2 data-number="11.11" class="anchored" data-anchor-id="grouping-data-with-group_by">
+<span class="header-section-number">11.11</span> Grouping data with <code>group_by</code>
 </h2>
-<p><code>group_by()</code> changes the way that many of the <code>dplyr</code> functions work. Instead of working on the entire dataset, they now work on each group in the data</p>
-<p>To find the mean flipper length for each species, we need to <code>group_by()</code> species and then <code>summarise()</code>.</p>
+<p><code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> changes the way that many of the <code>dplyr</code> functions work. Instead of working on the entire dataset, they now work on each group in the data</p>
+<p>To find the mean flipper length for each species, we need to <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> species and then <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb92"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">summarise</span><span class="op">(</span>mean_flipper_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">flipper_length_mm</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>mean_flipper_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">flipper_length_mm</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>group_by: one grouping variable (species)</code></pre>
 </div>
@@ -1119,13 +1140,13 @@ Hint
 3 Gentoo                    NA </code></pre>
 </div>
 </div>
-<p>Grouped data can be ungrouped with <code>ungroup()</code>. This can help prevent surprises!</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<p>Grouped data can be ungrouped with <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup()</a></code>. This can help prevent surprises!</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -1144,8 +1165,8 @@ Hint
 </details>
 </div>
 </div>
-</section><section id="sorting-with-arrange" class="level2" data-number="10.12"><h2 data-number="10.12" class="anchored" data-anchor-id="sorting-with-arrange">
-<span class="header-section-number">10.12</span> Sorting with <code>arrange()</code>
+</section><section id="sorting-with-arrange" class="level2" data-number="11.12"><h2 data-number="11.12" class="anchored" data-anchor-id="sorting-with-arrange">
+<span class="header-section-number">11.12</span> Sorting with <code>arrange()</code>
 </h2>
 <p>To sort the data frame by one or more of the variables we can use <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code>.</p>
 <div class="cell">
@@ -1173,12 +1194,12 @@ Hint
 # … with 341 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
 </div>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -1201,14 +1222,14 @@ Hint
 </details>
 </div>
 </div>
-</section><section id="counting-rows-with-count-and-n" class="level2" data-number="10.13"><h2 data-number="10.13" class="anchored" data-anchor-id="counting-rows-with-count-and-n">
-<span class="header-section-number">10.13</span> Counting rows with <code>count()</code> and <code>n()</code>
+</section><section id="counting-rows-with-count-and-n" class="level2" data-number="11.13"><h2 data-number="11.13" class="anchored" data-anchor-id="counting-rows-with-count-and-n">
+<span class="header-section-number">11.13</span> Counting rows with <code>count()</code> and <code>n()</code>
 </h2>
-<p>The function <code>n</code> can count how many rows there are in the each group (or the entire data frame if it is not grouped). It can be used with either <code>mutate()</code> or <code>summarise()</code>.</p>
+<p>The function <code>n</code> can count how many rows there are in the each group (or the entire data frame if it is not grouped). It can be used with either <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> or <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">summarise</span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>group_by: one grouping variable (species)</code></pre>
 </div>
@@ -1224,10 +1245,10 @@ Hint
 3 Gentoo      124</code></pre>
 </div>
 </div>
-<p>Or with <code>count()</code></p>
+<p>Or with <code><a href="https://dplyr.tidyverse.org/reference/count.html">count()</a></code></p>
 <div class="cell">
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">count</span><span class="op">(</span><span class="va">species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>count: now 3 rows and 2 columns, ungrouped</code></pre>
 </div>
@@ -1240,13 +1261,13 @@ Hint
 3 Gentoo      124</code></pre>
 </div>
 </div>
-<p><code>count()</code> is more concise, but <code>group_by()</code> and <code>summarise()</code> is useful when you need to calculate more variables (for example mean and standard deviation).</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<p><code><a href="https://dplyr.tidyverse.org/reference/count.html">count()</a></code> is more concise, but <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> is useful when you need to calculate more variables (for example mean and standard deviation).</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise
 </div>
 </div>
@@ -1270,10 +1291,10 @@ Hint
 </details>
 </div>
 </div>
-</section><section id="common-problems" class="level2 page-columns page-full" data-number="10.14"><h2 data-number="10.14" class="anchored" data-anchor-id="common-problems">
-<span class="header-section-number">10.14</span> Common problems</h2>
-<section id="non-standard-names" class="level3" data-number="10.14.1"><h3 data-number="10.14.1" class="anchored" data-anchor-id="non-standard-names">
-<span class="header-section-number">10.14.1</span> Non standard names</h3>
+</section><section id="common-problems" class="level2 page-columns page-full" data-number="11.14"><h2 data-number="11.14" class="anchored" data-anchor-id="common-problems">
+<span class="header-section-number">11.14</span> Common problems</h2>
+<section id="non-standard-names" class="level3" data-number="11.14.1"><h3 data-number="11.14.1" class="anchored" data-anchor-id="non-standard-names">
+<span class="header-section-number">11.14.1</span> Non standard names</h3>
 <p>Ideally column names should follow the standard rules for naming objects in R - UPPER and lower case letters, numbers, “.” and “_” with the first character being a letter (or a dot if you want an invisible object). Sometimes when you import data, it has non-standard names with spaces or extra characters. If you need to refer to a column name that doesn’t follow the rules, you need to enclose it with back-ticks.</p>
 <div class="cell">
 <div class="sourceCode" id="cb110"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>`Region/Country` <span class="op">=</span> <span class="st">"Norway"</span>, value <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
@@ -1284,7 +1305,7 @@ Hint
   &lt;chr&gt;            &lt;dbl&gt;
 1 Norway              42</code></pre>
 </div>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span> <span class="fu">rename</span><span class="op">(</span>region_country <span class="op">=</span> <span class="va">`Region/Country`</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>region_country <span class="op">=</span> <span class="va">`Region/Country`</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>rename: renamed one variable (region_country)</code></pre>
 </div>
@@ -1295,13 +1316,13 @@ Hint
 1 Norway            42</code></pre>
 </div>
 </div>
-<p>It is sometimes best to rename these columns to make them easier to refer to. <code><a href="https://rdrr.io/pkg/janitor/man/clean_names.html">janitor::clean_names()</a></code> is very efficient for making easy-to-use names.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<p>It is sometimes best to rename these columns to make them easier to refer to. <code><a href="https://sfirke.github.io/janitor/reference/clean_names.html">janitor::clean_names()</a></code> is very efficient for making easy-to-use names.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Further reading
 </div>
 </div>
@@ -1453,7 +1474,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   // Switch to dark mode if need be
   if (hasAlternateSentinel()) {
     toggleColorMode(true);
-  } 
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1461,9 +1484,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1475,7 +1512,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -1562,34 +1616,138 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./011-tidyr-pivot.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./013-dplyr-multiple-tables.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Working with multiple tables in <code>dplyr</code></span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Working with multiple tables in <code>dplyr</code></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
