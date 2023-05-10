@@ -1,0 +1,375 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# Getting started with targets
+
+::: callout-note
+## In this chapter, you will
+
+- learn the basic targets workflow
+- build your own targets pipeline
+
+:::
+
+In this chapter we will go through the basic workflow of a `targets` pipeline.
+For this, we will use plant trait data from Svalbard from the reproducible documents exercise (REF).
+If you have done this exercise already, skip the next step, otherwise follow the instructions below to download the R project.
+
+::: callout-note
+## Exercise
+
+To download R project containing the data and qmd file, run:
+
+```{r}
+#| eval: false
+
+#install.packages("usethis") # if you don't have it already.
+usethis::use_course("https://github.com/biostats-r/targets_workflow_svalbard")
+
+```
+
+Then follow the instructions.
+This will open the targets_workflow_svalbard Rstudio project.
+
+In the next steps, we will set up a basic targets pipeline for this R project and go through the main elements of a target plan, and how to run it.
+
+:::
+
+
+## The targets pipeline
+
+A target pipeline has a specific file structure including R code, functions, qmd files, data and a `_targets.R` file (@fig-file-structure).
+The `_targets.R` file is mandotory and the most important file defining the targets pipeline.
+This file lives at the root of the R project folder.
+
+An R project has many other files and it is recommended to keep code and data files in separate folders to keep the repository tidy.
+It is common to have one or several scripts that contain custom user-defined functions (`R/functions.R`).
+Targets pipelines are based on functions, which is good practice coding (e.g. avoid repetition), and also keeps the pipeline tidy.
+
+```{r}
+#| label: fig-file-structure
+#| echo: false
+#| fig-cap: File structure of an R Studio project with a target plan.
+
+knitr::include_graphics("Pics/file_structure.png")
+
+```
+
+To set up this file structure use the `use_targets()` function, which creates an initial target script with comments to help you populate the script.
+
+Note that there is a file called `run.R`.
+This is a helper script to run the pipeline and will be explained later.
+
+::: callout-note
+## Exercise
+
+Go to the Svalbard trait R project and set up a targets file using the `use_targets()` function.
+ 
+:::
+
+
+### _target.R script file
+
+The `_targets.R` file configures and defines the pipeline (@fig-target-file).
+This file is mandatory and without it the targets pipeline will not work.
+
+The `_targets.R` file should contain the following components:
+
+- load necessary packages and set options, such as defining the output format. This can be defined with the `tar_option_set()` function.
+
+- run R scripts containing custom functions `source(R/function.R)`
+
+- define pipeline, as a list of *targets* that are created with `tar_target()`. Each *target* is a step in the workflow, for example importing data, analysis and figure and are stored in the `_targets/objects/`
+
+
+
+
+```{r}
+#| label: fig-target-file
+#| eval: false
+#| echo: true
+#| fig-cap: The template target files created by the `use_targets()` function. It configures and defines the target pipeline, including loading packages, setting options, sourcing functions and lists the targets.
+
+# Created by use_targets().
+# Follow the comments below to fill in this target script.
+# Then follow the manual to check and run the pipeline:
+#   https://books.ropensci.org/targets/walkthrough.html#inspect-the-pipeline # nolint
+
+# Load packages required to define the pipeline:
+library(targets)
+# library(tarchetypes) # Load other packages as needed. # nolint
+
+# Set target options:
+tar_option_set(
+  packages = c("tibble"), # packages that your targets need to run
+  format = "rds" # default storage format
+  # Set other options as needed.
+)
+
+# tar_make_clustermq() configuration (okay to leave alone):
+options(clustermq.scheduler = "multicore")
+
+# tar_make_future() configuration (okay to leave alone):
+# Install packages {{future}}, {{future.callr}}, and {{future.batchtools}} to allow use_targets() to configure tar_make_future() options.
+
+# Run the R scripts in the R/ folder with your custom functions:
+tar_source()
+# source("other_functions.R") # Source other scripts as needed. # nolint
+
+# Replace the target list below with your own:
+list(
+  tar_target(
+    name = data,
+    command = tibble(x = rnorm(100), y = rnorm(100))
+#   format = "feather" # efficient storage of large data frames # nolint
+  ),
+  tar_target(
+    name = model,
+    command = coefficients(lm(y ~ x, data = data))
+  )
+)
+```
+
+Now it is your turn to start adding a target pipeline to the Svalbard traits R project.
+
+
+::: callout-note
+## Exercise
+
+### Make custom functions
+
+Go to the Svalbard trait project and add three functions to the `R/functions.R` script that:
+
+- import the data and filter the bistorta vivipara species
+
+- fit the lm model for plant height
+
+- make a boxplot for plant height
+
+Almost all the code you need is in the manuscript/svalbard_trait.qmd file.
+
+
+Here is an example for how to write a function:
+
+```{r}
+#| eval: false
+#| echo: true
+my_function <- function(data){
+  mod <- lm(Value ~ Treatment, data = data)
+  }
+```
+
+
+ <details>
+  <summary>Hint</summary>
+  
+```{r}
+#| eval: false
+#| echo: true
+
+# import and select bistorta
+get_file <- function(file){
+  dat <- read_csv(file) |> 
+    filter(Taxon == "...")
+  }
+  
+# fit lm
+fit_model <- function(dat){
+  mod <- lm(Value ~ Treatment, data = ...)
+  }
+  
+# make figure
+make_figure <- function(dat){
+  ggplot(dat, aes(x = ..., y = ...)) + 
+    geom_boxplot() +
+    labs(x = "Treatment", y = "Height cm")
+}
+
+```
+</details> 
+
+Once all the functions are written it's important to test if the functions are doing what you want them to do.
+
+:::
+
+The custom functions are made.
+The next step is to configure and define the targets pipeline.
+
+::: callout-note
+## Exercise
+
+### Populate the `_targets.R` file
+
+Populate the `_targets.R` file with the necessary packages, source the custom functions and set up the targets pipeline:
+
+- add the all necessary packages to the `tar_option_set()` function in the `_targets.R` file
+
+- add code to source the functions
+
+- set up the pipeline with three targets that imports the data and selects bistorta vivipara, run the model and make the figure.
+
+<details>
+  <summary>Solution</summary>
+  
+```{r}
+#| eval: false
+#| echo: true
+
+# Load packages required to define the pipeline:
+library(targets)
+library(tarchetypes)
+
+# Set target options:
+tar_option_set(
+  packages = c("tidyverse", "here", "lubridate", "gt", "broom") # packages that targets need to run
+)
+
+# Run the R scripts in the R/ folder with your custom functions:
+tar_source("R/functions.R")
+
+# target list
+list(
+  # data file
+  tar_target(name = file,
+             command = "data/PFTC4_Svalbard_2018_ITEX_Traits.csv",
+             format = "file"),
+  # import and transform
+  tar_target(
+    name = bistorta,
+    command = get_file(file)
+  ),
+  # fit model for plant height
+  tar_target(
+    name = mod_height,
+    command = fit_model(bistorta |>
+                          filter(Trait == "Plant_Height_cm"))
+  ),
+  # make figure
+  tar_target(
+    name = fig_height,
+    command = make_figure(bistorta |>
+                            filter(Trait == "Plant_Height_cm"))
+  )
+)
+
+```
+</details> 
+
+:::
+
+
+### Output files
+
+Usually, we want to add the results and figure to an output file, like a text file or presentation.
+This output file can also be added to the targets pipeline.
+
+This can be done by using the `tar_render()` function in the list of targets.
+
+```{r}
+#| label: render-output
+#| eval: false
+#| echo: true
+
+# render ms
+tar_render(name = ms, path = "manuscript/svalbard_traits.qmd")
+```
+
+
+::: callout-note
+## Exercise
+
+### Render manuscript
+
+Clean the `svalbard_traits.qmd` file and remove the unnecessary code (e.g. loading libraries, code in the functions), because this was moved to the functions of `_targets.R` script.
+
+And add `tar_render(name = ms, path = "manuscript/svalbard_traits.qmd")` to the pipeline.
+
+:::
+
+
+### Inspect and run the pipeline
+
+We are now ready to inspect the pipeline and check for errors.
+Use `tar_manifest(fields = all_of("command"))` to check for errors.
+This function lists all the targets and some information about them.
+
+```{r}
+#| label: inspect
+#| echo: false
+#| fig-cap: Inspect the pipeline
+
+knitr::include_graphics("Pics/inspect.png")
+
+```
+
+
+`tar_visnetwork()` shows the dependency graph of the pipeline.
+Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.
+
+```{r}
+#| label: viz
+#| echo: false
+#| fig-cap: Inspect the pipeline
+
+knitr::include_graphics("Pics/viz_workflow.png")
+
+```
+
+::: callout-note
+## Exercise
+
+Run these two functions and check if the pipeline is properly set up.
+
+:::
+
+
+Now we are ready to run the pipeline.
+The `tar_make()` function looks for the `_targets.R` in the working directory and runs the pipeline.
+
+
+::: callout-note
+## Exercise
+
+Open the `run.R` script and run the pipeline.
+
+:::
+
+
+## Trouble shooting
+
+### Object not found
+
+A common error is to call a target that does not exist.
+When running the pipeline this error will appear (@fig-error-not-found).
+This is usually if the name is spelled wrong or when using an old name.
+
+```{r}
+#| label: fig-error-not-found
+#| echo: false
+
+knitr::include_graphics("Pics/error_not_found.png")
+
+```
+
+### Duplicate target
+
+Another common mistake is to use the same name for two different targets (@fig-error-duplicate).
+This is common when copy pasting code.
+Rename one of the objects and the problem is solved.
+
+```{r}
+#| label: fig-error-duplicate
+#| echo: false
+
+knitr::include_graphics("Pics/error_duplicate.png")
+
+```
+
+
+## Resources
+
+- The [target manual](https://books.ropensci.org/targets/) contains everything you need to know 
+- Here is a short introduction video {{< video https://vimeo.com/700982360 >}}

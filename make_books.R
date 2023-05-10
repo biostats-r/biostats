@@ -72,14 +72,14 @@ fs::dir_copy("quarto/demo_presentation_files/", "docs/quarto/demo_presentation_f
 fs::dir_delete("quarto/demo_presentation_files/") 
 }
 
+# targets
+quarto::quarto_render("targets")
+bioceed_links("docs/targets", quarto = TRUE)
+
 
 # Statistics in R
 quarto::quarto_render("StatisticsInR")
 bioceed_links("docs/statisticsInR", quarto = TRUE)
-
-
-quarto::quarto_render("targets")
-bioceed_links("docs/targets", quarto = TRUE)
 
 
 # Data collection
