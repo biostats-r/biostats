@@ -15,34 +15,38 @@ editor_options:
 :::
 
 In this chapter we will go through the basic workflow of a `targets` pipeline.
-For this, we will use plant trait data from Svalbard from the reproducible documents exercise (REF).
-If you have done this exercise already, skip the next step, otherwise follow the instructions below to download the R project.
+We will use plant trait data from Svalbard from the reproducible documents exercise (REF to Quarto book).
+Even if you have done the exercise already, download a clean repo to start from scratch to keep the workflow simple.
 
 ::: callout-note
 ## Exercise
 
-To download R project containing the data and qmd file, run:
+To download the R project containing the data, the code and the qmd file, run:
 
 ```{r}
 #| eval: false
 
 #install.packages("usethis") # if you don't have it already.
-usethis::use_course("https://github.com/biostats-r/targets_workflow_svalbard")
+usethis::use_course("biostats-r/svalbardQuartoDemo")
 
 ```
 
 Then follow the instructions.
-This will open the targets_workflow_svalbard Rstudio project.
+This will open the svalbardQuartoDemo Rstudio project.
 
-In the next steps, we will set up a basic targets pipeline for this R project and go through the main elements of a target plan, and how to run it.
+<!-- I added thi back in, because people will have to understand what is going on in the script -->
+Open the svalbard.traits_qmd file and render it.
+Check the htlm output and try to understand what is going on. 
 
 :::
+
+In the next steps, we will set up a basic targets pipeline for the Svalbard trait R project and go through the main elements of a target plan, and how to run it.
 
 
 ## The targets pipeline
 
-A target pipeline has a specific file structure including R code, functions, qmd files, data and a `_targets.R` file (@fig-file-structure).
-The `_targets.R` file is mandotory and the most important file defining the targets pipeline.
+A target workflow has a specific file structure including R code, functions, qmd files, data and a `_targets.R` file (@fig-file-structure).
+The `_targets.R` file is mandatory and the most important file defining the targets pipeline.
 This file lives at the root of the R project folder.
 
 An R project has many other files and it is recommended to keep code and data files in separate folders to keep the repository tidy.
@@ -52,46 +56,52 @@ Targets pipelines are based on functions, which is good practice coding (e.g. av
 ```{r}
 #| label: fig-file-structure
 #| echo: false
-#| fig-cap: File structure of an R Studio project with a target plan.
+#| fig-cap: File structure of an R Studio project with a target pipeline.
+#| fig-alt: The file structure of an R Studio project with a target pipeline.
 
 knitr::include_graphics("Pics/file_structure.png")
 
 ```
 
-To set up this file structure use the `use_targets()` function, which creates an initial target script with comments to help you populate the script.
+To set up this file structure use the `use_targets()` function, which creates an initial `_targets.R` script with comments to help you populate the script.
 
-Note that there is a file called `run.R`.
+Note that it also creates a couple of other files, one of which is called `run.R`.
 This is a helper script to run the pipeline and will be explained later.
 
 ::: callout-note
 ## Exercise
 
-Go to the Svalbard trait R project and set up a targets file using the `use_targets()` function.
+Go to the Svalbard trait project and start to set up a targets pipeline by using the `use_targets()` function.
  
 :::
 
 
 ### _target.R script file
 
-The `_targets.R` file configures and defines the pipeline (@fig-target-file).
+The `_targets.R` file configures and defines the pipeline.
 This file is mandatory and without it the targets pipeline will not work.
+When using the `use_targets()` function, it sets up the basic structure and comments to help fill out the rest (see below).
 
-The `_targets.R` file should contain the following components:
+The `_targets.R` file contains the following components:
 
-- load necessary packages and set options, such as defining the output format. This can be defined with the `tar_option_set()` function.
+- **Set options** such as load necessary packages or defining the output format using `tar_option_set()`.
 
-- run R scripts containing custom functions `source(R/function.R)`
+- **Run R scripts** containing custom functions using the `tar_source()` function.
 
-- define pipeline, as a list of *targets* that are created with `tar_target()`. Each *target* is a step in the workflow, for example importing data, analysis and figure and are stored in the `_targets/objects/`
+- **Make a list of targets**, which define the pipeline and is created with `tar_target()`. 
+Each *target* is a step in the workflow, for example importing data, analysis or figure and looks like a normal R object (e.g. tibble, vector, figure).
+The targets are stored in `_targets/objects/` and can be used downstream in the pipeline.
+One advantage of the targets pipeline is that once the pipeline has run, all targets can be reproduced using `tar_load()` and the pipeline does not need rerunning each time before accessing the targets.
+To access all the targets at once. use `tar_load_everything()`.
+In `tar_load()` you can also use tidy select commands to load specific targets, e.g. `tar_load(starts_with("y"))`
 
-
+Note that the file also contains other options which are optional.
 
 
 ```{r}
 #| label: fig-target-file
 #| eval: false
 #| echo: true
-#| fig-cap: The template target files created by the `use_targets()` function. It configures and defines the target pipeline, including loading packages, setting options, sourcing functions and lists the targets.
 
 # Created by use_targets().
 # Follow the comments below to fill in this target script.
@@ -133,212 +143,286 @@ list(
 )
 ```
 
-Now it is your turn to start adding a target pipeline to the Svalbard traits R project.
+Now it is your turn to populate the targets pipeline.
 
-
-::: callout-note
-## Exercise
 
 ### Make custom functions
 
-Go to the Svalbard trait project and add three functions to the `R/functions.R` script that:
+Targets workflows are based on functions.
+Functions are very useful if a task has to be done multiple times.
 
-- import the data and filter the bistorta vivipara species
-
-- fit the lm model for plant height
-
-- make a boxplot for plant height
-
-Almost all the code you need is in the manuscript/svalbard_trait.qmd file.
-
-
-Here is an example for how to write a function:
+Functions are made with the keyword `function()`, can have one or more arguments separated by commas, and need assigning to a name (e.g. my_function).
+Let us make an example we multiply two numbers, but the numbers are not always the same.
+This is a case for a function.
 
 ```{r}
+#| label: multiply-numbers
 #| eval: false
 #| echo: true
-my_function <- function(data){
-  mod <- lm(Value ~ Treatment, data = data)
-  }
-```
-
-
- <details>
-  <summary>Hint</summary>
-  
-```{r}
-#| eval: false
-#| echo: true
-
-# import and select bistorta
-get_file <- function(file){
-  dat <- read_csv(file) |> 
-    filter(Taxon == "...")
-  }
-  
-# fit lm
-fit_model <- function(dat){
-  mod <- lm(Value ~ Treatment, data = ...)
-  }
-  
-# make figure
-make_figure <- function(dat){
-  ggplot(dat, aes(x = ..., y = ...)) + 
-    geom_boxplot() +
-    labs(x = "Treatment", y = "Height cm")
+my_function <- function(arg1, arg2){
+  arg1 * arg2
 }
 
+my_function(arg1 = 3, arg2 = 4)
 ```
-</details> 
 
-Once all the functions are written it's important to test if the functions are doing what you want them to do.
+Functions in the targets workflow need to be saved in a script in the folder `R/`.
+The `_target.R` script will look for all R files in this folder and run them.
 
-:::
+Here is a working example for a function that runs a linear regression:
 
-The custom functions are made.
-The next step is to configure and define the targets pipeline.
+```{r}
+#| label: regression-function
+#| eval: false
+#| echo: true
+fit_model <- function(data){
+  mod <- lm(Value ~ Treatment, data = data)
+  mod
+}
+
+fit_model(data = my_data)
+```
+
 
 ::: callout-note
 ## Exercise
 
+Go to the Svalbard trait project create a file called `functions.R` and save it in the `R/` folder.
+Then add three functions that do the fallowing:
+
+- import the data and filter the species *Bistorta vivipara* and the trait *plant height*
+
+- fit a linear regression to test how the warming treatment affects plant height
+
+- and make a boxplot showing plant height in control and warming treatments.
+
+The code you need for this exercise is already in the svalbard_trait.qmd file.
+You need to copy it and turn it into functions.
+
+When you are finished, test if the functions are doing what you think they do, i.e. test them with a small dataset.
+
+:::
+
+
+The next step is to configure and define the targets pipeline.
+
 ### Populate the `_targets.R` file
 
-Populate the `_targets.R` file with the necessary packages, source the custom functions and set up the targets pipeline:
+The `_targets.R` file has 3 main components that need to be populated.
 
-- add the all necessary packages to the `tar_option_set()` function in the `_targets.R` file
+1. Use `tar_option_set()` and the argument `package` to load all the required packages that are needed to run the pipeline.
+Note that `targets` and `tarchetypes` need to be loaded first and outside this function, otherwise the pipeline will not work.
+Functions that are only used in a quarto file can be loaded directly in there and do not need to be loaded here. 
+The argument `format` let's you define default storage format. 
 
-- add code to source the functions
-
-- set up the pipeline with three targets that imports the data and selects bistorta vivipara, run the model and make the figure.
-
-<details>
-  <summary>Solution</summary>
-  
 ```{r}
+#| label: tar-option
 #| eval: false
 #| echo: true
 
 # Load packages required to define the pipeline:
 library(targets)
-library(tarchetypes)
+library(tarchetypes) # Load other packages as needed.
 
 # Set target options:
 tar_option_set(
-  packages = c("tidyverse", "here", "lubridate", "gt", "broom") # packages that targets need to run
+  packages = c("tibble"), # packages that your targets need to run
+  format = "rds" # default storage format
+  # Set other options as needed.
 )
+```
 
-# Run the R scripts in the R/ folder with your custom functions:
-tar_source("R/functions.R")
+2. The function `tar_source()` will source all the R scripts in the `R/` folder.
+You do not need to do anything else here.
+If there are scripts that you do not want to run at the moment, move them to another place.
 
-# target list
+3. The pipeline is a list of target objects, separated by commas.
+Each target is declared by the `tar_target()` function.
+This function needs the argument `name` and `command` that defines the code to produce the target.
+Here is an example of a target that uses the function to run a regression from above.
+
+```{r}
+#| label: regression-target
+#| eval: false
+#| echo: true
+
+# fit model for plant height
 list(
-  # data file
-  tar_target(name = file,
-             command = "data/PFTC4_Svalbard_2018_ITEX_Traits.csv",
-             format = "file"),
-  # import and transform
-  tar_target(
-    name = bistorta,
-    command = get_file(file)
-  ),
-  # fit model for plant height
-  tar_target(
-    name = mod_height,
-    command = fit_model(bistorta |>
-                          filter(Trait == "Plant_Height_cm"))
-  ),
-  # make figure
-  tar_target(
-    name = fig_height,
-    command = make_figure(bistorta |>
-                            filter(Trait == "Plant_Height_cm"))
+  tar_target(name = mod_height,
+             command = fit_model(data))
   )
-)
 
 ```
-</details> 
+
+Target names should be unique (no duplicates), should not start with a dot and the name should be meaningful (do not use my_variable).
+
+Data files are special, because they also need the argument `format` to decalre that this is a file.
+Targets will check if the file has been changed and automatically import the data again the next time the pipeline is run.
+
+```{r}
+#| label: data-target
+#| eval: false
+#| echo: true
+
+list(
+  tar_target(name = file,
+             command = "data/PFTC4_Svalbard_2018_ITEX_Traits.csv",
+             format = "file")
+  )
+  
+```
+
+A target usually creates a dataset, analyse data using a model or summarise or vizualise a dataset.
+A target should do one thing only and if a functions gets too long, it can be split into nested sub-functions to make the code readable and easier to maintain.
+You also want to keep the number of targets manageble.
+Do not put too much in one target, and also try not to procude too many.
+
+::: callout-note
+## Exercise
+
+Populate the `_targets.R` file:
+
+- add all packages to the `tar_option_set()` function in the `_targets.R` file that are needed to run the pipeline.
+
+- check that your `_targets.R` file sources the custom functions `tar_source()` and that all your functions are in the right place.
+
+- and set up the pipeline with three targets that imports the data, runs the model and makes a figure.
 
 :::
 
 
 ### Output files
+<!-- word document? what is the correct term for a report thesis etc. -->
+The results and figures of an analysis are usually presented in a document or presentation.
+An output files, such as a reproducible quarto document can be added to a targets pipeline.
+The targets that have been produced in the pipeline can be used in the quarto file, for example a figure can be plotted.
 
-Usually, we want to add the results and figure to an output file, like a text file or presentation.
-This output file can also be added to the targets pipeline.
-
-This can be done by using the `tar_render()` function in the list of targets.
+The targets that are used in the quarto document need to be loaded into the current environment.
+For this we can use `tar_load()` or `tar_read()`.
+The first function is used when a target is used several times.
+`tar_read()` is useful if a target is only needed once, e.g. to show a figure.
+<!-- Not sure if this is correct, but I mean that it is not enough to load it, you also have to print it. -->
+Once the target is loaded, it can be printed.
 
 ```{r}
-#| label: render-output
+#| label: print-target
+#| eval: false
+#| echo: true
+
+# print model output
+tar_read(mod_height)
+tidy(mod_height)
+```
+
+To add the quarto document to the pipeline, the manuscript has to be rendered.
+This is done in `_targets.R` file in the list of targets using `tar_quarto()`.
+
+```{r}
+#| label: render-ms
 #| eval: false
 #| echo: true
 
 # render ms
-tar_render(name = ms, path = "manuscript/svalbard_traits.qmd")
+tar_quarto(name = manuscript, path = "svalbard_traits.qmd")
 ```
 
+Note that all packages that are needed to run the quarto file need to be loaded in the .qmd file.
+If you are using a function exclusively in the quarto script, the package can be loaded only in the quarto file, but not in the `_target.R` file.
+`targets` and `tarchetypes` always need to be loaded in both files.
 
 ::: callout-note
 ## Exercise
 
-### Render manuscript
+Prepare your `svalbard_traits.qmd` script and add it to the pipeline.
 
-Clean the `svalbard_traits.qmd` file and remove the unnecessary code (e.g. loading libraries, code in the functions), because this was moved to the functions of `_targets.R` script.
+- Load all the necessary R packages in the quarto file.
 
-And add `tar_render(name = ms, path = "manuscript/svalbard_traits.qmd")` to the pipeline.
+- Load all the necessary targets that you want to use in the quarto file.
+
+- And add the quarto file to the pipeline using `tar_quarto()`.
+
+- Clean the quarto file and remove the unnecessary code, which has been moved to the custom functions.
 
 :::
 
 
 ### Inspect and run the pipeline
 
-We are now ready to inspect the pipeline and check for errors.
-Use `tar_manifest(fields = all_of("command"))` to check for errors.
-This function lists all the targets and some information about them.
+We are now ready to inspect the pipeline, check for errors and run it.
+Use `tar_manifest()` to check for errors.
+This function lists useful information about each target and you can check if all the names that are used in the function exist or if you have duplicate names (@fig-inspect).
 
 ```{r}
-#| label: inspect
+#| label: fig-inspect
 #| echo: false
-#| fig-cap: Inspect the pipeline
+#| fig-cap: Names and commands for each target in the pipeline.
+#| fig-alt: A table showing all the target names and commands to inspect the pipeline before running it for real.
 
 knitr::include_graphics("Pics/inspect.png")
 
 ```
 
 
-`tar_visnetwork()` shows the dependency graph of the pipeline.
-Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.
-
-```{r}
-#| label: viz
-#| echo: false
-#| fig-cap: Inspect the pipeline
-
-knitr::include_graphics("Pics/viz_workflow.png")
-
-```
-
 ::: callout-note
 ## Exercise
 
-Run these two functions and check if the pipeline is properly set up.
+Run the `tar_manifest()` function to check if the pipeline is properly set up.
 
 :::
 
 
 Now we are ready to run the pipeline.
-The `tar_make()` function looks for the `_targets.R` in the working directory and runs the pipeline.
+For this open the `run.R` script and run the `tar_make()` function.
+This function looks for the `_targets.R` in the working directory and runs the pipeline.
+
+When running the pipeline for the first time you will see a list of all the targets and each of them is built.
+Once you have run the pipeline, it will always skip the targets that have not changed and are up to date and only run the once that need updating (@fig-run-pipeline).
+In the long run this will save a lot of computational time and is one of the big advantages of using targets pipelines.
+
+```{r}
+#| label: fig-run-pipeline
+#| echo: false
+#| fig-cap: R output after running the pipeline.
+#| fig-alt: R output after running the pipeline.
+
+knitr::include_graphics("Pics/pipeline.png")
+
+```
 
 
 ::: callout-note
 ## Exercise
 
 Open the `run.R` script and run the pipeline.
+Hopefully, everything will run smoothly 🤞!
+If not check out the Trouble shooting section below.
+
+Run the pipeline again and check if the targets that are already built are skipped.
+
+Change something in your pipeline and run it again and see what happens.
+You can for example add a sentence in the quarto file, or change the colour in the figure.
 
 :::
 
 
 ## Trouble shooting
+
+### Vizualise the pipeline
+
+If something goes wrong, a good place to start is to vizualise your pipeline.
+The `tar_visnetwork()` function shows the dependency graph of the pipeline.
+Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.
+
+```{r}
+#| label: fig-vizualise
+#| echo: false
+#| fig-cap: Vizualise the targets pipeline.
+#| fig-alt: Dependency graph that vizualises the target pipeline.
+
+knitr::include_graphics("Pics/viz_workflow.png")
+
+```
+
 
 ### Object not found
 
@@ -349,6 +433,8 @@ This is usually if the name is spelled wrong or when using an old name.
 ```{r}
 #| label: fig-error-not-found
 #| echo: false
+#| fig-cap: Error message for missing object
+#| fig-alt: Error message for missing object.
 
 knitr::include_graphics("Pics/error_not_found.png")
 
@@ -363,6 +449,8 @@ Rename one of the objects and the problem is solved.
 ```{r}
 #| label: fig-error-duplicate
 #| echo: false
+#| fig-cap: Error message for duplicate target.
+#| fig-alt: Error message for duplicate target.
 
 knitr::include_graphics("Pics/error_duplicate.png")
 
@@ -371,5 +459,7 @@ knitr::include_graphics("Pics/error_duplicate.png")
 
 ## Resources
 
-- The [target manual](https://books.ropensci.org/targets/) contains everything you need to know 
+- The [target manual](https://books.ropensci.org/targets/) contains everything you need to know
+<!-- did not find it on github -->
+- Here is a large and working [target plan]()
 - Here is a short introduction video {{< video https://vimeo.com/700982360 >}}

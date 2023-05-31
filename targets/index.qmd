@@ -1,3 +1,7 @@
+
+
+# Introduction
+
 ```{r}
 #| label: setup
 #| include: false
@@ -5,21 +9,39 @@ library(tidyverse)
 source("../Templates/biostats_theme.R")
 ```
 
-# Introduction
-
 Writing a thesis requires importing data, writing code to clean, transform, analyse data, and making figures and writing the thesis.
-This is done by writing several R scripts and running one script after another producing results and figures.
-These scripts then have to be updated, to add new data, transforming the data, changing analysis or adding a figure.
-And often several iterations of running the same scripts again and again are needed.
-Analysis can take a lot of time, because they are computational demanding or they  are complex and it is difficult to keep track of which scripts need rerunning when one script has been changed.
+This is done by writing several R scripts and running one script after another producing results and figures (@fig-data-workflow).
+All the time, the code is updated, to add new data, transforming the data, changing analysis or adding a figure.
+And often several iterations of running the same scripts are needed and it is difficult to keep track of which scripts need rerunning.
+In addition, complex and computational heavy data analysis can take a lot of time and rerunning such analysis is inefficient.
 
 This workflow is very inefficient and error prone.
 And there is a better way.
 
-Targets is a **pipeline tool** which takes care of dependencies in the code and keeps track of outdated code.
+```{r}
+#| label: data-workflow
+#| echo: false
+#| fig-cap: Non-reproducible data workflow.
+#| fig-alt: Non-reproducible data workflow.
+
+knitr::include_graphics("Pics/workflow.jpg")
+
+```
+
+Targets is a **pipeline tool** which takes care of dependencies in the code and keeps track of outdated objects (@fig-targets-pipeline).
 When updating and rerunning code, targets will skip parts where the upstream code has not changed, and which is still up to date and it will only rerun the code that is outdated.
 Targets ensures that your results always match the underlying code and maintains a  **reproducible workflow**. 
-It avoids unnecessary repetition and can save costly running time.
+It avoids unnecessary repetition and can saves costly running time.
+
+```{r}
+#| label: targets-pipeline
+#| echo: false
+#| fig-cap: Reproducible targets pipeline.
+#| fig-alt: Reproducible targets pipeline.
+
+knitr::include_graphics("Pics/targets_pipeline.jpg")
+
+```
 
 
 *When is targets useful?*
@@ -28,13 +50,23 @@ It avoids unnecessary repetition and can save costly running time.
 
 - When the workflow has interconnected tasks with dependencies
 
-- When there are different outputs (e.g. presentation and report)
-
 
 ::: callout-note
 ## Before you start
 
-You will need to have installed
+Use the `checker` function to check what software and R packages you have already installed and what needs updating or installing.
+
+If you have never used the package before run:
+
+maybe first: `install.packages("remotes")`
+
+then `remotes::install_github("richardjtelford/checker")`
+
+<!-- What needs to be in here? -->
+To check what you have already installed use:
+`chk_requirements(...)`
+
+For this tutorial you will need:
 
 -   [RStudio](https://www.rstudio.com/products/rstudio/) (version 2022.2 or newer)
 -   [R](https://cran.r-project.org/)
@@ -43,5 +75,5 @@ You will need to have installed
 -   targets R package (`install.packages("targets")`)
 -   tarchetypes R package (`install.packages("tarchetypes")`)
 
-If `quarto` is new to you, have a look at the reproducible documents tutorial (REF) before proceeding here.
+If `quarto` is new to you, have a look at the **Reproducible documents** tutorial (REF to Quarto book) before proceeding here.
 :::

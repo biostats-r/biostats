@@ -167,7 +167,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul class="list-unstyled mt-1">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">| label: setup</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -178,6 +178,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </ul>
 </div>
 </nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<style>
+               img.site-logo {
+  height: auto;
+  width: 95%;
+}
+      </style>
+<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
+<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
@@ -185,15 +193,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a href="#the-targets-pipeline" id="toc-the-targets-pipeline" class="nav-link active" data-scroll-target="#the-targets-pipeline"><span class="toc-section-number">2.1</span>  The targets pipeline</a>
   <ul class="collapse">
 <li><a href="#target.r-script-file" id="toc-target.r-script-file" class="nav-link" data-scroll-target="#target.r-script-file"><span class="toc-section-number">2.1.1</span>  _target.R script file</a></li>
+  <li><a href="#make-custom-functions" id="toc-make-custom-functions" class="nav-link" data-scroll-target="#make-custom-functions"><span class="toc-section-number">2.1.2</span>  Make custom functions</a></li>
+  <li><a href="#populate-the-_targets.r-file" id="toc-populate-the-_targets.r-file" class="nav-link" data-scroll-target="#populate-the-_targets.r-file"><span class="toc-section-number">2.1.3</span>  Populate the <code>_targets.R</code> file</a></li>
   <li><a href="#output-files" id="toc-output-files" class="nav-link" data-scroll-target="#output-files"><span class="toc-section-number">2.1.4</span>  Output files</a></li>
-  <li><a href="#inspect-and-run-the-pipeline" id="toc-inspect-and-run-the-pipeline" class="nav-link" data-scroll-target="#inspect-and-run-the-pipeline"><span class="toc-section-number">2.1.6</span>  Inspect and run the pipeline</a></li>
+  <li><a href="#inspect-and-run-the-pipeline" id="toc-inspect-and-run-the-pipeline" class="nav-link" data-scroll-target="#inspect-and-run-the-pipeline"><span class="toc-section-number">2.1.5</span>  Inspect and run the pipeline</a></li>
   </ul>
 </li>
   <li>
 <a href="#trouble-shooting" id="toc-trouble-shooting" class="nav-link" data-scroll-target="#trouble-shooting"><span class="toc-section-number">2.2</span>  Trouble shooting</a>
   <ul class="collapse">
-<li><a href="#object-not-found" id="toc-object-not-found" class="nav-link" data-scroll-target="#object-not-found"><span class="toc-section-number">2.2.1</span>  Object not found</a></li>
-  <li><a href="#duplicate-target" id="toc-duplicate-target" class="nav-link" data-scroll-target="#duplicate-target"><span class="toc-section-number">2.2.2</span>  Duplicate target</a></li>
+<li><a href="#vizualise-the-pipeline" id="toc-vizualise-the-pipeline" class="nav-link" data-scroll-target="#vizualise-the-pipeline"><span class="toc-section-number">2.2.1</span>  Vizualise the pipeline</a></li>
+  <li><a href="#object-not-found" id="toc-object-not-found" class="nav-link" data-scroll-target="#object-not-found"><span class="toc-section-number">2.2.2</span>  Object not found</a></li>
+  <li><a href="#duplicate-target" id="toc-duplicate-target" class="nav-link" data-scroll-target="#duplicate-target"><span class="toc-section-number">2.2.3</span>  Duplicate target</a></li>
   </ul>
 </li>
   <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"><span class="toc-section-number">2.3</span>  Resources</a></li>
@@ -232,7 +243,7 @@ In this chapter, you will
 </ul>
 </div>
 </div>
-<p>In this chapter we will go through the basic workflow of a <code>targets</code> pipeline. For this, we will use plant trait data from Svalbard from the reproducible documents exercise (REF). If you have done this exercise already, skip the next step, otherwise follow the instructions below to download the R project.</p>
+<p>In this chapter we will go through the basic workflow of a <code>targets</code> pipeline. We will use plant trait data from Svalbard from the reproducible documents exercise (REF to Quarto book). Even if you have done the exercise already, download a clean repo to start from scratch to keep the workflow simple.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -243,30 +254,32 @@ Exercise
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To download R project containing the data and qmd file, run:</p>
+<p>To download the R project containing the data, the code and the qmd file, run:</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#install.packages("usethis") # if you don't have it already.</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/zip-utils.html">use_course</a></span><span class="op">(</span><span class="st">"https://github.com/biostats-r/targets_workflow_svalbard"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/zip-utils.html">use_course</a></span><span class="op">(</span><span class="st">"biostats-r/svalbardQuartoDemo"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Then follow the instructions. This will open the targets_workflow_svalbard Rstudio project.</p>
-<p>In the next steps, we will set up a basic targets pipeline for this R project and go through the main elements of a target plan, and how to run it.</p>
+<p>Then follow the instructions. This will open the svalbardQuartoDemo Rstudio project.</p>
+<!-- I added thi back in, because people will have to understand what is going on in the script -->
+<p>Open the svalbard.traits_qmd file and render it. Check the htlm output and try to understand what is going on.</p>
 </div>
 </div>
+<p>In the next steps, we will set up a basic targets pipeline for the Svalbard trait R project and go through the main elements of a target plan, and how to run it.</p>
 <section id="the-targets-pipeline" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="the-targets-pipeline">
 <span class="header-section-number">2.1</span> The targets pipeline</h2>
-<p>A target pipeline has a specific file structure including R code, functions, qmd files, data and a <code>_targets.R</code> file (<a href="#fig-file-structure">Figure&nbsp;<span>2.1</span></a>). The <code>_targets.R</code> file is mandotory and the most important file defining the targets pipeline. This file lives at the root of the R project folder.</p>
+<p>A target workflow has a specific file structure including R code, functions, qmd files, data and a <code>_targets.R</code> file (<a href="#fig-file-structure">Figure&nbsp;<span>2.1</span></a>). The <code>_targets.R</code> file is mandatory and the most important file defining the targets pipeline. This file lives at the root of the R project folder.</p>
 <p>An R project has many other files and it is recommended to keep code and data files in separate folders to keep the repository tidy. It is common to have one or several scripts that contain custom user-defined functions (<code>R/functions.R</code>). Targets pipelines are based on functions, which is good practice coding (e.g.&nbsp;avoid repetition), and also keeps the pipeline tidy.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-file-structure" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="Pics/file_structure.png" class="img-fluid figure-img" width="337"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2.1: File structure of an R Studio project with a target plan.</figcaption><p></p>
+<figure class="figure"><p><img src="Pics/file_structure.png" class="img-fluid figure-img" alt="The file structure of an R Studio project with a target pipeline." width="351"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2.1: File structure of an R Studio project with a target pipeline.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>To set up this file structure use the <code><a href="https://docs.ropensci.org/targets/reference/use_targets.html">use_targets()</a></code> function, which creates an initial target script with comments to help you populate the script.</p>
-<p>Note that there is a file called <code>run.R</code>. This is a helper script to run the pipeline and will be explained later.</p>
+<p>To set up this file structure use the <code><a href="https://docs.ropensci.org/targets/reference/use_targets.html">use_targets()</a></code> function, which creates an initial <code>_targets.R</code> script with comments to help you populate the script.</p>
+<p>Note that it also creates a couple of other files, one of which is called <code>run.R</code>. This is a helper script to run the pipeline and will be explained later.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -277,18 +290,19 @@ Exercise
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Go to the Svalbard trait R project and set up a targets file using the <code><a href="https://docs.ropensci.org/targets/reference/use_targets.html">use_targets()</a></code> function.</p>
+<p>Go to the Svalbard trait project and start to set up a targets pipeline by using the <code><a href="https://docs.ropensci.org/targets/reference/use_targets.html">use_targets()</a></code> function.</p>
 </div>
 </div>
 <section id="target.r-script-file" class="level3" data-number="2.1.1"><h3 data-number="2.1.1" class="anchored" data-anchor-id="target.r-script-file">
 <span class="header-section-number">2.1.1</span> _target.R script file</h3>
-<p>The <code>_targets.R</code> file configures and defines the pipeline (<span class="quarto-unresolved-ref">?fig-target-file</span>). This file is mandatory and without it the targets pipeline will not work.</p>
-<p>The <code>_targets.R</code> file should contain the following components:</p>
+<p>The <code>_targets.R</code> file configures and defines the pipeline. This file is mandatory and without it the targets pipeline will not work. When using the <code><a href="https://docs.ropensci.org/targets/reference/use_targets.html">use_targets()</a></code> function, it sets up the basic structure and comments to help fill out the rest (see below).</p>
+<p>The <code>_targets.R</code> file contains the following components:</p>
 <ul>
-<li><p>load necessary packages and set options, such as defining the output format. This can be defined with the <code><a href="https://docs.ropensci.org/targets/reference/tar_option_set.html">tar_option_set()</a></code> function.</p></li>
-<li><p>run R scripts containing custom functions <code>source(R/function.R)</code></p></li>
-<li><p>define pipeline, as a list of <em>targets</em> that are created with <code><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target()</a></code>. Each <em>target</em> is a step in the workflow, for example importing data, analysis and figure and are stored in the <code>_targets/objects/</code></p></li>
+<li><p><strong>Set options</strong> such as load necessary packages or defining the output format using <code><a href="https://docs.ropensci.org/targets/reference/tar_option_set.html">tar_option_set()</a></code>.</p></li>
+<li><p><strong>Run R scripts</strong> containing custom functions using the <code><a href="https://docs.ropensci.org/targets/reference/tar_source.html">tar_source()</a></code> function.</p></li>
+<li><p><strong>Make a list of targets</strong>, which define the pipeline and is created with <code><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target()</a></code>. Each <em>target</em> is a step in the workflow, for example importing data, analysis or figure and looks like a normal R object (e.g.&nbsp;tibble, vector, figure). The targets are stored in <code>_targets/objects/</code> and can be used downstream in the pipeline. One advantage of the targets pipeline is that once the pipeline has run, all targets can be reproduced using <code><a href="https://docs.ropensci.org/targets/reference/tar_load.html">tar_load()</a></code> and the pipeline does not need rerunning each time before accessing the targets. To access all the targets at once. use <code><a href="https://docs.ropensci.org/targets/reference/tar_load_everything.html">tar_load_everything()</a></code>. In <code><a href="https://docs.ropensci.org/targets/reference/tar_load.html">tar_load()</a></code> you can also use tidy select commands to load specific targets, e.g.&nbsp;<code>tar_load(starts_with("y"))</code></p></li>
 </ul>
+<p>Note that the file also contains other options which are optional.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Created by use_targets().</span></span>
 <span><span class="co"># Follow the comments below to fill in this target script.</span></span>
@@ -329,56 +343,28 @@ Exercise
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now it is your turn to start adding a target pipeline to the Svalbard traits R project.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Exercise
-</div>
-</div>
-<section id="make-custom-functions" class="level3 callout-body-container callout-body" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="make-custom-functions">
+<p>Now it is your turn to populate the targets pipeline.</p>
+</section><section id="make-custom-functions" class="level3" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="make-custom-functions">
 <span class="header-section-number">2.1.2</span> Make custom functions</h3>
-<p>Go to the Svalbard trait project and add three functions to the <code>R/functions.R</code> script that:</p>
-<ul>
-<li><p>import the data and filter the bistorta vivipara species</p></li>
-<li><p>fit the lm model for plant height</p></li>
-<li><p>make a boxplot for plant height</p></li>
-</ul>
-<p>Almost all the code you need is in the manuscript/svalbard_trait.qmd file.</p>
-<p>Here is an example for how to write a function:</p>
+<p>Targets workflows are based on functions. Functions are very useful if a task has to be done multiple times.</p>
+<p>Functions are made with the keyword <code>function()</code>, can have one or more arguments separated by commas, and need assigning to a name (e.g.&nbsp;my_function). Let us make an example we multiply two numbers, but the numbers are not always the same. This is a case for a function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arg1</span>, <span class="va">arg2</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">arg1</span> <span class="op">*</span> <span class="va">arg2</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">my_function</span><span class="op">(</span>arg1 <span class="op">=</span> <span class="fl">3</span>, arg2 <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Functions in the targets workflow need to be saved in a script in the folder <code>R/</code>. The <code>_target.R</code> script will look for all R files in this folder and run them.</p>
+<p>Here is a working example for a function that runs a linear regression:</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Value</span> <span class="op">~</span> <span class="va">Treatment</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="va">mod</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">fit_model</span><span class="op">(</span>data <span class="op">=</span> <span class="va">my_data</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<details><summary>
-Hint
-</summary><div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># import and select bistorta</span></span>
-<span><span class="va">get_file</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">file</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="va">file</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">Taxon</span> <span class="op">==</span> <span class="st">"..."</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span><span class="co"># fit lm</span></span>
-<span><span class="va">fit_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Value</span> <span class="op">~</span> <span class="va">Treatment</span>, data <span class="op">=</span> <span class="va">...</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span><span class="co"># make figure</span></span>
-<span><span class="va">make_figure</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">dat</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">...</span>, y <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Treatment"</span>, y <span class="op">=</span> <span class="st">"Height cm"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</details><p>Once all the functions are written it’s important to test if the functions are doing what you want them to do.</p>
-</section>
-</div>
-<p>The custom functions are made. The next step is to configure and define the targets pipeline.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -388,64 +374,91 @@ Hint
 Exercise
 </div>
 </div>
-<section id="populate-the-_targets.r-file" class="level3 callout-body-container callout-body" data-number="2.1.3"><h3 data-number="2.1.3" class="anchored" data-anchor-id="populate-the-_targets.r-file">
-<span class="header-section-number">2.1.3</span> Populate the <code>_targets.R</code> file</h3>
-<p>Populate the <code>_targets.R</code> file with the necessary packages, source the custom functions and set up the targets pipeline:</p>
+<div class="callout-body-container callout-body">
+<p>Go to the Svalbard trait project create a file called <code>functions.R</code> and save it in the <code>R/</code> folder. Then add three functions that do the fallowing:</p>
 <ul>
-<li><p>add the all necessary packages to the <code><a href="https://docs.ropensci.org/targets/reference/tar_option_set.html">tar_option_set()</a></code> function in the <code>_targets.R</code> file</p></li>
-<li><p>add code to source the functions</p></li>
-<li><p>set up the pipeline with three targets that imports the data and selects bistorta vivipara, run the model and make the figure.</p></li>
+<li><p>import the data and filter the species <em>Bistorta vivipara</em> and the trait <em>plant height</em></p></li>
+<li><p>fit a linear regression to test how the warming treatment affects plant height</p></li>
+<li><p>and make a boxplot showing plant height in control and warming treatments.</p></li>
 </ul>
-<details><summary>
-Solution
-</summary><div class="cell">
+<p>The code you need for this exercise is already in the svalbard_trait.qmd file. You need to copy it and turn it into functions.</p>
+<p>When you are finished, test if the functions are doing what you think they do, i.e.&nbsp;test them with a small dataset.</p>
+</div>
+</div>
+<p>The next step is to configure and define the targets pipeline.</p>
+</section><section id="populate-the-_targets.r-file" class="level3" data-number="2.1.3"><h3 data-number="2.1.3" class="anchored" data-anchor-id="populate-the-_targets.r-file">
+<span class="header-section-number">2.1.3</span> Populate the <code>_targets.R</code> file</h3>
+<p>The <code>_targets.R</code> file has 3 main components that need to be populated.</p>
+<ol type="1">
+<li>Use <code><a href="https://docs.ropensci.org/targets/reference/tar_option_set.html">tar_option_set()</a></code> and the argument <code>package</code> to load all the required packages that are needed to run the pipeline. Note that <code>targets</code> and <code>tarchetypes</code> need to be loaded first and outside this function, otherwise the pipeline will not work. Functions that are only used in a quarto file can be loaded directly in there and do not need to be loaded here. The argument <code>format</code> let’s you define default storage format.</li>
+</ol>
+<div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Load packages required to define the pipeline:</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/targets/">targets</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/tarchetypes/">tarchetypes</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/tarchetypes/">tarchetypes</a></span><span class="op">)</span> <span class="co"># Load other packages as needed.</span></span>
 <span></span>
 <span><span class="co"># Set target options:</span></span>
 <span><span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_option_set.html">tar_option_set</a></span><span class="op">(</span></span>
-<span>  packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>, <span class="st">"here"</span>, <span class="st">"lubridate"</span>, <span class="st">"gt"</span>, <span class="st">"broom"</span><span class="op">)</span> <span class="co"># packages that targets need to run</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run the R scripts in the R/ folder with your custom functions:</span></span>
-<span><span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_source.html">tar_source</a></span><span class="op">(</span><span class="st">"R/functions.R"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># target list</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span>  <span class="co"># data file</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">file</span>,</span>
-<span>             command <span class="op">=</span> <span class="st">"data/PFTC4_Svalbard_2018_ITEX_Traits.csv"</span>,</span>
-<span>             format <span class="op">=</span> <span class="st">"file"</span><span class="op">)</span>,</span>
-<span>  <span class="co"># import and transform</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target</a></span><span class="op">(</span></span>
-<span>    name <span class="op">=</span> <span class="va">bistorta</span>,</span>
-<span>    command <span class="op">=</span> <span class="fu">get_file</span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  <span class="co"># fit model for plant height</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target</a></span><span class="op">(</span></span>
-<span>    name <span class="op">=</span> <span class="va">mod_height</span>,</span>
-<span>    command <span class="op">=</span> <span class="fu">fit_model</span><span class="op">(</span><span class="va">bistorta</span> <span class="op">|&gt;</span></span>
-<span>                          <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">Trait</span> <span class="op">==</span> <span class="st">"Plant_Height_cm"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  <span class="co"># make figure</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target</a></span><span class="op">(</span></span>
-<span>    name <span class="op">=</span> <span class="va">fig_height</span>,</span>
-<span>    command <span class="op">=</span> <span class="fu">make_figure</span><span class="op">(</span><span class="va">bistorta</span> <span class="op">|&gt;</span></span>
-<span>                            <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">Trait</span> <span class="op">==</span> <span class="st">"Plant_Height_cm"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
+<span>  packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tibble"</span><span class="op">)</span>, <span class="co"># packages that your targets need to run</span></span>
+<span>  format <span class="op">=</span> <span class="st">"rds"</span> <span class="co"># default storage format</span></span>
+<span>  <span class="co"># Set other options as needed.</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</details></section>
+<ol start="2" type="1">
+<li><p>The function <code><a href="https://docs.ropensci.org/targets/reference/tar_source.html">tar_source()</a></code> will source all the R scripts in the <code>R/</code> folder. You do not need to do anything else here. If there are scripts that you do not want to run at the moment, move them to another place.</p></li>
+<li><p>The pipeline is a list of target objects, separated by commas. Each target is declared by the <code><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target()</a></code> function. This function needs the argument <code>name</code> and <code>command</code> that defines the code to produce the target. Here is an example of a target that uses the function to run a regression from above.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># fit model for plant height</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">mod_height</span>,</span>
+<span>             command <span class="op">=</span> <span class="fu">fit_model</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Target names should be unique (no duplicates), should not start with a dot and the name should be meaningful (do not use my_variable).</p>
+<p>Data files are special, because they also need the argument <code>format</code> to decalre that this is a file. Targets will check if the file has been changed and automatically import the data again the next time the pipeline is run.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_target.html">tar_target</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">file</span>,</span>
+<span>             command <span class="op">=</span> <span class="st">"data/PFTC4_Svalbard_2018_ITEX_Traits.csv"</span>,</span>
+<span>             format <span class="op">=</span> <span class="st">"file"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A target usually creates a dataset, analyse data using a model or summarise or vizualise a dataset. A target should do one thing only and if a functions gets too long, it can be split into nested sub-functions to make the code readable and easier to maintain. You also want to keep the number of targets manageble. Do not put too much in one target, and also try not to procude too many.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Populate the <code>_targets.R</code> file:</p>
+<ul>
+<li><p>add all packages to the <code><a href="https://docs.ropensci.org/targets/reference/tar_option_set.html">tar_option_set()</a></code> function in the <code>_targets.R</code> file that are needed to run the pipeline.</p></li>
+<li><p>check that your <code>_targets.R</code> file sources the custom functions <code><a href="https://docs.ropensci.org/targets/reference/tar_source.html">tar_source()</a></code> and that all your functions are in the right place.</p></li>
+<li><p>and set up the pipeline with three targets that imports the data, runs the model and makes a figure.</p></li>
+</ul>
+</div>
 </div>
 </section><section id="output-files" class="level3" data-number="2.1.4"><h3 data-number="2.1.4" class="anchored" data-anchor-id="output-files">
 <span class="header-section-number">2.1.4</span> Output files</h3>
-<p>Usually, we want to add the results and figure to an output file, like a text file or presentation. This output file can also be added to the targets pipeline.</p>
-<p>This can be done by using the <code><a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html">tar_render()</a></code> function in the list of targets.</p>
+<!-- word document? what is the correct term for a report thesis etc. -->
+<p>The results and figures of an analysis are usually presented in a document or presentation. An output files, such as a reproducible quarto document can be added to a targets pipeline. The targets that have been produced in the pipeline can be used in the quarto file, for example a figure can be plotted.</p>
+<p>The targets that are used in the quarto document need to be loaded into the current environment. For this we can use <code><a href="https://docs.ropensci.org/targets/reference/tar_load.html">tar_load()</a></code> or <code><a href="https://docs.ropensci.org/targets/reference/tar_read.html">tar_read()</a></code>. The first function is used when a target is used several times. <code><a href="https://docs.ropensci.org/targets/reference/tar_read.html">tar_read()</a></code> is useful if a target is only needed once, e.g.&nbsp;to show a figure. <!-- Not sure if this is correct, but I mean that it is not enough to load it, you also have to print it. --> Once the target is loaded, it can be printed.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># render ms</span></span>
-<span><span class="fu"><a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html">tar_render</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">ms</span>, path <span class="op">=</span> <span class="st">"manuscript/svalbard_traits.qmd"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># print model output</span></span>
+<span><span class="fu"><a href="https://docs.ropensci.org/targets/reference/tar_read.html">tar_read</a></span><span class="op">(</span><span class="va">mod_height</span><span class="op">)</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">mod_height</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>To add the quarto document to the pipeline, the manuscript has to be rendered. This is done in <code>_targets.R</code> file in the list of targets using <code><a href="https://docs.ropensci.org/tarchetypes/reference/tar_quarto.html">tar_quarto()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># render ms</span></span>
+<span><span class="fu"><a href="https://docs.ropensci.org/tarchetypes/reference/tar_quarto.html">tar_quarto</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">manuscript</span>, path <span class="op">=</span> <span class="st">"svalbard_traits.qmd"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that all packages that are needed to run the quarto file need to be loaded in the .qmd file. If you are using a function exclusively in the quarto script, the package can be loaded only in the quarto file, but not in the <code>_target.R</code> file. <code>targets</code> and <code>tarchetypes</code> always need to be loaded in both files.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -455,30 +468,24 @@ Solution
 Exercise
 </div>
 </div>
-<section id="render-manuscript" class="level3 callout-body-container callout-body" data-number="2.1.5"><h3 data-number="2.1.5" class="anchored" data-anchor-id="render-manuscript">
-<span class="header-section-number">2.1.5</span> Render manuscript</h3>
-<p>Clean the <code>svalbard_traits.qmd</code> file and remove the unnecessary code (e.g.&nbsp;loading libraries, code in the functions), because this was moved to the functions of <code>_targets.R</code> script.</p>
-<p>And add <code>tar_render(name = ms, path = "manuscript/svalbard_traits.qmd")</code> to the pipeline.</p>
-</section>
+<div class="callout-body-container callout-body">
+<p>Prepare your <code>svalbard_traits.qmd</code> script and add it to the pipeline.</p>
+<ul>
+<li><p>Load all the necessary R packages in the quarto file.</p></li>
+<li><p>Load all the necessary targets that you want to use in the quarto file.</p></li>
+<li><p>And add the quarto file to the pipeline using <code><a href="https://docs.ropensci.org/tarchetypes/reference/tar_quarto.html">tar_quarto()</a></code>.</p></li>
+<li><p>Clean the quarto file and remove the unnecessary code, which has been moved to the custom functions.</p></li>
+</ul>
 </div>
-</section><section id="inspect-and-run-the-pipeline" class="level3" data-number="2.1.6"><h3 data-number="2.1.6" class="anchored" data-anchor-id="inspect-and-run-the-pipeline">
-<span class="header-section-number">2.1.6</span> Inspect and run the pipeline</h3>
-<p>We are now ready to inspect the pipeline and check for errors. Use <code>tar_manifest(fields = all_of("command"))</code> to check for errors. This function lists all the targets and some information about them.</p>
+</div>
+</section><section id="inspect-and-run-the-pipeline" class="level3" data-number="2.1.5"><h3 data-number="2.1.5" class="anchored" data-anchor-id="inspect-and-run-the-pipeline">
+<span class="header-section-number">2.1.5</span> Inspect and run the pipeline</h3>
+<p>We are now ready to inspect the pipeline, check for errors and run it. Use <code><a href="https://docs.ropensci.org/targets/reference/tar_manifest.html">tar_manifest()</a></code> to check for errors. This function lists useful information about each target and you can check if all the names that are used in the function exist or if you have duplicate names (<a href="#fig-inspect">Figure&nbsp;<span>2.2</span></a>).</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Pics/inspect.png" class="img-fluid figure-img" width="609"></p>
-<p></p><figcaption class="figure-caption">Inspect the pipeline</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
-<p><code><a href="https://docs.ropensci.org/targets/reference/tar_visnetwork.html">tar_visnetwork()</a></code> shows the dependency graph of the pipeline. Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Pics/viz_workflow.png" class="img-fluid figure-img" width="591"></p>
-<p></p><figcaption class="figure-caption">Inspect the pipeline</figcaption><p></p>
+<div id="fig-inspect" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/inspect.png" class="img-fluid figure-img" alt="A table showing all the target names and commands to inspect the pipeline before running it for real." width="636"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2.2: Names and commands for each target in the pipeline.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -493,10 +500,20 @@ Exercise
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Run these two functions and check if the pipeline is properly set up.</p>
+<p>Run the <code><a href="https://docs.ropensci.org/targets/reference/tar_manifest.html">tar_manifest()</a></code> function to check if the pipeline is properly set up.</p>
 </div>
 </div>
-<p>Now we are ready to run the pipeline. The <code><a href="https://docs.ropensci.org/targets/reference/tar_make.html">tar_make()</a></code> function looks for the <code>_targets.R</code> in the working directory and runs the pipeline.</p>
+<p>Now we are ready to run the pipeline. For this open the <code>run.R</code> script and run the <code><a href="https://docs.ropensci.org/targets/reference/tar_make.html">tar_make()</a></code> function. This function looks for the <code>_targets.R</code> in the working directory and runs the pipeline.</p>
+<p>When running the pipeline for the first time you will see a list of all the targets and each of them is built. Once you have run the pipeline, it will always skip the targets that have not changed and are up to date and only run the once that need updating (<a href="#fig-run-pipeline">Figure&nbsp;<span>2.3</span></a>). In the long run this will save a lot of computational time and is one of the big advantages of using targets pipelines.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-run-pipeline" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/pipeline.png" class="img-fluid figure-img" alt="R output after running the pipeline." width="282"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2.3: R output after running the pipeline.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -507,31 +524,45 @@ Exercise
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Open the <code>run.R</code> script and run the pipeline.</p>
+<p>Open the <code>run.R</code> script and run the pipeline. Hopefully, everything will run smoothly 🤞! If not check out the Trouble shooting section below.</p>
+<p>Run the pipeline again and check if the targets that are already built are skipped.</p>
+<p>Change something in your pipeline and run it again and see what happens. You can for example add a sentence in the quarto file, or change the colour in the figure.</p>
 </div>
 </div>
 </section></section><section id="trouble-shooting" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="trouble-shooting">
 <span class="header-section-number">2.2</span> Trouble shooting</h2>
-<section id="object-not-found" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="object-not-found">
-<span class="header-section-number">2.2.1</span> Object not found</h3>
-<p>A common error is to call a target that does not exist. When running the pipeline this error will appear (<a href="#fig-error-not-found">Figure&nbsp;<span>2.2</span></a>). This is usually if the name is spelled wrong or when using an old name.</p>
+<section id="vizualise-the-pipeline" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="vizualise-the-pipeline">
+<span class="header-section-number">2.2.1</span> Vizualise the pipeline</h3>
+<p>If something goes wrong, a good place to start is to vizualise your pipeline. The <code><a href="https://docs.ropensci.org/targets/reference/tar_visnetwork.html">tar_visnetwork()</a></code> function shows the dependency graph of the pipeline. Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-error-not-found" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="Pics/error_not_found.png" class="img-fluid figure-img" width="546"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2.2: <strong>?(caption)</strong></figcaption><p></p>
+<div id="fig-vizualise" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/viz_workflow.png" class="img-fluid figure-img" alt="Dependency graph that vizualises the target pipeline." width="552"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2.4: Vizualise the targets pipeline.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-</section><section id="duplicate-target" class="level3" data-number="2.2.2"><h3 data-number="2.2.2" class="anchored" data-anchor-id="duplicate-target">
-<span class="header-section-number">2.2.2</span> Duplicate target</h3>
-<p>Another common mistake is to use the same name for two different targets (<a href="#fig-error-duplicate">Figure&nbsp;<span>2.3</span></a>). This is common when copy pasting code. Rename one of the objects and the problem is solved.</p>
+</section><section id="object-not-found" class="level3" data-number="2.2.2"><h3 data-number="2.2.2" class="anchored" data-anchor-id="object-not-found">
+<span class="header-section-number">2.2.2</span> Object not found</h3>
+<p>A common error is to call a target that does not exist. When running the pipeline this error will appear (<a href="#fig-error-not-found">Figure&nbsp;<span>2.5</span></a>). This is usually if the name is spelled wrong or when using an old name.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-error-not-found" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="Pics/error_not_found.png" class="img-fluid figure-img" alt="Error message for missing object." width="546"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2.5: Error message for missing object</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="duplicate-target" class="level3" data-number="2.2.3"><h3 data-number="2.2.3" class="anchored" data-anchor-id="duplicate-target">
+<span class="header-section-number">2.2.3</span> Duplicate target</h3>
+<p>Another common mistake is to use the same name for two different targets (<a href="#fig-error-duplicate">Figure&nbsp;<span>2.6</span></a>). This is common when copy pasting code. Rename one of the objects and the problem is solved.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-error-duplicate" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="Pics/error_duplicate.png" class="img-fluid figure-img" width="579"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2.3: <strong>?(caption)</strong></figcaption><p></p>
+<figure class="figure"><p><img src="Pics/error_duplicate.png" class="img-fluid figure-img" alt="Error message for duplicate target." width="579"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2.6: Error message for duplicate target.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -539,8 +570,11 @@ Exercise
 </section></section><section id="resources" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="resources">
 <span class="header-section-number">2.3</span> Resources</h2>
 <ul>
-<li>The <a href="https://books.ropensci.org/targets/">target manual</a> contains everything you need to know</li>
-<li>Here is a short introduction <div class="quarto-video ratio ratio-16x9"><iframe src="https://player.vimeo.com/video/700982360" frameborder="0" allow="autoplay; title=" fullscreen="" picture-in-picture="" allowfullscreen=""></iframe></div>
+<li>The <a href="https://books.ropensci.org/targets/">target manual</a> contains everything you need to know <!-- did not find it on github -->
+</li>
+<li>Here is a large and working <a href="">target plan</a>
+</li>
+<li>Here is a short introduction video <div class="quarto-video ratio ratio-16x9"><iframe src="https://player.vimeo.com/video/700982360" frameborder="0" allow="autoplay; title=" fullscreen="" picture-in-picture="" allowfullscreen=""></iframe></div>
 </li>
 </ul>
 
@@ -847,387 +881,477 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">| label: setup</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: sentence</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu"># Getting started with targets</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## In this chapter, you will</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>learn the basic targets workflow</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>build your own targets pipeline</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>In this chapter we will go through the basic workflow of a <span class="in">`targets`</span> pipeline.</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>For this, we will use plant trait data from Svalbard from the reproducible documents exercise (REF).</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>If you have done this exercise already, skip the next step, otherwise follow the instructions below to download the R project.</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>To download R project containing the data and qmd file, run:</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("usethis") # if you don't have it already.</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_course</span>(<span class="st">"https://github.com/biostats-r/targets_workflow_svalbard"</span>)</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>Then follow the instructions.</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>This will open the targets_workflow_svalbard Rstudio project.</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>In the next steps, we will set up a basic targets pipeline for this R project and go through the main elements of a target plan, and how to run it.</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## The targets pipeline</span></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>A target pipeline has a specific file structure including R code, functions, qmd files, data and a <span class="in">`_targets.R`</span> file (@fig-file-structure).</span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_targets.R`</span> file is mandotory and the most important file defining the targets pipeline.</span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>This file lives at the root of the R project folder.</span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>An R project has many other files and it is recommended to keep code and data files in separate folders to keep the repository tidy.</span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>It is common to have one or several scripts that contain custom user-defined functions (<span class="in">`R/functions.R`</span>).</span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>Targets pipelines are based on functions, which is good practice coding (e.g. avoid repetition), and also keeps the pipeline tidy.</span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-file-structure</span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: File structure of an R Studio project with a target plan.</span></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/file_structure.png"</span>)</span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>To set up this file structure use the <span class="in">`use_targets()`</span> function, which creates an initial target script with comments to help you populate the script.</span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>Note that there is a file called <span class="in">`run.R`</span>.</span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>This is a helper script to run the pipeline and will be explained later.</span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>Go to the Svalbard trait R project and set up a targets file using the <span class="in">`use_targets()`</span> function.</span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="fu">### _target.R script file</span></span>
-<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_targets.R`</span> file configures and defines the pipeline (@fig-target-file).</span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>This file is mandatory and without it the targets pipeline will not work.</span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_targets.R`</span> file should contain the following components:</span>
-<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>load necessary packages and set options, such as defining the output format. This can be defined with the <span class="in">`tar_option_set()`</span> function.</span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>run R scripts containing custom functions <span class="in">`source(R/function.R)`</span></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>define pipeline, as a list of *targets* that are created with `tar_target()`. Each *target* is a step in the workflow, for example importing data, analysis and figure and are stored in the <span class="in">`_targets/objects/`</span></span>
-<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-target-file</span></span>
-<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: The template target files created by the `use_targets()` function. It configures and defines the target pipeline, including loading packages, setting options, sourcing functions and lists the targets.</span></span>
-<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="co"># Created by use_targets().</span></span>
-<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Follow the comments below to fill in this target script.</span></span>
-<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Then follow the manual to check and run the pipeline:</span></span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="co">#   https://books.ropensci.org/targets/walkthrough.html#inspect-the-pipeline # nolint</span></span>
-<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages required to define the pipeline:</span></span>
-<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a><span class="co"># library(tarchetypes) # Load other packages as needed. # nolint</span></span>
-<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="co"># Set target options:</span></span>
-<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"tibble"</span>), <span class="co"># packages that your targets need to run</span></span>
-<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"rds"</span> <span class="co"># default storage format</span></span>
-<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set other options as needed.</span></span>
-<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_make_clustermq() configuration (okay to leave alone):</span></span>
-<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">clustermq.scheduler =</span> <span class="st">"multicore"</span>)</span>
-<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_make_future() configuration (okay to leave alone):</span></span>
-<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="co"># Install packages {{future}}, {{future.callr}}, and {{future.batchtools}} to allow use_targets() to configure tar_make_future() options.</span></span>
-<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the R scripts in the R/ folder with your custom functions:</span></span>
-<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_source</span>()</span>
-<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a><span class="co"># source("other_functions.R") # Source other scripts as needed. # nolint</span></span>
-<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace the target list below with your own:</span></span>
-<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> data,</span>
-<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>), <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>))</span>
-<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="co">#   format = "feather" # efficient storage of large data frames # nolint</span></span>
-<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> model,</span>
-<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">coefficients</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> data))</span>
-<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>Now it is your turn to start adding a target pipeline to the Svalbard traits R project.</span>
-<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a><span class="fu">### Make custom functions</span></span>
-<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a>Go to the Svalbard trait project and add three functions to the <span class="in">`R/functions.R`</span> script that:</span>
-<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>import the data and filter the bistorta vivipara species</span>
-<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>fit the lm model for plant height</span>
-<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>make a boxplot for plant height</span>
-<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a>Almost all the code you need is in the manuscript/svalbard_trait.qmd file.</span>
-<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a>Here is an example for how to write a function:</span>
-<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a>my_function <span class="ot">&lt;-</span> <span class="cf">function</span>(data){</span>
-<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(Value <span class="sc">~</span> Treatment, <span class="at">data =</span> data)</span>
-<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a> <span class="kw">&lt;details&gt;</span></span>
-<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;summary&gt;</span>Hint<span class="kw">&lt;/summary&gt;</span></span>
-<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a><span class="co"># import and select bistorta</span></span>
-<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a>get_file <span class="ot">&lt;-</span> <span class="cf">function</span>(file){</span>
-<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(file) <span class="sc">|&gt;</span> </span>
-<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Taxon <span class="sc">==</span> <span class="st">"..."</span>)</span>
-<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="co"># fit lm</span></span>
-<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a>fit_model <span class="ot">&lt;-</span> <span class="cf">function</span>(dat){</span>
-<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(Value <span class="sc">~</span> Treatment, <span class="at">data =</span> ...)</span>
-<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a><span class="co"># make figure</span></span>
-<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>make_figure <span class="ot">&lt;-</span> <span class="cf">function</span>(dat){</span>
-<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(dat, <span class="fu">aes</span>(<span class="at">x =</span> ..., <span class="at">y =</span> ...)) <span class="sc">+</span> </span>
-<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Treatment"</span>, <span class="at">y =</span> <span class="st">"Height cm"</span>)</span>
-<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/details&gt;</span> </span>
-<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>Once all the functions are written it's important to test if the functions are doing what you want them to do.</span>
-<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>The custom functions are made.</span>
-<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>The next step is to configure and define the targets pipeline.</span>
-<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a><span class="fu">### Populate the `_targets.R` file</span></span>
-<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>Populate the <span class="in">`_targets.R`</span> file with the necessary packages, source the custom functions and set up the targets pipeline:</span>
-<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>add the all necessary packages to the <span class="in">`tar_option_set()`</span> function in the <span class="in">`_targets.R`</span> file</span>
-<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>add code to source the functions</span>
-<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>set up the pipeline with three targets that imports the data and selects bistorta vivipara, run the model and make the figure.</span>
-<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;details&gt;</span></span>
-<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;summary&gt;</span>Solution<span class="kw">&lt;/summary&gt;</span></span>
-<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages required to define the pipeline:</span></span>
-<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a><span class="co"># Set target options:</span></span>
-<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"here"</span>, <span class="st">"lubridate"</span>, <span class="st">"gt"</span>, <span class="st">"broom"</span>) <span class="co"># packages that targets need to run</span></span>
-<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the R scripts in the R/ folder with your custom functions:</span></span>
-<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_source</span>(<span class="st">"R/functions.R"</span>)</span>
-<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a><span class="co"># target list</span></span>
-<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a>  <span class="co"># data file</span></span>
-<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> file,</span>
-<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a>             <span class="at">command =</span> <span class="st">"data/PFTC4_Svalbard_2018_ITEX_Traits.csv"</span>,</span>
-<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a>             <span class="at">format =</span> <span class="st">"file"</span>),</span>
-<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a>  <span class="co"># import and transform</span></span>
-<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> bistorta,</span>
-<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">get_file</span>(file)</span>
-<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit model for plant height</span></span>
-<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> mod_height,</span>
-<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">fit_model</span>(bistorta <span class="sc">|&gt;</span></span>
-<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">filter</span>(Trait <span class="sc">==</span> <span class="st">"Plant_Height_cm"</span>))</span>
-<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make figure</span></span>
-<span id="cb7-263"><a href="#cb7-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb7-264"><a href="#cb7-264" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> fig_height,</span>
-<span id="cb7-265"><a href="#cb7-265" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">make_figure</span>(bistorta <span class="sc">|&gt;</span></span>
-<span id="cb7-266"><a href="#cb7-266" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">filter</span>(Trait <span class="sc">==</span> <span class="st">"Plant_Height_cm"</span>))</span>
-<span id="cb7-267"><a href="#cb7-267" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-268"><a href="#cb7-268" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-269"><a href="#cb7-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-270"><a href="#cb7-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-271"><a href="#cb7-271" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/details&gt;</span> </span>
-<span id="cb7-272"><a href="#cb7-272" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-273"><a href="#cb7-273" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-274"><a href="#cb7-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-275"><a href="#cb7-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-276"><a href="#cb7-276" aria-hidden="true" tabindex="-1"></a><span class="fu">### Output files</span></span>
-<span id="cb7-277"><a href="#cb7-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-278"><a href="#cb7-278" aria-hidden="true" tabindex="-1"></a>Usually, we want to add the results and figure to an output file, like a text file or presentation.</span>
-<span id="cb7-279"><a href="#cb7-279" aria-hidden="true" tabindex="-1"></a>This output file can also be added to the targets pipeline.</span>
-<span id="cb7-280"><a href="#cb7-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-281"><a href="#cb7-281" aria-hidden="true" tabindex="-1"></a>This can be done by using the <span class="in">`tar_render()`</span> function in the list of targets.</span>
-<span id="cb7-282"><a href="#cb7-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-285"><a href="#cb7-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-286"><a href="#cb7-286" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: render-output</span></span>
-<span id="cb7-287"><a href="#cb7-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-288"><a href="#cb7-288" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-289"><a href="#cb7-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-290"><a href="#cb7-290" aria-hidden="true" tabindex="-1"></a><span class="co"># render ms</span></span>
-<span id="cb7-291"><a href="#cb7-291" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_render</span>(<span class="at">name =</span> ms, <span class="at">path =</span> <span class="st">"manuscript/svalbard_traits.qmd"</span>)</span>
-<span id="cb7-292"><a href="#cb7-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-293"><a href="#cb7-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-294"><a href="#cb7-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-295"><a href="#cb7-295" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-296"><a href="#cb7-296" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb7-297"><a href="#cb7-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-298"><a href="#cb7-298" aria-hidden="true" tabindex="-1"></a><span class="fu">### Render manuscript</span></span>
-<span id="cb7-299"><a href="#cb7-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-300"><a href="#cb7-300" aria-hidden="true" tabindex="-1"></a>Clean the <span class="in">`svalbard_traits.qmd`</span> file and remove the unnecessary code (e.g. loading libraries, code in the functions), because this was moved to the functions of <span class="in">`_targets.R`</span> script.</span>
-<span id="cb7-301"><a href="#cb7-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-302"><a href="#cb7-302" aria-hidden="true" tabindex="-1"></a>And add <span class="in">`tar_render(name = ms, path = "manuscript/svalbard_traits.qmd")`</span> to the pipeline.</span>
-<span id="cb7-303"><a href="#cb7-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-304"><a href="#cb7-304" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-305"><a href="#cb7-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-306"><a href="#cb7-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-307"><a href="#cb7-307" aria-hidden="true" tabindex="-1"></a><span class="fu">### Inspect and run the pipeline</span></span>
-<span id="cb7-308"><a href="#cb7-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-309"><a href="#cb7-309" aria-hidden="true" tabindex="-1"></a>We are now ready to inspect the pipeline and check for errors.</span>
-<span id="cb7-310"><a href="#cb7-310" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`tar_manifest(fields = all_of("command"))`</span> to check for errors.</span>
-<span id="cb7-311"><a href="#cb7-311" aria-hidden="true" tabindex="-1"></a>This function lists all the targets and some information about them.</span>
-<span id="cb7-312"><a href="#cb7-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-315"><a href="#cb7-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-316"><a href="#cb7-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: inspect</span></span>
-<span id="cb7-317"><a href="#cb7-317" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb7-318"><a href="#cb7-318" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Inspect the pipeline</span></span>
-<span id="cb7-319"><a href="#cb7-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-320"><a href="#cb7-320" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/inspect.png"</span>)</span>
-<span id="cb7-321"><a href="#cb7-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-322"><a href="#cb7-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-323"><a href="#cb7-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-324"><a href="#cb7-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-325"><a href="#cb7-325" aria-hidden="true" tabindex="-1"></a><span class="in">`tar_visnetwork()`</span> shows the dependency graph of the pipeline.</span>
-<span id="cb7-326"><a href="#cb7-326" aria-hidden="true" tabindex="-1"></a>Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.</span>
-<span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-331"><a href="#cb7-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: viz</span></span>
-<span id="cb7-332"><a href="#cb7-332" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb7-333"><a href="#cb7-333" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Inspect the pipeline</span></span>
-<span id="cb7-334"><a href="#cb7-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-335"><a href="#cb7-335" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/viz_workflow.png"</span>)</span>
-<span id="cb7-336"><a href="#cb7-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-337"><a href="#cb7-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-338"><a href="#cb7-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-339"><a href="#cb7-339" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-340"><a href="#cb7-340" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb7-341"><a href="#cb7-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-342"><a href="#cb7-342" aria-hidden="true" tabindex="-1"></a>Run these two functions and check if the pipeline is properly set up.</span>
-<span id="cb7-343"><a href="#cb7-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-344"><a href="#cb7-344" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-345"><a href="#cb7-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-346"><a href="#cb7-346" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-347"><a href="#cb7-347" aria-hidden="true" tabindex="-1"></a>Now we are ready to run the pipeline.</span>
-<span id="cb7-348"><a href="#cb7-348" aria-hidden="true" tabindex="-1"></a>The <span class="in">`tar_make()`</span> function looks for the <span class="in">`_targets.R`</span> in the working directory and runs the pipeline.</span>
-<span id="cb7-349"><a href="#cb7-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-350"><a href="#cb7-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-351"><a href="#cb7-351" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb7-352"><a href="#cb7-352" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb7-353"><a href="#cb7-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-354"><a href="#cb7-354" aria-hidden="true" tabindex="-1"></a>Open the <span class="in">`run.R`</span> script and run the pipeline.</span>
-<span id="cb7-355"><a href="#cb7-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-356"><a href="#cb7-356" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb7-357"><a href="#cb7-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-358"><a href="#cb7-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-359"><a href="#cb7-359" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trouble shooting</span></span>
-<span id="cb7-360"><a href="#cb7-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-361"><a href="#cb7-361" aria-hidden="true" tabindex="-1"></a><span class="fu">### Object not found</span></span>
-<span id="cb7-362"><a href="#cb7-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-363"><a href="#cb7-363" aria-hidden="true" tabindex="-1"></a>A common error is to call a target that does not exist.</span>
-<span id="cb7-364"><a href="#cb7-364" aria-hidden="true" tabindex="-1"></a>When running the pipeline this error will appear (@fig-error-not-found).</span>
-<span id="cb7-365"><a href="#cb7-365" aria-hidden="true" tabindex="-1"></a>This is usually if the name is spelled wrong or when using an old name.</span>
-<span id="cb7-366"><a href="#cb7-366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-369"><a href="#cb7-369" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-370"><a href="#cb7-370" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-error-not-found</span></span>
-<span id="cb7-371"><a href="#cb7-371" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb7-372"><a href="#cb7-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-373"><a href="#cb7-373" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/error_not_found.png"</span>)</span>
-<span id="cb7-374"><a href="#cb7-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-375"><a href="#cb7-375" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-376"><a href="#cb7-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-377"><a href="#cb7-377" aria-hidden="true" tabindex="-1"></a><span class="fu">### Duplicate target</span></span>
-<span id="cb7-378"><a href="#cb7-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-379"><a href="#cb7-379" aria-hidden="true" tabindex="-1"></a>Another common mistake is to use the same name for two different targets (@fig-error-duplicate).</span>
-<span id="cb7-380"><a href="#cb7-380" aria-hidden="true" tabindex="-1"></a>This is common when copy pasting code.</span>
-<span id="cb7-381"><a href="#cb7-381" aria-hidden="true" tabindex="-1"></a>Rename one of the objects and the problem is solved.</span>
-<span id="cb7-382"><a href="#cb7-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-385"><a href="#cb7-385" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-386"><a href="#cb7-386" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-error-duplicate</span></span>
-<span id="cb7-387"><a href="#cb7-387" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb7-388"><a href="#cb7-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-389"><a href="#cb7-389" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/error_duplicate.png"</span>)</span>
-<span id="cb7-390"><a href="#cb7-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-391"><a href="#cb7-391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-392"><a href="#cb7-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-393"><a href="#cb7-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-394"><a href="#cb7-394" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resources</span></span>
-<span id="cb7-395"><a href="#cb7-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-396"><a href="#cb7-396" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The <span class="co">[</span><span class="ot">target manual</span><span class="co">](https://books.ropensci.org/targets/)</span> contains everything you need to know </span>
-<span id="cb7-397"><a href="#cb7-397" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Here is a short introduction {{&lt; video https://vimeo.com/700982360 &gt;}}</span>
+<div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: sentence</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu"># Getting started with targets</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## In this chapter, you will</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>learn the basic targets workflow</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>build your own targets pipeline</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>In this chapter we will go through the basic workflow of a <span class="in">`targets`</span> pipeline.</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>We will use plant trait data from Svalbard from the reproducible documents exercise (REF to Quarto book).</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>Even if you have done the exercise already, download a clean repo to start from scratch to keep the workflow simple.</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>To download the R project containing the data, the code and the qmd file, run:</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("usethis") # if you don't have it already.</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_course</span>(<span class="st">"biostats-r/svalbardQuartoDemo"</span>)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>Then follow the instructions.</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>This will open the svalbardQuartoDemo Rstudio project.</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- I added thi back in, because people will have to understand what is going on in the script --&gt;</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>Open the svalbard.traits_qmd file and render it.</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>Check the htlm output and try to understand what is going on. </span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>In the next steps, we will set up a basic targets pipeline for the Svalbard trait R project and go through the main elements of a target plan, and how to run it.</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## The targets pipeline</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>A target workflow has a specific file structure including R code, functions, qmd files, data and a <span class="in">`_targets.R`</span> file (@fig-file-structure).</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_targets.R`</span> file is mandatory and the most important file defining the targets pipeline.</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>This file lives at the root of the R project folder.</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>An R project has many other files and it is recommended to keep code and data files in separate folders to keep the repository tidy.</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>It is common to have one or several scripts that contain custom user-defined functions (<span class="in">`R/functions.R`</span>).</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>Targets pipelines are based on functions, which is good practice coding (e.g. avoid repetition), and also keeps the pipeline tidy.</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-file-structure</span></span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: File structure of an R Studio project with a target pipeline.</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: The file structure of an R Studio project with a target pipeline.</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/file_structure.png"</span>)</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>To set up this file structure use the <span class="in">`use_targets()`</span> function, which creates an initial <span class="in">`_targets.R`</span> script with comments to help you populate the script.</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>Note that it also creates a couple of other files, one of which is called <span class="in">`run.R`</span>.</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>This is a helper script to run the pipeline and will be explained later.</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>Go to the Svalbard trait project and start to set up a targets pipeline by using the <span class="in">`use_targets()`</span> function.</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a><span class="fu">### _target.R script file</span></span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_targets.R`</span> file configures and defines the pipeline.</span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>This file is mandatory and without it the targets pipeline will not work.</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>When using the <span class="in">`use_targets()`</span> function, it sets up the basic structure and comments to help fill out the rest (see below).</span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_targets.R`</span> file contains the following components:</span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Set options** such as load necessary packages or defining the output format using <span class="in">`tar_option_set()`</span>.</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Run R scripts** containing custom functions using the <span class="in">`tar_source()`</span> function.</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Make a list of targets**, which define the pipeline and is created with <span class="in">`tar_target()`</span>. </span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>Each *target* is a step in the workflow, for example importing data, analysis or figure and looks like a normal R object (e.g. tibble, vector, figure).</span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>The targets are stored in <span class="in">`_targets/objects/`</span> and can be used downstream in the pipeline.</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>One advantage of the targets pipeline is that once the pipeline has run, all targets can be reproduced using <span class="in">`tar_load()`</span> and the pipeline does not need rerunning each time before accessing the targets.</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>To access all the targets at once. use <span class="in">`tar_load_everything()`</span>.</span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>In <span class="in">`tar_load()`</span> you can also use tidy select commands to load specific targets, e.g. <span class="in">`tar_load(starts_with("y"))`</span></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>Note that the file also contains other options which are optional.</span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-target-file</span></span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Created by use_targets().</span></span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a><span class="co"># Follow the comments below to fill in this target script.</span></span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a><span class="co"># Then follow the manual to check and run the pipeline:</span></span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a><span class="co">#   https://books.ropensci.org/targets/walkthrough.html#inspect-the-pipeline # nolint</span></span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages required to define the pipeline:</span></span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="co"># library(tarchetypes) # Load other packages as needed. # nolint</span></span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Set target options:</span></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"tibble"</span>), <span class="co"># packages that your targets need to run</span></span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"rds"</span> <span class="co"># default storage format</span></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set other options as needed.</span></span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_make_clustermq() configuration (okay to leave alone):</span></span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">clustermq.scheduler =</span> <span class="st">"multicore"</span>)</span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_make_future() configuration (okay to leave alone):</span></span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a><span class="co"># Install packages {{future}}, {{future.callr}}, and {{future.batchtools}} to allow use_targets() to configure tar_make_future() options.</span></span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the R scripts in the R/ folder with your custom functions:</span></span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_source</span>()</span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="co"># source("other_functions.R") # Source other scripts as needed. # nolint</span></span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace the target list below with your own:</span></span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> data,</span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>), <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>))</span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a><span class="co">#   format = "feather" # efficient storage of large data frames # nolint</span></span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> model,</span>
+<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">coefficients</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> data))</span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a>Now it is your turn to populate the targets pipeline.</span>
+<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a><span class="fu">### Make custom functions</span></span>
+<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a>Targets workflows are based on functions.</span>
+<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a>Functions are very useful if a task has to be done multiple times.</span>
+<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a>Functions are made with the keyword <span class="in">`function()`</span>, can have one or more arguments separated by commas, and need assigning to a name (e.g. my_function).</span>
+<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a>Let us make an example we multiply two numbers, but the numbers are not always the same.</span>
+<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a>This is a case for a function.</span>
+<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: multiply-numbers</span></span>
+<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a>my_function <span class="ot">&lt;-</span> <span class="cf">function</span>(arg1, arg2){</span>
+<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a>  arg1 <span class="sc">*</span> arg2</span>
+<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a><span class="fu">my_function</span>(<span class="at">arg1 =</span> <span class="dv">3</span>, <span class="at">arg2 =</span> <span class="dv">4</span>)</span>
+<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a>Functions in the targets workflow need to be saved in a script in the folder <span class="in">`R/`</span>.</span>
+<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_target.R`</span> script will look for all R files in this folder and run them.</span>
+<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a>Here is a working example for a function that runs a linear regression:</span>
+<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: regression-function</span></span>
+<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a>fit_model <span class="ot">&lt;-</span> <span class="cf">function</span>(data){</span>
+<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(Value <span class="sc">~</span> Treatment, <span class="at">data =</span> data)</span>
+<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a>  mod</span>
+<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_model</span>(<span class="at">data =</span> my_data)</span>
+<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a>Go to the Svalbard trait project create a file called <span class="in">`functions.R`</span> and save it in the <span class="in">`R/`</span> folder.</span>
+<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a>Then add three functions that do the fallowing:</span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>import the data and filter the species *Bistorta vivipara* and the trait *plant height*</span>
+<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>fit a linear regression to test how the warming treatment affects plant height</span>
+<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>and make a boxplot showing plant height in control and warming treatments.</span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a>The code you need for this exercise is already in the svalbard_trait.qmd file.</span>
+<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a>You need to copy it and turn it into functions.</span>
+<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a>When you are finished, test if the functions are doing what you think they do, i.e. test them with a small dataset.</span>
+<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a>The next step is to configure and define the targets pipeline.</span>
+<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a><span class="fu">### Populate the `_targets.R` file</span></span>
+<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a>The <span class="in">`_targets.R`</span> file has 3 main components that need to be populated.</span>
+<span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Use <span class="in">`tar_option_set()`</span> and the argument <span class="in">`package`</span> to load all the required packages that are needed to run the pipeline.</span>
+<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a>Note that <span class="in">`targets`</span> and <span class="in">`tarchetypes`</span> need to be loaded first and outside this function, otherwise the pipeline will not work.</span>
+<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a>Functions that are only used in a quarto file can be loaded directly in there and do not need to be loaded here. </span>
+<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`format`</span> let's you define default storage format. </span>
+<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tar-option</span></span>
+<span id="cb10-232"><a href="#cb10-232" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages required to define the pipeline:</span></span>
+<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes) <span class="co"># Load other packages as needed.</span></span>
+<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a><span class="co"># Set target options:</span></span>
+<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"tibble"</span>), <span class="co"># packages that your targets need to run</span></span>
+<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"rds"</span> <span class="co"># default storage format</span></span>
+<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set other options as needed.</span></span>
+<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The function <span class="in">`tar_source()`</span> will source all the R scripts in the <span class="in">`R/`</span> folder.</span>
+<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a>You do not need to do anything else here.</span>
+<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a>If there are scripts that you do not want to run at the moment, move them to another place.</span>
+<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>The pipeline is a list of target objects, separated by commas.</span>
+<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a>Each target is declared by the <span class="in">`tar_target()`</span> function.</span>
+<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a>This function needs the argument <span class="in">`name`</span> and <span class="in">`command`</span> that defines the code to produce the target.</span>
+<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a>Here is an example of a target that uses the function to run a regression from above.</span>
+<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: regression-target</span></span>
+<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model for plant height</span></span>
+<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> mod_height,</span>
+<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a>             <span class="at">command =</span> <span class="fu">fit_model</span>(data))</span>
+<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a>Target names should be unique (no duplicates), should not start with a dot and the name should be meaningful (do not use my_variable).</span>
+<span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-273"><a href="#cb10-273" aria-hidden="true" tabindex="-1"></a>Data files are special, because they also need the argument <span class="in">`format`</span> to decalre that this is a file.</span>
+<span id="cb10-274"><a href="#cb10-274" aria-hidden="true" tabindex="-1"></a>Targets will check if the file has been changed and automatically import the data again the next time the pipeline is run.</span>
+<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-target</span></span>
+<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-283"><a href="#cb10-283" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb10-284"><a href="#cb10-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> file,</span>
+<span id="cb10-285"><a href="#cb10-285" aria-hidden="true" tabindex="-1"></a>             <span class="at">command =</span> <span class="st">"data/PFTC4_Svalbard_2018_ITEX_Traits.csv"</span>,</span>
+<span id="cb10-286"><a href="#cb10-286" aria-hidden="true" tabindex="-1"></a>             <span class="at">format =</span> <span class="st">"file"</span>)</span>
+<span id="cb10-287"><a href="#cb10-287" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-288"><a href="#cb10-288" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-289"><a href="#cb10-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-290"><a href="#cb10-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-291"><a href="#cb10-291" aria-hidden="true" tabindex="-1"></a>A target usually creates a dataset, analyse data using a model or summarise or vizualise a dataset.</span>
+<span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a>A target should do one thing only and if a functions gets too long, it can be split into nested sub-functions to make the code readable and easier to maintain.</span>
+<span id="cb10-293"><a href="#cb10-293" aria-hidden="true" tabindex="-1"></a>You also want to keep the number of targets manageble.</span>
+<span id="cb10-294"><a href="#cb10-294" aria-hidden="true" tabindex="-1"></a>Do not put too much in one target, and also try not to procude too many.</span>
+<span id="cb10-295"><a href="#cb10-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-296"><a href="#cb10-296" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-297"><a href="#cb10-297" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb10-298"><a href="#cb10-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-299"><a href="#cb10-299" aria-hidden="true" tabindex="-1"></a>Populate the <span class="in">`_targets.R`</span> file:</span>
+<span id="cb10-300"><a href="#cb10-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-301"><a href="#cb10-301" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>add all packages to the <span class="in">`tar_option_set()`</span> function in the <span class="in">`_targets.R`</span> file that are needed to run the pipeline.</span>
+<span id="cb10-302"><a href="#cb10-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-303"><a href="#cb10-303" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>check that your <span class="in">`_targets.R`</span> file sources the custom functions <span class="in">`tar_source()`</span> and that all your functions are in the right place.</span>
+<span id="cb10-304"><a href="#cb10-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-305"><a href="#cb10-305" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>and set up the pipeline with three targets that imports the data, runs the model and makes a figure.</span>
+<span id="cb10-306"><a href="#cb10-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-307"><a href="#cb10-307" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-308"><a href="#cb10-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-309"><a href="#cb10-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-310"><a href="#cb10-310" aria-hidden="true" tabindex="-1"></a><span class="fu">### Output files</span></span>
+<span id="cb10-311"><a href="#cb10-311" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- word document? what is the correct term for a report thesis etc. --&gt;</span></span>
+<span id="cb10-312"><a href="#cb10-312" aria-hidden="true" tabindex="-1"></a>The results and figures of an analysis are usually presented in a document or presentation.</span>
+<span id="cb10-313"><a href="#cb10-313" aria-hidden="true" tabindex="-1"></a>An output files, such as a reproducible quarto document can be added to a targets pipeline.</span>
+<span id="cb10-314"><a href="#cb10-314" aria-hidden="true" tabindex="-1"></a>The targets that have been produced in the pipeline can be used in the quarto file, for example a figure can be plotted.</span>
+<span id="cb10-315"><a href="#cb10-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-316"><a href="#cb10-316" aria-hidden="true" tabindex="-1"></a>The targets that are used in the quarto document need to be loaded into the current environment.</span>
+<span id="cb10-317"><a href="#cb10-317" aria-hidden="true" tabindex="-1"></a>For this we can use <span class="in">`tar_load()`</span> or <span class="in">`tar_read()`</span>.</span>
+<span id="cb10-318"><a href="#cb10-318" aria-hidden="true" tabindex="-1"></a>The first function is used when a target is used several times.</span>
+<span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a><span class="in">`tar_read()`</span> is useful if a target is only needed once, e.g. to show a figure.</span>
+<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Not sure if this is correct, but I mean that it is not enough to load it, you also have to print it. --&gt;</span></span>
+<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a>Once the target is loaded, it can be printed.</span>
+<span id="cb10-322"><a href="#cb10-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-325"><a href="#cb10-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-326"><a href="#cb10-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: print-target</span></span>
+<span id="cb10-327"><a href="#cb10-327" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-328"><a href="#cb10-328" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-329"><a href="#cb10-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-330"><a href="#cb10-330" aria-hidden="true" tabindex="-1"></a><span class="co"># print model output</span></span>
+<span id="cb10-331"><a href="#cb10-331" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(mod_height)</span>
+<span id="cb10-332"><a href="#cb10-332" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_height)</span>
+<span id="cb10-333"><a href="#cb10-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-334"><a href="#cb10-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-335"><a href="#cb10-335" aria-hidden="true" tabindex="-1"></a>To add the quarto document to the pipeline, the manuscript has to be rendered.</span>
+<span id="cb10-336"><a href="#cb10-336" aria-hidden="true" tabindex="-1"></a>This is done in <span class="in">`_targets.R`</span> file in the list of targets using <span class="in">`tar_quarto()`</span>.</span>
+<span id="cb10-337"><a href="#cb10-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-340"><a href="#cb10-340" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-341"><a href="#cb10-341" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: render-ms</span></span>
+<span id="cb10-342"><a href="#cb10-342" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb10-343"><a href="#cb10-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-344"><a href="#cb10-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-345"><a href="#cb10-345" aria-hidden="true" tabindex="-1"></a><span class="co"># render ms</span></span>
+<span id="cb10-346"><a href="#cb10-346" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_quarto</span>(<span class="at">name =</span> manuscript, <span class="at">path =</span> <span class="st">"svalbard_traits.qmd"</span>)</span>
+<span id="cb10-347"><a href="#cb10-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-348"><a href="#cb10-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-349"><a href="#cb10-349" aria-hidden="true" tabindex="-1"></a>Note that all packages that are needed to run the quarto file need to be loaded in the .qmd file.</span>
+<span id="cb10-350"><a href="#cb10-350" aria-hidden="true" tabindex="-1"></a>If you are using a function exclusively in the quarto script, the package can be loaded only in the quarto file, but not in the <span class="in">`_target.R`</span> file.</span>
+<span id="cb10-351"><a href="#cb10-351" aria-hidden="true" tabindex="-1"></a><span class="in">`targets`</span> and <span class="in">`tarchetypes`</span> always need to be loaded in both files.</span>
+<span id="cb10-352"><a href="#cb10-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-353"><a href="#cb10-353" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-354"><a href="#cb10-354" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb10-355"><a href="#cb10-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-356"><a href="#cb10-356" aria-hidden="true" tabindex="-1"></a>Prepare your <span class="in">`svalbard_traits.qmd`</span> script and add it to the pipeline.</span>
+<span id="cb10-357"><a href="#cb10-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-358"><a href="#cb10-358" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Load all the necessary R packages in the quarto file.</span>
+<span id="cb10-359"><a href="#cb10-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-360"><a href="#cb10-360" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Load all the necessary targets that you want to use in the quarto file.</span>
+<span id="cb10-361"><a href="#cb10-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-362"><a href="#cb10-362" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>And add the quarto file to the pipeline using <span class="in">`tar_quarto()`</span>.</span>
+<span id="cb10-363"><a href="#cb10-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-364"><a href="#cb10-364" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Clean the quarto file and remove the unnecessary code, which has been moved to the custom functions.</span>
+<span id="cb10-365"><a href="#cb10-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-366"><a href="#cb10-366" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-367"><a href="#cb10-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-368"><a href="#cb10-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-369"><a href="#cb10-369" aria-hidden="true" tabindex="-1"></a><span class="fu">### Inspect and run the pipeline</span></span>
+<span id="cb10-370"><a href="#cb10-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-371"><a href="#cb10-371" aria-hidden="true" tabindex="-1"></a>We are now ready to inspect the pipeline, check for errors and run it.</span>
+<span id="cb10-372"><a href="#cb10-372" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`tar_manifest()`</span> to check for errors.</span>
+<span id="cb10-373"><a href="#cb10-373" aria-hidden="true" tabindex="-1"></a>This function lists useful information about each target and you can check if all the names that are used in the function exist or if you have duplicate names (@fig-inspect).</span>
+<span id="cb10-374"><a href="#cb10-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-377"><a href="#cb10-377" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-378"><a href="#cb10-378" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-inspect</span></span>
+<span id="cb10-379"><a href="#cb10-379" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-380"><a href="#cb10-380" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Names and commands for each target in the pipeline.</span></span>
+<span id="cb10-381"><a href="#cb10-381" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: A table showing all the target names and commands to inspect the pipeline before running it for real.</span></span>
+<span id="cb10-382"><a href="#cb10-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-383"><a href="#cb10-383" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/inspect.png"</span>)</span>
+<span id="cb10-384"><a href="#cb10-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-385"><a href="#cb10-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-386"><a href="#cb10-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-387"><a href="#cb10-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-388"><a href="#cb10-388" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-389"><a href="#cb10-389" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb10-390"><a href="#cb10-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-391"><a href="#cb10-391" aria-hidden="true" tabindex="-1"></a>Run the <span class="in">`tar_manifest()`</span> function to check if the pipeline is properly set up.</span>
+<span id="cb10-392"><a href="#cb10-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-393"><a href="#cb10-393" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-394"><a href="#cb10-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-395"><a href="#cb10-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-396"><a href="#cb10-396" aria-hidden="true" tabindex="-1"></a>Now we are ready to run the pipeline.</span>
+<span id="cb10-397"><a href="#cb10-397" aria-hidden="true" tabindex="-1"></a>For this open the <span class="in">`run.R`</span> script and run the <span class="in">`tar_make()`</span> function.</span>
+<span id="cb10-398"><a href="#cb10-398" aria-hidden="true" tabindex="-1"></a>This function looks for the <span class="in">`_targets.R`</span> in the working directory and runs the pipeline.</span>
+<span id="cb10-399"><a href="#cb10-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-400"><a href="#cb10-400" aria-hidden="true" tabindex="-1"></a>When running the pipeline for the first time you will see a list of all the targets and each of them is built.</span>
+<span id="cb10-401"><a href="#cb10-401" aria-hidden="true" tabindex="-1"></a>Once you have run the pipeline, it will always skip the targets that have not changed and are up to date and only run the once that need updating (@fig-run-pipeline).</span>
+<span id="cb10-402"><a href="#cb10-402" aria-hidden="true" tabindex="-1"></a>In the long run this will save a lot of computational time and is one of the big advantages of using targets pipelines.</span>
+<span id="cb10-403"><a href="#cb10-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-406"><a href="#cb10-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-407"><a href="#cb10-407" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-run-pipeline</span></span>
+<span id="cb10-408"><a href="#cb10-408" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-409"><a href="#cb10-409" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: R output after running the pipeline.</span></span>
+<span id="cb10-410"><a href="#cb10-410" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: R output after running the pipeline.</span></span>
+<span id="cb10-411"><a href="#cb10-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-412"><a href="#cb10-412" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/pipeline.png"</span>)</span>
+<span id="cb10-413"><a href="#cb10-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-414"><a href="#cb10-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-415"><a href="#cb10-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-416"><a href="#cb10-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-417"><a href="#cb10-417" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb10-418"><a href="#cb10-418" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb10-419"><a href="#cb10-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-420"><a href="#cb10-420" aria-hidden="true" tabindex="-1"></a>Open the <span class="in">`run.R`</span> script and run the pipeline.</span>
+<span id="cb10-421"><a href="#cb10-421" aria-hidden="true" tabindex="-1"></a>Hopefully, everything will run smoothly 🤞!</span>
+<span id="cb10-422"><a href="#cb10-422" aria-hidden="true" tabindex="-1"></a>If not check out the Trouble shooting section below.</span>
+<span id="cb10-423"><a href="#cb10-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-424"><a href="#cb10-424" aria-hidden="true" tabindex="-1"></a>Run the pipeline again and check if the targets that are already built are skipped.</span>
+<span id="cb10-425"><a href="#cb10-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-426"><a href="#cb10-426" aria-hidden="true" tabindex="-1"></a>Change something in your pipeline and run it again and see what happens.</span>
+<span id="cb10-427"><a href="#cb10-427" aria-hidden="true" tabindex="-1"></a>You can for example add a sentence in the quarto file, or change the colour in the figure.</span>
+<span id="cb10-428"><a href="#cb10-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-429"><a href="#cb10-429" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-430"><a href="#cb10-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-431"><a href="#cb10-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-432"><a href="#cb10-432" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trouble shooting</span></span>
+<span id="cb10-433"><a href="#cb10-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-434"><a href="#cb10-434" aria-hidden="true" tabindex="-1"></a><span class="fu">### Vizualise the pipeline</span></span>
+<span id="cb10-435"><a href="#cb10-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-436"><a href="#cb10-436" aria-hidden="true" tabindex="-1"></a>If something goes wrong, a good place to start is to vizualise your pipeline.</span>
+<span id="cb10-437"><a href="#cb10-437" aria-hidden="true" tabindex="-1"></a>The <span class="in">`tar_visnetwork()`</span> function shows the dependency graph of the pipeline.</span>
+<span id="cb10-438"><a href="#cb10-438" aria-hidden="true" tabindex="-1"></a>Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.</span>
+<span id="cb10-439"><a href="#cb10-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-442"><a href="#cb10-442" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-443"><a href="#cb10-443" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-vizualise</span></span>
+<span id="cb10-444"><a href="#cb10-444" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-445"><a href="#cb10-445" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Vizualise the targets pipeline.</span></span>
+<span id="cb10-446"><a href="#cb10-446" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: Dependency graph that vizualises the target pipeline.</span></span>
+<span id="cb10-447"><a href="#cb10-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-448"><a href="#cb10-448" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/viz_workflow.png"</span>)</span>
+<span id="cb10-449"><a href="#cb10-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-450"><a href="#cb10-450" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-451"><a href="#cb10-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-452"><a href="#cb10-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-453"><a href="#cb10-453" aria-hidden="true" tabindex="-1"></a><span class="fu">### Object not found</span></span>
+<span id="cb10-454"><a href="#cb10-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-455"><a href="#cb10-455" aria-hidden="true" tabindex="-1"></a>A common error is to call a target that does not exist.</span>
+<span id="cb10-456"><a href="#cb10-456" aria-hidden="true" tabindex="-1"></a>When running the pipeline this error will appear (@fig-error-not-found).</span>
+<span id="cb10-457"><a href="#cb10-457" aria-hidden="true" tabindex="-1"></a>This is usually if the name is spelled wrong or when using an old name.</span>
+<span id="cb10-458"><a href="#cb10-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-461"><a href="#cb10-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-462"><a href="#cb10-462" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-error-not-found</span></span>
+<span id="cb10-463"><a href="#cb10-463" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-464"><a href="#cb10-464" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Error message for missing object</span></span>
+<span id="cb10-465"><a href="#cb10-465" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: Error message for missing object.</span></span>
+<span id="cb10-466"><a href="#cb10-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-467"><a href="#cb10-467" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/error_not_found.png"</span>)</span>
+<span id="cb10-468"><a href="#cb10-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-469"><a href="#cb10-469" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-470"><a href="#cb10-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-471"><a href="#cb10-471" aria-hidden="true" tabindex="-1"></a><span class="fu">### Duplicate target</span></span>
+<span id="cb10-472"><a href="#cb10-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-473"><a href="#cb10-473" aria-hidden="true" tabindex="-1"></a>Another common mistake is to use the same name for two different targets (@fig-error-duplicate).</span>
+<span id="cb10-474"><a href="#cb10-474" aria-hidden="true" tabindex="-1"></a>This is common when copy pasting code.</span>
+<span id="cb10-475"><a href="#cb10-475" aria-hidden="true" tabindex="-1"></a>Rename one of the objects and the problem is solved.</span>
+<span id="cb10-476"><a href="#cb10-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-479"><a href="#cb10-479" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-480"><a href="#cb10-480" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-error-duplicate</span></span>
+<span id="cb10-481"><a href="#cb10-481" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-482"><a href="#cb10-482" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Error message for duplicate target.</span></span>
+<span id="cb10-483"><a href="#cb10-483" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: Error message for duplicate target.</span></span>
+<span id="cb10-484"><a href="#cb10-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-485"><a href="#cb10-485" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"Pics/error_duplicate.png"</span>)</span>
+<span id="cb10-486"><a href="#cb10-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-487"><a href="#cb10-487" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-488"><a href="#cb10-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-489"><a href="#cb10-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-490"><a href="#cb10-490" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resources</span></span>
+<span id="cb10-491"><a href="#cb10-491" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-492"><a href="#cb10-492" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The <span class="co">[</span><span class="ot">target manual</span><span class="co">](https://books.ropensci.org/targets/)</span> contains everything you need to know</span>
+<span id="cb10-493"><a href="#cb10-493" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- did not find it on github --&gt;</span></span>
+<span id="cb10-494"><a href="#cb10-494" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Here is a large and working <span class="co">[</span><span class="ot">target plan</span><span class="co">]()</span></span>
+<span id="cb10-495"><a href="#cb10-495" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Here is a short introduction video {{&lt; video https://vimeo.com/700982360 &gt;}}</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
