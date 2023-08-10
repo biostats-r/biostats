@@ -1,23 +1,8 @@
-suppressPackageStartupMessages({
-  library(webexercises)
-})
-
-knitr::knit_hooks$set(webex.hide = function(before, options, envir) {
-  if (before) {
-    if (is.character(options$webex.hide)) {
-      hide(options$webex.hide)
-    } else {
-      hide()
-    }
-  } else {
-    unhide()
-  }
-})
-
+library(webexercises)
 
 print_multichoice <- function(questions) {
   for(i in seq_along(questions)){
-    cat("#### Question", paste0(i, ":"), questions[[i]]$question, "{.unlisted .unnumbered}\n\n")
+    cat("**Question", paste0(i, ":"), questions[[i]]$question, "**\n\n")
     cat(longmcq(questions[[i]]$choice))
     if (!is.null(questions[[i]]$hint)) {
       cat(hide("hint"))
