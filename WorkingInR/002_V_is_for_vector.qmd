@@ -1,0 +1,472 @@
+``` {r setup, include=FALSE}
+source("R/setup.R")
+rm(penguins)
+```
+
+# V is for vector {#sec-vectors}
+
+## The Vector
+
+A vector is an object that contains one or several values of the *same* data type. 
+For example, the object `vec.char` described below is a vector that contains 3 data elements of the type character. 
+
+```{r vector, echo=TRUE}
+vec.char <- c("one", "two", "three")
+vec.char
+```
+
+When conducting a statistical analysis, a vector is possibly the simplest object in which you may store entries for a single variable. 
+In the following example, 24 data points corresponding to the temperature for a specific location registered over a period of 24 hours have been stored in the vector `temperature`: 
+  
+```{r temperature, echo=TRUE}
+temperature <- c(8.7, 9.2, 9.4, 9.5, 9.7, 10.1, 10.3, 10.6, 10.7, 10.8, 11.3, 11.9, 12.2, 12.3, 11.7, 10.2, 10.3, 10.3, 10.4, 10.3, 10.1, 9.7, 9.5, 9.4)
+``` 
+
+```{r temperature2, echo=TRUE}
+temperature
+``` 
+
+Note that the data type of the whole vector is determined by the type of the elements it contains, as shown here:
+  
+```{r temperature-class, echo=TRUE}
+class(temperature)
+```
+
+### Combining with c
+
+Perhaps the simplest way to make a vector is with the function `c()` which combines the elements given between parentheses. 
+
+The data elements to concatenate must be separated with a comma `,`.
+
+```{r combine}
+results <- c(42, sqrt(42), 42 ^ 2)
+results
+```
+
+This may be applied not only to numerical values, but also to characters. 
+When storing characters, you must use quotation marks `"` `"` around the elements.
+
+```{r concatenate2}
+one_two_three <- c("one", "two", "three")
+one_two_three
+```
+
+Note that you may combine data elements of various natures. 
+Here we combine and store both numbers and characters, but everything becomes a character: 
+
+```{r concatenate3}
+one_2_three_4 <- c("one", 2, "three", 4)
+one_2_three_4
+```
+
+
+### Coercion
+
+If one tries to store data elements of different types in a single vector, all the elements in this vector will be coerced into the type that is the most general.  
+The ranking from the most specific to the most general is as follows: logical < integer < numeric < character.  
+Let's take the following example where we store a numeric, a character and an integer together:
+
+```{r coercion, echo=TRUE}
+coercion <- c(15, "fifteen", 15L)
+class(coercion)
+```
+
+As you see here the type of `coercion` is character, in other words the type of the most general data element.
+
+### Accessing data elements
+
+It is possible to extract specific data elements from a vector based on their position.
+To do so, we use square brackets `[` `]`. 
+Indicate first the vector name and then the element position(s) between the brackets:
+
+```{r vector-ret, echo=TRUE}
+temperature[c(2, 6)] 
+```
+
+Use negative indices to remove an element.
+
+::: callout-note 
+## Exercise
+
+From the vector `month.name`
+
+- select the eighth element
+- select the third and ninth elements
+- drop the second and fifth elements
+:::
+
+
+
+## Data types for vectors
+
+Here we will first review the primitive data types, then see a few useful data classes. 
+
+### Primitive data types
+
+R lets you manipulate 6 primitive data types: numeric, integer, character, logical (also called Boolean), complex and raw. 
+Only the first four types are relevant to the scope of this website.
+
+In the following sections, we will use the function `class()` to identify the nature of the data stored in objects (`mode()` and `typeof()` give related information).
+
+#### numeric
+
+Any number with a decimal value, whether positive or negative, is of type numeric. 
+The object `num` created below contains a single decimal value and is thus also numeric.
+
+```{r numeric, echo = TRUE}
+num <- -35.2
+class(num)
+```
+
+#### integer
+
+Integers are positive or negative numbers that do not contain a decimal value. 
+The object `int` below contains a single integer and is thus of type integer.
+
+```{r integer, echo = TRUE}
+int <- 35L
+class(int)
+```
+
+Note that `int` was assigned the number 35L. 
+The "L" that follows the number forces the object to store it as an integer. 
+If we write 35 instead of 35L, the object is just numeric as shown below.
+
+```{r numeric2, echo = TRUE}
+not_int <- 35
+class(not_int)
+```
+
+#### character
+
+An object containing a string of letters combined (or not) with numbers, or even a single letter, is of type character. 
+The letters may be upper and/or lower case. 
+The object `char` below contains a single word and is thus defined as character.
+
+```{r character, echo = TRUE}
+char <- "Letters"
+class(char)
+```
+
+Note that the strings of characters must be stored in objects using `"` `"`.
+
+#### logical
+
+Logical (or boolean) defines binary objects which contain `TRUE` or `FALSE`. 
+This is the case of the object `logic` below.
+
+```{r boolean, echo = TRUE}
+logic <- TRUE
+class(logic)
+```
+
+Note that `TRUE` and `FALSE` are sometimes replaced with "T" or "F".
+This is bad coding practice, which may result in weird errors that may compromise your work and the validity of its output.
+
+### Modifying data types
+
+It is possible to modify the type of an existing object with a series of simple functions like `as.numeric()`, `as.integer()`, `as.character()`, etc. 
+
+Let's consider the object `integ` created below. 
+
+```{r integ, echo = TRUE}
+integ <- 35L
+integ
+```
+
+`integ` contains a single data element (`35L`) which is defined as an integer:
+
+```{r integ-class, echo = TRUE}
+class(integ)
+```
+
+`integ` may be transformed into a simple numerical value by using the function `as.numeric()`:
+```{r int-num, echo = TRUE}
+integ_num <- as.numeric(integ)
+class(integ_num)
+```
+
+And it is possible to reverse this action with `as.integer()`:
+```{r num-int, echo = TRUE}
+integ_int <- as.integer(integ_num)
+class(integ_int)
+```
+
+It is also possible to transform it into a string of characters with `as.character()`:
+```{r int-char, echo = TRUE}
+integ_char <- as.character(integ)
+class(integ_char)
+```
+
+::: callout-note 
+## Exercise
+
+Make a vector that contains a word, a number and a logical value
+
+- what class is it
+- coerce it to a numeric vector. What happens. Why?
+:::
+
+### Advanced data classes
+
+R allows to transform the format of an object from something simple like a number or a string of characters to something more advanced like a date or a factor. 
+Date and factor are not data types *per se*, but data classes.
+
+#### Dates
+
+The data element `1980-02-08` stored in the object `birthdate` below is nothing more than a string of characters.
+```{r birthdate, echo = TRUE}
+birthday <- "1980-02-08"
+birthday
+class(birthday)
+```
+
+To make it a date object, one must use the function `as.Date()`:
+```{r birthdate2, echo = TRUE}
+birthdate <- as.Date(birthday)
+birthdate
+class(birthdate)
+```
+
+Even though this does not seem to affect the way the data element is displayed, such a conversion is determining with regard to how th element is going to be handled in calculations. 
+The calculation below displays the date that occurs 10 days before `birthdate`:
+
+```{r birthdate3, echo = TRUE}
+ten_days_before_my_birthdate <- birthdate - 10
+ten_days_before_my_birthdate
+```
+
+Such a calculation would not have been possible without the conversion from character to date, as demonstrated by this error message:
+
+```{r birthdate4, echo = TRUE, error = TRUE, warning=TRUE}
+ten_days_before_my_birthday <- birthday - 10
+```
+
+::: callout-note 
+## Exercise 
+
+There is a tutorial for handling dates with the `lubridate` package in `biostats.tutorials`. 
+:::
+
+#### Factors
+
+A factor is an object that only contains predefined values. 
+These predefined values are called the *levels* of the factor. 
+Factors are especially useful in the context of statistical analysis where categorical data are involved (like ANOVA, etc), and for forcing the order of categories on a plot.
+Categories often appear as "text labels", and may thus look like simple strings of characters. 
+
+In the following example, the object `scandinavian_countries` is a factor that contains 7 elements and three levels: `Norway`, `Sweden` and `Denmark`.
+
+```{r scandia1, echo = FALSE}
+scandinavian_countries <- factor(c("Norway", "Denmark", "Sweden", "Denmark", "Sweden", "Norway", "Denmark"), levels = c("Norway", "Denmark", "Sweden"))
+```
+
+```{r scandia2, echo = TRUE}
+scandinavian_countries 
+class(scandinavian_countries)
+```
+
+
+One way to build such a factor consists in converting a character object such as `scandinavia` with the function `factor()`.
+However, one must not forget to set the levels correctly with the argument `levels =`.
+```{r scandia3, echo = TRUE}
+scandinavia <- c("Norway", "Denmark", "Sweden", "Denmark", "Sweden", "Norway", "Denmark")
+scandinavian_kingdoms <- factor(scandinavia, levels = c("Norway", "Denmark", "Sweden"))
+scandinavian_kingdoms
+```
+
+<!-- ::: callout-note  -->
+<!-- ## Exercise -->
+
+<!-- The factor tutorial is not yet working - look again soon -->
+<!-- ::: -->
+
+## Creating sequences and series
+
+Throughout this website, we will use examples that include random series of numbers, sequences of characters or numbers, etc. 
+These sequences and series are often created by a bunch of functions or expressions, some of which are described below. 
+
+
+### Repetitions
+
+The function `rep()` comes handy when you wish to repeat data elements `n` times in a row, or to repeat a sequence of elements `n` times. 
+Using various arguments, you can decide how many times and/or in which manner the elements or sequences have to be repeated.
+
+The simplest form of usage of `rep()` is `rep(x, times = n)` where `x` is what you want to repeat (string, number(s), etc) and `n` the number of iterations.
+
+```{r rep, echo=TRUE}
+rep(c(1, 2, 3), times = 3)
+rep(c("One", "Two", "Three"), times = 3)
+```
+
+The argument `each = n` allows for repeating `n` times each element at a time. 
+
+```{r rep2, echo=TRUE}
+rep(c(1, 2, 3), each = 3)
+rep(c("One", "Two", "Three"), each = 3)
+```
+
+::: callout-note 
+## Exercise
+
+Write code that will 
+
+- repeat the letters A -- C three times so the output is A B C A...
+- repeat the letters A -- C three times so the output is A A A B...
+:::
+
+### Sequences
+
+The following section provides you with expressions or functions that build sequences of numerical or text values.
+
+#### Using the colon operator
+
+The colon separator `:` used in the expression `a:b` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
+
+```{r series, echo=TRUE}
+14:24
+```
+
+Note that `b` is not necessarily the last element of the series.
+```{r series2, echo=TRUE}
+14:24.5
+14.5:24
+```
+
+#### The function seq()
+
+Similar to `a:b`, `seq(a, b)` creates a series of consecutive numbers ranging from `a` to `b` with an increment of 1. 
+
+```{r seq, echo=TRUE}
+seq(14, 24)
+```
+
+Again, `b` is not necessarily the last element of the series.
+
+```{r seq2, echo=TRUE}
+seq(14, 24.5)
+seq(14.5, 24)
+```
+
+You can use a set of additional arguments in `seq()` to adjust the output. 
+Adding `by =` allows to tune the incrementation to any value you want (including decimal values). `length.out =` adjusts the incrementation to provide the desired number of elements ranging precisely from `a` to `b`.
+
+```{r seq3, echo=TRUE}
+seq(14, 24, by = 2.5)
+seq(14, 24, length.out = 7)
+```
+
+::: callout-note 
+## Exercise
+
+- Make a sequence of integers between -5 and 10
+- Make a sequence of between 0 and 10 that increment by 1.7
+- Make a sequence between 4 and 34 that is 10 elements long
+:::
+
+### Random series
+
+The following section provides you with functions that build series of random, numerical values. 
+It demonstrates functions to make sequences from uniform and normal distributions, but there are many more distributions available in R.
+
+```{r distr, echo = FALSE, fig.cap = "Different distributions of 1000 random numbers, with default options", fig.height=3, fig.width=5, message=FALSE}
+n <- 1000
+tibble(
+  dist = rep(c("runif", "rnorm"), each = n),
+  value = c(runif(n), rnorm(n))) |>
+  mutate(dist  = factor(dist, levels = c("runif", "rnorm"))) |> 
+  ggplot(aes(x = value)) +
+  geom_histogram(boundary = 0, binwidth = 0.2) +
+  facet_wrap(~ dist)
+
+```
+
+
+#### The function runif()
+
+`runif(n)` returns a series of `n` random numbers from a uniform distribution between 0 and 1.
+
+```{r runif, echo=TRUE}
+runif(n = 7)
+```
+
+`runif(n, min = a, max = b)` returns a series of `n` random numbers in the range from `a` to `b`:
+
+```{r runif2, echo=TRUE}
+runif(n = 7, min = 10, max = 100)
+```
+
+
+#### The function rnorm()
+
+`rnorm(n)` creates a series of `n` numbers taken from a normal distribution. 
+
+```{r rnorm, echo=TRUE}
+rnorm(n = 10)
+```
+
+By default, the normally distributed population is set up with a mean of 0 and a standard deviation of 1, but this may be adjusted with `mean = ` and `sd = `.
+```{r rnorm2, echo=TRUE}
+rnorm(n = 10, mean = 50, sd = 3)
+```
+
+#### The function sample()
+
+`sample(x, size, replace = TRUE/FALSE)` returns a sample of `n` values randomly taken in the object `x` (which may be a vector, a series such as `1:100`, etc). 
+`replace =` followed by either TRUE or FALSE defines whether or not a data element can appear repeatedly in the sample.
+
+```{r sample, echo=TRUE}
+sample(x = 1:100, size = 10, replace = FALSE)
+sample(x = 20:30, size = 7, replace = TRUE)
+```
+
+An interesting property of the function `sample()` is that it can be used to shuffle the result of an expression or the content of a vector, something which is useful for randomization of data elements. 
+In the following example, `sample()` shuffles and returns all the values in `1:10`:
+```{r sample2, echo=TRUE}
+sample(1:10)
+```
+
+#### `set.seed()`
+
+The sequence of "random" numbers that R generates are not strictly random but pseudo-random.
+The sequence repeats with a very long period (2^19937^ - 1 for the default Mersenne-Twister algorithm).
+If you want to get exactly the same sequence again (for reproducibility), you can set the seed for the random numbers with `set.seed()`.
+
+```{r set-seed}
+set.seed(300)
+rnorm(n = 5)
+set.seed(300)
+rnorm(n = 5)
+```
+
+::: callout-note 
+## Exercise
+
+- Generate 10 random numbers from a uniform distribution between 10 and 20
+- Generate 10 random numbers from a normal distribution with a mean of 4 and a standard deviation of 2
+- sample 10 values from the sequence 1:10 with replacement
+:::
+
+::: callout-note
+## Further Reading {- .literature .toc-ignore}
+
++ [R for data science](https://r4ds.hadley.nz/){target="_blank"}
++ [The tidyverse](https://www.tidyverse.org/){target="_blank"}
++ [Advanced R](https://adv-r.hadley.nz/index.html) chapters 1 -- 4
+:::
+
+::: callout-note
+## What's next
+
+Now that you know the basics of R and that you have all the tools to "manually" create R objects, you will learn how to import a data set from an external source. 
+We will see how to read and fetch data from various file types such as .txt, .csv, .xls, .xlsx, and directly store it in tibbles.
+
+:::
+
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
+
+-   Jonathan Soulé
+-   Aud Halbritter
+-   Richard Telford
+:::

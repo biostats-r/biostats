@@ -1,0 +1,264 @@
+
+# Data structures beyond the vector {#sec-beyond-vector}
+
+Data in R may be stored in a multitude of object types, but the most important ones are vector, matrix, list, data frame and tibble.
+
+
+## Matrices
+
+A matrix is a two-dimensional object that displays data of the *same* type (numeric, character, etc) in the form of a table. 
+It is built up with the function `matrix()` in which the data is imported either in the form of concatenated data elements (ex: `c(12, 54, 987, 5, ...)`), a series or sequence of data elements (ex: `1:25`), or a vector (ex: `temperature`). 
+In addition, one must define the number of rows and columns with `nrow =` and `ncol =`.   
+
+In the following example, the object `neo` is a matrix made of 4 rows and 6 columns filled with the numeric values stored in the vector `temperature` that we have previously created.
+
+```{r matrix, echo=TRUE}
+temperature <- c(8.7, 9.2, 9.4, 9.5, 9.7, 10.1, 10.3, 10.6, 10.7, 10.8, 11.3, 11.9, 12.2, 12.3, 11.7, 10.2, 10.3, 10.3, 10.4, 10.3, 10.1, 9.7, 9.5, 9.4)
+neo <- matrix(temperature, nrow = 4, ncol = 6)
+neo 
+```
+
+
+
+
+### Accessing data elements
+
+In a matrix, each row is numbered `[x, ]` and each column is numbered `[ , y]`.
+Any of the data elements may be retrieved by using its coordinates `[x, y]` preceded by the name of the matrix:
+
+```{r matrix2, echo=TRUE}
+neo[2, 3]
+```
+
+A full row or column may be retrieved with the same expression, but we leave empty the coordinate that is not needed:
+
+```{r matrix3, echo=TRUE}
+neo[2, ]
+
+neo[ , 3]
+```
+
+
+
+### About the use of matrices
+
+The use of matrices on this website is very limited.
+However, you may meet matrices in other projects, so it is best to know about their existence.
+You can read more about matrices [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/matrix){target="_blank"}.
+
+::: callout-note 
+## Exercise
+
+Make the matix neo as above, then
+
+- select the first two columns
+- the third column. What happened?
+- the second row.
+- The element in the third column second row.
+:::
+
+## Arrays
+
+Matrices are two dimensional objects; arrays generalise this to have any number of dimensions. 
+Arrays are an efficient way to store and manipulate high dimensional data (e.g,. latitude * longitude * time), but can be difficult to understand and don't play well with the `tidyververse`.
+
+```{r}
+#| label: array
+
+array(data = 1:24, dim = c(2, 4, 3))
+```
+
+
+## Lists
+
+A list is an object that contains values of *one or several* data types. 
+It can not only contain single data elements, but also other objects such as vectors, matrices, etc.  
+
+Lists are created by the function `list()` that concatenates data elements and objects.
+`list()` conveniently allows for naming the elements by the mean of the symbol `=`.  
+
+In the example below, we will store 6 elements and name them `string`, `number`, `temp`, `boolean`, `words` and `matrix`. 
+Among these elements to be stored are `vec.char`, `temperature` and `neo`, 3 objects that we have created further above on this page. 
+
+```{r list2, echo=TRUE}
+my_list <- list(string = "one", 
+                number = 2, 
+                temp = temperature, 
+                boolean = TRUE, 
+                words = c("dog", "cat", "fish"), 
+                matrix = neo)
+my_list 
+```
+
+### Retrieving list elements
+
+You can access list items by position with `[[` notation.
+
+```{r list-square}
+my_list[[1]] #get first element
+```
+
+Naming elements is quite convenient as it allows you to retrieve them rapidly by the mean of the symbol `$`. 
+The syntax is as follows: `list_name$element_name`.  
+Here we retrieve the element `matrix` in the list `my_list`:
+
+```{r listdollar, echo=TRUE} 
+my_list$matrix
+```
+
+### Retrieving single data elements
+
+Even better, you can retrieve a single data element contained in a list element. 
+Here you will have to write an expression that makes use of both the symbol `$` and the brackets `[` `]`in the proper order. 
+The syntax is as follows: `list_name$element_name[data]`.  
+In this first example, we retrieve the data element located at the third position of the object named `words` in the list `my_list`:
+
+```{r list-element-data, echo=TRUE} 
+my_list$words[3]
+```
+
+In the second example, we retrieve the data element located at the second row and third column of the matrix named `matrix` in the list `my_list`:
+
+```{r list-element-data2, echo=TRUE} 
+my_list$matrix[2, 3]
+```
+
+
+
+You may read more information about lists [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/list){target="_blank"}.
+
+::: callout-note 
+## Exercise
+
+Make a list with three named elements of different types.
+
+ - use square bracket notation to extract the second element
+ - use `$` notation to extract an element by name.
+ 
+:::
+
+## Data frames and tibbles
+
+A data frame is a two-dimensional object that stores data of *various* types in the form of a table. 
+Data frames are a popular way to store research data since the columns are usually associated with single variables (and are thus of a specific data type such as numeric or character) and rows are associated with observations.
+
+Until recently, data frames were the main storage objects for research data. 
+Nowadays, tibbles (an evolution of the data frame that appeared in the tidyverse) are replacing data frames as they are more practical for handling data sets (you will understand why further below).
+Because of this trend, we will focus mainly on tibbles here in this section and further on this website.
+It is however likely that you will meet data frames in the course of your studies. 
+Do not worry as we will see how to transform data frames into tibbles.
+
+Tibbles are standard introduced in `tidyverse`, so you must make sure that the package is active before using these objects. 
+Simply run this command first:
+
+```{r load tydiverse, echo=TRUE}
+library(tidyverse)
+```
+
+If you have not installed the package yet, have a look at the @sec-tidyverse.
+
+### Data frames vs. tibbles
+
+The object `df` printed below is a data frame that stores the average temperature recorded monthly in 2017, 2018 and 2019 at Lygra (Vestland, Norway). It is created with the function `data.frame()`.
+
+```{r df, echo=TRUE}
+df <- data.frame(Year = rep(2017:2019, each = 12), 
+                 Month = rep(month.name, 3), 
+                 Avg_temperature = c(3.4, 2.8, 4.2, 5.8, 11.4, 12.6, 14.6, 13.9, 13.7, 9.2, 4.3, 3.1, 2.3, 0.5, 0.8, 6.7, 13.5, 13.6, 16.2, 13.8, 11.6, 8.0, 6.6, 3.9, 1.7, 4.6, 4.0, 9.1, 8.8, 13.2, 15.4, 15.8, 11.6, 7.8, 3.6, 4.8))
+df
+```
+As you may see, you get at once the _whole_ data set with all 36 rows, the 3 variables, the header with column names and the first column that gives a number to each row.  
+
+The object `tbl` below is a tibble that contains exactly the same observations and variables as `df`. It is built up by the function `tibble()`.  
+
+```{r tbl, echo=TRUE}
+tbl <- tibble(Year = rep(2017:2019, each = 12), 
+             Month = rep(month.name, 3), 
+             Avg_temperature = c(3.4, 2.8, 4.2, 5.8, 11.4, 12.6, 14.6, 13.9, 13.7, 9.2, 4.3, 3.1, 2.3, 0.5, 0.8, 6.7, 13.5, 13.6, 16.2, 13.8, 11.6, 8.0, 6.6, 3.9, 1.7, 4.6, 4.0, 9.1, 8.8, 13.2, 15.4, 15.8, 11.6, 7.8, 3.6, 4.8))
+tbl
+```
+
+Here, you get a more convenient display of the same data:
+
++ only the first 10 rows and the header are displayed,
++ the number of rows _not_ printed is displayed in the present window (`# ... with 26 more rows`),
++ the dimensions of the tibble appear clearly in the header (`# A tibble: 36 x 3`),
++ the column names come along with a quick description of the data type (`<int>` for integer, `<chr>` for character, `<dbl>` for double, etc).
+
+All in all, tibbles _print_ much better and give more information than data frames do!
+They also have more predictable behaviour when extracting data from them.
+
+
+### Retrieving data elements
+
+Similarly to vectors, matrices and lists, one can extract single elements from data frames and tibbles.
+Here, we use brackets `[` `]` to do so:
+```{r dftbl2, echo=TRUE}
+df[3, "Avg_temperature"]
+tbl[3, "Avg_temperature"]
+```
+
+One can also retrieve rows or columns:
+
+```{r dftbl3, echo=TRUE}
+df[3, ]
+tbl[3, ]
+df[ , "Avg_temperature"]
+tbl[ , "Avg_temperature"]
+```
+
+It is also possible to use the symbol `$` to retrieve the content of specific variables:
+
+```{r dftbl3bis, echo=TRUE}
+df$Avg_temperature
+tbl$Avg_temperature
+```
+
+In @sec-working-with-single-tables-in-dplyr you will see an alternative way of manipulating tibbles with the `dplyr` package.
+
+### Transforming a data frame into a tibble
+
+If you have been previously working with data frames, have been given a data frame to work with, or have imported data using functions that create data frames, you may convert them into tibbles by using `as_tibble()`. 
+Here we convert the data frame `df` into a tibble:
+
+```{r df-tibble, echo=TRUE}
+df_as_tibble <- as_tibble(df)
+df_as_tibble 
+```
+
+
+You may read more about tibbles [here](https://tibble.tidyverse.org/){target="_blank"}.  
+You may read more about data frames [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame){target="_blank"}.
+
+::: callout-note
+## Exercise
+
+Make a tibble with the first column the months of the year, and the second is a sequence of numbers from 1 to 12.
+
+- extract the month column using `$` notation
+:::
+
+
+::: callout-note
+## Further Reading {- .literature .toc-ignore}
+
++ [R for data science](https://r4ds.hadley.nz/){target="_blank"}
++ [The tidyverse](https://www.tidyverse.org/){target="_blank"}
++ [Advanced R](https://adv-r.hadley.nz/index.html) chapters 1 -- 4
+:::
+
+::: callout-note
+## What's next
+
+Now that you know the basics of R and that you have all the tools to "manually" create R objects, you will learn how to import a data set from an external source. 
+We will see how to read and fetch data from various file types such as .txt, .csv, .xls, .xlsx, and directly store it in tibbles.
+
+:::
+  
+::: {.column-margin}
+### Contributors {.unlisted .unnumbered}
+
+-   Jonathan Soulé
+-   Aud Halbritter
+-   Richard Telford
+:::
