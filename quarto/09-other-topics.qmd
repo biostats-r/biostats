@@ -7,6 +7,37 @@ The caching system in quarto can be activated by setting the code block option `
 The caching system can be tricky to set up for complex projects, and the [`targets` package](https://books.ropensci.org/targets/) is a much more robust framework for building reproducible analysis pipelines.
 See this [demonstration project](https://github.com/richardjtelford/neotomaTargets) for an example of how to set up `targets`.
 
+If there is simply too much code, you can move code into another file.
+There are two ways to do this. 
+The first is with [includes](https://quarto.org/docs/authoring/includes.html). 
+These effectively copy and paste text and code from another quarto file.
+To include the file "_load-data.qmd", which has a code block for loading the data, we need this shortcode.
+
+```{shortcodes=false}
+{{< include _load-data.qmd >}}
+```
+
+
+The shortcode needs to be on its own line, with space above and below. 
+The file name should start with an underscore.
+Includes could also be useful for different sections of a manuscript
+
+
+The second method is to use the file option in a code block. 
+For example, to run the code from the file "load-data.R", we could use the following code block.
+
+```{{r}}
+#| label: load-data
+#| file: load-data.R
+```
+
+Or if we need to use `here`, we can use this one.
+```{{r}}
+#| label: load-data
+#| file: !expr here::here("load-data.R")
+```
+
+
 ## Paramertised reports
 
 If you need a template for many reports, for example, showing results for a specific location or time period, consider using
