@@ -79,14 +79,14 @@ cat(readLines('data/profile.txt'), sep = '\n')
 
 ## About tidy data
 
-Sooner or later, you will read about *tidy data* which is a standard, consistent way to organize tabular data in R. 
+*Tidy data* is a standard, consistent way to organize tabular data. 
 Briefly, tidy data follows a short series of rules:
 
 + each variable in the data set is presented in a specific column,
 + each observation in the data set is presented in a specific row,
 + each cell at the intersection of a row and a column contains a single value.
 
-The following figure illustrates well these rules.
+The following figure illustrates these rules.
 
 ``` {r}
 #| label: threerules
@@ -106,12 +106,14 @@ On the contrary, the following dataset is *not* tidy:
 #| echo: false
 #| message: false
 table2 <- read_delim(file = "data/nottidy.csv")
-rmarkdown::paged_table(table2)
+#rmarkdown::paged_table() # conflicts with webexercises
+gt::gt(table2)
+
 ```
 Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).   
 
 Importing data from a file containing tidy data is a great way to start your work, but it is *not* a prerequisite to data import.
-As long as your data is tabular, you will be able to import it in R, and later you will have the chance to tidy it (see @sec-tidying-data-with-tidyr).
+As long as your data is tabular, you will be able to import it in R, and tidy it later (see @sec-tidying-data-with-tidyr).
 
 ## File formats
 
@@ -148,7 +150,12 @@ Other symbols such as a semi-colon `;` may be used as a delimiter.
 This is the case in several European countries where commas are decimal separator.
 Here is the same data set as above, this time in the European format:
 
-```{r csv2-data, echo=FALSE, fig.cap="_Contents of another CSV file_", out.width="75%"}
+```{r}
+#| label: csv2-data
+#| echo: false 
+#| fig.cap: "_Contents of another CSV file_"
+#| fig-alt: Screenshot of a CSV file in notepad with columns separated by semi-colons
+#| out.width: "75%"
 knitr::include_graphics("figures/csv2.png")
 ```
 
@@ -185,7 +192,10 @@ We can import delimited files such as csv files with `readr::read_delim()`.
 
 In the following example, we import the file `weather.csv` located in the subfolder `data` of the current RStudio project into the object `weather`. 
 
-```{r delim-csv, echo=TRUE} 
+```{r}
+#| label: delim-csv
+#| echo: true
+#| message: true 
 library(tidyverse)
 weather <- read_delim(file = "data/weather.csv")
 ```
@@ -450,7 +460,7 @@ The argument `col_names` may be used to define the name of the variables/columns
 `col_names =` may also be followed by the actual variable names that you want to use.
 In that case, write `col_names = c()` and list the names between the parentheses.
 Be aware that the first row of the original data file, which would have been the column names, will become the first row of the resulting tibble.
-This means that if you want to replace existing names, you should also u
+This means that if you want to replace existing names, you should also
 use the `skip` argument.
 
 Here is an example:

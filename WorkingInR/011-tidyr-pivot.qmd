@@ -26,7 +26,7 @@ The process of tidying data is to convert the data you have to data that meets t
 
 ## `separate()` multiple values
 
-If a cell contains multiple values, we can use `tidyr::separate()`.
+If a cell contains multiple values, we can use `tidyr::separate_wider_delim()` to separate the values into different columns.
 
 For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.
 
@@ -38,14 +38,15 @@ dat <- tribble(~id, ~value,
 
 dat
 ```
-We can use `separate()` to split site and plot into separate columns.
-By default, `separate()` splits the data at non-alphanumeric values.
-This behaviour can be controlled with the `sep` argument.
+We can use `separate_wider_delim()` to split site and plot into separate columns.
+The delimited is set by the `delim` argument.
 
 ```{r separate}
-dat |> separate(col = id, into = c("site", "plot"))
+dat |> 
+  separate_wider_delim(cols = id, delim = "-", names = c("site", "plot"))
 ```
 
+Related function, `separate_wider_regex()`, which uses regular expressions to split the column, can be more flexible. 
 
 ## Reshaping data - wide to long 
 
