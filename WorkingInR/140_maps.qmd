@@ -55,8 +55,9 @@ Other datasets from Natural Earth can be downloaded directly from the [website](
 #| label: rnaturalearth
 #| results: hide
 #| fig-alt: Maps at different scales
+#| message: false
 library(rnaturalearth)
-# install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
+
 world <- ne_countries(scale = 110, returnclass = "sf") 
 small_scale_map <- ggplot() +
   geom_sf(data = world) +
@@ -68,6 +69,9 @@ medium_scale_map <- ggplot() +
   geom_sf(data = europe) +
   coord_sf(xlim = c(5, 30), ylim = c(55, 71)) +
   ggtitle("Norden")
+
+# Need extra package for high resolution data
+# install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
 
 norway <- ne_countries(scale = 10, returnclass = "sf", country = "Norway") 
 
@@ -151,7 +155,7 @@ basemap(limits = c(-30, 30, 50, 80),
 ::: callout-note
 ## Exercise
 
-Make a map of the Nordic Seas using either `rnaturalearth` or `ggOceanMaps`.
+Make a map of Svalbard using either `rnaturalearth` or `ggOceanMaps`.
 :::
 
 ### Other vector files
@@ -179,7 +183,7 @@ This is a map of the fylke of Norway.
 #| fig-alt: Map showing fylke
 library(sf)
 
-# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2021-klippet-etter-kyst/f08fca3c-33ee-49b9-be9f-028ebba5e460)
+# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2021-klippet-etter-kyst/f08fca3c-33ee-49b9-be9f-028ebba5e460
 # This map will be out of date when fylker are reorganised
 fylker <- st_read("data/fylker2021.json")
 
@@ -207,7 +211,7 @@ This gives a lot of information, the most important is that the coordinate refer
 
 If we need to change a coordinate reference systems, we can do that with `sf::st_transform()`.
 You need to know the [EPSG](https://epsg.io/) code of the target reference system, or the wkt.
-The code for WGS84 is 4326.
+The EPSG code for WGS84 is 4326.
 
 ```{r}
 fylker2 <- sf::st_transform(fylker, crs = 4326)
@@ -229,7 +233,7 @@ If you use a tiled map background, you should attribute the source (e.g., "Copyr
 
 ### `ggspatial`
 
-We can add a tiled-basemap to a plot with `annotation_map_tile()`.
+We can add a tiled-basemap to a plot with `annotation_map_tile()` (you may need to install some extra packages at this stage - R will tell you).
 Here, we need to use `coord_sf()` to set the map extent and coordinate reference system as we have not added any `sf` layers with `geom_sf()`.
 Downloaded tiles will be stored in the maps directory (which you may need to make first).
 
@@ -237,7 +241,7 @@ Downloaded tiles will be stored in the maps directory (which you may need to mak
 #| label: anotation-map-tile
 #| fig-width: 8
 #| message: false
-
+library(ggspatial)
 ggplot() +
   annotation_map_tile(
     type = "osm", 
@@ -358,7 +362,7 @@ vestland <- get_map(
 
 # needs inherit.aes = FALSE
 ggmap(vestland) + 
- geom_sf(data = aquaculture, colour = "red", inherit.aes = FALSE)
+ geom_sf(data = aquaculture, colour = "red", inherit.aes = FALSE, linewidth = 1) # thicker lines to make visible
 ```
 
 Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom.
@@ -571,7 +575,7 @@ Use facets as necessary (different species, different years etc).
 If you need multiple colour scales, the `ggnewscale` package can help.
 Use inset maps (@sec-combining-plots) to show your location in context.
 
-### Projections
+## Projections
 
 The Earth is an oblate sphere and needs projecting to plot in two dimensions.
 This inevitably leads to distortions, especially for maps with a large extent.
@@ -611,7 +615,7 @@ default/mollweide/polar_lambert
 Change the projection of one of the small-scale maps you made previously.
 :::
 
-### Interactive maps
+## Interactive maps
 
 Interactive maps are traditionally used in theses and papers, but can be very useful on webpages and shiny apps.
 
