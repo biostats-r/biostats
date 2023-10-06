@@ -9,13 +9,13 @@ library(tidyverse)
 source("../Templates/biostats_theme.R")
 ```
 
-Writing a thesis requires importing data, writing code to clean, transform, analyse data, and making figures and writing the thesis.
-This is done by writing several R scripts and running one script after another producing results and figures (@fig-data-workflow).
+Writing a thesis requires importing data (1), writing code to clean, transform (2), analyse data (3), and making figures (5) and writing the thesis (6; @fig-data-workflow).
+This is done by writing several R scripts and running one script after another producing results and figures.
 All the time, the code is updated, to add new data, transforming the data, changing analysis or adding a figure.
-And often several iterations of running the same scripts are needed and it is difficult to keep track of which scripts need rerunning.
-In addition, complex and computational heavy data analysis can take a lot of time and rerunning such analysis is inefficient.
+Often several iterations of running the same scripts are needed and it is difficult to keep track of which scripts need rerunning.
+In addition, complex and computational heavy data analysis can take a lot of time especially when it requires rerunning the analysis.
 
-This workflow is very inefficient and error prone.
+This workflow is very inefficient, non-reproducible and error prone.
 And there is a better way.
 
 ```{r}
@@ -28,9 +28,10 @@ knitr::include_graphics("Pics/data_workflow.png")
 
 ```
 
-Targets is a **pipeline tool** which takes care of dependencies in the code and keeps track of outdated objects (@fig-targets-pipeline).
-When updating and rerunning code, targets will skip parts where the upstream code has not changed, and which is still up to date and it will only rerun the code that is outdated.
-Targets ensures that your results always match the underlying code and maintains a  **reproducible workflow**. 
+Targets is a **pipeline tool** which takes care of dependencies in the code and keeps track of outdated objects.
+A target pipeline can for example be data import, analysis, making a figure and produce a report (1; (@fig-targets-pipeline). 
+When updating and rerunning one part of the code, targets will skip parts where the upstream code has not changed and are therefore still up to date (2).
+Targets will only rerun the code that is outdated and ensures that your results always match the underlying code and maintains a  **reproducible workflow** (3). 
 It avoids unnecessary repetition and can saves costly running time.
 
 ```{r}
