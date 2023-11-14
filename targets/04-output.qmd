@@ -1,0 +1,73 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+
+### Output files
+
+The results and figures of an analysis are usually presented in a report or presentation or both.
+One or more output files, such as a quarto document can be added to a targets pipeline.
+
+Each **target** from the pipeline can be loaded and used in the quarto document.
+The targets that are used in the quarto document need to be loaded into the current environment.
+For this we can use `tar_load()` or `tar_read()`.
+The first function is used when a target is used several times.
+`tar_read()` is useful if a target is only needed once, e.g. to show a figure.
+
+```{r}
+#| label: print-target
+#| eval: false
+#| echo: true
+
+# print model output
+tar_load(model)
+summary(model)
+```
+
+
+All R packages that are needed to run the quarto file need to be loaded in the .qmd file.
+If you are using a R package exclusively in the quarto script, the package can be loaded only in the quarto file, and does not need to be added to the `_target.R` file.
+`targets` always need to be loaded in both files.
+The `tarchetypes` has to be loaded in the `_target.R` file.
+It has a number of useful helper functions including `tar_quarto()` which is needed to render quarto files in the targets pipeline.
+
+
+::: callout-note
+## Exercise
+
+Open the `target_quarto.qmd` file.
+
+Load and print the trait figure using `tar_read()` in the third code chunk (fig-trait-figure).
+
+:::
+
+
+To add the quarto document to the pipeline, the manuscript has to be rendered.
+This is done in the `_targets.R` file in the list of targets using `tar_quarto()`.
+
+```{r}
+#| label: render-ms
+#| eval: false
+#| echo: true
+
+# render ms
+tar_quarto(name = manuscript, path = "target_quarto.qmd")
+```
+
+
+::: callout-note
+## Exercise
+
+**Add the quarto file to the pipeline**
+
+Check that you have loaded the `tarchetypes` package in the `_target.R` file.
+
+Add `tar_quarto()` in the `_targets.R` file to render the quarto file.
+
+Run `tar_make()` to run the whole pipeline.
+
+:::
+
+

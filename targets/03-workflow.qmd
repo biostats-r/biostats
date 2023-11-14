@@ -14,70 +14,50 @@ editor_options:
 
 :::
 
-In this chapter we will go through the basic workflow of a `targets` pipeline and discuss its main elements, and how to run it.
-We will use plant trait data from Svalbard.
-Follow the instructions below to download a the repo.
-
-::: callout-note
-## Exercise
-
-To download the R project containing the data, the code and the qmd file, run:
-
-```{r}
-#| label: download-repo
-#| eval: false
-
-#install.packages("usethis") # if you don't have it already.
-usethis::use_course("biostats-r/svalbardQuartoDemo")
-
-```
-
-Then follow the instructions.
-This will open the svalbardQuartoDemo Rstudio project.
-
-<!-- I added this back in, because people will have to understand what is going on in the script -->
-Open the `svalbard_traits_targets.qmd` file and render it.
-Check the htlm output and try to understand what each part of the code is doing. 
-
-:::
-
-
-
 ## Introduction to targets
 
-Targets is a **pipeline tool**, which coordinates the different steps in data science i R.
-It takes care of dependencies in the code and keeps track of outdated objects.
+Targets is a **pipeline tool**, which coordinates the different steps in data science in R.
+It manages the workflow, takes care of dependencies in the code and keeps track of outdated objects.
+Targets takes care of the cash.
 
-A targets **pipeline** consists of different steps, such as importing data, running an analysis or making a figure (@fig-simple-pipeline).
+A targets **pipeline** consists of different steps, such as importing data, running an analysis or making a figure (@fig-targets-pipeline) (1).
 Each step in the pipeline is a **target** and can for example be a data frame, a model or a figure.
-A target is basically an R object in memory.
-It is created by a piece of code, often this is a **function**.
+A target is basically an R object and is created by a **function**.
 A pipeline has a main script that puts all the pieces of code together and takes care of dependencies and keeping track of changes.
 
 This concept should sound familiar to you after reading the previous chapter on abstraction.
-
-
-```{r}
-#| label: fig-simple-pipeline
-#| echo: false
-#| fig-cap: Simple targets pipeline.
-#| fig-alt: Simple targets pipeline.
-
-knitr::include_graphics("Pics/targets_pipeline.png")
-
-```
 
 ::: callout-tip
 ## Definitions
 
 -   **pipeline tool** - coordinates different steps of data science
 -   **target** - an R object in memory
--   **function** - self contained modules of code that accomplish a specific task
+-   **function** - self contained code that accomplish a specific task
 :::
 
+When updating and rerunning one part of the code, targets will skip parts where the upstream code has not changed and are therefore still up to date (@fig-targets-pipeline) (2).
+Targets will only rerun the code that is outdated and ensures that your results always match the underlying code and maintains a  **reproducible workflow** (3). 
+It avoids unnecessary repetition and can saves costly running time.
+
+```{r}
+#| label: fig-targets-pipeline
+#| echo: false
+#| fig-cap: Reproducible targets pipeline.
+#| fig-alt: Reproducible targets pipeline.
+
+knitr::include_graphics("Pics/reproducible_pipeline.png")
+
+```
 
 
-Let's have a look at the targets pipeline.
+::: callout-tip
+## When is targets useful?
+
+- When the code has a long runtime because it is slow or complex. Targets avoids running code that up to date and allows for parallel processing.
+
+- When the workflow has interconnected tasks with dependencies
+:::
+
 
 
 ## The targets pipeline
@@ -110,7 +90,7 @@ This is a helper script to run the pipeline and will be explained later.
 ::: callout-note
 ## Exercise
 
-Go to the Svalbard trait project and load the targets library `library(targets)`.
+Go to the targets-workflow-svalbard Rstudio project and load the targets library `library(targets)`.
 Then start to set up a targets pipeline by using the `use_targets()` function.
  
 :::
@@ -120,10 +100,10 @@ Then start to set up a targets pipeline by using the `use_targets()` function.
 
 The `_targets.R` file is the **main script** and configures and defines the pipeline.
 This file is mandatory and without it the targets pipeline will not work.
-When using the `use_targets()` function, it sets up the basic structure and comments to help fill out the rest (see below).
+When using the `use_targets()` function, it sets up the basic structure and comments to help fill out the rest (see below 👇) .
 
 ```{r}
-#| label: fig-target-file
+#| label: target-file
 #| eval: false
 #| echo: true
 
@@ -167,7 +147,6 @@ list(
 )
 ```
 
-Have a look at your `_targets.R` file.
 
 ::: callout-note
 ## Exercise
@@ -179,7 +158,7 @@ Open the `_targets.R` in your repo and have a look at your `_targets.R` file.
 
 The `_targets.R` file has three main components.
 Note that the file also contains other options which are optional.
-Let's go through each component step by step.
+Let's go through each component step-by-step.
 
 1. `tar_option_set()` **sets all options** such as load necessary packages or defining the output format.
 The argument `package` should have a list of all the required packages that are needed to run the pipeline.
@@ -206,7 +185,6 @@ tar_option_set(
 
 
 2. The function `tar_source()` will **source all the R scripts** in the `R/` folder.
-<!-- Unclear if it sources all .R script in the directory or if R is the default place it looks for? -->
 
 ```{r}
 #| label: tar-ssource
@@ -215,7 +193,6 @@ tar_option_set(
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-# source("other_functions.R") # Source other scripts as needed. # nolint
 
 ```
 
@@ -225,7 +202,7 @@ Each target is a step in the pipeline, for example importing data, run an analys
 Each target is declared by the `tar_target()` function and separated by a comma.
 The `tar_target()` needs two arguments:
 `name` defines the target name and `command` the code to produce the target.
-This can be a couple of lines of code or calling a function.
+Usually the command is calling a custom function.
 
 Here is a target that uses the function `fit_model()` that was created in the previous chapter to run a linear regression.
 
@@ -243,18 +220,15 @@ list(
 ```
 
 
-Each target should have a unique name can be called downstream in the pipeline.
-The pipeline will figure out the order of which step depends on which other steps by iteslf.
+Each target should have a unique name that can be called downstream in the pipeline.
+The order of the targets does not matter.
+The pipeline will figure out which targets depends on each other and run them in the right order.
 
-Once the pipeline has run, the targets are stored in `_targets/objects/`.
-All targets can be reproduced using `tar_load()` and the pipeline does not need rerunning each time before accessing the targets.
-This is a huge advantage of the targets pipeline and can save a lot of time. 
-To access all the targets at once. use `tar_load_everything()`.
-In `tar_load()` you can also use tidy select commands to load specific targets, e.g. `tar_load(starts_with("y"))`
+Once the pipeline has run, the targets are stored.
 
 ::: callout-important
 ## Targets names
-Targets names should be unique (no duplicates), should not start with a dot and the name should be meaningful (do not use my_variable).
+Targets names must be unique (no duplicates), should not start with a dot and the name should be meaningful (do not use my_variable).
 :::
 
 **Data files** are special targets, because they also need the argument `format` to declare that this target is a file.
@@ -267,7 +241,7 @@ Each time the pipeline is run, targetes will check if the file has been changed 
 
 list(
   tar_target(name = file,
-             command = "data/PFTC4_Svalbard_2018_ITEX_Traits.csv",
+             command = "data/PFTC4_Svalbard_2018_Gradient_Traits.csv",
              format = "file")
   )
   
@@ -281,23 +255,16 @@ Keep the number of targets manageable, which means keep a balance between the am
 
 
 ### Populate the _target.R file
-<!-- This whole chapter is mostly exercise. Is that ok or weird? I felt it is better like this than splitting up the previous chapter too much. -->
 
 The next step is to populating the `_targets.R` file.
-We need to set the options, make custom R functions, and define the pipeline.
-
-Let's get started.
+We need to set the options, source the custom functions, and define the pipeline.
 
 First, we need to add all R packages to the `tar_option_set()` function in the `_targets.R` file that are needed to run the pipeline.
 
 ::: callout-note
 ## Exercise
 
-Open your `_targets.R` file.
-Check the first code block in the `svalbard_trait.qmd` file in your repo to see which R packages that have been used.
-
-Add both R packages to `tar_option_set()`.
-<!-- Instructions say add both, the example has only one. Ok or too difficult? -->
+Add all the necessary R packages in `tar_option_set()` in the `_targets.R` file that are needed to run the pipeline.
 
 ```{r}
 #| label: tar-option-example
@@ -313,57 +280,18 @@ tar_option_set(
 
 :::
 
-The next step is to make a function that runs a linear model.
+The next step is to source all the functions.
+The `tar_source()` function in the `_targets.R` file already does this.
 
-::: callout-note
-## Exercise
+The last step is to set up the targets pipeline.
 
-Create a new R file called `functions.R` and save it in a new folder called `R`.
-
-Make a function that runs a linear model.
-
-The code for this exercise is in the previous chapter.
-
-```{r}
-#| label: a-function
-#| eval: false
-#| echo: true
-fit_model <- function(data, response, predictor){
-  mod <- lm(response ~ predictor, data = data)
-  mod
-}
-
-```
-
-:::
-
-The last step is to set up the **targets pipeline**.
-Our pipeline should have four steps:
-
-- define the data file
-
-- import the data and filter for the desired species and trait
-
-- use our custom function created above to run a linear model testing the effect of a warming treatment on plant height in *Bistorta vivipara*
-
-- make a figure that shows *Bistorta vivipara* height for control and warming treatment.
-
-Let's do this step by step.
-
-<!-- Here they need to replace the path. Is this too difficult? -->
 ::: callout-note
 ## Exercise
 
 **Define the data file**
 
-Open the `_targets.R` file and go to the list of targets.
+Add the dataset as data file in the `_targets.R` file.
 
-Use `tar_targets()` to define each target.
-The first argument is `name`, for example *file*.
-The second argument is `command`, which in our case is the path to the data file.
-Because this target is a file, we also need a third argument `format = "file"`.
-
-Replace path with the relative path to the data file in your repo.
 
 ```{r}
 #| label: data-target2
@@ -380,148 +308,61 @@ list(
 
 :::
 
-The next step is to import and filter the data.
 
-
-<!-- Here they need to filter for bistorta and plant height. ok or too difficult? -->
 ::: callout-note
 ## Exercise
 
-**Import and filter the data**
+**Add other targets to the pipeline**
 
-In the `_targets.R` file add a new target using `tar_targets()`, separated by a comma.
+Add four more targets to the pipeline that
 
-This time we can give it the `name` bistorta to keep it consistent with the `svalbard_trait.qmd` file.
-Second for the `command` we need code to import and filter the data.
-All the code you need is in the `svalbard_trait.qmd`.
+- import the data
 
-Note that in the previous target we have already defined the data file and it is now called *file*.
-Because *file* is a target we can use it directly and do not have to use the path to the data file again.
+- clean the data
 
-Add code to filter for *Bistorta vivipapara* and the trait plant height.
+- run a linear regression
+
+- and make a figure
+
+The last three targets are calling custom functions from the `functions.R` file.
+The targets are separated by a comma.
+
 
 
 ```{r}
-#| label: import
+#| label: pipeline
 #| eval: false
 #| echo: true
 
 list(
-  tar_target(name = bistorta,
-             command = read_csv(file) |> 
-               filter())
+  # data file
+  tar_target(name = file,
+             command = path,
+             format = "file"),
+  
+  # import data
+  tar_target(name = target1,
+             command = function1),
+  
+  # clean data
+  tar_target(name = target2,
+             command = function2),
+  
+  ...
+  
   )
   
 ```
 
 :::
 
-The next step in the pipeline is to run the model.
-
-::: callout-note
-## Exercise
-
-**Run model**
-
-Add a new target in the `_targets.R` file.
-
-Use mode_height for the `name`.
-The `command` is the function `fit_model()` we created previously.
-The function has three arguments: data, response and predictor.
-
-```{r}
-#| label: model
-#| eval: false
-#| echo: true
-
-list(
-  tar_target(name = mod_height,
-             command = fit_model(data = bistorta, 
-                                 response = Value, 
-                                 predictor = Treatment))
-  )
-  
-```
-
-:::
-
-The final step is to make a figure.
-
-::: callout-note
-## Exercise
-
-**Make figure**
-
-Add a new target in the `_targets.R` file.
-
-Use fig_height for the `name`.
-The `command` is code that produces a figure.
-We can copy the code from the `svalbard_tratis.qmd` script.
-
-```{r}
-#| label: figure
-#| eval: false
-#| echo: true
-
-list(
-  tar_target(name = fig_height,
-             command = ggplot(bistorta, aes(x = Treatment, y = Value)) +
-               geom_boxplot(fill = c("grey80", "red")) +
-               labs(x = "Treatment", y = "Plant height (cm)"))
-  )
-  
-```
-
-:::
 
 Well done, you have just set up your first target pipeline.
 Have a treat 🥕!
 
-::: callout-tip
-## Do it step by step
-
-Targets plans can become huge and complex.
-Start small, create a few targets and functions and make the plan running.
-Then add new code in small steps and check regularly if the plan is still working
-This will help to understand and solve errors (see trouble shooting section).
-
-```{r}
-#| label: fig-complex-network
-#| echo: false
-#| fig-cap: Vizualisation of complex target pipeline.
-#| fig-alt: Dependency graph that vizualises a complex target pipeline.
-
-knitr::include_graphics("Pics/complex_network.png")
-
-```
-:::
 
 
-<!-- I moved the inspect and run pipeline forward, and moved output and adding qmd file to later. what do you think? -->
-### Inspect and run the pipeline
-
-We are now ready to inspect the pipeline, check for errors and run it.
-Use `tar_manifest()` to check for errors.
-This function lists useful information about each target, let you know if you are missing a R package and check for missing or duplicate targets (@fig-inspect).
-
-```{r}
-#| label: fig-inspect
-#| echo: false
-#| fig-cap: Names and commands for each target in the pipeline.
-#| fig-alt: A table showing all the target names and commands to inspect the pipeline before running it for real.
-
-knitr::include_graphics("Pics/inspect.png")
-
-```
-
-
-::: callout-note
-## Exercise
-
-Run the `tar_manifest()` function to check if the pipeline is properly set up. If there are errors fix them.
-
-:::
-
+### Run the pipeline
 
 Now we are ready to run the pipeline.
 For this open the `run.R` script and run the `tar_make()` function.
@@ -529,8 +370,6 @@ This function looks for the `_targets.R` in the working directory and runs the p
 
 When running the pipeline for the first time you will see a list of all the targets that are built (@fig-run-pipeline).
 This is indicated by start target and build target.
-Once the pipeline has run, it will always skip the targets that have not changed and are up to date and only run the once that need updating.
-In the long run this will save a lot of computational time and is one of the big advantages of using targets pipelines.
 
 ```{r}
 #| label: fig-run-pipeline
@@ -550,99 +389,11 @@ Open the `run.R` script and run the pipeline.
 Hopefully, everything will run smoothly 🤞!
 If not check out the Trouble shooting section below.
 
-Run the pipeline again and check if the targets that are already built are skipped.
-
-Change something in your pipeline and run it again and see what happens.
-You can for example change the name of a target and see if it is updated when running the pipeline again.
-
 :::
 
 
-### Output files
-
-The results and figures of an analysis are usually presented in a report or presentation or both.
-One or several output files, such as a quarto document can be added to a targets pipeline.
-The targets that have been produced in the pipeline can be loaded and used in the quarto document, for example a figure.
-
-To add the quarto document to the pipeline, the manuscript has to be rendered.
-This is done in `_targets.R` file in the list of targets using `tar_quarto()`.
-
-```{r}
-#| label: render-ms
-#| eval: false
-#| echo: true
-
-# render ms
-tar_quarto(name = manuscript, path = "traits_quarto_template.qmd")
-```
-
-::: callout-note
-## Exercise
-
-We have prepared a quarto template file.
-Add this output file `traits_quarto_template.qmd` to the pipeline in the `_targets.R` using `tar_quarto()` as shown above.
-
-:::
-
-
-The targets that are used in the quarto document need to be loaded into the current environment.
-For this we can use `tar_load()` or `tar_read()`.
-The first function is used when a target is used several times.
-`tar_read()` is useful if a target is only needed once, e.g. to show a figure.
-<!-- Not sure if this is correct, but I mean that it is not enough to load it, you also have to print it. -->
-Once the target is loaded, it can be printed.
-
-```{r}
-#| label: print-target
-#| eval: false
-#| echo: true
-
-# print model output
-tar_read(mod_height)
-tidy(mod_height)
-```
-
-
-All R packages that are needed to run the quarto file need to be loaded in the .qmd file.
-If you are using a R package exclusively in the quarto script, the package can be loaded only in the quarto file, and does not need to be added to the `_target.R` file.
-`targets` and `tarchetypes` always need to be loaded in both files.
-
-
-The last step is to prepare the .qmd file, so that it displays the figure.
-
-
-::: callout-note
-## Exercise
-
-**Prepare the `traits_quarto_template.qmd` file**
-
-In this output file, we want to show the figure displaying plant height in control vs. warmed plots.
-For this, you need to load the target for the figure into the environment.
-Because we will use the figure only once you can use `tar_read(fig_height)`.
-
-```{r}
-#| label: print-figure
-#| eval: false
-#| echo: true
-
-tar_read(fig_height)
-fig_height
-
-```
-
-Render the file with the Render button on top of the script to check if the code is good.
-If it runs smoothly, run the pipeline again and check the `traits_quarto_template.html` output file.
-
-:::
-
-
-<!-- what else should we add? -->
-## Trouble shooting
-
-### Vizualise the pipeline
-
-If something goes wrong, a good place to start is to visualize your pipeline.
-The `tar_visnetwork()` function shows the dependency graph of the pipeline.
+Well done you have run your first targets pipeline.
+The `tar_visnetwork()` function shows the dependency graph of the pipeline and is a nice way of vizualizing the pipeline.
 Circles are targets, triangles functions, and the colour indicates if the targets are up to date or not.
 
 ```{r}
@@ -654,6 +405,93 @@ Circles are targets, triangles functions, and the colour indicates if the target
 knitr::include_graphics("Pics/viz_workflow.png")
 
 ```
+
+
+::: callout-note
+## Exercise
+
+Run `tar_visnetwork()` to visualize your pipeline.
+
+:::
+
+
+Once the pipeline has run, it will always skip the targets that have not changed and are up to date and only run the once that need updating.
+In the long run this will save a lot of computational time and is one of the big advantages of using targets pipelines.
+
+
+```{r}
+#| label: fig-run-pipeline2
+#| echo: false
+#| fig-cap: R output after running the pipeline.
+#| fig-alt: R output after running the pipeline.
+
+knitr::include_graphics("Pics/pipeline2.png")
+
+```
+
+
+::: callout-note
+## Exercise
+
+Change something in your pipeline (for example the name of a target), save the script and run `tar_visnetwork()` to visualize which object are out of date.
+
+Rerun the pipeline using tar_make().
+
+:::
+
+
+### Load targets
+
+Each target can be loaded using `tar_load()` and the pipeline does not need rerunning each time before accessing the targets.
+This is a huge advantage of the targets pipeline and can save a lot of time. 
+
+```{r}
+#| label: load-target
+#| eval: false
+#| echo: true
+
+tar_load(model)
+
+```
+
+To access all the targets at once use `tar_load_everything()`.
+In `tar_load()` you can also use tidy select commands to load specific targets, e.g. `tar_load(starts_with("y"))`
+
+
+::: callout-note
+## Exercise
+
+Use `tar_load()` to load one target and use `tar_load_everything()` to load all the targets in the pipeline.
+
+:::
+
+
+::: callout-tip
+## Do it step-by-step
+
+Targets plans can become huge and complex.
+Start small, create a few targets and functions and make the plan running.
+Then add new code in small steps and check regularly if the plan is still working
+This will help to understand and solve errors (see trouble shooting section).
+
+```{r}
+#| label: fig-complex-network
+#| echo: false
+#| fig-cap: Vizualisation of complex target pipeline.
+#| fig-alt: Dependency graph that vizualises a complex target pipeline.
+
+knitr::include_graphics("Pics/complex_network.png")
+
+```
+:::
+
+
+## Trouble shooting
+
+### Load targets
+
+Error messages in targets can be hard to understand.
+One way to deal with errors is to use `tar_load_everything()` to load all targets and then running each target separately to see where the problem is.
 
 
 ### Object not found
@@ -688,22 +526,6 @@ knitr::include_graphics("Pics/error_duplicate.png")
 
 ```
 
-::: callout-note
-## Exercise
-
-If you have problems getting the target pipeline running, here is a working example that you can download or check online.
-Note that you need to have all the packages that are required for the targets pipeline to run installed.
-
-```{r}
-#| label: working-pipeline
-#| eval: false
-
-#install.packages("usethis") # if you don't have it already.
-usethis::use_course("biostats-r/targets_workflow_svalbard")
-
-```
-
-:::
 
 ## Resources
 
