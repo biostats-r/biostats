@@ -110,35 +110,58 @@ When using the `use_targets()` function, it sets up the basic structure and comm
 # Created by use_targets().
 # Follow the comments below to fill in this target script.
 # Then follow the manual to check and run the pipeline:
-#   https://books.ropensci.org/targets/walkthrough.html#inspect-the-pipeline # nolint
+#   https://books.ropensci.org/targets/walkthrough.html#inspect-the-pipeline
 
 # Load packages required to define the pipeline:
 library(targets)
-# library(tarchetypes) # Load other packages as needed. # nolint
+# library(tarchetypes) # Load other packages as needed.
 
 # Set target options:
 tar_option_set(
-  packages = c("tibble"), # packages that your targets need to run
-  format = "rds" # default storage format
+  packages = c("tibble") # packages that your targets need to run
+  # format = "qs", # Optionally set the default storage format. qs is fast.
+  #
+  # For distributed computing in tar_make(), supply a {crew} controller
+  # as discussed at https://books.ropensci.org/targets/crew.html.
+  # Choose a controller that suits your needs. For example, the following
+  # sets a controller with 2 workers which will run as local R processes:
+  #
+  #   controller = crew::crew_controller_local(workers = 2)
+  #
+  # Alternatively, if you want workers to run on a high-performance computing
+  # cluster, select a controller from the {crew.cluster} package. The following
+  # example is a controller for Sun Grid Engine (SGE).
+  # 
+  #   controller = crew.cluster::crew_controller_sge(
+  #     workers = 50,
+  #     # Many clusters install R as an environment module, and you can load it
+  #     # with the script_lines argument. To select a specific verison of R,
+  #     # you may need to include a version string, e.g. "module load R/4.3.0".
+  #     # Check with your system administrator if you are unsure.
+  #     script_lines = "module load R"
+  #   )
+  #
   # Set other options as needed.
 )
 
-# tar_make_clustermq() configuration (okay to leave alone):
+# tar_make_clustermq() is an older (pre-{crew}) way to do distributed computing
+# in {targets}, and its configuration for your machine is below.
 options(clustermq.scheduler = "multicore")
 
-# tar_make_future() configuration (okay to leave alone):
+# tar_make_future() is an older (pre-{crew}) way to do distributed computing
+# in {targets}, and its configuration for your machine is below.
 # Install packages {{future}}, {{future.callr}}, and {{future.batchtools}} to allow use_targets() to configure tar_make_future() options.
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-# source("other_functions.R") # Source other scripts as needed. # nolint
+# source("other_functions.R") # Source other scripts as needed.
 
 # Replace the target list below with your own:
 list(
   tar_target(
     name = data,
     command = tibble(x = rnorm(100), y = rnorm(100))
-#   format = "feather" # efficient storage of large data frames # nolint
+    # format = "feather" # efficient storage for large data frames
   ),
   tar_target(
     name = model,
@@ -158,12 +181,15 @@ Open the `_targets.R` in your repo and have a look at your `_targets.R` file.
 
 The `_targets.R` file has three main components.
 Note that the file also contains other options which are optional.
-Let's go through each component step-by-step.
+We will discuss the three main component step-by-step.
 
 1. `tar_option_set()` **sets all options** such as load necessary packages or defining the output format.
 The argument `package` should have a list of all the required packages that are needed to run the pipeline.
-Note that `targets` and `tarchetypes` need to be loaded first and outside this function, otherwise the pipeline will not work.
-If your pipeline includes a quarto file, the packages that are only used in a quarto file can be loaded directly in there and do not need to be loaded in the `_targets.R` file.
+Note that `targets` needs to be loaded first and outside this function, otherwise the pipeline will not work.
+
+The `tarchetypes` package contains helper functions and needs to be loaded if your pipeline contains a quarto file (see next chapter).
+Packages that are only used in a quarto file can be loaded directly in there and do not need to be loaded in the `_targets.R` file.
+
 The argument `format` let's you define default storage format. 
 
 ```{r}
@@ -173,7 +199,7 @@ The argument `format` let's you define default storage format.
 
 # Load packages required to define the pipeline:
 library(targets)
-library(tarchetypes) # Load other packages as needed.
+# library(tarchetypes) # Load other packages as needed.
 
 # Set target options:
 tar_option_set(
@@ -256,7 +282,7 @@ Keep the number of targets manageable, which means keep a balance between the am
 
 ### Populate the _target.R file
 
-The next step is to populating the `_targets.R` file.
+Now we can populate the `_targets.R` file.
 We need to set the options, source the custom functions, and define the pipeline.
 
 First, we need to add all R packages to the `tar_option_set()` function in the `_targets.R` file that are needed to run the pipeline.
@@ -282,6 +308,15 @@ tar_option_set(
 
 The next step is to source all the functions.
 The `tar_source()` function in the `_targets.R` file already does this.
+But we are missing one last function to make the figure.
+
+::: callout-note
+## Exercise
+
+Write a function that makes a figure showing leaf area in both gradients.
+
+:::
+
 
 The last step is to set up the targets pipeline.
 
@@ -374,8 +409,8 @@ This is indicated by start target and build target.
 ```{r}
 #| label: fig-run-pipeline
 #| echo: false
-#| fig-cap: R output after running the pipeline.
-#| fig-alt: R output after running the pipeline.
+#| fig-cap: R output after running the pipeline for the first time.
+#| fig-alt: R output after running the pipeline for the first time.
 
 knitr::include_graphics("Pics/pipeline.png")
 
@@ -433,9 +468,13 @@ knitr::include_graphics("Pics/pipeline2.png")
 ::: callout-note
 ## Exercise
 
-Change something in your pipeline (for example the name of a target), save the script and run `tar_visnetwork()` to visualize which object are out of date.
+Change something in your pipeline.
+For example filter for a different species: bistorta vivipara.
+Save the script and run `tar_visnetwork()` to visualize which object are not up to date now.
 
-Rerun the pipeline using tar_make().
+Rerun the pipeline using `tar_make()`.
+
+And run `tar_visnetwork()` again to check if everything is up to date again.
 
 :::
 
@@ -461,7 +500,9 @@ In `tar_load()` you can also use tidy select commands to load specific targets, 
 ::: callout-note
 ## Exercise
 
-Use `tar_load()` to load one target and use `tar_load_everything()` to load all the targets in the pipeline.
+Use `tar_load()` to load the target *traits*.
+
+Run `str(traits)` to display the structure of the object traits.
 
 :::
 
@@ -488,10 +529,40 @@ knitr::include_graphics("Pics/complex_network.png")
 
 ## Trouble shooting
 
-### Load targets
+### Locate problem
 
-Error messages in targets can be hard to understand.
-One way to deal with errors is to use `tar_load_everything()` to load all targets and then running each target separately to see where the problem is.
+Error messages in targets can be hard to understand and will look something like this:
+
+```{r}
+#| label: fig-error
+#| echo: false
+#| fig-cap: Error in the pipeline.
+#| fig-alt: Error in the pipeline.
+
+knitr::include_graphics("Pics/error.png")
+
+```
+
+You can see that the pipeline broke when running the target *model*.
+To learn more about the problem run the command `targets::tar_meta(fields = error, complete_only = TRUE)`.
+
+```{r}
+#| label: fig-error2
+#| echo: false
+#| fig-cap: Find out more about a problem in the pipeline.
+#| fig-alt: Find out more about a problem in the pipeline.
+
+knitr::include_graphics("Pics/solve_error.png")
+
+```
+
+The R output now gives some more information about the problem.
+Here the argument response is missing.
+
+If an error is difficult to understand use `tar_load()` to load one specific target or `tar_load_everything()` to load all targets.
+Then you can try to run different parts of the script to test where the code breaks.
+
+Best practice is to run the pipeline regularly, which makes it easier locate where the error occurred.
 
 
 ### Object not found
@@ -532,4 +603,5 @@ knitr::include_graphics("Pics/error_duplicate.png")
 - The [target manual](https://books.ropensci.org/targets/) contains everything you need to know
 <!-- did not find it on github -->
 - Here is a large and working [target plan]()
+- A paper about pipelines: Brousil, M. R., Filazzola, A., Meyer, M. F., Sharma, S., & Hampton, S. E. (2023). Improving ecological data science with workflow management software. Methods in Ecology and Evolution. [https://doi.org/10.1111/2041-210X.14113](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.14113?utm_source=pocket_saves)
 - Here is a short introduction video {{< video https://vimeo.com/700982360 >}}
