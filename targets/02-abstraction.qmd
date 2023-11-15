@@ -1,0 +1,277 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# Functions and abstraction
+
+::: callout-note
+## In this chapter, you will
+
+- learn how to build a function
+- learn the concept of abstraction
+
+:::
+
+To understand why `targets` is useful, we need to introduce **functions** and the concept of **abstraction**.
+
+## Long and complex code
+
+In biology, code is used to manage, analyse and visualise data, and also writing reports and making presentations. Such code is often long and complex, consists of several parts that do different tasks and contains repetition.
+To run the full data analysis, the different pieces of code need to run sequentially.
+Managing and keeping track of the code is difficult and quickly becomes confusing.
+
+**Code should be clear and communicate its purpose well.**
+Keeping code transparent and reproducible, increasing the chance to be understood by others and your later self.
+
+One way to break down long code into smaller steps and deal with the complexity is to use **functions** to **abstract** the complexity.
+Let's talk about functions first.
+
+
+## Functions
+
+A **function** is self contained code that accomplishes a specific task.
+Functions are very useful when a task is done several times.
+It saves repetition and makes the code more compact and clear.
+Functions can be called several times.
+
+R has many built-in functions that we use all the time.
+For example `mean()` which calculates the arithmetic mean.
+
+It is also possible to write custom functions to do a specific task.
+In the next section we will explain how to make your own function.
+
+
+### Make custom functions
+
+We want to multiply two numbers, but the numbers are not always the same.
+This is a case to use a function.
+
+Functions are made with the keyword `function()`, can have one or more arguments separated by commas, and need assigning to a name.
+
+For a function that multiplies two numbers, we need two arguments, arg1 and arg2.
+We will name the function *my_multiplier*.
+It is advisable name the function with a meaningful name and not to use my_function.
+
+```{r}
+#| label: multiplier
+#| eval: true
+#| echo: true
+my_multiplier <- function(arg1, arg2){
+  arg1 * arg2
+}
+
+```
+
+To run the function, type the name of the function and set values for each argument inside brackets following the name of the function.
+The function will then return the result.
+
+```{r}
+#| label: use-multiplier
+#| eval: true
+#| echo: true
+
+my_multiplier(arg1 = 3, arg2 = 4)
+
+```
+
+
+::: callout-tip
+## A function should do one task
+A function can be very simple or more complicated.
+But a function should do **one task** and not many tasks at the same time.
+Complicated code can be split into several functions.
+:::
+
+A more complicated function would be one that runs a linear regression.
+This function has three arguments: *data*, *response* and *predictor*.
+The function itself runs a linear regression and is named *fit_model*.
+
+To run the function, type the name of the function and set all arguments.
+The output of the function can be stored as an object *my_model*.
+
+```{r}
+#| label: regression-function
+#| eval: false
+#| echo: true
+fit_model <- function(data, response, predictor){
+    mod <- lm(as.formula(paste(response, "~", predictor)), data = data)
+    mod
+}
+
+my_model <- fit_model(data = my_data, response = value, predictor = treatment)
+my_model
+
+```
+
+
+::: callout-tip
+## A function should be as general as possible
+Functions should be made **as general as possible**, because this increases the chance to reuse the function.
+In the function above, we could have dropped the arguments *response* and *predictor* and hard coded *value* and *treatment* in the model.
+However, then this function could only be used for this specific dataset.
+By using response and predictor as arguments, we can reuse this function for any linear regression with one predictor.
+
+A function can even be reused in another analysis in a different R project.
+For this, the function has to be made into a R package (see the chapter Writing an R package in the R book).
+:::
+
+
+::: callout-note
+## Exercise
+
+**Import and prepare the data**
+
+Go to the targets-workflow-svalbard Rstudio project and open the `trait_analysis.R` file.
+
+Write a function that cleans and prepares the data for analysis, covering line 12 to 22.
+Add the function in the `functions.R` file which is located in the folder called `R`.
+The file contains already one function.
+
+:::
+
+
+
+## The concept of abstraction
+
+"**Abstraction** should break down complex code chunks into smaller, self-explanatory tasks to better describe the purpose or the script" (Filazzola & Lortie, 2022).
+
+Abstraction splits up the code into different functions.
+
+The **main script** contains little code, but is self explanatory, because all the details and complexity have been abstracted (removed).
+It imports the scripts and runs the functions
+
+The file(s) containing the functions are sourced by the main script.
+Related functions can live in one file.
+
+
+Here is code that imports and cleans data, runs a model and produces a figure.
+Note that we are using a small example here to save space, but this code would likely be more complex in reality.
+
+```{r}
+#| label: all-in-one
+#| eval: false
+#| echo: true
+
+### Script to test how marine nutrients affect leaf area in Alopecurus magellanicus
+
+# load libraries
+library(tidyverse)
+library(here)
+library(performance)
+
+# import data
+raw_traits <- read_delim(file = here("data/PFTC4_Svalbard_2018_Gradient_Traits.csv"))
+
+# clean data and prepare for analysis
+traits <- raw_traits |>
+  # remove NAs
+  filter(!is.na(Value)) |>
+  # order factor and rename variable gradient
+  mutate(Gradient = case_match(Gradient,
+                               "C" ~ "Control",
+                               "B" ~ "Nutrients"),
+         Gradient = factor(Gradient, levels = c("Control", "Nutrients"))) |>
+  # select one species and one trait
+  filter(Taxon == "alopecurus magellanicus",
+         Trait == "Leaf_Area_cm2")
+
+# run a linear model
+mod_area <- lm(Value ~ Gradient, data = traits)
+summary(mod_area)
+# check model assumptions
+check_model(mod_area)
+
+# make figure
+ggplot(traits, aes(x = Gradient, y = Value)) +
+  geom_boxplot(fill = c("grey80", "darkgreen")) +
+  labs(x = "", y = expression(Leaf~area~cm^2)) +
+  theme_bw()
+
+```
+
+
+This is a long script and the code has to be studied very carefully to understand what is going on.
+
+Let's **abstract** the code in a **main script** and some functions.
+
+The **main script**:
+
+```{r}
+#| label: main-script
+#| eval: false
+#| echo: true
+
+### Script to test how warming affects plant height in Bistorta vivipara.
+
+# load libraries
+library(tidyverse)
+library(here)
+library(performance)
+
+# import data
+raw_traits <- read_delim(file = here("data/PFTC4_Svalbard_2018_Gradient_Traits.csv"))
+
+# clean data
+traits <- clean_data(raw_traits)
+
+# run model
+my_model <- fit_model(data = traits, 
+                      response = "Value", 
+                      predictor = "Gradient")
+# model summary
+summary(my_model)
+# check model assumptions
+check_model(my_model)
+
+# plot treatments vs. plant height
+my_figure <- make_figure(traits)
+
+```
+
+The functions that are called in the main script are "hidden" in a separate script.
+
+```{r}
+#| label: script-with-functions
+#| eval: false
+#| echo: true
+
+### My custom functions
+
+# clean data
+clean_data <- function(raw_traits){
+  traits <- raw_traits |>
+  # remove NAs
+  filter(!is.na(Value)) |>
+  # order factor and rename variable gradient
+  mutate(Gradient = case_match(Gradient,
+                               "C" ~ "Control",
+                               "B" ~ "Nutrients"),
+         Gradient = factor(Gradient, levels = c("Control", "Nutrients"))) |>
+  # select one species and one trait
+  filter(Taxon == "alopecurus magellanicus",
+         Trait == "Leaf_Area_cm2")
+}
+
+# run a linear regression
+fit_model <- function(data, response, predictor){
+  mod <- lm(as.formula(paste(response, "~", predictor)), data = data)
+  mod
+}
+
+# make figure
+make_figure <- function(traits){
+ggplot(traits, aes(x = Gradient, y = Value)) +
+  geom_boxplot(fill = c("grey80", "darkgreen")) +
+  labs(x = "", y = expression(Leaf~area~cm^2)) +
+  theme_bw()
+}
+
+```
+
+
+
+## Resources
+
+- Filazzola, A., & Lortie, C. J. (2022). [A call for clean code to effectively communicate science](https://doi.org/10.1111/2041-210X.13961). Methods in Ecology and Evolution, 13(10), 2119-2128.
