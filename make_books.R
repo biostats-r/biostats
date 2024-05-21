@@ -49,11 +49,11 @@ quarto::quarto_render("DataManagement")
 bioceed_links("docs/github", quarto = TRUE)
 
 
-# R markdown
-withr::with_dir("Rmarkdown/", {
-  bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "../docs/rmarkdown")
-  bioceed_links("../docs/rmarkdown")
-})
+# # R markdown superseded by quarto book
+# withr::with_dir("Rmarkdown/", {
+#   bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "../docs/rmarkdown")
+#   bioceed_links("../docs/rmarkdown")
+# })
 
 # R packages
 quarto::quarto_render("writing_a_package")
