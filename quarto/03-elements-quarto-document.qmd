@@ -79,8 +79,25 @@ format: html
 Word documents are also easy; just change the format to `docx`.
 This can be very useful if you have a supervisor or collaborators who cannot cope with markdown directly.
 
-Rendering the quarto file as a PDF requires some external tools (LaTeX) to be installed (you don't need to learn any LaTeX).
-This can be done with the `tinytxt` package.
+There are two ways to render a quarto file as a PDF.
+The easiest is to change the format to `typst`.
+
+``` yaml
+---
+title: "My Manuscript"
+format: typst
+---
+```
+
+Typst comes bundled with quarto.
+It is very fast and easier to debug than the alternative.
+However, typst is very new and not yet supported by many journals for manuscript submission.
+
+::: callout-tip
+## Quarto, PDF and LaTeX
+
+LaTeX is an alternative way to produce PDF from quarto documents (you don't need to learn any LaTeX).
+It requires some external tools to be installed, which can be done with the `tinytxt` package.
 
 ```{r}
 #| label: tinytxt
@@ -92,12 +109,14 @@ tinytex::install_tinytex()
 ```
 
 Then the format in the YAML can be changed to `pdf`.
-With PDF documents, it can be tricky to control exactly where the figures are positioned, so I recommend working with html as long as possible.
 
-::: callout-tip
-## Quarto, PDF and LaTeX
+``` yaml
+---
+title: "My Manuscript"
+format: pdf
+---
+```
 
-Quarto uses LaTeX to make PDFs.
 You don't need to know any LaTeX, but you can include some if you want to change the formatting etc.
 For example, you force a new page, you could use the command.
 
@@ -105,6 +124,8 @@ For example, you force a new page, you could use the command.
 \\newpage
 ```
 :::
+
+With PDF documents, it can be tricky to control exactly where the figures are positioned, so I recommend working with html as long as possible.
 
 ::: callout-tip
 ## Coauthoring with quarto
@@ -167,7 +188,7 @@ ricv::ricv(img1 = "Pics/source-editor.png", img2 = "Pics/visual-editor.png",
 Paragraphs have a blank line between them.
 It is good practice to write one sentence per line.
 The extra line breaks will be removed when the document in knitted.
-If you want to force a line break, put two spaces at the end of the line.
+If you want to force a line break, put two spaces or a backslash at the end of the line.
 
 Formatting is generated with some special characters.
 For example:
@@ -303,6 +324,7 @@ Make a new code block (or blocks) that make a plot showing the effect of the tre
 
 You can copy and modify some of the existing code rather than writing from scratch.
 You will need to look at the data.
+Make sure all your chunk labels are unique.
 
 </details>
 :::
@@ -656,4 +678,40 @@ Only one line of text per `glue` chunk.
 Use some inline R code to report the number of leaf thickness measurements for *Bistorta vivipera*.
 :::
 
+::: callout-tip
+## Rounding numbers
 
+Numbers should be rounded to an appropriate number of decimal places when reported in the text or a table to avoid spurious precision.
+
+Here are some functions that can help 
+
+```{r}
+#| label: round
+
+# use round() to round number to the required number of digits after the decimal point.
+round(151.98646, digits = 2)
+round(151.98646, digits = -1) # negative values round to the left of the decimal point.
+
+# Use signif() to set the required number of significant figures
+signif(151.98646, 4)
+signif(0.15198646, 4)
+
+# format.pval() is a special function for formatting p-values. 
+# Use the eps argument to set the minimum exact values to display.
+format.pval(c(0.194342, 0.00000194342), digits = 3, eps = 0.001)
+
+# format() when you need more control over how the number is displayed
+format(1504703.232, big.mark = ",", nsmall = 1)
+
+```
+
+
+Make sure to do all calculations and analyses on the full number and only round to display it.
+:::
+
+
+::: callout-note
+## Exercise
+
+Edit the inline code in the document so that the mean height and its standard error are shown to two decimal places.
+:::
