@@ -424,7 +424,7 @@ block_options <- crossing(eval = c(TRUE, FALSE),
     )
   ) |> 
   mutate(across(eval:include, tolower),
-         across(eval:include, factor, levels = c("true", "false")),
+         across(eval:include, \(x){factor(x, levels = c("true", "false"))}),
          output = factor(output, levels = c("true", "asis", "false")))
 
 # make crosstalk shared data
@@ -665,7 +665,6 @@ R code is put inside braces `{}`.
 
 ```{{glue}}
 #| label: glue-example
-#| echo: fenced
 #| output: asis
 We measured {height_info$n} plants. The minimum height was {height_info$min} cm and the maximum {height_info$max} cm.
 ```
@@ -702,8 +701,7 @@ round(151.98646, digits = 2)
 round(151.98646, digits = -1) # negative values round to the left of the decimal point.
 
 # Use signif() to set the required number of significant figures
-signif(151.98646, 4)
-signif(0.15198646, 4)
+signif(c(0.15198646, 151.98646), digits = 4)
 
 # format.pval() is a special function for formatting p-values. 
 # Use the eps argument to set the minimum exact values to display.
@@ -711,7 +709,6 @@ format.pval(c(0.194342, 0.00000194342), digits = 3, eps = 0.001)
 
 # format() when you need more control over how the number is displayed
 format(1504703.232, big.mark = ".", decimal.mark = ",",  nsmall = 1) # Norwegian format
-format(1504703.232, big.mark = ",", decimal.mark = ".",  nsmall = 1) # UK/US format
 ```
 
 
