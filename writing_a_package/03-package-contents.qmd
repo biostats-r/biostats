@@ -14,7 +14,7 @@ data("penguins", package = "palmerpenguins")
 5)  Test drive with `devtools::load_all()`
 6)  Build and install (@sec-build-and-install)
 
-Because there are usually lots of errors to fix, it is sensible to build the package slowly, testing with Check frequently.
+Because there are usually lots of errors to fix, it is sensible to build the package slowly, testing it frequently.
 
 ## Tests {#sec-tests}
 
@@ -50,6 +50,25 @@ More complex tests might need some additional set-up code in the expression.
 There are several `expect_*()` functions to test different aspects of the function, including that errors and warnings are thrown as expected.
 Each `test_that()` call can test multiple expectations.
 You can have multiple `test_that()` calls per file.
+
+::: callout-tip
+## tests for import functions
+
+If you are writing a package that imports data from files, you need to test this.
+You can save files for testing in the "tests/testthat" directory. 
+When you load them you will need to `testhat::test_path()` so the file can be found.
+
+For example, if you wanted to test if function `my_import()` could correctly import a file ("tests/testthat/testdata.csv") with the correct number of rows, we could use
+
+```{r}
+#| eval: false
+test_that("import works", {
+  expect_equal(nrow(my_import(test_path("testdata.csv"))), 10)
+})
+
+```
+
+:::
 
 Look for examples of tests on GitHub if you need inspiration.
 
@@ -297,9 +316,9 @@ Any packages loaded by `library()` need to be declared in the DESCRIPTION file (
 
 You can use [markdown](https://roxygen2.r-lib.org/articles/markdown.html) to enhance the documentation, including links etc.
 
-### Importing and exporting functions {#sec-importing-exporting-functions}
+### Importing functions {#sec-importing-exporting-functions}
 
-The roxygen comments are also where you import functions from other packages and mark your functions for export.
+The roxygen comments are also where you import functions from other packages.
 This information will be written into the NAMESPACE file so you don't have to (see the [R package book](https://r-pkgs.org/namespace.html#namespace) for more information about this file).
 
 If you want to use a function from any other package (except `base`) you need to add the dependency to the package to the DESCRIPTION file.
@@ -325,7 +344,14 @@ This is safer as it minimises the risk of conflicts.
 
 Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (@troubleshooting).
 
-Export any of your functions that you want users to have access to by adding `@export` to the roxygen comments.
+### Exporting functions
+
+If you want to make your function available to users you normally need to export them. 
+You can do this by adding `@export` to the roxygen comments.
+
+Functions extending S3 generics (e.g. `plot.myclass()`) don't need to be exported, but it makes it easier for the user to find your function and access the help file.
+
+Other functions that are not exported are internal to the package, they can be accessed by the user with `mypackage:::unexported()` but they should not need to do this.
 
 ### Generate the .Rd files
 
@@ -450,7 +476,17 @@ devtools::load_all()
 
 and give your functions a test drive.
 
+::: callout-caution
+## Don't `source()` functions
+
+You must resist the temptation to `source()` your functions (or otherwise load them through the RStudio interface). 
+
+This will cause problems for `devtools::load_all()` as the sourced functions will mask the versions loaded by `load_all()`, and may not work properly. 
+Either delete any functions you have sourced, or restart your R session.
+
+:::
+
 ## Build and install {#sec-build-and-install}
 
-When you are happy with your package, use the "Install and Restart" button in the build tab to install your package.
+When you are happy with your package, use the "Install" button in the build tab to install your package.
 Now you can load it with `library()` as you would any other package.
