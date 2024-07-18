@@ -1,70 +1,11 @@
-
-
-# Introduction
-
-```{r}
-#| label: setup
-#| include: false
-library(tidyverse)
-source("../Templates/biostats_theme.R")
-```
-
-Writing a thesis requires importing data, writing code to clean, transform, analyse data, and making figures and writing the thesis.
-This is done by writing several R scripts and running one script after another producing results and figures (@fig-data-workflow).
-All the time, the code is updated, to add new data, transforming the data, changing analysis or adding a figure.
-And often several iterations of running the same scripts are needed and it is difficult to keep track of which scripts need rerunning.
-In addition, complex and computational heavy data analysis can take a lot of time and rerunning such analysis is inefficient.
-
-This workflow is very inefficient and error prone.
-And there is a better way.
-
-```{r}
-#| label: fig-data-workflow
-#| echo: false
-#| fig-cap: Non-reproducible data workflow.
-#| fig-alt: Non-reproducible data workflow.
-
-knitr::include_graphics("Pics/data_workflow.png")
-
-```
-
-Targets is a **pipeline tool** which takes care of dependencies in the code and keeps track of outdated objects (@fig-targets-pipeline).
-When updating and rerunning code, targets will skip parts where the upstream code has not changed, and which is still up to date and it will only rerun the code that is outdated.
-Targets ensures that your results always match the underlying code and maintains a  **reproducible workflow**. 
-It avoids unnecessary repetition and can saves costly running time.
-
-```{r}
-#| label: fig-targets-pipeline
-#| echo: false
-#| fig-cap: Reproducible targets pipeline.
-#| fig-alt: Reproducible targets pipeline.
-
-knitr::include_graphics("Pics/reproducible_pipeline.png")
-
-```
-
-
-*When is targets useful?*
-
-- When the code has a long runtime because it is slow or complex
-
-- When the workflow has interconnected tasks with dependencies
-
+---
+editor: 
+  markdown: 
+    wrap: sentence
+---
 
 ::: callout-note
 ## Before you start
-
-Use the `checker` function to check what software and R packages you have already installed and what needs updating or installing.
-
-If you have never used the package before run:
-
-maybe first: `install.packages("remotes")`
-
-then `remotes::install_github("richardjtelford/checker")`
-
-<!-- What needs to be in here? -->
-To check what you have already installed use:
-`chk_requirements(...)`
 
 For this tutorial you will need:
 
@@ -76,4 +17,56 @@ For this tutorial you will need:
 -   tarchetypes R package (`install.packages("tarchetypes")`)
 
 If `quarto` is new to you, have a look at the **Reproducible documents** tutorial (REF to Quarto book) before proceeding here.
+:::
+
+# Introduction
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+source("../Templates/biostats_theme.R")
+```
+
+Writing a thesis requires importing data (1), writing code to clean, transform (2), analyse data (3), and making figures (5) and writing (6; @fig-data-workflow).
+This is done by writing several R scripts and running one script after another producing results and figures.
+All the time, the code is updated, to add new data, transforming the data, changing analysis or adding a figure.
+Often many iterations of running the same scripts are needed and it is difficult to keep track of which scripts need rerunning.
+In addition, complex and computational heavy data analysis can take a lot of time especially when it requires rerunning the analysis.
+
+This workflow is very inefficient, **non-reproducible and error prone**.
+There is a better way and this tutorial will show you how.
+
+```{r}
+#| label: fig-data-workflow
+#| echo: false
+#| fig-cap: Non-reproducible data workflow.
+#| fig-alt: Non-reproducible data workflow.
+
+knitr::include_graphics("Pics/data_workflow.png")
+
+```
+
+In this chapter we will first explain the concept of abstraction and then go through the basic workflow of a `targets` pipeline.
+We will use plant trait data from two sites on Svalbard.
+One site is located close to nesting sites of sea birds receiving nutrient input while the other site is a reference location and has minimal nutrient input by sea birds.
+
+Follow the instructions below to download the repo containing data and code.
+
+::: callout-note
+## Exercise
+
+To download the R project, run:
+
+```{r}
+#| label: download-repo
+#| eval: false
+
+#install.packages("usethis") # if you don't have it already.
+usethis::use_course("biostats-r/targets_workflow_svalbard")
+
+```
+
+Then follow the instructions.
+This will open the targets-workflow-svalbard Rstudio project.
 :::

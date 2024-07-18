@@ -1,0 +1,248 @@
+``` {r setup, include=FALSE}
+source("R/setup.R")
+rm(penguins)
+```
+
+# Objects and names
+
+Using R as a calculator is fine, but to get very far we need to store the results from a calculation so we can use it in another calculation.
+
+
+
+## Storing data in objects
+
+R uses objects to store data in memory. 
+Storing data in an object is referred to as "assigning data".
+There are different types of data and objects; we will talk much more about them further below.
+For now, let's see why one should assign data to objects, and how to do it.
+
+### Why assigning data?
+
+Putting data into named objects allows you to:
+
++ store *massive* amounts of data and/or code for later reuse in calculations, analysis, plots and figures,
++ *divide* your code into separate steps, each of which is clearly identifiable by name and thus reusable,
++ *simplify* your code by referring to previous calculations or plots.
+
+```{r}
+#| label: palmercode
+#| echo: false
+#| warning: false
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+# Jitter plot example
+plot3 <- ggplot(data = palmerpenguins::penguins, aes(x = species, y = body_mass_g)) +
+           geom_jitter(aes(color = species),
+              width = 0.1,
+              alpha = 0.7,
+              show.legend = FALSE) +
+         scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
+
+# Histogram example
+plot2 <- ggplot(data = palmerpenguins::penguins, aes(x = flipper_length_mm)) +
+  geom_histogram(aes(fill = species), alpha = 0.5, position = "identity", bins = 30) +
+  scale_fill_manual(values = c("darkorange", "darkorchid", "cyan4"))
+
+# Count penguins for each species / sex
+plot1 <- ggplot(palmerpenguins::penguins, aes(x = sex, fill = species)) +
+  geom_bar(alpha = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_minimal() +
+  facet_wrap(~species, ncol = 1) +
+  coord_flip()
+```
+
+
+Let's take a look at the following figure. It is made of 3 plots, each of them based on different variables taken from a single data set: 
+
+```{r palmer-figure, echo = FALSE}
+#| label: palmer-figure
+#| echo: false
+#| warning: false
+plot1 / (plot2 + plot3)
+```
+
+Believe it or not, but the code that builds this figure is as simple as this: 
+
+```{r finalcode, eval=FALSE}
+plot1 / (plot2 + plot3)
+```
+
+In fact, everything that R needed in order to make the figure had been previously stored in the objects `plot1`, `plot2` and `plot3`. 
+
+The clear benefit of assigning data into the above-mentioned objects is that it simplified a lot the code for the figure.
+
+
+### Assigning data to an object
+
+To assign data to an object, type first the name you want to give it followed by the operator `<-` and the data to store. 
+In the following example, we will assign the result of the operation `sqrt(42)` in memory to the object named `result`: 
+
+```{r result, echo=TRUE}
+result <- sqrt(42)
+```
+
+At once, the object `result` and its associated value show up in the `Environment` tab of RStudio. 
+
+```{r stored_result, echo = FALSE, out.width="100%"}
+knitr::include_graphics("figures/result.png")
+```
+
+From now on, you can display the content of `result` simply by typing its name:
+```{r display_result, echo=TRUE}
+result
+```
+
+You can also reuse the object for other operations:
+
+```{r operations_result, echo=TRUE}
+result * 3
+result * result
+```
+
+### Modifying object content
+
+To modify the content of an object, you simply have to assign new data to it. 
+Here we modify the object `result`:
+```{r modify_result, echo=TRUE}
+result <- exp(42)
+```
+
+The content of `result` is automatically modify, as shown in the Environment tab.
+
+```{r updated_result, echo = FALSE, out.width="100%"}
+knitr::include_graphics("figures/new_result.png")
+```
+
+Note that the previous content of `result` is lost as soon as the new data is assigned. 
+To restore the original value, you will have to go back to your script and rerun the original command that assigned the square root of 42 to `result`.
+This is one of the many reasons why you should always work with a script and annotate it: it is your life-line in case you make a mistake, lose objects, modify data elements, etc.
+
+
+### Naming objects {#sec-naming-objects}
+
+> "What's in a name? That which we call a xx3\
+> By any other name would smell as sweet;"\
+> -- not quite Romeo and Juliet
+
+> There are only two hard things in Computer Science:\
+> cache invalidation and naming things.\
+> -- Phil Karlton
+
+Naming an object sounds quite easy if you are creative, but there is a set of rules to respect:
+
++ names must start with a letter (lower or upper case) or a dot `.`, nothing else!
++ names may include letters (lower and/or upper case), numbers, underscores `_` and dots `.`
++ you cannot use *reserved* names, i.e. names of existing functions or words already used in R (`TRUE`, `FALSE`, `break`, `function`, `if`, `for`, `NA`, `function`, see the complete list by running `?Reserved` in the console)
+
+Beside these rules, you may find the following recommendations useful: 
+
++ be consistent and use a word convention when writing names, such as `snake_case` where words are written in lowercase and separated using an underscore symbol `_`
++ give your object a meaningful name such as `norwegian_seabirds`, `alpine_species_vestland`, etc
++ avoid names which meaning may change with time, such as `new_dataset`, `modified_dataset`, `last_year_data`, etc
++ avoid very long names
++ remember R is case-sensitive
++ have a look at the [tidyverse style guide](https://style.tidyverse.org/syntax.html#object-names){target="_blank"}
+
+::: callout-note 
+## Exercise
+
+We have prepared a _learnr_-tutorial that further describes the rules for naming objects, and gives you a chance to test how well you have understood. 
+This tutorial is in the `biostats.tutorials` package.
+
+The tutorial is called `Naming objects`. 
+Simply click on the button `Start Tutorial >` to the right to start it.
+
+See @sec-biostatstutorials for how to install `biostats.tutorials` and run the tutorials.
+:::
+
+### Viewing object content
+
+As introduced in @sec-the-environment-tab, the `Environment` tab of RStudio lists all the objects stored in memory in a given project.
+This list comes with a quick summary of both the structure and the content of the objects.  
+
+The function `View()` applied to any object opens a new tab which displays the whole object in the form of a table. 
+@fig-view shows a screenshot of the tab that appears after running `View()` on a large object called `tb`.
+
+```{r View, echo=TRUE, eval=FALSE}
+View(tb)
+```
+
+```{r}
+#| label: fig-view
+#| echo: false
+#| eval: true
+#| fig-cap: "The function `View()` opens a tab with the content of the object."
+#| out-width: "100%"
+knitr::include_graphics("figures/view.png")
+```
+
+`View()` is particularly useful when you want to quickly check entries directly in the data set as it spares you from finding and opening the original data file on your disk via the explorer.
+
+::: callout-note 
+## Exercise 
+`View()` the `penguins` dataset from `palmerpenguins`. 
+Compare with what you get by printing the penguins dataset.
+Which do you find most useful?
+:::
+
+### Deleting objects
+
+When you are done with a particularly large object that takes a lot of memory, it may be useful to get rid of it. 
+This is done by using the function `rm()`.
+Here, we will delete `result` from the current environment.
+```{r delete1}
+rm(result)
+```
+
+To delete several objects at the same time, use `rm()` and type their name separated with commas `,`. 
+
+```{r result-reborn}
+result <- exp(42)
+result2 <- result ^ 2
+```
+
+```{r delete2}
+rm(result, result2)
+```
+
+Again, once it is done, there is only one way back: go to your script and rerun the commands that originally created `result` and `result2`.
+
+To delete everything, you can use the broom icon in the Environment tab, but it is usually better to restart the R session.
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Session</li>
+  <li class="breadcrumb-item">Restart R</li>
+</ol> 
+
+## Built-in data sets
+
+There are many datasets and other objects built into R or R packages. 
+If the package is loaded, they can be used by typing their name.
+
+```{r pi}
+pi
+month.abb # abbreviated month names
+```
+
+To make objects in packages available you can either load the package with `library()` first, or use `data()`.
+
+```{r data, error = TRUE}
+penguins # not available yet
+data(penguins, package = "palmerpenguins")
+penguins # available now
+```
+
+
+The `penguins` dataset contains morphological data on three species of penguin. 
+You will meet this dataset repeatedly as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
+
+::: {.column-margin}
+## Contributors {.unlisted .unnumbered}
+
+-   Jonathan Soulé
+-   Aud Halbritter
+-   Richard Telford
+:::
+

@@ -50,7 +50,7 @@ penguin_islands <- tribble(
 penguin_islands
 ```
 
-The first two arguments to `left_join()` are the data frames, the third is the `by` argument which tells the join which column to make the join by.
+The first two arguments to `left_join()` are the data frames, the third is the `by` argument which tells the join which column to make the join by with help from the `join_by` function.
 Here, we are joining by a single column with the same name in both data frames.
 It is possible to join by multiple columns and where the columns have different names in each dataset.
 
@@ -60,10 +60,13 @@ penguin_small <- penguins |>
   slice(1:2) # small version of data for easy viewing
 
 
-left_join(penguin_small, penguin_islands, by = "island")
+left_join(penguin_small, penguin_islands, by = join_by(island))
 ```
 
-Only three of the four islands in `penguin_islands` have data in the `penguins` data set. 
+Only three of the four islands in `penguin_islands` have data in the `penguins` data set.
+
+The `join_by()` function also lets us join by multiple columns, join by columns with different names (`join_by(column1 == column2)`), join with an inequality (`join_by(column1 > column2)`), and use helper functions such as `closest()` so the join can work even when there is not an exact match. 
+
 Different variants of mutating joins will treat this in different ways.
 
 - `left_join()` takes all rows from the first (left) data frame and matching rows from the second (right). 
@@ -83,7 +86,7 @@ Join the `penguins` and `penguin_islands` datasets to
  <details>
   <summary>Hint</summary>
 ```{r, eval = FALSE}
-inner_join(___, ___, by = ___)
+inner_join(___, ___, by = join_by(___))
 
 ```
 </details> 
@@ -93,8 +96,8 @@ inner_join(___, ___, by = ___)
 
 The mutating joins described above give you the rows from each data frame where the identifying variables match.
 Sometimes you want all possible combinations of rows.
-This is known as the Cartesian product and can be generated with `crosing()`.
-`crosing()` works with data frames as well as vectors as shown here.
+This is known as the Cartesian product and can be generated with `crossing()`.
+`crossing()` works with data frames as well as vectors as shown here.
 
 ```{r crossing}
 crossing(a = letters[1:3], b = 1:2)
@@ -113,7 +116,7 @@ knitr::include_graphics("figures/semi-join.gif")
 
 ```{r semi-join}
 penguin_islands |> 
-  semi_join(penguins, by = "island")
+  semi_join(penguins, by = join_by(island))
 ```
 
 
@@ -125,7 +128,7 @@ knitr::include_graphics("figures/anti-join.gif")
 
 ```{r anti-join}
 penguin_islands |> 
-  anti_join(penguins, by = "island")
+  anti_join(penguins, by = join_by(island))
 ```
 
 These can be very useful when cleaning data to find problems.

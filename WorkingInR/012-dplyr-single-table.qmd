@@ -12,7 +12,7 @@ This tutorial will show you how to manipulate data frames using the `dplyr` pack
 Everything that can be done with `dplyr` can be done with base R.
 The `dplyr` solution is usually easier to write and understand, and can be faster.
 
-There are many function in `dplyr`, this tutorial focuses on the functions I find most useful.
+There are many function in `dplyr`, this tutorial focuses on the functions we find most useful.
 
 ### Load the package
 
@@ -459,11 +459,16 @@ This can be done with the `across()` helper function.
 
 ```{r across}
 penguins |>
-   summarise(across(c(bill_length_mm, bill_depth_mm), .fns = mean, na.rm = TRUE))
+   summarise(
+     across(c(bill_length_mm, bill_depth_mm), 
+            .fns = \(x)mean(x, na.rm = TRUE)))
 
 #using a list of functions
 penguins |>
-  summarise(across(.cols = starts_with("bill"), .fns = list(sd = sd, mean = mean), na.rm = TRUE))
+  summarise(
+    across(.cols = starts_with("bill"), 
+           .fns = list(sd = \(x)sd(x, na.rm = TRUE), 
+                       mean = \(x)mean(x, na.rm = TRUE))))
 ```
 
 You can also use `across()` with `mutate()` to mutate several columns at the same time.
@@ -610,7 +615,7 @@ It is sometimes best to rename these columns to make them easier to refer to.
 ## Further reading
 
 -   [stat545](https://stat545.com/dplyr-intro.html)
--   [R for data science](https://r4ds.had.co.nz/) (Online copy of book)
+-   [R for data science](https://r4ds.hadley.nz/)
 -   [`dplyr` cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf)
 :::
 

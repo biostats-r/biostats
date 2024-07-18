@@ -23,8 +23,6 @@ These can be added to different types of base map
 
 -   A map made of downloaded tiles (similar to how Google maps works)
 
--   A raster (made of pixels)
-
 ::: callout-tip
 ## Terminology
 
@@ -49,15 +47,17 @@ Large-scale maps are usually high resolution and cover a small spatial extent.
 
 The `rnaturalearth` package makes [Natural Earth](http://www.naturalearthdata.com/) data available.
 Natural Earth [features include](https://www.naturalearthdata.com/features/) coastlines, rivers, bathymetry, political borders, roads and railways at scales 1:10m, 1:50m, and 1:110 million.
-The `rnaturalearth` package includes coastline and country data at the small and medium scale.
-A companion package `rnaturalearthhires` has the large scale (1:10 million) data.
-Other datasets from Natural Earth can be downloaded directly from the [website](https://www.naturalearthdata.com/downloads/) or with `ne_download()`
+The low-resolution (1:110 million) coastline and country data, suitable for world maps, are included in the `rnaturalearth` package.
+The `rnaturalearthdata` package, also on CRAN, contains medium-resolution data.
+High-resolution (1:10 million) data are in the `rnaturalearthhires` package, instructions for installing this are below.
 
 ```{r}
 #| label: rnaturalearth
 #| results: hide
+#| fig-alt: Maps at different scales
+#| message: false
 library(rnaturalearth)
-# install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
+
 world <- ne_countries(scale = 110, returnclass = "sf") 
 small_scale_map <- ggplot() +
   geom_sf(data = world) +
@@ -69,6 +69,9 @@ medium_scale_map <- ggplot() +
   geom_sf(data = europe) +
   coord_sf(xlim = c(5, 30), ylim = c(55, 71)) +
   ggtitle("Norden")
+
+# Need extra package for high resolution data
+# install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
 
 norway <- ne_countries(scale = 10, returnclass = "sf", country = "Norway") 
 
@@ -92,16 +95,17 @@ small_scale_map + medium_scale_map + large_scale_map
 :::
 
 ::: callout-tip
-
 ## Rivers and lakes
 
 Sometimes the coastline and national borders are sufficient.
-Sometimes they aren't very informative and you want to add more features, such as rivers, lakes  and cities.
+Sometimes they aren't very informative and you want to add more features, such as rivers, lakes and cities.
 This can be done with data from [Natural Earth](http://www.naturalearthdata.com/) (or other sources).
+Natural Earth datasets can be downloaded directly from the [website](https://www.naturalearthdata.com/downloads/) or with `ne_download()`
 
 ```{r}
 #| label: fig-lakes-rivers
 #| fig-cap: Lakes and rivers
+#| fig-alt: Map showing lakes and rivers
 
 # download if needed
 if(!file.exists("maps/ne_10m_rivers_europe.shp")){
@@ -120,14 +124,16 @@ ggplot() +
   geom_sf(data = lakes, fill = "lightblue") + 
   coord_sf(xlim = c(5, 30), ylim = c(55, 71))
 ```
-Extra rivers and lakes for Europe and N. America are available from Natural Earth, but for a large-scale map, other data sets may be better, for example from [Noregs vassdrags- og energidirektorat](http://nedlasting.nve.no/gis/).
-:::
 
+Extra rivers and lakes for Europe and N.
+America are available from Natural Earth, but for a large-scale map, other data sets may be better, for example from [Noregs vassdrags- og energidirektorat](http://nedlasting.nve.no/gis/).
+:::
 
 ### `ggOceanMaps`
 
 `ggOceanMaps` is, as the name suggests, focused on ocean map, with coastlines, bathymetry and also glaciers.
-`ggOceanMaps` requires `ggOceanMapsData`, which needs to be installed separately
+`ggOceanMaps` requires `ggOceanMapsData`, which needs to be installed separately. 
+You do **not** need to load `ggOceanMapsData` wih `library()`
 
 ```{r}
 #| label: install-ggOceanMapsData
@@ -140,6 +146,7 @@ Now `ggOceanMaps` is ready to use.
 ```{r}
 #| label: ggOceanMaps
 #| message: false
+#| fig-alt: Base map from ggOceanMaps
 library(ggOceanMaps)
 #limits are given longitude min/max, latitude min/max
 basemap(limits = c(-30, 30, 50, 80),
@@ -150,7 +157,7 @@ basemap(limits = c(-30, 30, 50, 80),
 ::: callout-note
 ## Exercise
 
-Make a map of the Nordic Seas using either `rnaturalearth` or `ggOceanMaps`.
+Make a map of Svalbard using either `rnaturalearth` or `ggOceanMaps`.
 :::
 
 ### Other vector files
@@ -175,9 +182,10 @@ This is a map of the fylke of Norway.
 
 ```{r}
 #| label: fylker
+#| fig-alt: Map showing fylke
 library(sf)
 
-# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2021-klippet-etter-kyst/f08fca3c-33ee-49b9-be9f-028ebba5e460)
+# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2021-klippet-etter-kyst/f08fca3c-33ee-49b9-be9f-028ebba5e460
 # This map will be out of date when fylker are reorganised
 fylker <- st_read("data/fylker2021.json")
 
@@ -205,7 +213,7 @@ This gives a lot of information, the most important is that the coordinate refer
 
 If we need to change a coordinate reference systems, we can do that with `sf::st_transform()`.
 You need to know the [EPSG](https://epsg.io/) code of the target reference system, or the wkt.
-The code for WGS84 is 4326.
+The EPSG code for WGS84 is 4326.
 
 ```{r}
 fylker2 <- sf::st_transform(fylker, crs = 4326)
@@ -219,11 +227,15 @@ fylker2 <- sf::st_transform(fylker, crs = 4326)
 Tiled basemaps can be used with either `ggspatial` or `ggmap` packages.
 I recommend using `ggspatial` as it is consistent with the other mapping tools used here.
 
+::: callout-important
+## Copyright
+
 If you use a tiled map background, you should attribute the source (e.g., "Copyright OpenStreetMap contributors" when using an OpenStreetMap-based tiles).
+:::
 
 ### `ggspatial`
 
-We can add a tiled-basemap to a plot with `annotation_map_tile()`.
+We can add a tiled-basemap to a plot with `annotation_map_tile()` (you may need to install some extra packages at this stage - R will tell you).
 Here, we need to use `coord_sf()` to set the map extent and coordinate reference system as we have not added any `sf` layers with `geom_sf()`.
 Downloaded tiles will be stored in the maps directory (which you may need to make first).
 
@@ -231,7 +243,7 @@ Downloaded tiles will be stored in the maps directory (which you may need to mak
 #| label: anotation-map-tile
 #| fig-width: 8
 #| message: false
-
+library(ggspatial)
 ggplot() +
   annotation_map_tile(
     type = "osm", 
@@ -251,6 +263,7 @@ Several different types of maps are available (see `rosm::osm.types()`) and more
 #| echo: false
 #| fig-width: 8
 #| message: false
+#| fig-alt: maps of Bergen with different tiled backgrounds
 # rosm::osm.types()
 c("osm", "stamenwatercolor", "cartodark", "cartolight") |> 
   map(~{
@@ -281,12 +294,13 @@ The `ggmap` package lets you use Google Maps and other similar maps as a basemap
 ## googlemaps
 
 `ggmap` can use maps and satellite image from Google, but you need to [register](https://mapsplatform.google.com/) for an API key.
-You shouldn't be charged unless you make a lot of maps (more than 20000 per month).
+You shouldn't be charged unless you make a lot of maps (thousands per month).
 :::
 
 ```{r}
 #| label: ggmap
 #| message: false
+#| fig-alt: Map of Bergen
 
 library(ggmap)
 
@@ -298,7 +312,7 @@ ggmap(bergen)
 
 ```
 
-Maps made with a tiled background can appear cluttered with unnecessary information. 
+Maps made with a tiled background can appear cluttered with unnecessary information.
 They are probably best for small areas.
 
 ::: callout-note
@@ -306,76 +320,6 @@ They are probably best for small areas.
 
 Make a tiled map that shows your favourite holiday destination.
 :::
-
-## Raster basemaps
-
-Rasters can be used to show maps of continuous data, for example, elevation or sea surface temperature.
-
-### `terra`
-
-The `terra` package can import raster images in several formats, including GeoTIFF.
-
-::: callout-tip
-## `terra` vs `raster` vs `stars` packages
-
-The `terra` package is an update to the widely-used `raster` package.
-It should be faster and easier to use.
-
-`stars` is designed for spatio-temporal arrays.
-There are some things it cannot do that `terra` can (and vice versa) but has better integration with `sf` and `ggplot2`.
-:::
-
-Rasters imported with `terra` are easy to plot with the base R `plot()` function, but if we want to use `ggplot()`, we have to first convert to an `sf` object.
-
-```{r}
-#| label: terra
-#| message: false
-library(terra)
-
-# import digital elevation model
-# data from https://topotools.cr.usgs.gov/gmted_viewer/viewer.htm
-norway_dem <- rast("data/50N000E_20101117_gmted_med300.tif")
-
-# crop to vestland and convert to sf object
-vestland_extent <- ext(4.5, 9, 59, 62)
-vestland_dem <- crop(norway_dem, vestland_extent) |> 
-  as.points() |> 
-  st_as_sf() 
-
-#rename the data layer
-names(vestland_dem)[1] <- "Elevation"
-
-# plot
-
-ggplot(vestland_dem) +
-  geom_sf(aes(colour = Elevation))
-
-```
-
-If the raster is in UTM coordinates, it is possible to convert to a data.frame and then plot with `geom_raster()`.
-Then `ggplot()` just treats it as regular plot and does not know that it is a map.
-
-<!-- ```{r} -->
-
-<!-- library(stars) -->
-
-<!-- dem <- read_stars("data/50N000E_20101117_gmted_med300.tif") -->
-
-<!-- #crop dem -->
-
-<!-- bbox <- st_bbox(c(xmin = 4.5, xmax = 9, ymax = 62, ymin = 59), crs = st_crs(4326)) -->
-
-<!-- dem_cropped <- st_crop(x = dem, y = bbox) -->
-
-<!-- ggplot() + -->
-
-<!--   geom_stars(data = dem_cropped) + -->
-
-<!--   # geom_sf(data = st_crop(norway, bbox), fill = NA, colour = "white") + -->
-
-<!--   labs(fill = "Elevation m")  -->
-
-<!-- ``` -->
 
 ## Adding data to the basemap
 
@@ -396,6 +340,8 @@ If the data are already a `sf` object they can be plotted with `geom_sf()`.
 ```{r}
 #| label: second-sf
 #| message: false
+#| fig-alt: maps of aquaculture sites in Norway plotted with different packages
+
 # aquaculture sites downloaded from Barentswatch.no/fiskinfo
 aquaculture <- st_read("data/flate-ihht-akvakulturregisteret20220928.geojson")
 
@@ -418,15 +364,17 @@ vestland <- get_map(
 
 # needs inherit.aes = FALSE
 ggmap(vestland) + 
- geom_sf(data = aquaculture, colour = "red", inherit.aes = FALSE)
+ geom_sf(data = aquaculture, colour = "red", inherit.aes = FALSE, linewidth = 1) # thicker lines to make visible
 ```
 
 Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom.
-So `geom_spatial_point()` rather than `geom_point()` and `geom_spatial_path()` rather than `geom_path()`
+So `geom_spatial_point()` rather than `geom_point()` and `geom_spatial_path()` rather than `geom_path()`.
 
 ```{r}
-#| label: geom-spatial-points
+#| label: fig-geom-spatial-points
 #| message: false
+#| fig-cap: Flight speed of a migrating osprey
+#| fig-alt: Maps showing flight speed of a migrating osprey from Germany to West Africa.
 library(ggspatial)
 
 # GPS tracking data of osprey. Data from https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.w6m905qt2
@@ -449,7 +397,7 @@ It they are UTM, you will need to use the `crs` argument with the correct [EPSG 
 ## geom_path() vs geom_line()
 
 `geom_path()` draws a line from the first point in the dataset to the second and so on.
-This is useful for plotting on maps with `geom_spatial_path()` (and ordinations).
+This is useful for plotting on maps with `geom_spatial_path()`.
 
 `geom_line()` draws a line from the left-most point to the next left-most point in the dataset.
 This is useful for plotting timeseries.
@@ -475,9 +423,11 @@ parzer::parse_lat("60° 22' 50.52''N")
 ::: callout-note
 ## Exercise
 
-Download and import the [data](https://setac.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fetc.5064&file=etc5064-sup-0002-Supplementary_dataset.xlsx) for [Andvik et al (2021)](https://doi.org/10.1002/etc.5064) on contaminants in orca.
-
-Make a map to show the hexabromobenzene (HBB) concentrations in the blubber.
+Otters (_Lutra lutra_) have re-established in Vestland.
+File ExcelExport_7972978_Page_1a.xlsx, (from [https://artsobservasjoner.no](https://artsobservasjoner.no), edited to remove an invalid unicode character) shows observations of otters in Vestland. 
+Make a map of the observations. 
+Relevant columns are  "East Coord", "North Coord". 
+The coordinates are UTM zone 33N, EPSG code 25833.
 :::
 
 ### Cloropleth maps
@@ -491,6 +441,7 @@ Here, I use data on 2021 phosphorous discharge in municipal wastewater from [SSB
 #| label: fig-cloropleth
 #| message: false
 #| fig-cap: Total phosphate discharge in municipal wastewater by fylke.
+#| fig-alt: Cloropleth map of phosphate discharges by fylke. Discharges are hightest in Vestland
 p_discharge <- readxl::read_excel(path = "data/05280_20230421-012359.xlsx",
                                   skip = 4, n_max = 11) |>
   janitor::clean_names() |> 
@@ -500,7 +451,8 @@ p_discharge <- readxl::read_excel(path = "data/05280_20230421-012359.xlsx",
 # \\d{2} = 2 numbers, " " = space, ".*" = any number of any character, ie everything else
 
 # join to fylker
-fylker_discharge <- fylker |> left_join(p_discharge, by = "Fylkesnummer")
+fylker_discharge <- fylker |> 
+  left_join(p_discharge, by = "Fylkesnummer")
 
 ggplot(fylker_discharge) +
   geom_sf(aes(fill = total_discharge)) +
@@ -508,16 +460,17 @@ ggplot(fylker_discharge) +
 ```
 
 ::: callout-tip
-
 ## Cartograms
 
-Sometimes cloropleth maps can be misleading. 
-An alternative is to warp space so that the area of each region is proportional to the value. 
+Sometimes cloropleth maps can be misleading.
+An alternative is to warp space so that the area of each region is proportional to the value.
 This is a cartogram, which can be made with the `cartogram` package.
+
 ```{r}
 #| label: fig-cartogram
 #| message: false
 #| fig-cap: Cartogram showing total phosphate discharge in municipal wastewater by fylke.
+#| fig-alt: Cartogram showing total phosphate discharge in municipal wastewater by fylke. Vestland is larger and Innlandet is smaller than in the normal map.
 
 library(cartogram)
 
@@ -542,14 +495,66 @@ ggplot(kart) +
 With `rnaturalearth` data, make a world map that shows the population (column pop_est) of each country.
 :::
 
-### raster
+### Rasters
 
-Raster data, perhaps the output of a model, can also be added to maps, using code similar to that for plotting a raster basemap.
+Rasters can be used to show maps of continuous data, for example, elevation or sea surface temperature, or model predictions.
+Depending on the extent, you might not need a separate basemap.
+
+### `terra`
+
+The `terra` package can import raster images in several formats, including GeoTIFF.
+
+::: callout-tip
+## `terra` vs `raster` vs `stars` packages
+
+The `terra` package is an update to the widely-used `raster` package.
+It should be faster and easier to use.
+`terra` can integrate with `ggplot2` with `tidyterra`.
+
+`stars` is designed for spatio-temporal arrays.
+There are some things it cannot do that `terra` can (and vice versa).
+It has good integration with `sf` and `ggplot2`.
+:::
+
+Rasters imported with `terra` are easy to plot with the base R `plot()` function, but if we want to use `ggplot()`, it is easiest to use a geom from the `tidyterra` package.
+
+```{r}
+#| label: terra
+#| message: false
+#| fig-alt: Raster map showing digital elevation model of vestland, cropped at sealevel.
+library(terra)
+library(tidyterra)
+
+# import digital elevation model
+# data from https://topotools.cr.usgs.gov/gmted_viewer/viewer.htm
+norway_dem <- rast("data/50N000E_20101117_gmted_med300.tif")
+
+# make coastline mask
+coast_vector <- fylker |> 
+  # transfrom to crs of raster
+  st_transform(crs = terra::crs(norway_dem)) |> 
+  # convert to spatVector
+  vect()  
+
+# crop to vestland and rename the data layer
+vestland_extent <- ext(4.5, 9, 59, 62)
+vestland_dem <- crop(norway_dem, vestland_extent) |> 
+  mask(coast_vector) |> 
+  rename(Elevation = `50N000E_20101117_gmted_med300`)
+
+# plot
+ggplot() +
+  geom_spatraster(data = vestland_dem) +
+  scale_fill_viridis_c(na.value = "grey90") +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(fill = "Elevation, m")
+```
 
 ## Scalebars, north pointer etc
 
 Scalebars and north pointers can be added with the `ggspatial` package or the `ggsn` package.
-North points are not very useful if the map has gridlines as these already indicate north.
+North points are not always very useful if the map has gridlines as these already indicate north.
 A scalebar can be useful, especially for large scale map.
 On small scale maps, they can be inaccurate as the scale varies.
 
@@ -572,7 +577,7 @@ Use facets as necessary (different species, different years etc).
 If you need multiple colour scales, the `ggnewscale` package can help.
 Use inset maps (@sec-combining-plots) to show your location in context.
 
-### Projections
+## Projections
 
 The Earth is an oblate sphere and needs projecting to plot in two dimensions.
 This inevitably leads to distortions, especially for maps with a large extent.
@@ -592,13 +597,12 @@ mollweide <- ggplot(world) + # Equal-area world map projection
   geom_sf() + 
   coord_sf(crs = "+proj=moll") # projection specified with a 'proj' string
 
-sf_use_s2(FALSE) # might need to turn spherical geometry for some projections
+sf_use_s2(FALSE) # might need to turn spherical geometry off for some projections
 polar_lambert <-  world |> 
   # !important - don't crop to tightly or crop lines will show in plot
   st_crop(y = c(xmin = -180, ymin = 50, xmax = 180, ymax = 90)) |> 
   ggplot() + # Transverse cylindrical equal-area
   geom_sf() +
-#   coord_sf(crs = "+proj=moll")
   # projection specified with a proj string
   coord_sf(crs = '+proj=laea +lon_0=14.4140625 +lat_0=90 +datum=WGS84 +units=m +no_defs', 
            ylim = c(100000, -3500000), # xlim/ylim in units of projection
@@ -607,26 +611,31 @@ polar_lambert <-  world |>
 default/mollweide/polar_lambert
 ```
 
-
-
-
 ::: callout-note
 ## Exercise
 
 Change the projection of one of the small-scale maps you made previously.
 :::
 
+## Interactive maps
 
-<!-- ### Interactive maps -->
-<!-- ### leaflets -->
+Interactive maps are traditionally used in theses and papers, but can be very useful on webpages and shiny apps.
 
+The [`leaflet`](https://rstudio.github.io/leaflet/) package is good for fully interactive maps.
 
+```{r}
+#| label: fig-leaflet
+#| fig-cap: leaflet map showing fish farms. You can zoom and pan the map, or click to get the fish farm name.
+#| fig-alt: Zoomable and panable map showing fish farm locations.
 
-<!-- ### coords on projected maps -->
+library(leaflet) # NB uses pipes |> not +
 
-<!-- better geom_path map -->
-<!-- new example exercise -->
+leaflet() |>  # initialise map
+  setView(lng = 5.3, lat = 60.4, zoom = 9) |> # set initial map area
+  addTiles() |> # add background map
+  addPolygons(data = aquaculture, popup = aquaculture$name)  # add fish farms
 
+```
 
 ::: callout-note
 ## Further reading

@@ -8,6 +8,7 @@ quarto::quarto_render("DataManagement")
 
 
 # # R markdown superseded by quarto book
+
 # withr::with_dir("Rmarkdown/", {
 #   bookdown::render_book('index.Rmd', 'bookdown::bs4_book',  output_dir = "../docs/rmarkdown")
 #   bioceed_links("../docs/rmarkdown")
