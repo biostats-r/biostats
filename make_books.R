@@ -1,3 +1,7 @@
+# copy assets
+
+fs::file_copy("figures/icons_all.png", "docs/figures/icons_all.png")
+fs::file_copy("figures/favicon.png", "docs/figures/favicon.png")
 
 # Front page
 quarto::quarto_render("frontpage")
