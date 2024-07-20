@@ -183,9 +183,10 @@ This can be frustrating and difficult to debug.
 
 Some recommendations
 
+- **Read the error message.** It might tell you exactly what you need to do.
 -   Check exactly which package won't install. It may be a dependency of the package you want that has problems installing. Try to install the package or dependency again and pay attention to any error message.
 -   Restart R (in Session menu in RStudio) and try again.
--   Find your user library with `.libPaths()` and in the file manager delete the packages directory.
+-   Find your user library with `.libPaths()` and in the file manager delete the package's directory.
 -   Google any error message. Someone else may have had the same problem.
 -   Try installing the package directly in R (i.e not using RStudio)
 
@@ -225,7 +226,7 @@ There are three solutions.
 
 Be very careful about the order in which packages are loaded.
 If the example above had loaded `MASS` before `dplyr` the `select` function in `MASS` would have been masked and the code would have worked.
-This solution can is very fragile as it is easy to load packages in the wrong order.
+This solution is very fragile as it is easy to load packages in the wrong order.
 
 ### `package::function`
 
@@ -265,10 +266,10 @@ conflict_prefer("select", "dplyr")
 penguins |> select(species)
 ```
 
-If there are many functions from a package that conflict, for example if you have loaded `tidylog`, you can use `conflict_prefer_all()`.
+If there are many functions from a package that have conflicts, you can use `conflict_prefer_all()`.
 
 ```{r tidylog-conflicts, eval = FALSE}
-conflict_prefer_all("tidylog")
+conflict_prefer_all("dplyr", quiet = TRUE)
 ```
 
 ## Packages change over time
@@ -318,13 +319,13 @@ When you use a package it is important to cite it in a manuscript or thesis both
 The correct citation can be seen with the function `citation`.
 
 ```{r citation}
-citation("lme4")
+citation("nlme")
 ```
 
 It is also important to cite the version used.
 
 ```{r version}
-packageVersion("lme4")
+packageVersion("nlme")
 ```
 
 You should also cite R.
@@ -363,7 +364,8 @@ questions <- list(
     choice = c(
       "`install.packages(\"tidyverse\")`",
       "`libraries(tidyverse)`",
-      answer = "`library(tidyverse`&#8288;`)`",
+      answer = "`library(tidyverse`&#8202;`)`",
+      answer = "`library(tidyverse)`",
       "`package(tidyverse)`",
       "`Library(tidyverse)`"
     )
