@@ -15,19 +15,49 @@ library(tidyr)
 ```
 
 
-In tidy data 
+*Tidy data* is a standard, consistent way to organize tabular data. 
+Briefly, tidy data follows a short series of rules:
 
-  -  Every column is a variable.
-  -  Every row is an observation.
-  -  Every cell is a single value.
++ each variable in the data set is presented in a specific column,
++ each observation in the data set is presented in a specific row,
++ each cell at the intersection of a row and a column contains a single value.
+
+The following figure illustrates these rules.
+
+``` {r}
+#| label: threerules
+#| echo: false
+#| fig-cap: 'In a tidy dataset, variables are in columns, observations are in rows, and values are in cells. --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html)'
+#| fig-alt: Schematic diagram showing that variables should be in columns, observations in rows and each cell should contain a single value
+#| out.width: "100%"
+knitr::include_graphics("figures/tidy1.png")
+```
+
+
+The dataset presented in @tbl-kable respects all three rules, and is thus a tidy dataset.  
+
+On the contrary, the following dataset is *not* tidy:
+``` {r}
+#| label: tidy
+#| echo: false
+#| message: false
+table2 <- read_delim(file = "data/nottidy.csv")
+#rmarkdown::paged_table() # conflicts with webexercises
+gt::gt(table2)
+
+```
+Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).   
+
+Importing data from a file containing tidy data is a great way to start your work, but it is *not* a prerequisite to data import.
+As long as your data is tabular, you will be able to import it in R, and tidy it later.
 
 The process of tidying data is to convert the data you have to data that meets this standard.
 
 
-## `separate()` multiple values
+## Multiple values in a cell
 
-If a cell contains multiple values, we can use `tidyr::separate_wider_delim()` to separate the values into different columns.
-
+If a cell contains multiple values, we need to separate to tidy the data. 
+We can separate the values into multiple columns with `tidyr::separate_wider_delim()`.
 For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.
 
 ```{r separate-data}
@@ -47,6 +77,9 @@ dat |>
 ```
 
 Related function, `separate_wider_regex()`, which uses regular expressions to split the column, can be more flexible. 
+
+If there are multiple measurements of the same type in a single cell, then  `tidyr::separate_longer_delim()` can be useful to separate the data into multiple rows.
+
 
 ## Reshaping data - wide to long 
 

@@ -1,3 +1,7 @@
+# copy assets
+
+fs::file_copy("figures/icons_all.png", "docs/figures/icons_all.png")
+fs::file_copy("figures/favicon.png", "docs/figures/favicon.png")
 
 # Front page
 quarto::quarto_render("frontpage")
@@ -23,11 +27,11 @@ quarto::quarto_render("WorkingInR")
 # quarto markdown
 quarto::quarto_render("quarto")
 {
-quarto::quarto_render(input = "quarto/demo_presentation.qmd", output_file = "demo_presentation.html")
-fs::dir_copy("quarto/demo_presentation_files/", "docs/quarto/demo_presentation_files/")
-fs::dir_delete("quarto/demo_presentation_files/") 
-fs::file_copy("demo_presentation.html", "docs/quarto/demo_presentation.html")
-fs::file_delete("demo_presentation.html") 
+  quarto::quarto_render(input = "quarto/demo_presentation.qmd", output_file = "demo_presentation.html")
+  fs::dir_copy("quarto/demo_presentation_files/", "docs/quarto/demo_presentation_files/", overwrite = TRUE)
+  fs::dir_delete("quarto/demo_presentation_files/") 
+  fs::file_copy("demo_presentation.html", "docs/quarto/demo_presentation.html", overwrite = TRUE)
+  fs::file_delete("demo_presentation.html") 
 }
 
 # targets

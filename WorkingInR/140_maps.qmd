@@ -58,13 +58,13 @@ High-resolution (1:10 million) data are in the `rnaturalearthhires` package, ins
 #| message: false
 library(rnaturalearth)
 
-world <- ne_countries(scale = 110, returnclass = "sf") 
+world <- ne_countries(scale = 110) 
 small_scale_map <- ggplot() +
   geom_sf(data = world) +
   coord_sf(xlim = c(-20, 50), ylim = c(33, 80)) +
   ggtitle("Europe")
 
-europe <- ne_countries(scale = 50, returnclass = "sf", continent = "Europe") 
+europe <- ne_countries(scale = 50, continent = "Europe") 
 medium_scale_map <- ggplot() +
   geom_sf(data = europe) +
   coord_sf(xlim = c(5, 30), ylim = c(55, 71)) +
@@ -73,7 +73,7 @@ medium_scale_map <- ggplot() +
 # Need extra package for high resolution data
 # install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
 
-norway <- ne_countries(scale = 10, returnclass = "sf", country = "Norway") 
+norway <- ne_countries(scale = 10, country = "Norway") 
 
 large_scale_map <- ggplot() +
   geom_sf(data = norway) +
@@ -94,8 +94,8 @@ small_scale_map + medium_scale_map + large_scale_map
 `sf` is the newer package that supports the "simple features" standard and is what I strongly recommend.
 :::
 
-::: callout-tip
-## Rivers and lakes
+::: {.callout-tip collapse="true"}
+## Rivers and lakes and other Natural Earth data
 
 Sometimes the coastline and national borders are sufficient.
 Sometimes they aren't very informative and you want to add more features, such as rivers, lakes and cities.
@@ -106,6 +106,8 @@ Natural Earth datasets can be downloaded directly from the [website](https://www
 #| label: fig-lakes-rivers
 #| fig-cap: Lakes and rivers
 #| fig-alt: Map showing lakes and rivers
+#| message: false
+#| results: hide
 
 # download if needed
 if(!file.exists("maps/ne_10m_rivers_europe.shp")){
@@ -115,8 +117,8 @@ if(!file.exists("maps/ne_10m_rivers_europe.shp")){
             destdir = "maps/", load = FALSE) # major lakes
 }
 
-rivers <- ne_load(scale = 10, type = "rivers_lake_centerlines", destdir = "maps", returnclass = "sf")
-lakes <- ne_load(scale = 10, type = "lakes", destdir = "maps", returnclass = "sf")
+rivers <- ne_load(scale = 10, type = "rivers_lake_centerlines", destdir = "maps")
+lakes <- ne_load(scale = 10, type = "lakes", destdir = "maps")
 
 ggplot() +
   geom_sf(data = europe) +
@@ -126,20 +128,34 @@ ggplot() +
 ```
 
 Extra rivers and lakes for Europe and N.
-America are available from Natural Earth, but for a large-scale map, other data sets may be better, for example from [Noregs vassdrags- og energidirektorat](http://nedlasting.nve.no/gis/).
+America are available from Natural Earth, but for a large-scale map, other data sets may be better.
 :::
 
 ### `ggOceanMaps`
 
 `ggOceanMaps` is, as the name suggests, focused on ocean map, with coastlines, bathymetry and also glaciers.
-`ggOceanMaps` requires `ggOceanMapsData`, which needs to be installed separately. 
-You do **not** need to load `ggOceanMapsData` wih `library()`
+The `ggOceanMaps` package includes some data, but high resolution data is downloaded when needed.
+To avoid repeatedly downloading the same data, open the .Rprofile file by running
 
 ```{r}
-#| label: install-ggOceanMapsData
+#| label: setup-ggOceanMapsData
 #| eval: false
-remotes::install_github("MikkoVihtakari/ggOceanMapsData")
+usethis::edit_r_profile()
+
 ```
+
+and add
+
+```{r}
+#| label: rprofile
+#| eval: false
+
+.ggOceanMapsenv <- new.env()
+.ggOceanMapsenv$datapath <- '~/ggOceanMapsLargeData' # you can use a different directory if you want
+
+```
+
+Save the file and restart R (Session \> Restart R).
 
 Now `ggOceanMaps` is ready to use.
 
@@ -173,25 +189,38 @@ These could be a shapefile, GeoJSON or GeoPackage file, all of which can be impo
 A "shapefile" is not one file but collection of several files in the same directory, only of which has the extension ".shp".
 :::
 
-Good sources of data for Norway include:
-
--   [GeoNorge](https://www.geonorge.no/)
--   [Miljødirektoratet](https://kartkatalog.miljodirektoratet.no/)
-
 This is a map of the fylke of Norway.
 
 ```{r}
 #| label: fylker
 #| fig-alt: Map showing fylke
+#| results: hide
+#| message: false
 library(sf)
 
-# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2021-klippet-etter-kyst/f08fca3c-33ee-49b9-be9f-028ebba5e460
-# This map will be out of date when fylker are reorganised
-fylker <- st_read("data/fylker2021.json")
+# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2024-klippet-etter-kyst/a9c64d66-f484-4a8f-a7b4-723fdaa578d3
+
+fylker <- st_read("data/Fylker.geojson")
 
 ggplot(fylker) + 
   geom_sf()
 ```
+
+::: {.callout-tip collapse="true"}
+## Vector data resources
+
+-   Kommune and fylke boundaries (with coastline) - [geonorge](https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2024-klippet-etter-kyst/a9c64d66-f484-4a8f-a7b4-723fdaa578d3) (maps with previous flyke boundaries also available from geonorge)
+
+-   Norwegian rivers and lakes - [Noregs vassdrags- og energidirektorat](http://nedlasting.nve.no/gis/).
+
+-   Norwegian protected areas - [Miljødirektoratet](https://kartkatalog.miljodirektoratet.no/Dataset/Details/0?lang=en-us)
+
+-   Svalbard maps - [Norsk Polarinstitutt](https://geodata.npolar.no/)
+
+-   Species occurrence data - [GBIF](https://www.gbif.org/) - download with the `rgbif` package
+
+Tell be about data sources you find useful.
+:::
 
 ::: callout-tip
 ## Coordinate reference systems
@@ -226,6 +255,9 @@ fylker2 <- sf::st_transform(fylker, crs = 4326)
 
 Tiled basemaps can be used with either `ggspatial` or `ggmap` packages.
 I recommend using `ggspatial` as it is consistent with the other mapping tools used here.
+
+Maps made with a tiled background can appear cluttered with unnecessary information such as roads and city names.
+They are probably best for small areas.
 
 ::: callout-important
 ## Copyright
@@ -265,18 +297,18 @@ Several different types of maps are available (see `rosm::osm.types()`) and more
 #| message: false
 #| fig-alt: maps of Bergen with different tiled backgrounds
 # rosm::osm.types()
-c("osm", "stamenwatercolor", "cartodark", "cartolight") |> 
-  map(~{
+c("osm", "cartodark", "cartolight") |> # some need registration
+  map(\(osm_type){
     ggplot() +
       annotation_map_tile(
-        type = .x, 
+        type = osm_type, 
         cachedir = "maps/", 
         zoomin = -1) +
       coord_sf(
         xlim = c(5.24, 5.36), 
         ylim = c(60.37, 60.41),
         crs = 4326) +
-      ggtitle(.x) +
+      ggtitle(osm_type) +
       theme(axis.text = element_blank(),
             axis.ticks = element_blank(), 
             title = element_text(size = 11), 
@@ -288,14 +320,29 @@ c("osm", "stamenwatercolor", "cartodark", "cartolight") |>
 
 ### `ggmap`
 
-The `ggmap` package lets you use Google Maps and other similar maps as a basemap.
+The `ggmap` package lets you use Google Maps, and and other similar maps as a basemap, including satellite imagery.
 
-::: callout-tip
-## googlemaps
+::: {.callout-tip collapse="true"}
+## Using `ggmap`
 
 `ggmap` can use maps and satellite image from Google, but you need to [register](https://mapsplatform.google.com/) for an API key.
 You shouldn't be charged unless you make a lot of maps (thousands per month).
-:::
+
+Then you can run this line in the console
+
+```{r}
+#| label: register-google
+#| eval: false
+
+register_google(key = "[your key]", write = TRUE) # the write argument will save the key for you.
+```
+
+Your key is private.
+Do not share it with anyone.
+Do not include it your script or quarto document.
+It could be expensive if someone else uses it.
+
+Now you can use `ggmap`
 
 ```{r}
 #| label: ggmap
@@ -306,14 +353,14 @@ library(ggmap)
 
 bergen <- get_map(
   location = c(5.24, 60.37, 5.36, 60.41), #  left/bottom/right/top
-  source = "stamen"           
+  maptype = "satellite"
 )
 ggmap(bergen)
 
 ```
 
-Maps made with a tiled background can appear cluttered with unnecessary information.
-They are probably best for small areas.
+This map made by `ggmap` is a `ggplot` object to which other geoms can be added.
+:::
 
 ::: callout-note
 ## Exercise
@@ -340,6 +387,7 @@ If the data are already a `sf` object they can be plotted with `geom_sf()`.
 ```{r}
 #| label: second-sf
 #| message: false
+#| results: hide
 #| fig-alt: maps of aquaculture sites in Norway plotted with different packages
 
 # aquaculture sites downloaded from Barentswatch.no/fiskinfo
@@ -356,18 +404,9 @@ ggplot() +
 basemap(limits = c(-30, 30, 50, 80)) +
   geom_sf(data = aquaculture, colour = "red")
 
-# with ggmap
-vestland <- get_map(
-  location = c(4,  59, 8, 62),
-  source = "stamen"           
-)
-
-# needs inherit.aes = FALSE
-ggmap(vestland) + 
- geom_sf(data = aquaculture, colour = "red", inherit.aes = FALSE, linewidth = 1) # thicker lines to make visible
 ```
 
-Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom.
+Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom from `ggspatial`.
 So `geom_spatial_point()` rather than `geom_point()` and `geom_spatial_path()` rather than `geom_path()`.
 
 ```{r}
@@ -423,10 +462,10 @@ parzer::parse_lat("60° 22' 50.52''N")
 ::: callout-note
 ## Exercise
 
-Otters (_Lutra lutra_) have re-established in Vestland.
-File ExcelExport_7972978_Page_1a.xlsx, (from [https://artsobservasjoner.no](https://artsobservasjoner.no), edited to remove an invalid unicode character) shows observations of otters in Vestland. 
-Make a map of the observations. 
-Relevant columns are  "East Coord", "North Coord". 
+Otters (*Lutra lutra*) have re-established in Vestland.
+File ExcelExport_7972978_Page_1a.xlsx, (from <https://artsobservasjoner.no>, edited to remove an invalid unicode character) shows observations of otters in Vestland.
+Make a map of the observations.
+Relevant columns are "East Coord", "North Coord".
 The coordinates are UTM zone 33N, EPSG code 25833.
 :::
 
@@ -440,6 +479,7 @@ Here, I use data on 2021 phosphorous discharge in municipal wastewater from [SSB
 ```{r}
 #| label: fig-cloropleth
 #| message: false
+#| results: hide
 #| fig-cap: Total phosphate discharge in municipal wastewater by fylke.
 #| fig-alt: Cloropleth map of phosphate discharges by fylke. Discharges are hightest in Vestland
 p_discharge <- readxl::read_excel(path = "data/05280_20230421-012359.xlsx",
@@ -451,7 +491,8 @@ p_discharge <- readxl::read_excel(path = "data/05280_20230421-012359.xlsx",
 # \\d{2} = 2 numbers, " " = space, ".*" = any number of any character, ie everything else
 
 # join to fylker
-fylker_discharge <- fylker |> 
+fylker_2021 <- st_read("data/fylker2021.json") # older flyker map to match data
+fylker_discharge <- fylker_2021 |> 
   left_join(p_discharge, by = "Fylkesnummer")
 
 ggplot(fylker_discharge) +
@@ -484,7 +525,7 @@ kart <- cartogram_cont(fylker_discharge_sim, weight = "total_discharge", itermax
 ggplot(kart) +
   geom_sf(aes(fill = total_discharge)) +
   labs(fill = "Wastewater\nP discharge\ntonnes") +
-  theme(legend.position = c(.99, .01), 
+  theme(legend.position.inside = c(.99, .01), 
         legend.justification = c(1, 0))
 ```
 :::
@@ -551,31 +592,52 @@ ggplot() +
   labs(fill = "Elevation, m")
 ```
 
+::: {.callout-tip collapse="true"}
+## Raster map resources
+
+-   Low-resolution bathymetry - [GEBCO](https://www.gebco.net/data_and_products/gridded_bathymetry_data/) - some data also available through `ggOceanMaps`
+
+-   High-resolution bathymetry (50 m grid) (good for fjords - even higher resolution data is available for some regions) - from [mareano](https://mareano.no/en/maps-and-data) at [geonorge](https://kartkatalog.geonorge.no/metadata/kartverket/sjo-terrengmodeller-dtm-50/67a3a191-49cc-45bc-baf0-eaaf7c513549)
+
+-   30 arc seconds (\~1 km) Digital elevation model - [GMTED2010](https://topotools.cr.usgs.gov/gmted_viewer/viewer.htm)
+
+-   High-resolution (1-50m LiDAR) digital elevation model - [Høydedata](https://hoydedata.no/LaserInnsyn2/)
+
+-   Climate normal data - [WorldClim](https://www.worldclim.org/data/worldclim21.html)
+
+-   Oceanographic conditions - [World Ocean Atlas](https://www.ncei.noaa.gov/products/world-ocean-atlas)
+
+-   Landsat - [NASA](https://search.earthdata.nasa.gov/)
+:::
+
 ## Scalebars, north pointer etc
 
 Scalebars and north pointers can be added with the `ggspatial` package or the `ggsn` package.
-North points are not always very useful if the map has gridlines as these already indicate north.
+North points are not always necessary if the map has gridlines as these already indicate north.
 A scalebar can be useful, especially for large scale map.
 On small scale maps, they can be inaccurate as the scale varies.
 
 ```{r}
 #| label: annotations
+#| message: false
 # with rnaturalearth
 ggplot() +
   geom_sf(data = norway) +
   coord_sf(xlim = c(4, 9), ylim = c(59, 62)) +
-  annotation_scale(location = "br") # br = bottom right
+  annotation_scale(location = "br")  + # br = bottom right
+  annotation_north_arrow(style = north_arrow_minimal)
 ```
 
 ## Hints for maps
 
-Keep it simple.
+**Keep it simple**.
 Remove unnecessary features (do you really need to show the bathymetry?) and use appropriate scale data for the base map (too high resolution takes a long time to plot and can look worse).
 
-Use facets as necessary (different species, different years etc).
+Use **facets** as necessary (different species, different years etc).
 
 If you need multiple colour scales, the `ggnewscale` package can help.
-Use inset maps (@sec-combining-plots) to show your location in context.
+
+Use **inset maps** (@sec-combining-plots) to show your location in context.
 
 ## Projections
 
@@ -589,7 +651,9 @@ The [projection wizard](https://projectionwizard.org/#) can help choose a projec
 ```{r}
 #| label: projections
 #| results: hide
-world <- ne_countries(scale = "medium", returnclass = "sf")
+#| message: false
+#| warning: false
+world <- ne_countries(scale = "medium")
 
 default <- ggplot(world) + geom_sf()
 
@@ -619,9 +683,9 @@ Change the projection of one of the small-scale maps you made previously.
 
 ## Interactive maps
 
-Interactive maps are traditionally used in theses and papers, but can be very useful on webpages and shiny apps.
+Interactive maps can be very useful on webpages and shiny apps, but less useful in theses and papers.
 
-The [`leaflet`](https://rstudio.github.io/leaflet/) package is good for fully interactive maps.
+The [`leaflet`](https://rstudio.github.io/leaflet/) or [`mapgl`](https://walker-data.com/mapgl/index.html) packages can be used for fully interactive maps.
 
 ```{r}
 #| label: fig-leaflet
@@ -636,6 +700,8 @@ leaflet() |>  # initialise map
   addPolygons(data = aquaculture, popup = aquaculture$name)  # add fish farms
 
 ```
+
+It is possible to change the [background map](https://leaflet-extras.github.io/leaflet-providers/preview/) to one that is less cluttered or a satellite view.
 
 ::: callout-note
 ## Further reading
