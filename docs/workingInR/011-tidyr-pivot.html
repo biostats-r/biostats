@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.309">
+<meta name="generator" content="quarto-1.5.53">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Working in R - 13&nbsp; Tidying data with tidyr</title>
+<title>13&nbsp; Tidying data with tidyr – Working in R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,7 +19,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -30,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -79,12 +79,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
   "keyboard-shortcut": [
     "f",
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -93,6 +94,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -103,35 +105,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-pipes.html">Data manipulation with the tidyverse</a></li><li class="breadcrumb-item"><a href="./011-tidyr-pivot.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tidying data with `tidyr`</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-pipes.html">Data manipulation with the tidyverse</a></li><li class="breadcrumb-item"><a href="./011-tidyr-pivot.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Working in R</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://github.com/biostats-r/biostats" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <div class="dropdown">
-      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
 <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
-              <i class="bi bi-bi-twitter pe-1"></i>
+              <i class="bi bi-twitter pe-1"></i>
             Twitter
             </a>
           </li>
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
-              <i class="bi bi-bi-facebook pe-1"></i>
+              <i class="bi bi-facebook pe-1"></i>
             Facebook
             </a>
           </li>
@@ -156,9 +158,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Setting up R and RStudio</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -191,9 +193,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">First steps in R</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -238,9 +240,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Data manipulation with the tidyverse</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -273,9 +275,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Data Visualisation</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -328,13 +330,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Making maps in R</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./150_ggplot_environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">ggplot2 helper packages</span></span></a>
+  </div>
+</li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Other Topics</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -342,41 +350,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./050_missing_values.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Handling missing values</span></span></a>
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Handling missing values</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./060_bestiary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Bestiary of Brackets and other R notation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Bestiary of Brackets and other R notation</span></span></a>
   </div>
 </li>
       </ul>
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-<style>
-               img.site-logo {
-  height: auto;
-  width: 95%;
-}
-      </style>
-<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
-<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<p><a href="https://biostats.w.uib.no/"><img src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" title="bioST@TS | When biology adds up, at last…" class="img-fluid"></a> <br><a href="../index.html"><img src="../figures/icons_all.png" title="BioST@TS books" width="250" height="50"></a></p>
+</div></div>
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
 <li><a href="#tidy-data" id="toc-tidy-data" class="nav-link active" data-scroll-target="#tidy-data"><span class="header-section-number">13.1</span> Tidy data</a></li>
-  <li><a href="#separate-multiple-values" id="toc-separate-multiple-values" class="nav-link" data-scroll-target="#separate-multiple-values"><span class="header-section-number">13.2</span> <code>separate()</code> multiple values</a></li>
+  <li><a href="#multiple-values-in-a-cell" id="toc-multiple-values-in-a-cell" class="nav-link" data-scroll-target="#multiple-values-in-a-cell"><span class="header-section-number">13.2</span> Multiple values in a cell</a></li>
   <li><a href="#reshaping-data---wide-to-long" id="toc-reshaping-data---wide-to-long" class="nav-link" data-scroll-target="#reshaping-data---wide-to-long"><span class="header-section-number">13.3</span> Reshaping data - wide to long</a></li>
   <li><a href="#reshaping-data---long-to-wide" id="toc-reshaping-data---long-to-wide" class="nav-link" data-scroll-target="#reshaping-data---long-to-wide"><span class="header-section-number">13.4</span> Reshaping data - long to wide</a></li>
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-pipes.html">Data manipulation with the tidyverse</a></li><li class="breadcrumb-item"><a href="./011-tidyr-pivot.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tidying data with `tidyr`</span></a></li></ol></nav><div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-pipes.html">Data manipulation with the tidyverse</a></li><li class="breadcrumb-item"><a href="./011-tidyr-pivot.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></a></li></ol></nav><div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title"><span id="sec-tidying-data-with-tidyr" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tidying data with <code>tidyr</code></span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
@@ -397,17 +399,775 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In tidy data</p>
+<p><em>Tidy data</em> is a standard, consistent way to organize tabular data. Briefly, tidy data follows a short series of rules:</p>
 <ul>
-<li>Every column is a variable.</li>
-<li>Every row is an observation.</li>
-<li>Every cell is a single value.</li>
+<li>each variable in the data set is presented in a specific column,</li>
+<li>each observation in the data set is presented in a specific row,</li>
+<li>each cell at the intersection of a row and a column contains a single value.</li>
 </ul>
+<p>The following figure illustrates these rules.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="figures/tidy1.png" class="img-fluid figure-img" style="width:100.0%" alt="Schematic diagram showing that variables should be in columns, observations in rows and each cell should contain a single value"></p>
+<figcaption>In a tidy dataset, variables are in columns, observations are in rows, and values are in cells. — Source: <a href="https://r4ds.had.co.nz/tidy-data.html">R for Data Science</a></figcaption></figure>
+</div>
+</div>
+</div>
+<p>The dataset presented in <a href="005_Importing_Data_in_R.html#tbl-kable" class="quarto-xref">Table&nbsp;<span>11.1</span></a> respects all three rules, and is thus a tidy dataset.</p>
+<p>On the contrary, the following dataset is <em>not</em> tidy:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="spugziqmol" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#spugziqmol table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#spugziqmol thead, #spugziqmol tbody, #spugziqmol tfoot, #spugziqmol tr, #spugziqmol td, #spugziqmol th {
+  border-style: none;
+}
+
+#spugziqmol p {
+  margin: 0;
+  padding: 0;
+}
+
+#spugziqmol .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#spugziqmol .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#spugziqmol .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#spugziqmol .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#spugziqmol .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#spugziqmol .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#spugziqmol .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#spugziqmol .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#spugziqmol .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#spugziqmol .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#spugziqmol .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#spugziqmol .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#spugziqmol .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#spugziqmol .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#spugziqmol .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#spugziqmol .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#spugziqmol .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#spugziqmol .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#spugziqmol .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#spugziqmol .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#spugziqmol .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#spugziqmol .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#spugziqmol .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#spugziqmol .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#spugziqmol .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#spugziqmol .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#spugziqmol .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#spugziqmol .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#spugziqmol .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#spugziqmol .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#spugziqmol .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#spugziqmol .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#spugziqmol .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#spugziqmol .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#spugziqmol .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#spugziqmol .gt_left {
+  text-align: left;
+}
+
+#spugziqmol .gt_center {
+  text-align: center;
+}
+
+#spugziqmol .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#spugziqmol .gt_font_normal {
+  font-weight: normal;
+}
+
+#spugziqmol .gt_font_bold {
+  font-weight: bold;
+}
+
+#spugziqmol .gt_font_italic {
+  font-style: italic;
+}
+
+#spugziqmol .gt_super {
+  font-size: 65%;
+}
+
+#spugziqmol .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#spugziqmol .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#spugziqmol .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#spugziqmol .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#spugziqmol .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#spugziqmol .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#spugziqmol .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#spugziqmol .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#spugziqmol div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="header gt_col_headings">
+<th id="Date" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Date</th>
+<th id="17.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">17.06.2016</th>
+<th id="21.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">21.06.2016</th>
+<th id="23.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">23.06.2016</th>
+<th id="26.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">26.06.2016</th>
+<th id="27.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">27.06.2016</th>
+<th id="28.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">28.06.2016</th>
+<th id="29.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">29.06.2016</th>
+<th id="30.06.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">30.06.2016</th>
+<th id="02.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">02.07.2016</th>
+<th id="04.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">04.07.2016</th>
+<th id="05.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">05.07.2016</th>
+<th id="06.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">06.07.2016</th>
+<th id="08.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">08.07.2016</th>
+<th id="10.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">10.07.2016</th>
+<th id="11.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">11.07.2016</th>
+<th id="13.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">13.07.2016</th>
+<th id="15.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">15.07.2016</th>
+<th id="17.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">17.07.2016</th>
+<th id="19.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">19.07.2016</th>
+<th id="21.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">21.07.2016</th>
+<th id="23.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">23.07.2016</th>
+<th id="24.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">24.07.2016</th>
+<th id="26.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">26.07.2016</th>
+<th id="28.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">28.07.2016</th>
+<th id="30.07.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">30.07.2016</th>
+<th id="02.08.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">02.08.2016</th>
+<th id="04.08.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">04.08.2016</th>
+<th id="06.08.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">06.08.2016</th>
+<th id="11.08.2016" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">11.08.2016</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Date">Time</td>
+<td class="gt_row gt_left" headers="17.06.2016">10:00</td>
+<td class="gt_row gt_left" headers="21.06.2016">11:00</td>
+<td class="gt_row gt_left" headers="23.06.2016">11:00</td>
+<td class="gt_row gt_left" headers="26.06.2016">13:00</td>
+<td class="gt_row gt_left" headers="27.06.2016">13:00</td>
+<td class="gt_row gt_left" headers="28.06.2016">09:33</td>
+<td class="gt_row gt_left" headers="29.06.2016">13:00</td>
+<td class="gt_row gt_left" headers="30.06.2016">15:00</td>
+<td class="gt_row gt_left" headers="02.07.2016">09:00</td>
+<td class="gt_row gt_left" headers="04.07.2016">09:15</td>
+<td class="gt_row gt_left" headers="05.07.2016">09:30</td>
+<td class="gt_row gt_left" headers="06.07.2016">09:15</td>
+<td class="gt_row gt_left" headers="08.07.2016">09:15</td>
+<td class="gt_row gt_left" headers="10.07.2016">09:15</td>
+<td class="gt_row gt_left" headers="11.07.2016">09:15</td>
+<td class="gt_row gt_left" headers="13.07.2016">09:30</td>
+<td class="gt_row gt_left" headers="15.07.2016">10:00</td>
+<td class="gt_row gt_left" headers="17.07.2016">13:00</td>
+<td class="gt_row gt_left" headers="19.07.2016">17:30</td>
+<td class="gt_row gt_left" headers="21.07.2016">10</td>
+<td class="gt_row gt_left" headers="23.07.2016">10:00</td>
+<td class="gt_row gt_left" headers="24.07.2016">09:30</td>
+<td class="gt_row gt_left" headers="26.07.2016">09:30</td>
+<td class="gt_row gt_left" headers="28.07.2016">09:30</td>
+<td class="gt_row gt_left" headers="30.07.2016">09:15</td>
+<td class="gt_row gt_left" headers="02.08.2016">09:30</td>
+<td class="gt_row gt_left" headers="04.08.2016">15:00</td>
+<td class="gt_row gt_left" headers="06.08.2016">11:00</td>
+<td class="gt_row gt_left" headers="11.08.2016">15:00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Date">Weather</td>
+<td class="gt_row gt_left" headers="17.06.2016">Sunny_PartlyCloudy</td>
+<td class="gt_row gt_left" headers="21.06.2016">Cloudy_Fog</td>
+<td class="gt_row gt_left" headers="23.06.2016">Cloudy_Sunny</td>
+<td class="gt_row gt_left" headers="26.06.2016">Cloudy_Rainy_Windy_Fog</td>
+<td class="gt_row gt_left" headers="27.06.2016">Cloudy_Windy_Rainy</td>
+<td class="gt_row gt_left" headers="28.06.2016">Windy_Rainy_MostlyCloudy</td>
+<td class="gt_row gt_left" headers="29.06.2016">Windy_Sunny_Cloudy</td>
+<td class="gt_row gt_left" headers="30.06.2016">Windy_Cloudy</td>
+<td class="gt_row gt_left" headers="02.07.2016">Windy_Cloudy</td>
+<td class="gt_row gt_left" headers="04.07.2016">Cloudy_Sunny</td>
+<td class="gt_row gt_left" headers="05.07.2016">Cloudy_Sunny</td>
+<td class="gt_row gt_left" headers="06.07.2016">Cloudy_Fog_Rainy</td>
+<td class="gt_row gt_left" headers="08.07.2016">Sunny_PartlyCloudy</td>
+<td class="gt_row gt_left" headers="10.07.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="11.07.2016">Cloudy</td>
+<td class="gt_row gt_left" headers="13.07.2016">Cloudy_Sunny</td>
+<td class="gt_row gt_left" headers="15.07.2016">Cloudy</td>
+<td class="gt_row gt_left" headers="17.07.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="19.07.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="21.07.2016">Cloudy_Sunny</td>
+<td class="gt_row gt_left" headers="23.07.2016">Sunny_Cloudy</td>
+<td class="gt_row gt_left" headers="24.07.2016">Cloudy_Sunny</td>
+<td class="gt_row gt_left" headers="26.07.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="28.07.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="30.07.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="02.08.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="04.08.2016">Cloudy_Rainy</td>
+<td class="gt_row gt_left" headers="06.08.2016">Cloudy_Rainyn</td>
+<td class="gt_row gt_left" headers="11.08.2016">Cloudy_Snowy_Sunny</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Date">Observer</td>
+<td class="gt_row gt_left" headers="17.06.2016">LV_AH</td>
+<td class="gt_row gt_left" headers="21.06.2016">LV</td>
+<td class="gt_row gt_left" headers="23.06.2016">LV</td>
+<td class="gt_row gt_left" headers="26.06.2016">LV</td>
+<td class="gt_row gt_left" headers="27.06.2016">LV_SB</td>
+<td class="gt_row gt_left" headers="28.06.2016">LV_SB</td>
+<td class="gt_row gt_left" headers="29.06.2016">LV_SB</td>
+<td class="gt_row gt_left" headers="30.06.2016">LV</td>
+<td class="gt_row gt_left" headers="02.07.2016">LV_SB</td>
+<td class="gt_row gt_left" headers="04.07.2016">SB_LV</td>
+<td class="gt_row gt_left" headers="05.07.2016">SB_LV</td>
+<td class="gt_row gt_left" headers="06.07.2016">LV_SB</td>
+<td class="gt_row gt_left" headers="08.07.2016">LV_SB</td>
+<td class="gt_row gt_left" headers="10.07.2016">LV_SB</td>
+<td class="gt_row gt_left" headers="11.07.2016">LV</td>
+<td class="gt_row gt_left" headers="13.07.2016">LV</td>
+<td class="gt_row gt_left" headers="15.07.2016">LV_SB_AH</td>
+<td class="gt_row gt_left" headers="17.07.2016">SB_LV</td>
+<td class="gt_row gt_left" headers="19.07.2016">SB_LV</td>
+<td class="gt_row gt_left" headers="21.07.2016">SB_LV</td>
+<td class="gt_row gt_left" headers="23.07.2016">SB_LV</td>
+<td class="gt_row gt_left" headers="24.07.2016">LV</td>
+<td class="gt_row gt_left" headers="26.07.2016">LV</td>
+<td class="gt_row gt_left" headers="28.07.2016">LV</td>
+<td class="gt_row gt_left" headers="30.07.2016">LV</td>
+<td class="gt_row gt_left" headers="02.08.2016">LV</td>
+<td class="gt_row gt_left" headers="04.08.2016">LV</td>
+<td class="gt_row gt_left" headers="06.08.2016">LV</td>
+<td class="gt_row gt_left" headers="11.08.2016">LV</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Date">E01a</td>
+<td class="gt_row gt_left" headers="17.06.2016">0</td>
+<td class="gt_row gt_left" headers="21.06.2016">NA</td>
+<td class="gt_row gt_left" headers="23.06.2016">0</td>
+<td class="gt_row gt_left" headers="26.06.2016">0</td>
+<td class="gt_row gt_left" headers="27.06.2016">0</td>
+<td class="gt_row gt_left" headers="28.06.2016">0</td>
+<td class="gt_row gt_left" headers="29.06.2016">1</td>
+<td class="gt_row gt_left" headers="30.06.2016">1</td>
+<td class="gt_row gt_left" headers="02.07.2016">2</td>
+<td class="gt_row gt_left" headers="04.07.2016">2</td>
+<td class="gt_row gt_left" headers="05.07.2016">3</td>
+<td class="gt_row gt_left" headers="06.07.2016">3</td>
+<td class="gt_row gt_left" headers="08.07.2016">6</td>
+<td class="gt_row gt_left" headers="10.07.2016">8</td>
+<td class="gt_row gt_left" headers="11.07.2016">8</td>
+<td class="gt_row gt_left" headers="13.07.2016">11</td>
+<td class="gt_row gt_left" headers="15.07.2016">13</td>
+<td class="gt_row gt_left" headers="17.07.2016">10</td>
+<td class="gt_row gt_left" headers="19.07.2016">9</td>
+<td class="gt_row gt_left" headers="21.07.2016">7</td>
+<td class="gt_row gt_left" headers="23.07.2016">3</td>
+<td class="gt_row gt_left" headers="24.07.2016">6</td>
+<td class="gt_row gt_left" headers="26.07.2016">3</td>
+<td class="gt_row gt_left" headers="28.07.2016">3</td>
+<td class="gt_row gt_left" headers="30.07.2016">1</td>
+<td class="gt_row gt_left" headers="02.08.2016">1</td>
+<td class="gt_row gt_left" headers="04.08.2016">1</td>
+<td class="gt_row gt_left" headers="06.08.2016">2</td>
+<td class="gt_row gt_left" headers="11.08.2016">1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Date">E01b</td>
+<td class="gt_row gt_left" headers="17.06.2016">0</td>
+<td class="gt_row gt_left" headers="21.06.2016">NA</td>
+<td class="gt_row gt_left" headers="23.06.2016">0</td>
+<td class="gt_row gt_left" headers="26.06.2016">0</td>
+<td class="gt_row gt_left" headers="27.06.2016">1</td>
+<td class="gt_row gt_left" headers="28.06.2016">1</td>
+<td class="gt_row gt_left" headers="29.06.2016">1</td>
+<td class="gt_row gt_left" headers="30.06.2016">1</td>
+<td class="gt_row gt_left" headers="02.07.2016">1</td>
+<td class="gt_row gt_left" headers="04.07.2016">1</td>
+<td class="gt_row gt_left" headers="05.07.2016">1</td>
+<td class="gt_row gt_left" headers="06.07.2016">1</td>
+<td class="gt_row gt_left" headers="08.07.2016">3</td>
+<td class="gt_row gt_left" headers="10.07.2016">3</td>
+<td class="gt_row gt_left" headers="11.07.2016">3</td>
+<td class="gt_row gt_left" headers="13.07.2016">8</td>
+<td class="gt_row gt_left" headers="15.07.2016">19</td>
+<td class="gt_row gt_left" headers="17.07.2016">23</td>
+<td class="gt_row gt_left" headers="19.07.2016">26</td>
+<td class="gt_row gt_left" headers="21.07.2016">24</td>
+<td class="gt_row gt_left" headers="23.07.2016">16</td>
+<td class="gt_row gt_left" headers="24.07.2016">16</td>
+<td class="gt_row gt_left" headers="26.07.2016">8</td>
+<td class="gt_row gt_left" headers="28.07.2016">5</td>
+<td class="gt_row gt_left" headers="30.07.2016">2</td>
+<td class="gt_row gt_left" headers="02.08.2016">3</td>
+<td class="gt_row gt_left" headers="04.08.2016">4</td>
+<td class="gt_row gt_left" headers="06.08.2016">3</td>
+<td class="gt_row gt_left" headers="11.08.2016">2</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Date">E01c</td>
+<td class="gt_row gt_left" headers="17.06.2016">0</td>
+<td class="gt_row gt_left" headers="21.06.2016">NA</td>
+<td class="gt_row gt_left" headers="23.06.2016">0</td>
+<td class="gt_row gt_left" headers="26.06.2016">0</td>
+<td class="gt_row gt_left" headers="27.06.2016">0</td>
+<td class="gt_row gt_left" headers="28.06.2016">0</td>
+<td class="gt_row gt_left" headers="29.06.2016">0</td>
+<td class="gt_row gt_left" headers="30.06.2016">0</td>
+<td class="gt_row gt_left" headers="02.07.2016">0</td>
+<td class="gt_row gt_left" headers="04.07.2016">0</td>
+<td class="gt_row gt_left" headers="05.07.2016">0</td>
+<td class="gt_row gt_left" headers="06.07.2016">0</td>
+<td class="gt_row gt_left" headers="08.07.2016">0</td>
+<td class="gt_row gt_left" headers="10.07.2016">0</td>
+<td class="gt_row gt_left" headers="11.07.2016">1</td>
+<td class="gt_row gt_left" headers="13.07.2016">5</td>
+<td class="gt_row gt_left" headers="15.07.2016">9</td>
+<td class="gt_row gt_left" headers="17.07.2016">12</td>
+<td class="gt_row gt_left" headers="19.07.2016">10</td>
+<td class="gt_row gt_left" headers="21.07.2016">7</td>
+<td class="gt_row gt_left" headers="23.07.2016">4</td>
+<td class="gt_row gt_left" headers="24.07.2016">3</td>
+<td class="gt_row gt_left" headers="26.07.2016">3</td>
+<td class="gt_row gt_left" headers="28.07.2016">3</td>
+<td class="gt_row gt_left" headers="30.07.2016">2</td>
+<td class="gt_row gt_left" headers="02.08.2016">2</td>
+<td class="gt_row gt_left" headers="04.08.2016">0</td>
+<td class="gt_row gt_left" headers="06.08.2016">1</td>
+<td class="gt_row gt_left" headers="11.08.2016">1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Date">E01d</td>
+<td class="gt_row gt_left" headers="17.06.2016">0</td>
+<td class="gt_row gt_left" headers="21.06.2016">NA</td>
+<td class="gt_row gt_left" headers="23.06.2016">0</td>
+<td class="gt_row gt_left" headers="26.06.2016">0</td>
+<td class="gt_row gt_left" headers="27.06.2016">0</td>
+<td class="gt_row gt_left" headers="28.06.2016">0</td>
+<td class="gt_row gt_left" headers="29.06.2016">0</td>
+<td class="gt_row gt_left" headers="30.06.2016">0</td>
+<td class="gt_row gt_left" headers="02.07.2016">0</td>
+<td class="gt_row gt_left" headers="04.07.2016">0</td>
+<td class="gt_row gt_left" headers="05.07.2016">0</td>
+<td class="gt_row gt_left" headers="06.07.2016">0</td>
+<td class="gt_row gt_left" headers="08.07.2016">1</td>
+<td class="gt_row gt_left" headers="10.07.2016">1</td>
+<td class="gt_row gt_left" headers="11.07.2016">1</td>
+<td class="gt_row gt_left" headers="13.07.2016">2</td>
+<td class="gt_row gt_left" headers="15.07.2016">4</td>
+<td class="gt_row gt_left" headers="17.07.2016">3</td>
+<td class="gt_row gt_left" headers="19.07.2016">2</td>
+<td class="gt_row gt_left" headers="21.07.2016">4</td>
+<td class="gt_row gt_left" headers="23.07.2016">1</td>
+<td class="gt_row gt_left" headers="24.07.2016">1</td>
+<td class="gt_row gt_left" headers="26.07.2016">1</td>
+<td class="gt_row gt_left" headers="28.07.2016">2</td>
+<td class="gt_row gt_left" headers="30.07.2016">2</td>
+<td class="gt_row gt_left" headers="02.08.2016">1</td>
+<td class="gt_row gt_left" headers="04.08.2016">1</td>
+<td class="gt_row gt_left" headers="06.08.2016">1</td>
+<td class="gt_row gt_left" headers="11.08.2016">0</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Date">E01e</td>
+<td class="gt_row gt_left" headers="17.06.2016">0</td>
+<td class="gt_row gt_left" headers="21.06.2016">NA</td>
+<td class="gt_row gt_left" headers="23.06.2016">0</td>
+<td class="gt_row gt_left" headers="26.06.2016">0</td>
+<td class="gt_row gt_left" headers="27.06.2016">0</td>
+<td class="gt_row gt_left" headers="28.06.2016">0</td>
+<td class="gt_row gt_left" headers="29.06.2016">0</td>
+<td class="gt_row gt_left" headers="30.06.2016">0</td>
+<td class="gt_row gt_left" headers="02.07.2016">0</td>
+<td class="gt_row gt_left" headers="04.07.2016">0</td>
+<td class="gt_row gt_left" headers="05.07.2016">0</td>
+<td class="gt_row gt_left" headers="06.07.2016">0</td>
+<td class="gt_row gt_left" headers="08.07.2016">0</td>
+<td class="gt_row gt_left" headers="10.07.2016">0</td>
+<td class="gt_row gt_left" headers="11.07.2016">0</td>
+<td class="gt_row gt_left" headers="13.07.2016">1</td>
+<td class="gt_row gt_left" headers="15.07.2016">4</td>
+<td class="gt_row gt_left" headers="17.07.2016">4</td>
+<td class="gt_row gt_left" headers="19.07.2016">4</td>
+<td class="gt_row gt_left" headers="21.07.2016">5</td>
+<td class="gt_row gt_left" headers="23.07.2016">4</td>
+<td class="gt_row gt_left" headers="24.07.2016">3</td>
+<td class="gt_row gt_left" headers="26.07.2016">1</td>
+<td class="gt_row gt_left" headers="28.07.2016">0</td>
+<td class="gt_row gt_left" headers="30.07.2016">0</td>
+<td class="gt_row gt_left" headers="02.08.2016">0</td>
+<td class="gt_row gt_left" headers="04.08.2016">0</td>
+<td class="gt_row gt_left" headers="06.08.2016">0</td>
+<td class="gt_row gt_left" headers="11.08.2016">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).</p>
+<p>Importing data from a file containing tidy data is a great way to start your work, but it is <em>not</em> a prerequisite to data import. As long as your data is tabular, you will be able to import it in R, and tidy it later.</p>
 <p>The process of tidying data is to convert the data you have to data that meets this standard.</p>
-</section><section id="separate-multiple-values" class="level2" data-number="13.2"><h2 data-number="13.2" class="anchored" data-anchor-id="separate-multiple-values">
-<span class="header-section-number">13.2</span> <code>separate()</code> multiple values</h2>
-<p>If a cell contains multiple values, we can use <code><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html">tidyr::separate_wider_delim()</a></code> to separate the values into different columns.</p>
-<p>For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.</p>
+</section><section id="multiple-values-in-a-cell" class="level2" data-number="13.2"><h2 data-number="13.2" class="anchored" data-anchor-id="multiple-values-in-a-cell">
+<span class="header-section-number">13.2</span> Multiple values in a cell</h2>
+<p>If a cell contains multiple values, we need to separate to tidy the data. We can separate the values into multiple columns with <code><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html">tidyr::separate_wider_delim()</a></code>. For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">id</span>, <span class="op">~</span><span class="va">value</span>,</span>
 <span>       <span class="st">"A-1"</span>, <span class="fl">1</span>,</span>
@@ -438,6 +1198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Related function, <code><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html">separate_wider_regex()</a></code>, which uses regular expressions to split the column, can be more flexible.</p>
+<p>If there are multiple measurements of the same type in a single cell, then <code><a href="https://tidyr.tidyverse.org/reference/separate_longer_delim.html">tidyr::separate_longer_delim()</a></code> can be useful to separate the data into multiple rows.</p>
 </section><section id="reshaping-data---wide-to-long" class="level2" data-number="13.3"><h2 data-number="13.3" class="anchored" data-anchor-id="reshaping-data---wide-to-long">
 <span class="header-section-number">13.3</span> Reshaping data - wide to long</h2>
 <p>It is very common to need to reshape data to make it tidy. This can be done with the <code>pivot_*</code> functions.</p>
@@ -445,7 +1206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="figures/tidyr-pivot_longer_wider.gif" class="img-fluid figure-img" width="400"></p>
-<figcaption class="figure-caption">Wide data to long data with <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> and <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> .</figcaption></figure>
+<figcaption>Wide data to long data with <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> and <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> .</figcaption></figure>
 </div>
 </div>
 </div>
@@ -472,7 +1233,7 @@ dbl (12): Jan, Feb, Mar, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Des
 </div>
 </div>
 <p>This might be a nice way to present the data but it is not tidy data: each row is not an observation; each column is not a variable.</p>
-<p>We can use <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> to reshape the data. The months, selected by the <code>cols</code> argument in the column names (see <a href="012-dplyr-single-table.html#sec-select-helpers" class="quarto-xref"><span>Section&nbsp;14.2.1</span></a> for more on the syntax used here) will become a new variable with a name set by the <code>names_to</code>, and the data values get put into a column named by the <code>values_to</code> argument.</p>
+<p>We can use <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> to reshape the data. The months, selected by the <code>cols</code> argument in the column names (see <a href="012-dplyr-single-table.html#sec-select-helpers" class="quarto-xref"><span>Section 14.2.1</span></a> for more on the syntax used here) will become a new variable with a name set by the <code>names_to</code>, and the data values get put into a column named by the <code>values_to</code> argument.</p>
 <div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bergen_klima_long</span> <span class="op">&lt;-</span> <span class="va">bergen_klima</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">Jan</span><span class="op">:</span><span class="va">Des</span>, names_to <span class="op">=</span> <span class="st">"Month"</span>, values_to <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span></span>
@@ -940,18 +1701,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -983,7 +1733,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
   const viewSource = window.document.getElementById('quarto-view-source') ||
                      window.document.getElementById('quarto-code-tools-source');
   if (viewSource) {
@@ -1035,6 +1807,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1069,7 +1859,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1084,15 +1878,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    if (id.startsWith('sec-')) {
+    if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
         }
         return container.innerHTML
       } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -1101,7 +1908,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -1143,6 +1958,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
       }
     }, function(instance) {
     });
@@ -1218,7 +2056,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     window.addEventListener(
       "resize",
       throttle(() => {
-        console.log("RESIZE");
         elRect = undefined;
         if (selectedAnnoteEl) {
           selectCodeLines(selectedAnnoteEl);
@@ -1300,12 +2137,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./010-pipes.html" class="pagination-link">
+      <a href="./010-pipes.html" class="pagination-link" aria-label="Pipes">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Pipes</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./012-dplyr-single-table.html" class="pagination-link">
+      <a href="./012-dplyr-single-table.html" class="pagination-link" aria-label="Working with single tables in `dplyr`">
         <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Working with single tables in <code>dplyr</code></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1327,115 +2164,148 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>In tidy data </span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="ss">  -  </span>Every column is a variable.</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="ss">  -  </span>Every row is an observation.</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="ss">  -  </span>Every cell is a single value.</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>The process of tidying data is to convert the data you have to data that meets this standard.</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>*Tidy data* is a standard, consistent way to organize tabular data. </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>Briefly, tidy data follows a short series of rules:</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>each variable in the data set is presented in a specific column,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>each observation in the data set is presented in a specific row,</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>each cell at the intersection of a row and a column contains a single value.</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>The following figure illustrates these rules.</span>
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## `separate()` multiple values</span></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>If a cell contains multiple values, we can use <span class="in">`tidyr::separate_wider_delim()`</span> to separate the values into different columns.</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.</span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{r separate-data}</span></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="in">dat &lt;- tribble(~id, ~value,</span></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="in">       "A-1", 1,</span></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="in">       "A-2", 2,</span></span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="in">       "B-1", 3)</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r}</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: threerules</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="in">#| echo: false</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-cap: 'In a tidy dataset, variables are in columns, observations are in rows, and values are in cells. --- Source: [R for Data Science](https://r4ds.had.co.nz/tidy-data.html)'</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-alt: Schematic diagram showing that variables should be in columns, observations in rows and each cell should contain a single value</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="in">#| out.width: "100%"</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="in">knitr::include_graphics("figures/tidy1.png")</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>The dataset presented in @tbl-kable respects all three rules, and is thus a tidy dataset.  </span>
 <span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="in">dat</span></span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>We can use <span class="in">`separate_wider_delim()`</span> to split site and plot into separate columns.</span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>The delimited is set by the <span class="in">`delim`</span> argument.</span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="in">```{r separate}</span></span>
-<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a><span class="in">dat |&gt; </span></span>
-<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="in">  separate_wider_delim(cols = id, delim = "-", names = c("site", "plot"))</span></span>
-<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>Related function, <span class="in">`separate_wider_regex()`</span>, which uses regular expressions to split the column, can be more flexible. </span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>On the contrary, the following dataset is *not* tidy:</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r}</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: tidy</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="in">#| echo: false</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="in">#| message: false</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="in">table2 &lt;- read_delim(file = "data/nottidy.csv")</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a><span class="in">#rmarkdown::paged_table() # conflicts with webexercises</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="in">gt::gt(table2)</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).   </span>
 <span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reshaping data - wide to long </span></span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>It is very common to need to reshape data to make it tidy.</span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>This can be done with the <span class="in">`pivot_*`</span> functions.</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>Importing data from a file containing tidy data is a great way to start your work, but it is *not* a prerequisite to data import.</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>As long as your data is tabular, you will be able to import it in R, and tidy it later.</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>The process of tidying data is to convert the data you have to data that meets this standard.</span>
 <span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>``<span class="in">`{r pivot-anim, echo=FALSE, out.width = "400px", fig.cap = "Wide data to long data with `</span>pivot_longer()<span class="in">` and `</span>pivot_wider()` ."}</span>
-<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>knitr::include_graphics("figures/tidyr-pivot_longer_wider.gif")</span>
-<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="in">These are some Bergen climate data from [Wikipedia](https://no.wikipedia.org/wiki/Bergen) (NB for demonstration only wikipedia is not a good source of climate data - use [seklima](https://seklima.met.no/) for Norwegian data).</span></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## Multiple values in a cell</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>If a cell contains multiple values, we need to separate to tidy the data. </span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>We can separate the values into multiple columns with <span class="in">`tidyr::separate_wider_delim()`</span>.</span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.</span>
 <span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, bergen_klima, echo = FALSE}</span></span>
-<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima &lt;- read_delim(</span></span>
-<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a><span class="in">"Måned  Jan     Feb     Mar     Apr     Mai     Jun     Jul     Aug     Sep     Okt     Nov     Des</span></span>
-<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="in">Normal maks. temp. °C   3.6     4.0     5.9     9.1     14.0    16.8    17.6    17.4    14.2    11.2    6.9     4.7</span></span>
-<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="in">Døgnmiddeltemp. °C  1.7     1.7     3.3     5.8     10.4    13.1    14.2    14.2    11.5    8.8     4.8     2.7</span></span>
-<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a><span class="in">Normal min. temp. °C    -0.4    -0.5    0.9     3.0     7.2     10.2    11.5    11.6    9.1     6.6     2.8     0.6</span></span>
-<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="in">Nedbør (mm)     190     152     170     114     106     132     148     190     283     271     259     235", delim = "\t", trim_ws = TRUE)</span></span>
-<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima</span></span>
-<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>This might be a nice way to present the data but it is not tidy data:</span>
-<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>each row is not an observation; each column is not a variable.</span>
-<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>We can use <span class="in">`pivot_longer()`</span> to reshape the data. </span>
-<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>The months, selected by the <span class="in">`cols`</span> argument in the column names (see @sec-select-helpers for more on the syntax used here) will become a new variable with a name set by the <span class="in">`names_to`</span>, and the data values get put into a column named by the <span class="in">`values_to`</span> argument. </span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r separate-data}</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a><span class="in">dat &lt;- tribble(~id, ~value,</span></span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a><span class="in">       "A-1", 1,</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="in">       "A-2", 2,</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="in">       "B-1", 3)</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="in">dat</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>We can use <span class="in">`separate_wider_delim()`</span> to split site and plot into separate columns.</span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>The delimited is set by the <span class="in">`delim`</span> argument.</span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r separate}</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="in">dat |&gt; </span></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a><span class="in">  separate_wider_delim(cols = id, delim = "-", names = c("site", "plot"))</span></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pivot-long}</span></span>
-<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_long &lt;- bergen_klima |&gt; </span></span>
-<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_longer(cols = Jan:Des, names_to = "Month", values_to = "value")</span></span>
-<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_long</span></span>
-<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>Related function, <span class="in">`separate_wider_regex()`</span>, which uses regular expressions to split the column, can be more flexible. </span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>If there are multiple measurements of the same type in a single cell, then  <span class="in">`tidyr::separate_longer_delim()`</span> can be useful to separate the data into multiple rows.</span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reshaping data - wide to long </span></span>
 <span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>The data are now tidier, but it would probably be more useful to reshape the data again, and have a column for each climate variable.</span>
-<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>We can do this <span class="in">`pivot_wider()`</span>.</span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>It is very common to need to reshape data to make it tidy.</span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>This can be done with the <span class="in">`pivot_*`</span> functions.</span>
 <span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reshaping data - long to wide</span></span>
-<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>We can tell <span class="in">`pivot_wider()`</span> which column contains what will become the column names and the data with the <span class="in">`names_from`</span> and <span class="in">`values_from`</span>, respectively.</span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>``<span class="in">`{r pivot-anim, echo=FALSE, out.width = "400px", fig.cap = "Wide data to long data with `</span>pivot_longer()<span class="in">` and `</span>pivot_wider()` ."}</span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>knitr::include_graphics("figures/tidyr-pivot_longer_wider.gif")</span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pivot-wider}</span></span>
-<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_wider &lt;- bergen_klima_long |&gt; </span></span>
-<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_wider(names_from = "Måned", values_from = "value")</span></span>
-<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_wider</span></span>
-<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>The data are now in a convenient format for plotting or analysis.</span>
-<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>With the Mt Gonga data downloaded previously, pivot the data so that the height data (H1-H10) are in one column.</span>
-<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a> &lt;details&gt;</span>
-<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>  &lt;summary&gt;Hint&lt;/summary&gt;</span>
-<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a><span class="in">`pivot_longer`</span></span>
-<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>&lt;/details&gt; </span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a><span class="in">These are some Bergen climate data from [Wikipedia](https://no.wikipedia.org/wiki/Bergen) (NB for demonstration only wikipedia is not a good source of climate data - use [seklima](https://seklima.met.no/) for Norwegian data).</span></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, bergen_klima, echo = FALSE}</span></span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima &lt;- read_delim(</span></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a><span class="in">"Måned  Jan     Feb     Mar     Apr     Mai     Jun     Jul     Aug     Sep     Okt     Nov     Des</span></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a><span class="in">Normal maks. temp. °C   3.6     4.0     5.9     9.1     14.0    16.8    17.6    17.4    14.2    11.2    6.9     4.7</span></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a><span class="in">Døgnmiddeltemp. °C  1.7     1.7     3.3     5.8     10.4    13.1    14.2    14.2    11.5    8.8     4.8     2.7</span></span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a><span class="in">Normal min. temp. °C    -0.4    -0.5    0.9     3.0     7.2     10.2    11.5    11.6    9.1     6.6     2.8     0.6</span></span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a><span class="in">Nedbør (mm)     190     152     170     114     106     132     148     190     283     271     259     235", delim = "\t", trim_ws = TRUE)</span></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a>This might be a nice way to present the data but it is not tidy data:</span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>each row is not an observation; each column is not a variable.</span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>We can use <span class="in">`pivot_longer()`</span> to reshape the data. </span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>The months, selected by the <span class="in">`cols`</span> argument in the column names (see @sec-select-helpers for more on the syntax used here) will become a new variable with a name set by the <span class="in">`names_to`</span>, and the data values get put into a column named by the <span class="in">`values_to`</span> argument. </span>
 <span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further reading</span></span>
-<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">tidy data vignette</span><span class="co">]( https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)</span>{target="_blank"}</span>
-<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span><span class="co">[</span><span class="ot">tidyr cheat sheet</span><span class="co">](https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf)</span>{target="_blank"}</span>
-<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a>::: </span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pivot-long}</span></span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_long &lt;- bergen_klima |&gt; </span></span>
+<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_longer(cols = Jan:Des, names_to = "Month", values_to = "value")</span></span>
+<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_long</span></span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a>The data are now tidier, but it would probably be more useful to reshape the data again, and have a column for each climate variable.</span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a>We can do this <span class="in">`pivot_wider()`</span>.</span>
 <span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
-<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
-<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Richard Telford</span>
-<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reshaping data - long to wide</span></span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a>We can tell <span class="in">`pivot_wider()`</span> which column contains what will become the column names and the data with the <span class="in">`names_from`</span> and <span class="in">`values_from`</span>, respectively.</span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pivot-wider}</span></span>
+<span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_wider &lt;- bergen_klima_long |&gt; </span></span>
+<span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_wider(names_from = "Måned", values_from = "value")</span></span>
+<span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-130"><a href="#cb12-130" aria-hidden="true" tabindex="-1"></a><span class="in">bergen_klima_wider</span></span>
+<span id="cb12-131"><a href="#cb12-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-132"><a href="#cb12-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-133"><a href="#cb12-133" aria-hidden="true" tabindex="-1"></a>The data are now in a convenient format for plotting or analysis.</span>
+<span id="cb12-134"><a href="#cb12-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-135"><a href="#cb12-135" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb12-136"><a href="#cb12-136" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb12-137"><a href="#cb12-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-138"><a href="#cb12-138" aria-hidden="true" tabindex="-1"></a>With the Mt Gonga data downloaded previously, pivot the data so that the height data (H1-H10) are in one column.</span>
+<span id="cb12-139"><a href="#cb12-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-140"><a href="#cb12-140" aria-hidden="true" tabindex="-1"></a> &lt;details&gt;</span>
+<span id="cb12-141"><a href="#cb12-141" aria-hidden="true" tabindex="-1"></a>  &lt;summary&gt;Hint&lt;/summary&gt;</span>
+<span id="cb12-142"><a href="#cb12-142" aria-hidden="true" tabindex="-1"></a><span class="in">`pivot_longer`</span></span>
+<span id="cb12-143"><a href="#cb12-143" aria-hidden="true" tabindex="-1"></a>&lt;/details&gt; </span>
+<span id="cb12-144"><a href="#cb12-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-145"><a href="#cb12-145" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-146"><a href="#cb12-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-147"><a href="#cb12-147" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb12-148"><a href="#cb12-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further reading</span></span>
+<span id="cb12-149"><a href="#cb12-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-150"><a href="#cb12-150" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">tidy data vignette</span><span class="co">]( https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)</span>{target="_blank"}</span>
+<span id="cb12-151"><a href="#cb12-151" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span><span class="co">[</span><span class="ot">tidyr cheat sheet</span><span class="co">](https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf)</span>{target="_blank"}</span>
+<span id="cb12-152"><a href="#cb12-152" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a>::: </span>
+<span id="cb12-154"><a href="#cb12-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-155"><a href="#cb12-155" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb12-156"><a href="#cb12-156" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
+<span id="cb12-157"><a href="#cb12-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-158"><a href="#cb12-158" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Richard Telford</span>
+<span id="cb12-159"><a href="#cb12-159" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
