@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.251">
+<meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Data collection - 4&nbsp; Data cleaning</title>
 <style>
@@ -14,9 +14,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -43,43 +44,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -117,105 +88,127 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 </head>
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data cleaning</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_data_curation.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data cleaning</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data collection</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="sidebar-tool px-1"><i class="bi bi-twitter"></i></a>
-  <a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+    <a href="https://github.com/biostats-r/biostats" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01_design-spreadsheets.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Design spreadsheets</span></a>
+  <a href="./01_design-spreadsheets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Design spreadsheets</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02_data_workflow.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data workflow</span></a>
+  <a href="./02_data_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data workflow</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03_data_curation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data cleaning</span></a>
+  <a href="./03_data_curation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data cleaning</span></span></a>
   </div>
 </li>
     </ul>
 </div>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-<style>
-               img.site-logo {
-  height: auto;
-  width: 95%;
-}
-      </style>
-<p><a  href="https://biostats.w.uib.no/" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" alt="BioST@TS homepage" width="250" height="101"  data-no-retina class=" attachment-11864" title = "BioST@TS homepage"/></a>  
-<br><a  href="../index.html" aria-label="bioST@TS | When biology adds up, at last&#8230;"><img class="site-logo" src="../figures/icons_all.png" alt= "BioST@TS books" width="250" height="101"  data-no-retina class=" attachment-11864", title = "BioST@TS books"/></a>   </p>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<p><a href="https://biostats.w.uib.no/"><img src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" title="bioST@TS | When biology adds up, at last…" class="img-fluid"></a> <br><a href="../index.html"><img src="../figures/icons_all.png" title="BioST@TS books" width="250" height="50"></a></p>
+</div></div>
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#useful-packages" id="toc-useful-packages" class="nav-link active" data-scroll-target="#useful-packages"><span class="toc-section-number">4.1</span>  Useful packages</a></li>
-  <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data"><span class="toc-section-number">4.2</span>  Import data</a></li>
-  <li><a href="#view-dataset" id="toc-view-dataset" class="nav-link" data-scroll-target="#view-dataset"><span class="toc-section-number">4.3</span>  View dataset</a></li>
-  <li><a href="#check-variable-type" id="toc-check-variable-type" class="nav-link" data-scroll-target="#check-variable-type"><span class="toc-section-number">4.4</span>  Check variable type</a></li>
-  <li><a href="#check-for-duplicates" id="toc-check-for-duplicates" class="nav-link" data-scroll-target="#check-for-duplicates"><span class="toc-section-number">4.5</span>  Check for duplicates</a></li>
-  <li><a href="#check-for-missing-data" id="toc-check-for-missing-data" class="nav-link" data-scroll-target="#check-for-missing-data"><span class="toc-section-number">4.6</span>  Check for missing data</a></li>
+<li><a href="#useful-packages" id="toc-useful-packages" class="nav-link active" data-scroll-target="#useful-packages"><span class="header-section-number">4.1</span> Useful packages</a></li>
+  <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data"><span class="header-section-number">4.2</span> Import data</a></li>
+  <li><a href="#view-dataset" id="toc-view-dataset" class="nav-link" data-scroll-target="#view-dataset"><span class="header-section-number">4.3</span> View dataset</a></li>
+  <li><a href="#check-variable-type" id="toc-check-variable-type" class="nav-link" data-scroll-target="#check-variable-type"><span class="header-section-number">4.4</span> Check variable type</a></li>
+  <li><a href="#check-for-duplicates" id="toc-check-for-duplicates" class="nav-link" data-scroll-target="#check-for-duplicates"><span class="header-section-number">4.5</span> Check for duplicates</a></li>
+  <li><a href="#check-for-missing-data" id="toc-check-for-missing-data" class="nav-link" data-scroll-target="#check-for-missing-data"><span class="header-section-number">4.6</span> Check for missing data</a></li>
   <li>
-<a href="#check-range-of-values" id="toc-check-range-of-values" class="nav-link" data-scroll-target="#check-range-of-values"><span class="toc-section-number">4.7</span>  Check range of values</a>
+<a href="#check-range-of-values" id="toc-check-range-of-values" class="nav-link" data-scroll-target="#check-range-of-values"><span class="header-section-number">4.7</span> Check range of values</a>
   <ul class="collapse">
-<li><a href="#categorical-variables" id="toc-categorical-variables" class="nav-link" data-scroll-target="#categorical-variables"><span class="toc-section-number">4.7.1</span>  Categorical variables</a></li>
-  <li><a href="#numeric-variables" id="toc-numeric-variables" class="nav-link" data-scroll-target="#numeric-variables"><span class="toc-section-number">4.7.2</span>  Numeric variables</a></li>
+<li><a href="#categorical-variables" id="toc-categorical-variables" class="nav-link" data-scroll-target="#categorical-variables"><span class="header-section-number">4.7.1</span> Categorical variables</a></li>
+  <li><a href="#numeric-variables" id="toc-numeric-variables" class="nav-link" data-scroll-target="#numeric-variables"><span class="header-section-number">4.7.2</span> Numeric variables</a></li>
   </ul>
 </li>
   <li>
-<a href="#check-taxonomy" id="toc-check-taxonomy" class="nav-link" data-scroll-target="#check-taxonomy"><span class="toc-section-number">4.8</span>  Check taxonomy</a>
+<a href="#check-taxonomy" id="toc-check-taxonomy" class="nav-link" data-scroll-target="#check-taxonomy"><span class="header-section-number">4.8</span> Check taxonomy</a>
   <ul class="collapse">
-<li><a href="#use-case_when" id="toc-use-case_when" class="nav-link" data-scroll-target="#use-case_when"><span class="toc-section-number">4.8.1</span>  Use case_when()</a></li>
-  <li><a href="#use-taxon-dictionary" id="toc-use-taxon-dictionary" class="nav-link" data-scroll-target="#use-taxon-dictionary"><span class="toc-section-number">4.8.2</span>  Use taxon dictionary</a></li>
-  <li><a href="#checking-taxon-using-tnrs" id="toc-checking-taxon-using-tnrs" class="nav-link" data-scroll-target="#checking-taxon-using-tnrs"><span class="toc-section-number">4.8.3</span>  Checking Taxon using TNRS</a></li>
+<li><a href="#use-case_when" id="toc-use-case_when" class="nav-link" data-scroll-target="#use-case_when"><span class="header-section-number">4.8.1</span> Use case_when()</a></li>
+  <li><a href="#use-taxon-dictionary" id="toc-use-taxon-dictionary" class="nav-link" data-scroll-target="#use-taxon-dictionary"><span class="header-section-number">4.8.2</span> Use taxon dictionary</a></li>
+  <li><a href="#checking-taxon-using-tnrs" id="toc-checking-taxon-using-tnrs" class="nav-link" data-scroll-target="#checking-taxon-using-tnrs"><span class="header-section-number">4.8.3</span> Checking Taxon using TNRS</a></li>
   </ul>
 </li>
   <li>
-<a href="#visualise-data" id="toc-visualise-data" class="nav-link" data-scroll-target="#visualise-data"><span class="toc-section-number">4.9</span>  Visualise data</a>
+<a href="#visualise-data" id="toc-visualise-data" class="nav-link" data-scroll-target="#visualise-data"><span class="header-section-number">4.9</span> Visualise data</a>
   <ul class="collapse">
-<li><a href="#histogram-or-density-plot" id="toc-histogram-or-density-plot" class="nav-link" data-scroll-target="#histogram-or-density-plot"><span class="toc-section-number">4.9.1</span>  Histogram or density plot</a></li>
-  <li><a href="#correlations" id="toc-correlations" class="nav-link" data-scroll-target="#correlations"><span class="toc-section-number">4.9.2</span>  Correlations</a></li>
+<li><a href="#histogram-or-density-plot" id="toc-histogram-or-density-plot" class="nav-link" data-scroll-target="#histogram-or-density-plot"><span class="header-section-number">4.9.1</span> Histogram or density plot</a></li>
+  <li><a href="#correlations" id="toc-correlations" class="nav-link" data-scroll-target="#correlations"><span class="header-section-number">4.9.2</span> Correlations</a></li>
   </ul>
 </li>
   </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span id="sec-data-cleaning" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data cleaning</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-data-cleaning" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data cleaning</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -223,6 +216,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -234,91 +228,89 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>There are a couple of R packages that are useful for data curation. First, <strong>tidyverse</strong> is a collection of R packages used for basic data manipulation and analysis. We will also use <strong>lubridate</strong>, which helps with data and time formats.</p>
 <p>If you have never used the packages you need to install it first using the function <code>install.packages("tidyverse")</code>. Otherwise, you can just load the packages.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Another useful package for data curation is <strong>tidylog</strong>, which is built on the <strong>dplyr</strong> and <strong>tidyr</strong> packages and provides useful information about the functions used.</p>
-<p>Tidylog will for example tell you how many rows have been removed and are remaining when using the <code><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter()</a></code> function or how many rows match when using a join function. The information is always indicated in absolute numbers and percentage. This additional information is very useful to check if the right observations have been removed or manipulated, because mistakes are easily done.</p>
+<p>Tidylog will for example tell you how many rows have been removed and are remaining when using the <code>filter()</code> function or how many rows match when using a join function. The information is always indicated in absolute numbers and percentage. This additional information is very useful to check if the right observations have been removed or manipulated, because mistakes are easily done.</p>
 <p>Let’s install and/or load <strong>tidylog</strong>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/elbersb/tidylog/">tidylog</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/elbersb/tidylog/">tidylog</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note, that once <strong>tidylog</strong> is loaded it will automatically prioritize the tidylog function before the dplyr and tidyr functions. You actively have to choose if you do not want to use the tidylog version by using this notation: <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>.</p>
 <p>Some data checking has to be done by hand and detecitve work, other things can be done more automatically. There are a few packages that can help with some of this work and for this tutorial we will use the <code>validate</code> package.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#install.packages("validate")</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-cleaning/validate">validate</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#install.packages("validate")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-cleaning/validate">validate</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="import-data" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="import-data">
 <span class="header-section-number">4.2</span> Import data</h2>
 <p>The first step is to import the dataset to R. The data is stored as a <em>csv file</em> and we can use the function <code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv()</a></code> to import that data. If your data has another format or you are new to importing data, have a look at this <a href="https://biostats-r.github.io/biostats/workingInR/importing-data-in-r.html">page</a>.</p>
 <p>Give the dataset a name using a backwards pointing arrow: <code>&lt;-</code> The name should indicate that this is the raw data.</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"data/PFTC4_Svalbard_2018_Gradient_Traits.csv"</span><span class="op">)</span>
-<span class="co">#&gt; Rows: 11345 Columns: 15</span>
-<span class="co">#&gt; ── Column specification ────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; Delimiter: ","</span>
-<span class="co">#&gt; chr  (7): Project, Gradient, PlotID, ID, Functional_group, Taxon, Trait</span>
-<span class="co">#&gt; dbl  (7): Year, Site, Individual_nr, Value, Elevation_m, Latitude_N, Longitu...</span>
-<span class="co">#&gt; date (1): Date</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span>
-<span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"data/PFTC4_Svalbard_2018_Gradient_Traits.csv"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 11345 Columns: 15</span></span>
+<span><span class="co">#&gt; ── Column specification ────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; Delimiter: ","</span></span>
+<span><span class="co">#&gt; chr  (7): Project, Gradient, PlotID, ID, Functional_group, Taxon, Trait</span></span>
+<span><span class="co">#&gt; dbl  (7): Year, Site, Individual_nr, Value, Elevation_m, Latitude_N, Longitu...</span></span>
+<span><span class="co">#&gt; date (1): Date</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span></span>
+<span><span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The dataset has 11345 rows and 15 columns and a number of numeric, character and date variables. It contains measurements of 14 traits from two elevational gradients on Svalbard. The traits were measured on individual plants from 21 different graminoid and forb species. For more information about the sites, traits and measurements see <a href="https://github.com/Plant-Functional-Trait-Course/PFTC_4_Svalbard">here</a>.</p>
 <p><strong>Some manipulation</strong></p>
 <p>Let us introduce some errors to the dataset.</p>
 <p>The code to do this is hidden. But if you want to replicate the code to introduce errors you can find the code from <a href="https://github.com/Plant-Functional-Trait-Course/PFTC_teaching_material/blob/main/quarto_webpage/8_data_curation.qmd">line 116</a>.</p>
-<div class="cell">
-
-</div>
 </section><section id="view-dataset" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="view-dataset">
 <span class="header-section-number">4.3</span> View dataset</h2>
 <p>First, we want to have a look at the dataset. By typing <code>raw_traits</code> in the console it will display the first rows and columns of the dataset. Note that the last column and many rows are not shown.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span>
-<span class="co">#&gt; # A tibble: 10,298 × 10</span>
-<span class="co">#&gt;    Date       Gradient  Site PlotID Individual_nr ID      Taxon    Trait   Value</span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 2018-07-20 B            5 D                  1 AIB1395 saxifra… Plan… 6.5 e+0</span>
-<span class="co">#&gt;  2 2018-07-20 B            5 D                  1 AIB1395 saxifra… Wet_… 2.92e-2</span>
-<span class="co">#&gt;  3 2018-07-20 B            5 D                  1 AIB1395 saxifra… Dry_… 4   e-3</span>
-<span class="co">#&gt;  4 2018-07-20 B            5 D                  1 AIB1395 saxifra… Leaf… 5.66e-1</span>
-<span class="co">#&gt;  5 2018-07-20 B            5 D                  1 AIB1395 saxifra… Leaf… 6.75e-1</span>
-<span class="co">#&gt;  6 2018-07-20 B            5 D                  1 AIB1395 saxifra… SLA_… 1.69e+2</span>
-<span class="co">#&gt;  7 2018-07-20 B            5 D                  1 AIB1395 saxifra… LDMC  1.37e-1</span>
-<span class="co">#&gt;  8 2018-07-20 B            5 D                  1 AIB1395 saxifra… C_pe… 3.89e+1</span>
-<span class="co">#&gt;  9 2018-07-20 B            5 D                  1 AIB1395 saxifra… N_pe… 1.14e+0</span>
-<span class="co">#&gt; 10 2018-07-20 B            5 D                  1 AIB1395 saxifra… CN_r… 3.41e+1</span>
-<span class="co">#&gt; # … with 10,288 more rows, and 1 more variable: Elevation_m &lt;dbl&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span></span>
+<span><span class="co">#&gt; # A tibble: 10,298 × 10</span></span>
+<span><span class="co">#&gt;    Date       Gradient  Site PlotID Individual_nr ID      Taxon    Trait   Value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 2018-07-20 B            5 D                  1 AIB1395 saxifra… Plan… 6.5 e+0</span></span>
+<span><span class="co">#&gt;  2 2018-07-20 B            5 D                  1 AIB1395 saxifra… Wet_… 2.92e-2</span></span>
+<span><span class="co">#&gt;  3 2018-07-20 B            5 D                  1 AIB1395 saxifra… Dry_… 4   e-3</span></span>
+<span><span class="co">#&gt;  4 2018-07-20 B            5 D                  1 AIB1395 saxifra… Leaf… 5.66e-1</span></span>
+<span><span class="co">#&gt;  5 2018-07-20 B            5 D                  1 AIB1395 saxifra… Leaf… 6.75e-1</span></span>
+<span><span class="co">#&gt;  6 2018-07-20 B            5 D                  1 AIB1395 saxifra… SLA_… 1.69e+2</span></span>
+<span><span class="co">#&gt;  7 2018-07-20 B            5 D                  1 AIB1395 saxifra… LDMC  1.37e-1</span></span>
+<span><span class="co">#&gt;  8 2018-07-20 B            5 D                  1 AIB1395 saxifra… C_pe… 3.89e+1</span></span>
+<span><span class="co">#&gt;  9 2018-07-20 B            5 D                  1 AIB1395 saxifra… N_pe… 1.14e+0</span></span>
+<span><span class="co">#&gt; 10 2018-07-20 B            5 D                  1 AIB1395 saxifra… CN_r… 3.41e+1</span></span>
+<span><span class="co">#&gt; # ℹ 10,288 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: Elevation_m &lt;dbl&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>At the top you can see that the dataset has 10298 observations and 10 columns. These numbers give you a first indication if you have imported the right dataset, and if all observations and columns are there.</p>
 </section><section id="check-variable-type" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="check-variable-type">
 <span class="header-section-number">4.4</span> Check variable type</h2>
 <p>One of the things we want to do is checking if all the variables in the dataset have the right type. For each variable the output above indicates the data type just below the variable name. The most common types are <em>dbl</em> (numeric or integer), <em>chr</em> (character), or <em>date</em> (date).</p>
 <p>If you are unfamiliar with data types see <a href="https://biostats-r.github.io/biostats/workingInR/first-steps-in-r.html#data-types-and-objects">here</a>.</p>
-<p>The first variable <em>Date</em> is a character, which does not seem to be correct. This means that one or several observations in this column are not dates. Since we do not expect to have very many dates (the data was collected during a few days), we can check all the different values in <em>Date</em>. For this we use the function <code><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct()</a></code> on the variable <em>Date</em>.</p>
+<p>The first variable <em>Date</em> is a character, which does not seem to be correct. This means that one or several observations in this column are not dates. Since we do not expect to have very many dates (the data was collected during a few days), we can check all the different values in <em>Date</em>. For this we use the function <code>distinct()</code> on the variable <em>Date</em>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">Date</span><span class="op">)</span>
-<span class="co">#&gt; distinct: removed 10,291 rows (&gt;99%), 7 rows remaining</span>
-<span class="co">#&gt; # A tibble: 7 × 1</span>
-<span class="co">#&gt;   Date      </span>
-<span class="co">#&gt;   &lt;chr&gt;     </span>
-<span class="co">#&gt; 1 2018-07-20</span>
-<span class="co">#&gt; 2 2018-07-18</span>
-<span class="co">#&gt; 3 2018-07-21</span>
-<span class="co">#&gt; 4 2018-07-19</span>
-<span class="co">#&gt; 5 2018-07-17</span>
-<span class="co">#&gt; 6 18        </span>
-<span class="co">#&gt; 7 &lt;NA&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">distinct</span><span class="op">(</span><span class="va">Date</span><span class="op">)</span></span>
+<span><span class="co">#&gt; distinct: removed 10,291 rows (&gt;99%), 7 rows remaining</span></span>
+<span><span class="co">#&gt; # A tibble: 7 × 1</span></span>
+<span><span class="co">#&gt;   Date      </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;     </span></span>
+<span><span class="co">#&gt; 1 2018-07-20</span></span>
+<span><span class="co">#&gt; 2 2018-07-18</span></span>
+<span><span class="co">#&gt; 3 2018-07-21</span></span>
+<span><span class="co">#&gt; 4 2018-07-19</span></span>
+<span><span class="co">#&gt; 5 2018-07-17</span></span>
+<span><span class="co">#&gt; 6 18        </span></span>
+<span><span class="co">#&gt; 7 &lt;NA&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We see that there are 6 distinct dates in the variable <em>Date</em>. One of the dates is “18”, which is not a correct date format and turned the variable into a character. Note the additional information from the tidylog package on the <code><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct()</a></code> function, which shows the number of rows removed and remaining.</p>
-<p>The next step is to check which observastion(s) have the wrong date. For this we can use the function <code><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter()</a></code> to extract all observations with the date 18. We can pipe this to <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code>, which will display the whole table in a separate window. Note that for this tutorial, we use a different way of displaying the output</p>
+<p>We see that there are 6 distinct dates in the variable <em>Date</em>. One of the dates is “18”, which is not a correct date format and turned the variable into a character. Note the additional information from the tidylog package on the <code>distinct()</code> function, which shows the number of rows removed and remaining.</p>
+<p>The next step is to check which observastion(s) have the wrong date. For this we can use the function <code>filter()</code> to extract all observations with the date 18. We can pipe this to <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code>, which will display the whole table in a separate window. Note that for this tutorial, we use a different way of displaying the output</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">Date</span> <span class="op">==</span> <span class="st">"18"</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">filter</span><span class="op">(</span><span class="va">Date</span> <span class="op">==</span> <span class="st">"18"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <pre><code>#&gt; filter: removed 10,291 rows (&gt;99%), 7 rows remaining
@@ -332,7 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 #&gt; 5 18    C            1 A                  3 AMO3822 salix polaris Leaf_… 2.84e-1
 #&gt; 6 18    C            1 A                  3 AMO3822 salix polaris SLA_c… 1.42e+2
 #&gt; 7 18    C            1 A                  3 AMO3822 salix polaris LDMC   3.47e-1
-#&gt; # … with 1 more variable: Elevation_m &lt;dbl&gt;</code></pre>
+#&gt; # ℹ 1 more variable: Elevation_m &lt;dbl&gt;</code></pre>
 </div>
 <p>We can see that a single observation (with multiple traits) has the wrong date. There is no way that we would remember on what day this leaf was collected (remember the dataset has &gt; 10000 leaves!). We have to start playing detectives now. The only way to find the right date for these observations is to check the raw data (leaves), notes or photos. It is therefore important to keep all the data entry sheets (paper version), take a photo of them and make tidy notes during field work. This is the only way to fix many of the problems.</p>
 <p>Luckily, we took pictures from all envelopes of the leaves. The date on the envelope is <em>18 July 2018</em> (<a href="#fig-envelope">Figure&nbsp;<span>4.1</span></a>), and it seems that there has been a typo.</p>
@@ -340,46 +332,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell-output-display">
 <div id="fig-envelope" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="./pics/envelope.png" class="img-fluid figure-img" alt="A photo showing the envelope of the leaf with the wrong date." width="492"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.1: The envelope of the leaf with the wrong date.</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Figure&nbsp;4.1: The envelope of the leaf with the wrong date.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>Let’s replace the wrong date and give the variable <em>Date</em> the right class.</p>
-<p>For this we will use the function <code><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate()</a></code> which adds or manipulates a column. Inside the mutate we will use the <code><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else()</a></code> function to replace the date for a specific ID. This function is useful for a single condition. However for multiple statements (many if else conditions), we recommend to use the <code><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when()</a></code> function (see below). To change the class, we use the <code><a href="https://lubridate.tidyverse.org/reference/ymd.html">ymd()</a></code> function from the lubridate package. Note that we now have to assign the table to a new or the same name to make the change permanent.</p>
+<p>For this we will use the function <code>mutate()</code> which adds or manipulates a column. Inside the mutate we will use the <code><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else()</a></code> function to replace the date for a specific ID. This function is useful for a single condition. However for multiple statements (many if else conditions), we recommend to use the <code><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when()</a></code> function (see below). To change the class, we use the <code><a href="https://lubridate.tidyverse.org/reference/ymd.html">ymd()</a></code> function from the lubridate package. Note that we now have to assign the table to a new or the same name to make the change permanent.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>Date <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"AMO3822"</span>, <span class="st">"2018-07-18"</span>, <span class="va">Date</span><span class="op">)</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>Date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html">ymd</a></span><span class="op">(</span><span class="va">Date</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; mutate: changed 7 values (&lt;1%) of 'Date' (0 new NA)</span>
-<span class="co">#&gt; mutate: converted 'Date' from character to Date (0 new NA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Date <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"AMO3822"</span>, <span class="st">"2018-07-18"</span>, <span class="va">Date</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html">ymd</a></span><span class="op">(</span><span class="va">Date</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mutate: changed 7 values (&lt;1%) of 'Date' (0 new NAs)</span></span>
+<span><span class="co">#&gt; mutate: converted 'Date' from character to Date (0 new NA)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>An important step and good practice when cleaning data is to check that the right correction has been done. Here is where the <strong>tidylog</strong> package comes in handy. It shows that for 7 observation Date has been changed. This matches with the number of observations that had a wrong date.</p>
 <p>To be absolutely sure we can look at the specific leaf (ID == “AMO3822”) and see if the date is now corrected. Another way would be to run the <code>distinct(Date)</code> function again.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"AMO3822"</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="va">Date</span><span class="op">)</span>
-<span class="co">#&gt; filter: removed 10,291 rows (&gt;99%), 7 rows remaining</span>
-<span class="co">#&gt; select: dropped 9 variables (Gradient, Site, PlotID, Individual_nr, ID, …)</span>
-<span class="co">#&gt; # A tibble: 7 × 1</span>
-<span class="co">#&gt;   Date      </span>
-<span class="co">#&gt;   &lt;date&gt;    </span>
-<span class="co">#&gt; 1 2018-07-18</span>
-<span class="co">#&gt; 2 2018-07-18</span>
-<span class="co">#&gt; 3 2018-07-18</span>
-<span class="co">#&gt; 4 2018-07-18</span>
-<span class="co">#&gt; 5 2018-07-18</span>
-<span class="co">#&gt; 6 2018-07-18</span>
-<span class="co">#&gt; 7 2018-07-18</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">filter</span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"AMO3822"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">Date</span><span class="op">)</span></span>
+<span><span class="co">#&gt; filter: removed 10,291 rows (&gt;99%), 7 rows remaining</span></span>
+<span><span class="co">#&gt; select: dropped 9 variables (Gradient, Site, PlotID, Individual_nr, ID, …)</span></span>
+<span><span class="co">#&gt; # A tibble: 7 × 1</span></span>
+<span><span class="co">#&gt;   Date      </span></span>
+<span><span class="co">#&gt;   &lt;date&gt;    </span></span>
+<span><span class="co">#&gt; 1 2018-07-18</span></span>
+<span><span class="co">#&gt; 2 2018-07-18</span></span>
+<span><span class="co">#&gt; 3 2018-07-18</span></span>
+<span><span class="co">#&gt; 4 2018-07-18</span></span>
+<span><span class="co">#&gt; 5 2018-07-18</span></span>
+<span><span class="co">#&gt; 6 2018-07-18</span></span>
+<span><span class="co">#&gt; 7 2018-07-18</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The date has been fixed.</p>
-<div class="callout-warning callout callout-style-default no-icon callout-captioned">
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise 1
 </div>
 </div>
@@ -396,28 +387,28 @@ Exercise 1
 <p>Using the <code>validate</code> package, we can check all the variables at once. The validate package is based on making some rules that need checking and then applying those rules to a dataset. The rules can be reused and applied to any dataset.</p>
 <p>Let’s make some rules about data types using the <code><a href="https://rdrr.io/pkg/validate/man/validator.html">validator()</a></code> function:</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># rules</span>
-<span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span>
-  
-  <span class="co"># check variable types</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">Gradient</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">PlotID</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">ID</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">Taxon</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">Trait</span><span class="op">)</span>,
-
-  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Site</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Individual_nr</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Elevation_m</span><span class="op">)</span>,
-  
-  <span class="fu"><a href="https://lubridate.tidyverse.org/reference/date_utils.html">is.Date</a></span><span class="op">(</span><span class="va">Date</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rules</span></span>
+<span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span></span>
+<span>  </span>
+<span>  <span class="co"># check variable types</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">Gradient</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">PlotID</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">ID</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">Taxon</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">Trait</span><span class="op">)</span>,</span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Site</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Individual_nr</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">Elevation_m</span><span class="op">)</span>,</span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://lubridate.tidyverse.org/reference/date_utils.html">is.Date</a></span><span class="op">(</span><span class="va">Date</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now the rules can be applied to the dataset using the <code><a href="https://rdrr.io/pkg/validate/man/confront.html">confront()</a></code> function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
-  </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span>  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The summary function gives an overview of each rule and how many passes and fails there are. It looks like all the rules are passed.</p>
 </section><section id="check-for-duplicates" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="check-for-duplicates">
@@ -426,50 +417,49 @@ Exercise 1
 <p>To check this, we can use the rule <code><a href="https://rdrr.io/pkg/validate/man/is_unique.html">is_unique()</a></code>.</p>
 <p>Note that <em>Value</em> was not included in the <code><a href="https://rdrr.io/pkg/validate/man/is_unique.html">is_unique()</a></code>. This was done intentionally, because a common mistake is to have a duplicate, but with a different value. This is either because one of the variables is wrong, e.g.&nbsp;it has the wrong Site and therefore appears to be a duplicate. Alternatively, the leaf could have been measured twice by accident, which would likely give two slightly different values. When getting a duplicate, these different options for why there is a duplicate have to be considered and carefully checked in the raw data.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span>
-  
-  <span class="co"># check variable types</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/validate/man/is_unique.html">is_unique</a></span><span class="op">(</span><span class="va">Date</span>, <span class="va">Gradient</span>, <span class="va">Site</span>, <span class="va">PlotID</span>, <span class="va">Individual_nr</span>, <span class="va">ID</span>, <span class="va">Taxon</span>, <span class="va">Trait</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
-<span class="co">#&gt;   name items passes fails nNA error warning</span>
-<span class="co">#&gt; 1   V1 10298  10296     2   0 FALSE   FALSE</span>
-<span class="co">#&gt;                                                                 expression</span>
-<span class="co">#&gt; 1 is_unique(Date, Gradient, Site, PlotID, Individual_nr, ID, Taxon, Trait)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span></span>
+<span>  </span>
+<span>  <span class="co"># check variable types</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/validate/man/is_unique.html">is_unique</a></span><span class="op">(</span><span class="va">Date</span>, <span class="va">Gradient</span>, <span class="va">Site</span>, <span class="va">PlotID</span>, <span class="va">Individual_nr</span>, <span class="va">ID</span>, <span class="va">Taxon</span>, <span class="va">Trait</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   name items passes fails nNA error warning</span></span>
+<span><span class="co">#&gt; 1   V1 10298  10296     2   0 FALSE   FALSE</span></span>
+<span><span class="co">#&gt;                                                                 expression</span></span>
+<span><span class="co">#&gt; 1 is_unique(Date, Gradient, Site, PlotID, Individual_nr, ID, Taxon, Trait)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Two observations fail the rules and are not unique.</p>
 <p>The violate package can visualise the number of passes and fails, which can be useful. For this, use the plot function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="03_data_curation_files/figure-html/visualise-duplicates-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">A plot showing the fails and passes. Note that there are very few fails compared to passes and the red bar is not visible on the plot.</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">A plot showing the fails and passes. Note that there are very few fails compared to passes and the red bar is not visible on the plot.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>To fix the problem, we need to know which observation is a duplicate. Here, we can use the function <code><a href="https://rdrr.io/pkg/validate/man/satisfying.html">violating()</a></code> for the data and the results and it will show the duplicate rows.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/validate/man/satisfying.html">violating</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">out</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 2 × 10</span>
-<span class="co">#&gt;   Date       Gradient  Site PlotID Individual_nr ID      Taxon     Trait   Value</span>
-<span class="co">#&gt;   &lt;date&gt;     &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 2018-07-20 B            3 C                  3 BEK3638 salix po… Dry_… 0.00275</span>
-<span class="co">#&gt; 2 2018-07-20 B            3 C                  3 BEK3638 salix po… Dry_… 0.00275</span>
-<span class="co">#&gt; # … with 1 more variable: Elevation_m &lt;dbl&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/validate/man/satisfying.html">violating</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 10</span></span>
+<span><span class="co">#&gt;   Date       Gradient  Site PlotID Individual_nr ID      Taxon     Trait   Value</span></span>
+<span><span class="co">#&gt;   &lt;date&gt;     &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 2018-07-20 B            3 C                  3 BEK3638 salix po… Dry_… 0.00275</span></span>
+<span><span class="co">#&gt; 2 2018-07-20 B            3 C                  3 BEK3638 salix po… Dry_… 0.00275</span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: Elevation_m &lt;dbl&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We get two exact duplicates, where even <em>Value</em> is the same. We can therefore assume that the leaf has only been measured once, but the data has been entered twice.</p>
-<p>To fix the problem, we want to remove one of the duplicates. We group by the variables we expect to be unique and use <code><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct()</a></code> with the argument <em>.keep_all = TRUE</em> to remove the duplicates.</p>
+<p>To fix the problem, we want to remove one of the duplicates. We group by the variables we expect to be unique and use <code>distinct()</code> with the argument <em>.keep_all = TRUE</em> to remove the duplicates.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Date</span>, <span class="va">Gradient</span>, <span class="va">Site</span>, <span class="va">PlotID</span>, <span class="va">Individual_nr</span>, <span class="va">ID</span>, <span class="va">Taxon</span>, <span class="va">Trait</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct</a></span><span class="op">(</span>.keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/ungroup.html">ungroup</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; group_by: 8 grouping variables (Date, Gradient, Site, PlotID, Individual_nr, …)</span>
-<span class="co">#&gt; distinct (grouped): removed one row (&lt;1%), 10,297 rows remaining</span>
-<span class="co">#&gt; ungroup: no grouping variables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">Date</span>, <span class="va">Gradient</span>, <span class="va">Site</span>, <span class="va">PlotID</span>, <span class="va">Individual_nr</span>, <span class="va">ID</span>, <span class="va">Taxon</span>, <span class="va">Trait</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">distinct</span><span class="op">(</span>.keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; group_by: 8 grouping variables (Date, Gradient, Site, PlotID, Individual_nr, …)</span></span>
+<span><span class="co">#&gt; distinct (grouped): removed one row (&lt;1%), 10,297 rows remaining (removed 0 groups, 10,297 groups remaining)</span></span>
+<span><span class="co">#&gt; ungroup: no grouping variables remain</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Tidylog shows again what happens and how many rows have been removed. There are 8 grouping variables and as expected, one row is removed, which is the duplicated row.</p>
 <p>We can also run the code from above again to check if the duplicate is gone.</p>
@@ -478,22 +468,22 @@ Exercise 1
 <p>A common problem in a dataset are missing data. There are many reasons for having missing data. For now, we want to find out if we have any NAs in the dataset and if yes where and how many.</p>
 <p>A quick way to get an overview of all NAs in the dataset is to select for any NAs in the dataset and summarise how many NAs there are.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/select.html">select</a></span><span class="op">(</span><span class="fu">where</span><span class="op">(</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; select: dropped 8 variables (Gradient, Site, PlotID, Individual_nr, ID, …)</span>
-<span class="co">#&gt; summarise: now one row and 2 columns, ungrouped</span>
-<span class="co">#&gt; # A tibble: 1 × 2</span>
-<span class="co">#&gt;    Date Value</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;</span>
-<span class="co">#&gt; 1     7     3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">summarise</span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; select: dropped 8 variables (Gradient, Site, PlotID, Individual_nr, ID, …)</span></span>
+<span><span class="co">#&gt; summarise: now one row and 2 columns, ungrouped</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 2</span></span>
+<span><span class="co">#&gt;    Date Value</span></span>
+<span><span class="co">#&gt;   &lt;int&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1     7     3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The variables <em>Date</em> and <em>Value</em> have NAs. It is not always a problem to have missing data. In this case, Date is not a crucial variable, and we know the data was collected during a few days in July 2018. We could just impute one of these dates. But for now, let’s focus on the NAs in <em>Value.</em></p>
-<p>Once the missing values are detected one has to decide if the missing data can be recovered, or if the missing values should be removed from the dataset. After checking all the raw data and notes, we cannot find the Values from these observations and have to conclude that the data is useless. So, we want to remove them. For this we will use the function <code><a href="https://rdrr.io/pkg/tidylog/man/drop_na.html">drop_na()</a></code> on the variable <em>Value.</em></p>
+<p>Once the missing values are detected one has to decide if the missing data can be recovered, or if the missing values should be removed from the dataset. After checking all the raw data and notes, we cannot find the Values from these observations and have to conclude that the data is useless. So, we want to remove them. For this we will use the function <code>drop_na()</code> on the variable <em>Value.</em></p>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>
-<span class="co">#&gt; drop_na: removed 3 rows (&lt;1%), 10,294 rows remaining</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="va">Value</span><span class="op">)</span></span>
+<span><span class="co">#&gt; drop_na: removed 3 rows (&lt;1%), 10,294 rows remaining</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This operation has removed 3 rows, which is the number of NA’s in this variable.</p>
 <p>Missing data can also be detected using the <code>validator</code> package. It is however more tedious to write one rule (<code><a href="https://rdrr.io/r/base/NA.html">is.na()</a></code> or <code>!is.na()</code>) for each variable. But it can also be useful, because the <code><a href="https://rdrr.io/r/base/NA.html">is.na()</a></code> function can be combined with <code><a href="https://rdrr.io/r/base/any.html">any()</a></code> or <code><a href="https://rdrr.io/r/base/all.html">all()</a></code>, defining to include/exclude some or all NAs in a variable.</p>
@@ -504,69 +494,69 @@ Exercise 1
 <span class="header-section-number">4.7.1</span> Categorical variables</h3>
 <p>Let’s look at the variable leaf ID, where we have a list of valid values. For this, we need to get a list of valid IDs, using the <code>get_PFTC_envelope_codes</code> function from the PFTCFunctions package.</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#remotes::install_github("Plant-Functional-Trait-Course/PFTCFunctions")</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/Plant-Functional-Trait-Course/PFTCFunctions">"PFTCFunctions"</a></span><span class="op">)</span>
-
-<span class="va">leaf_ID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PFTCFunctions/man/get_PFTC_envelope_codes.html">get_PFTC_envelope_codes</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">32</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#remotes::install_github("Plant-Functional-Trait-Course/PFTCFunctions")</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/Plant-Functional-Trait-Course/PFTCFunctions">"PFTCFunctions"</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">leaf_ID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PFTCFunctions/man/get_PFTC_envelope_codes.html">get_PFTC_envelope_codes</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">32</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s make some rules to check the variables Gradient, Site and leaf_ID.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># rules</span>
-<span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span>
-  <span class="va">Gradient</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>,
-  <span class="va">Site</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,
-  <span class="va">ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">leaf_ID</span><span class="op">$</span><span class="va">hashcode</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rules</span></span>
+<span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span></span>
+<span>  <span class="va">Gradient</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>,</span>
+<span>  <span class="va">Site</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
+<span>  <span class="va">ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">leaf_ID</span><span class="op">$</span><span class="va">hashcode</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And then check the rules in the dataset.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
-<span class="co">#&gt;   name items passes fails nNA error warning                        expression</span>
-<span class="co">#&gt; 1   V1 10294  10294     0   0 FALSE   FALSE        Gradient %vin% c("B", "C")</span>
-<span class="co">#&gt; 2   V2 10294  10294     0   0 FALSE   FALSE                 Site %vin% c(1:7)</span>
-<span class="co">#&gt; 3   V3 10294  10280    14   0 FALSE   FALSE ID %vin% c(leaf_ID[["hashcode"]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   name items passes fails nNA error warning                        expression</span></span>
+<span><span class="co">#&gt; 1   V1 10294  10294     0   0 FALSE   FALSE        Gradient %vin% c("B", "C")</span></span>
+<span><span class="co">#&gt; 2   V2 10294  10294     0   0 FALSE   FALSE                 Site %vin% c(1:7)</span></span>
+<span><span class="co">#&gt; 3   V3 10294  10280    14   0 FALSE   FALSE ID %vin% c(leaf_ID[["hashcode"]])</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>There are 14 rows with a wrong leaf ID.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/validate/man/satisfying.html">violating</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">out</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 14 × 10</span>
-<span class="co">#&gt;    Date       Gradient  Site PlotID Individual_nr ID      Taxon   Trait    Value</span>
-<span class="co">#&gt;    &lt;date&gt;     &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 2018-07-21 B            1 A                  2 BGB8422 salix … Plan…   0.7   </span>
-<span class="co">#&gt;  2 2018-07-21 B            1 A                  2 BGB8422 salix … Wet_…   0.0132</span>
-<span class="co">#&gt;  3 2018-07-21 B            1 A                  2 BGB8422 salix … Dry_…   0.0028</span>
-<span class="co">#&gt;  4 2018-07-21 B            1 A                  2 BGB8422 salix … Leaf…   0.267 </span>
-<span class="co">#&gt;  5 2018-07-21 B            1 A                  2 BGB8422 salix … Leaf…   0.538 </span>
-<span class="co">#&gt;  6 2018-07-21 B            1 A                  2 BGB8422 salix … SLA_… 192.    </span>
-<span class="co">#&gt;  7 2018-07-21 B            1 A                  2 BGB8422 salix … LDMC    0.212 </span>
-<span class="co">#&gt;  8 2018-07-21 B            1 A                  2 BGB8422 salix … C_pe…  47.0   </span>
-<span class="co">#&gt;  9 2018-07-21 B            1 A                  2 BGB8422 salix … N_pe…   3.27  </span>
-<span class="co">#&gt; 10 2018-07-21 B            1 A                  2 BGB8422 salix … CN_r…  14.4   </span>
-<span class="co">#&gt; 11 2018-07-21 B            1 A                  2 BGB8422 salix … dN15…   4.41  </span>
-<span class="co">#&gt; 12 2018-07-21 B            1 A                  2 BGB8422 salix … dC13… -31.8   </span>
-<span class="co">#&gt; 13 2018-07-21 B            1 A                  2 BGB8422 salix … P_pe…   0.213 </span>
-<span class="co">#&gt; 14 2018-07-21 B            1 A                  2 BGB8422 salix … NP_r…  15.3   </span>
-<span class="co">#&gt; # … with 1 more variable: Elevation_m &lt;dbl&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/validate/man/satisfying.html">violating</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 14 × 10</span></span>
+<span><span class="co">#&gt;    Date       Gradient  Site PlotID Individual_nr ID      Taxon   Trait    Value</span></span>
+<span><span class="co">#&gt;    &lt;date&gt;     &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 2018-07-21 B            1 A                  2 BGB8422 salix … Plan…   0.7   </span></span>
+<span><span class="co">#&gt;  2 2018-07-21 B            1 A                  2 BGB8422 salix … Wet_…   0.0132</span></span>
+<span><span class="co">#&gt;  3 2018-07-21 B            1 A                  2 BGB8422 salix … Dry_…   0.0028</span></span>
+<span><span class="co">#&gt;  4 2018-07-21 B            1 A                  2 BGB8422 salix … Leaf…   0.267 </span></span>
+<span><span class="co">#&gt;  5 2018-07-21 B            1 A                  2 BGB8422 salix … Leaf…   0.538 </span></span>
+<span><span class="co">#&gt;  6 2018-07-21 B            1 A                  2 BGB8422 salix … SLA_… 192.    </span></span>
+<span><span class="co">#&gt;  7 2018-07-21 B            1 A                  2 BGB8422 salix … LDMC    0.212 </span></span>
+<span><span class="co">#&gt;  8 2018-07-21 B            1 A                  2 BGB8422 salix … C_pe…  47.0   </span></span>
+<span><span class="co">#&gt;  9 2018-07-21 B            1 A                  2 BGB8422 salix … N_pe…   3.27  </span></span>
+<span><span class="co">#&gt; 10 2018-07-21 B            1 A                  2 BGB8422 salix … CN_r…  14.4   </span></span>
+<span><span class="co">#&gt; 11 2018-07-21 B            1 A                  2 BGB8422 salix … dN15…   4.41  </span></span>
+<span><span class="co">#&gt; 12 2018-07-21 B            1 A                  2 BGB8422 salix … dC13… -31.8   </span></span>
+<span><span class="co">#&gt; 13 2018-07-21 B            1 A                  2 BGB8422 salix … P_pe…   0.213 </span></span>
+<span><span class="co">#&gt; 14 2018-07-21 B            1 A                  2 BGB8422 salix … NP_r…  15.3   </span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: Elevation_m &lt;dbl&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The ID BGB8422 does not exist in the list of valid leaf IDs. There might be a typo in this ID. One thing is to search for the letter or number combinations and see if we can figure out where the mistake happened. For this we will use the <code>stringr</code> package, which is part of tidyverse.</p>
 <p>With the function <code><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect()</a></code> we can search for specific strings like “BGB” or “8422” in the variable hashcode.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">leaf_ID</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">hashcode</span>, <span class="st">"8422"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; filter: removed 17,575 rows (&gt;99%), one row remaining</span>
-<span class="co">#&gt; # A tibble: 1 × 1</span>
-<span class="co">#&gt;   hashcode</span>
-<span class="co">#&gt;   &lt;chr&gt;   </span>
-<span class="co">#&gt; 1 BGP8422</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">leaf_ID</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">filter</span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">hashcode</span>, <span class="st">"8422"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; filter: removed 17,575 rows (&gt;99%), one row remaining</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 1</span></span>
+<span><span class="co">#&gt;   hashcode</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt; 1 BGP8422</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>When searching for the combinations of numbers, we find a ID that is very similar but a B is replaced by the P. This seems like a mistake that could be easily made. The envelope of this sample should also be checked before fixing the error.</p>
-<div class="callout-warning callout callout-style-default no-icon callout-captioned">
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise 2
 </div>
 </div>
@@ -584,102 +574,102 @@ Exercise 2
 <p>For numeric variables we could use another set of rules. For example the variable LDMC (Leaf dry matter content) is the dry mass divided by the wet mass. If LDMC is larger than 1 it means that the dry leaf was heavier than the wet leaf, which does not make sense. So, a simple rule to test is that LDMC is between 0 and 1.</p>
 <p>For this you could just use <code>Value &lt;= 1</code>. But because we have different traits, we need to use a conditional rule:</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co"># rules</span>
-<span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span>
-  <span class="kw">if</span> <span class="op">(</span><span class="va">Trait</span> <span class="op">==</span> <span class="st">"LDMC"</span><span class="op">)</span> <span class="va">Value</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rules</span></span>
+<span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html">validator</a></span><span class="op">(</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">Trait</span> <span class="op">==</span> <span class="st">"LDMC"</span><span class="op">)</span> <span class="va">Value</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And then check the rules in the dataset.</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
-<span class="co">#&gt;   name items passes fails nNA error warning</span>
-<span class="co">#&gt; 1   V1 10294  10294     0   0 FALSE   FALSE</span>
-<span class="co">#&gt;                               expression</span>
-<span class="co">#&gt; 1 Trait != "LDMC" | (Value - 1 &lt;= 1e-08)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/confront.html">confront</a></span><span class="op">(</span><span class="va">raw_traits</span>, <span class="va">rules</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/validate/man/validate-summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   name items passes fails nNA error warning</span></span>
+<span><span class="co">#&gt; 1   V1 10294  10294     0   0 FALSE   FALSE</span></span>
+<span><span class="co">#&gt;                               expression</span></span>
+<span><span class="co">#&gt; 1 Trait != "LDMC" | (Value - 1 &lt;= 1e-08)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>None of the values is violating the rules, so all is good.</p>
 </section></section><section id="check-taxonomy" class="level2" data-number="4.8"><h2 data-number="4.8" class="anchored" data-anchor-id="check-taxonomy">
 <span class="header-section-number">4.8</span> Check taxonomy</h2>
 <p>A common problem is inconsistencies within variables. In this dataset such a variable is <code>Taxon</code>. It is very common to make mistakes and typos with Latin species names during data entry.</p>
-<p>Let’s look at all unique species names using <code><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct()</a></code> and sort them by Taxon using <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code>. This is a good way to see small typos in the species names.</p>
+<p>Let’s look at all unique species names using <code>distinct()</code> and sort them by Taxon using <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code>. This is a good way to see small typos in the species names.</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">Taxon</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Taxon</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span>
-<span class="co">#&gt; distinct: removed 10,259 rows (&gt;99%), 35 rows remaining</span>
-<span class="co">#&gt; # A tibble: 35 × 1</span>
-<span class="co">#&gt;    Taxon                   </span>
-<span class="co">#&gt;    &lt;chr&gt;                   </span>
-<span class="co">#&gt;  1 alopecurus ovatus       </span>
-<span class="co">#&gt;  2 bistorta vivipara       </span>
-<span class="co">#&gt;  3 calalmagrostis neglecta </span>
-<span class="co">#&gt;  4 calamagrostis neglecta  </span>
-<span class="co">#&gt;  5 cassiope tetragona      </span>
-<span class="co">#&gt;  6 cerastium arcticum      </span>
-<span class="co">#&gt;  7 draba arctica           </span>
-<span class="co">#&gt;  8 draba oxycarpa          </span>
-<span class="co">#&gt;  9 dryas octopetala        </span>
-<span class="co">#&gt; 10 equisetum arvense       </span>
-<span class="co">#&gt; 11 equisetum scirpoides    </span>
-<span class="co">#&gt; 12 festuca rubra           </span>
-<span class="co">#&gt; 13 festuca viviparoidea    </span>
-<span class="co">#&gt; 14 luzula confusa          </span>
-<span class="co">#&gt; 15 luzula nivalis          </span>
-<span class="co">#&gt; 16 micranthes hieraciifolia</span>
-<span class="co">#&gt; 17 micranthes nivalis      </span>
-<span class="co">#&gt; 18 oxiria digyna           </span>
-<span class="co">#&gt; 19 oxyra digyna            </span>
-<span class="co">#&gt; 20 oxyria digina           </span>
-<span class="co">#&gt; 21 oxyria digyna           </span>
-<span class="co">#&gt; 22 pedicularis hirsuta     </span>
-<span class="co">#&gt; 23 poa alpina              </span>
-<span class="co">#&gt; 24 poa arctica             </span>
-<span class="co">#&gt; 25 poa pratensis           </span>
-<span class="co">#&gt; 26 potentilla hyparctica   </span>
-<span class="co">#&gt; 27 ranunculus sulphureus   </span>
-<span class="co">#&gt; 28 salix polaris           </span>
-<span class="co">#&gt; 29 saxifraga cernua        </span>
-<span class="co">#&gt; 30 saxifraga cespitosa     </span>
-<span class="co">#&gt; 31 saxifraga hirculus      </span>
-<span class="co">#&gt; 32 saxifraga oppositifolia </span>
-<span class="co">#&gt; 33 silene acaulis          </span>
-<span class="co">#&gt; 34 stellaria longipes      </span>
-<span class="co">#&gt; 35 trisetum spicatum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">distinct</span><span class="op">(</span><span class="va">Taxon</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Taxon</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
+<span><span class="co">#&gt; distinct: removed 10,259 rows (&gt;99%), 35 rows remaining</span></span>
+<span><span class="co">#&gt; # A tibble: 35 × 1</span></span>
+<span><span class="co">#&gt;    Taxon                   </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                   </span></span>
+<span><span class="co">#&gt;  1 alopecurus ovatus       </span></span>
+<span><span class="co">#&gt;  2 bistorta vivipara       </span></span>
+<span><span class="co">#&gt;  3 calalmagrostis neglecta </span></span>
+<span><span class="co">#&gt;  4 calamagrostis neglecta  </span></span>
+<span><span class="co">#&gt;  5 cassiope tetragona      </span></span>
+<span><span class="co">#&gt;  6 cerastium arcticum      </span></span>
+<span><span class="co">#&gt;  7 draba arctica           </span></span>
+<span><span class="co">#&gt;  8 draba oxycarpa          </span></span>
+<span><span class="co">#&gt;  9 dryas octopetala        </span></span>
+<span><span class="co">#&gt; 10 equisetum arvense       </span></span>
+<span><span class="co">#&gt; 11 equisetum scirpoides    </span></span>
+<span><span class="co">#&gt; 12 festuca rubra           </span></span>
+<span><span class="co">#&gt; 13 festuca viviparoidea    </span></span>
+<span><span class="co">#&gt; 14 luzula confusa          </span></span>
+<span><span class="co">#&gt; 15 luzula nivalis          </span></span>
+<span><span class="co">#&gt; 16 micranthes hieraciifolia</span></span>
+<span><span class="co">#&gt; 17 micranthes nivalis      </span></span>
+<span><span class="co">#&gt; 18 oxiria digyna           </span></span>
+<span><span class="co">#&gt; 19 oxyra digyna            </span></span>
+<span><span class="co">#&gt; 20 oxyria digina           </span></span>
+<span><span class="co">#&gt; 21 oxyria digyna           </span></span>
+<span><span class="co">#&gt; 22 pedicularis hirsuta     </span></span>
+<span><span class="co">#&gt; 23 poa alpina              </span></span>
+<span><span class="co">#&gt; 24 poa arctica             </span></span>
+<span><span class="co">#&gt; 25 poa pratensis           </span></span>
+<span><span class="co">#&gt; 26 potentilla hyparctica   </span></span>
+<span><span class="co">#&gt; 27 ranunculus sulphureus   </span></span>
+<span><span class="co">#&gt; 28 salix polaris           </span></span>
+<span><span class="co">#&gt; 29 saxifraga cernua        </span></span>
+<span><span class="co">#&gt; 30 saxifraga cespitosa     </span></span>
+<span><span class="co">#&gt; 31 saxifraga hirculus      </span></span>
+<span><span class="co">#&gt; 32 saxifraga oppositifolia </span></span>
+<span><span class="co">#&gt; 33 silene acaulis          </span></span>
+<span><span class="co">#&gt; 34 stellaria longipes      </span></span>
+<span><span class="co">#&gt; 35 trisetum spicatum</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>There are four different versions for <em>oxyra digyna</em> and two for <em>calamagrostis neglecta</em>. Obviously, some typos where made when entering the data.</p>
 <section id="use-case_when" class="level3" data-number="4.8.1"><h3 data-number="4.8.1" class="anchored" data-anchor-id="use-case_when">
 <span class="header-section-number">4.8.1</span> Use case_when()</h3>
 <p>Because we have to change multiple species names, we will use <code><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when()</a></code>, which allows for multiple conditions.</p>
 <div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>Taxon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">Taxon</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"oxiria digyna"</span>, 
-                                        <span class="st">"oxyria digina"</span>, 
-                                        <span class="st">"oxyra digyna"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"oxyria digyna"</span>,
-                           <span class="va">Taxon</span> <span class="op">==</span> <span class="st">"calalmagrostis neglecta"</span> <span class="op">~</span> <span class="st">"calamagrostis neglecta"</span>,
-                           <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">Taxon</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; mutate: changed 38 values (&lt;1%) of 'Taxon' (0 new NA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Taxon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">Taxon</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"oxiria digyna"</span>, </span>
+<span>                                        <span class="st">"oxyria digina"</span>, </span>
+<span>                                        <span class="st">"oxyra digyna"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"oxyria digyna"</span>,</span>
+<span>                           <span class="va">Taxon</span> <span class="op">==</span> <span class="st">"calalmagrostis neglecta"</span> <span class="op">~</span> <span class="st">"calamagrostis neglecta"</span>,</span>
+<span>                           <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">Taxon</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mutate: changed 38 values (&lt;1%) of 'Taxon' (0 new NAs)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="use-taxon-dictionary" class="level3" data-number="4.8.2"><h3 data-number="4.8.2" class="anchored" data-anchor-id="use-taxon-dictionary">
 <span class="header-section-number">4.8.2</span> Use taxon dictionary</h3>
 <p>An alternative to using <code><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when()</a></code> to fix the problem, would be to create a dictionary with bad and good species names.</p>
 <p>Let’s make a taxon dictionary.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">dictionary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>bad_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"oxiria digyna"</span>, 
-                                  <span class="st">"oxyria digina"</span>, 
-                                  <span class="st">"oxyra digyna"</span>, 
-                                  <span class="st">"calalmagrostis neglecta"</span><span class="op">)</span>,
-                     good_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"oxyria digyna"</span>, 
-                                   <span class="st">"oxyria digyna"</span>, 
-                                   <span class="st">"oxyria digyna"</span>, 
-                                   <span class="st">"calamagrostis neglecta"</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dictionary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>bad_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"oxiria digyna"</span>, </span>
+<span>                                  <span class="st">"oxyria digina"</span>, </span>
+<span>                                  <span class="st">"oxyra digyna"</span>, </span>
+<span>                                  <span class="st">"calalmagrostis neglecta"</span><span class="op">)</span>,</span>
+<span>                     good_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"oxyria digyna"</span>, </span>
+<span>                                   <span class="st">"oxyria digyna"</span>, </span>
+<span>                                   <span class="st">"oxyria digyna"</span>, </span>
+<span>                                   <span class="st">"calamagrostis neglecta"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we need to join the dictionary to the dataset using the bad name column. And with coalesce with can replace the bad names with the good names.</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/left_join.html">left_join</a></span><span class="op">(</span><span class="va">dictionary</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Taxon"</span> <span class="op">=</span> <span class="st">"bad_name"</span><span class="op">)</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>Taxon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/coalesce.html">coalesce</a></span><span class="op">(</span><span class="va">good_name</span>, <span class="va">Taxon</span><span class="op">)</span><span class="op">)</span>
-  </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">dictionary</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Taxon"</span> <span class="op">=</span> <span class="st">"bad_name"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Taxon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/coalesce.html">coalesce</a></span><span class="op">(</span><span class="va">good_name</span>, <span class="va">Taxon</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="checking-taxon-using-tnrs" class="level3" data-number="4.8.3"><h3 data-number="4.8.3" class="anchored" data-anchor-id="checking-taxon-using-tnrs">
 <span class="header-section-number">4.8.3</span> Checking Taxon using TNRS</h3>
@@ -695,8 +685,7 @@ Exercise 2
 <div class="cell-output-display">
 <div id="fig-hist" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="03_data_curation_files/figure-html/fig-hist-1.png" class="img-fluid figure-img" alt="A plto showing the density distributions of all measured traits." width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.2: Density distributions of all measured traits.</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Figure&nbsp;4.2: Density distributions of all measured traits.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -704,75 +693,77 @@ Exercise 2
 <p>Also not that leaf area has a huge tail and goes up to almost 20’000 cm<sup>2</sup>. This is a leaf of almost 2 m<sup>2</sup>, which is impossible for a plant from Svalbard. This value needs to be checked, it could be a typo.</p>
 <p>Let’s log transform the size traits first.</p>
 <div class="cell" data-warnigs="false">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R">
-<span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>Value_log <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">Trait</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-    <span class="st">"Plant_Height_cm"</span>,
-    <span class="st">"Wet_Mass_g"</span>,
-    <span class="st">"Dry_Mass_g"</span>,
-    <span class="st">"Leaf_Area_cm2"</span>,
-    <span class="st">"Leaf_Thickness_mm"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>, <span class="va">Value</span><span class="op">)</span>,
-    Trait <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Trait</span>,
-                   <span class="st">"Plant_Height_cm"</span> <span class="op">=</span> <span class="st">"Plant_Height_cm_log"</span>,
-                   <span class="st">"Wet_Mass_g"</span> <span class="op">=</span> <span class="st">"Wet_Mass_g_log"</span>,
-                   <span class="st">"Dry_Mass_g"</span> <span class="op">=</span> <span class="st">"Dry_Mass_g_log"</span>,
-                   <span class="st">"Leaf_Area_cm2"</span> <span class="op">=</span> <span class="st">"Leaf_Area_cm2_log"</span>,
-                   <span class="st">"Leaf_Thickness_mm"</span> <span class="op">=</span> <span class="st">"Thickness_mm_log"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning in log(Value): NaNs produced</span>
-<span class="co">#&gt; mutate: changed 5,214 values (51%) of 'Trait' (0 new NA)</span>
-<span class="co">#&gt;         new variable 'Value_log' (double) with 7,987 unique values and 0% NA</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span></span>
+<span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Value_log <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">Trait</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Plant_Height_cm"</span>,</span>
+<span>    <span class="st">"Wet_Mass_g"</span>,</span>
+<span>    <span class="st">"Dry_Mass_g"</span>,</span>
+<span>    <span class="st">"Leaf_Area_cm2"</span>,</span>
+<span>    <span class="st">"Leaf_Thickness_mm"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span>, <span class="va">Value</span><span class="op">)</span>,</span>
+<span>    Trait <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Trait</span>,</span>
+<span>                   <span class="st">"Plant_Height_cm"</span> <span class="op">=</span> <span class="st">"Plant_Height_cm_log"</span>,</span>
+<span>                   <span class="st">"Wet_Mass_g"</span> <span class="op">=</span> <span class="st">"Wet_Mass_g_log"</span>,</span>
+<span>                   <span class="st">"Dry_Mass_g"</span> <span class="op">=</span> <span class="st">"Dry_Mass_g_log"</span>,</span>
+<span>                   <span class="st">"Leaf_Area_cm2"</span> <span class="op">=</span> <span class="st">"Leaf_Area_cm2_log"</span>,</span>
+<span>                   <span class="st">"Leaf_Thickness_mm"</span> <span class="op">=</span> <span class="st">"Thickness_mm_log"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: There was 1 warning in `.fun()`.</span></span>
+<span><span class="co">#&gt; ℹ In argument: `Value_log = if_else(...)`.</span></span>
+<span><span class="co">#&gt; Caused by warning in `log()`:</span></span>
+<span><span class="co">#&gt; ! NaNs produced</span></span>
+<span><span class="co">#&gt; mutate: changed 5,214 values (51%) of 'Trait' (0 new NAs)</span></span>
+<span><span class="co">#&gt;         new variable 'Value_log' (double) with 7,990 unique values and 0% NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And remake the density plot using the log-transformed values.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-hist-log" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="03_data_curation_files/figure-html/fig-hist-log-1.png" class="img-fluid figure-img" alt="A plot showing the density distributions of all measured traits." width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.3: Density distributions of all measured traits.</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Figure&nbsp;4.3: Density distributions of all measured traits.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>The size traits do not have a long tail anymore.</p>
 <p>Let’s find the giant leaf. For this we can filter observations in the trait <em>Leaf Area</em> that have <em>Value</em> larger than 10.</p>
 <div class="cell">
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter</a></span><span class="op">(</span><span class="va">Trait</span> <span class="op">==</span> <span class="st">"Leaf_Area_cm2_log"</span>,
-         <span class="va">Value</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt; filter: removed 10,293 rows (&gt;99%), one row remaining</span>
-<span class="co">#&gt; # A tibble: 1 × 11</span>
-<span class="co">#&gt;   Date       Gradient  Site PlotID Individual_nr ID      Taxon       Trait Value</span>
-<span class="co">#&gt;   &lt;date&gt;     &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 2018-07-18 C            5 C                  2 ANH3472 oxyria dig… Leaf… 17965</span>
-<span class="co">#&gt; # … with 2 more variables: Elevation_m &lt;dbl&gt;, Value_log &lt;dbl&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">filter</span><span class="op">(</span><span class="va">Trait</span> <span class="op">==</span> <span class="st">"Leaf_Area_cm2_log"</span>,</span>
+<span>         <span class="va">Value</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; filter: removed 10,293 rows (&gt;99%), one row remaining</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 11</span></span>
+<span><span class="co">#&gt;   Date       Gradient  Site PlotID Individual_nr ID      Taxon       Trait Value</span></span>
+<span><span class="co">#&gt;   &lt;date&gt;     &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 2018-07-18 C            5 C                  2 ANH3472 oxyria dig… Leaf… 17965</span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: Elevation_m &lt;dbl&gt;, Value_log &lt;dbl&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This value for <em>Leaf Area</em> is impossible. We can again check the envelope of this leaf to find out if this was a typo. It turns out the comma was missed when typing in the data. Let’s fix the problem with a <code>mutate</code> and <code><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else()</a></code> statement. Note that we have to fix the problem for the <em>Value</em> and <em>Value_log</em> column.</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> |&gt; 
-  <span class="fu"><a href="https://rdrr.io/pkg/tidylog/man/mutate.html">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"ANH3472"</span> <span class="op">&amp;</span> <span class="va">Trait</span> <span class="op">==</span> <span class="st">"Leaf_Area_cm2_log"</span>, <span class="fl">1.7965</span>, <span class="va">Value</span><span class="op">)</span>,
-         Value_log <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"ANH3472"</span> <span class="op">&amp;</span> <span class="va">Trait</span> <span class="op">==</span> <span class="st">"Leaf_Area_cm2_log"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1.7965</span><span class="op">)</span>, <span class="va">Value_log</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; mutate: changed one value (&lt;1%) of 'Value' (0 new NA)</span>
-<span class="co">#&gt;         changed one value (&lt;1%) of 'Value_log' (0 new NA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="va">raw_traits</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Value <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"ANH3472"</span> <span class="op">&amp;</span> <span class="va">Trait</span> <span class="op">==</span> <span class="st">"Leaf_Area_cm2_log"</span>, <span class="fl">1.7965</span>, <span class="va">Value</span><span class="op">)</span>,</span>
+<span>         Value_log <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">ID</span> <span class="op">==</span> <span class="st">"ANH3472"</span> <span class="op">&amp;</span> <span class="va">Trait</span> <span class="op">==</span> <span class="st">"Leaf_Area_cm2_log"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1.7965</span><span class="op">)</span>, <span class="va">Value_log</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mutate: changed one value (&lt;1%) of 'Value' (0 new NAs)</span></span>
+<span><span class="co">#&gt;         changed one value (&lt;1%) of 'Value_log' (0 new NAs)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="correlations" class="level3" data-number="4.9.2"><h3 data-number="4.9.2" class="anchored" data-anchor-id="correlations">
 <span class="header-section-number">4.9.2</span> Correlations</h3>
 <p>Another way to check the data is to plot variables against each other that should be correlated. In this dataset, we can plot dry mass against leaf area. We would expect a positive correlation between the two variables, where large leaves have a higher dry mass.</p>
 <div class="cell">
-<pre><code>#&gt; Warning: Removed 39 rows containing missing values (geom_point).</code></pre>
+<pre><code>#&gt; Warning: Removed 39 rows containing missing values or values outside the scale range
+#&gt; (`geom_point()`).</code></pre>
 <div class="cell-output-display">
 <div id="fig-correlation" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="03_data_curation_files/figure-html/fig-correlation-1.png" class="img-fluid figure-img" alt="A plot showing the correlation between leaf area and dry mass. The two variables are positively correlated, but there is a separate point cloud with lower dry mass and area." width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.4: Correlation between leaf area and dry mass.</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Figure&nbsp;4.4: Correlation between leaf area and dry mass.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>We see a good correlation between leaf area and dry mass. However, there is a cloud with observations that separate from the main data cloud. These leaves have a lower dry mass and area.</p>
-<div class="callout-warning callout callout-style-default no-icon callout-captioned">
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Exercise 3
 </div>
 </div>
@@ -780,19 +771,19 @@ Exercise 3
 <p>What could the problem be?</p>
 <details><summary><p>Hint</p>
 </summary><ul>
-<li>Use <code><a href="https://rdrr.io/pkg/tidylog/man/filter.html">filter()</a></code> to look at the observations that have a higher leaf area and mass and compare them to the rest of the data.</li>
+<li>Use <code>filter()</code> to look at the observations that have a higher leaf area and mass and compare them to the rest of the data.</li>
 <li>Units</li>
 </ul></details>
 </div>
 </div>
 <p>The problem with the separate data points is the unit. They were measured in mg instead of g and are 3 digits off. This can easily be seen, when adding the regression lines for each data cloud, and two lines in between with the same slope but the intercept being 10 times smaller.</p>
 <div class="cell">
-<pre><code>#&gt; Warning: Removed 39 rows containing missing values (geom_point).</code></pre>
+<pre><code>#&gt; Warning: Removed 39 rows containing missing values or values outside the scale range
+#&gt; (`geom_point()`).</code></pre>
 <div class="cell-output-display">
 <div id="fig-correlation-lines" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="03_data_curation_files/figure-html/fig-correlation-lines-1.png" class="img-fluid figure-img" alt="A plot showing the correlation between leaf area and dry mass." width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.5: Correlation between leaf area and dry mass.</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Figure&nbsp;4.5: Correlation between leaf area and dry mass.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -932,7 +923,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   // Switch to dark mode if need be
   if (hasAlternateSentinel()) {
     toggleColorMode(true);
-  } 
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -940,9 +933,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -954,7 +961,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -1041,24 +1065,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
