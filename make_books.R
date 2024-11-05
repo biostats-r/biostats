@@ -42,5 +42,5 @@ quarto::quarto_render("targets")
 quarto::quarto_render("StatisticsInR")
 
 
-# Data collection
-quarto::quarto_render("DataCollection")
+# data lifecycle
+quarto::quarto_render("data_lifecycle")
