@@ -349,12 +349,15 @@ Exercise
 <p>Let’s <strong>abstract</strong> the code in a <strong>main script</strong> and some functions.</p>
 <p>The <strong>main script</strong>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">### Script to test how warming affects plant height in Bistorta vivipara.</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">### Script to test how warming affects plant height in Alopecurus magellanicus.</span></span>
 <span></span>
 <span><span class="co"># load libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/">here</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/performance/">performance</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># source your functions</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"R/functions.R"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># import data</span></span>
 <span><span class="va">raw_traits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_delim</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="st">"data/PFTC4_Svalbard_2018_Gradient_Traits.csv"</span><span class="op">)</span><span class="op">)</span></span>
@@ -1030,78 +1033,81 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-213"><a href="#cb8-213" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb8-214"><a href="#cb8-214" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
 <span id="cb8-215"><a href="#cb8-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-216"><a href="#cb8-216" aria-hidden="true" tabindex="-1"></a><span class="do">### Script to test how warming affects plant height in Bistorta vivipara.</span></span>
+<span id="cb8-216"><a href="#cb8-216" aria-hidden="true" tabindex="-1"></a><span class="do">### Script to test how warming affects plant height in Alopecurus magellanicus.</span></span>
 <span id="cb8-217"><a href="#cb8-217" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-218"><a href="#cb8-218" aria-hidden="true" tabindex="-1"></a><span class="co"># load libraries</span></span>
 <span id="cb8-219"><a href="#cb8-219" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb8-220"><a href="#cb8-220" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
 <span id="cb8-221"><a href="#cb8-221" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
 <span id="cb8-222"><a href="#cb8-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-223"><a href="#cb8-223" aria-hidden="true" tabindex="-1"></a><span class="co"># import data</span></span>
-<span id="cb8-224"><a href="#cb8-224" aria-hidden="true" tabindex="-1"></a>raw_traits <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"data/PFTC4_Svalbard_2018_Gradient_Traits.csv"</span>))</span>
+<span id="cb8-223"><a href="#cb8-223" aria-hidden="true" tabindex="-1"></a><span class="co"># source your functions</span></span>
+<span id="cb8-224"><a href="#cb8-224" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/functions.R"</span>)</span>
 <span id="cb8-225"><a href="#cb8-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-226"><a href="#cb8-226" aria-hidden="true" tabindex="-1"></a><span class="co"># clean data</span></span>
-<span id="cb8-227"><a href="#cb8-227" aria-hidden="true" tabindex="-1"></a>traits <span class="ot">&lt;-</span> <span class="fu">clean_data</span>(raw_traits)</span>
+<span id="cb8-226"><a href="#cb8-226" aria-hidden="true" tabindex="-1"></a><span class="co"># import data</span></span>
+<span id="cb8-227"><a href="#cb8-227" aria-hidden="true" tabindex="-1"></a>raw_traits <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"data/PFTC4_Svalbard_2018_Gradient_Traits.csv"</span>))</span>
 <span id="cb8-228"><a href="#cb8-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-229"><a href="#cb8-229" aria-hidden="true" tabindex="-1"></a><span class="co"># run model</span></span>
-<span id="cb8-230"><a href="#cb8-230" aria-hidden="true" tabindex="-1"></a>my_model <span class="ot">&lt;-</span> <span class="fu">fit_model</span>(<span class="at">data =</span> traits, </span>
-<span id="cb8-231"><a href="#cb8-231" aria-hidden="true" tabindex="-1"></a>                      <span class="at">response =</span> <span class="st">"Value"</span>, </span>
-<span id="cb8-232"><a href="#cb8-232" aria-hidden="true" tabindex="-1"></a>                      <span class="at">predictor =</span> <span class="st">"Gradient"</span>)</span>
-<span id="cb8-233"><a href="#cb8-233" aria-hidden="true" tabindex="-1"></a><span class="co"># model summary</span></span>
-<span id="cb8-234"><a href="#cb8-234" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(my_model)</span>
-<span id="cb8-235"><a href="#cb8-235" aria-hidden="true" tabindex="-1"></a><span class="co"># check model assumptions</span></span>
-<span id="cb8-236"><a href="#cb8-236" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(my_model)</span>
-<span id="cb8-237"><a href="#cb8-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-238"><a href="#cb8-238" aria-hidden="true" tabindex="-1"></a><span class="co"># plot treatments vs. plant height</span></span>
-<span id="cb8-239"><a href="#cb8-239" aria-hidden="true" tabindex="-1"></a>my_figure <span class="ot">&lt;-</span> <span class="fu">make_figure</span>(traits)</span>
+<span id="cb8-229"><a href="#cb8-229" aria-hidden="true" tabindex="-1"></a><span class="co"># clean data</span></span>
+<span id="cb8-230"><a href="#cb8-230" aria-hidden="true" tabindex="-1"></a>traits <span class="ot">&lt;-</span> <span class="fu">clean_data</span>(raw_traits)</span>
+<span id="cb8-231"><a href="#cb8-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-232"><a href="#cb8-232" aria-hidden="true" tabindex="-1"></a><span class="co"># run model</span></span>
+<span id="cb8-233"><a href="#cb8-233" aria-hidden="true" tabindex="-1"></a>my_model <span class="ot">&lt;-</span> <span class="fu">fit_model</span>(<span class="at">data =</span> traits, </span>
+<span id="cb8-234"><a href="#cb8-234" aria-hidden="true" tabindex="-1"></a>                      <span class="at">response =</span> <span class="st">"Value"</span>, </span>
+<span id="cb8-235"><a href="#cb8-235" aria-hidden="true" tabindex="-1"></a>                      <span class="at">predictor =</span> <span class="st">"Gradient"</span>)</span>
+<span id="cb8-236"><a href="#cb8-236" aria-hidden="true" tabindex="-1"></a><span class="co"># model summary</span></span>
+<span id="cb8-237"><a href="#cb8-237" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(my_model)</span>
+<span id="cb8-238"><a href="#cb8-238" aria-hidden="true" tabindex="-1"></a><span class="co"># check model assumptions</span></span>
+<span id="cb8-239"><a href="#cb8-239" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(my_model)</span>
 <span id="cb8-240"><a href="#cb8-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-241"><a href="#cb8-241" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-242"><a href="#cb8-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-243"><a href="#cb8-243" aria-hidden="true" tabindex="-1"></a>The functions that are called in the main script are "hidden" in a separate script.</span>
-<span id="cb8-244"><a href="#cb8-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-247"><a href="#cb8-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-248"><a href="#cb8-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: script-with-functions</span></span>
-<span id="cb8-249"><a href="#cb8-249" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb8-250"><a href="#cb8-250" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-251"><a href="#cb8-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-252"><a href="#cb8-252" aria-hidden="true" tabindex="-1"></a><span class="do">### My custom functions</span></span>
-<span id="cb8-253"><a href="#cb8-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-254"><a href="#cb8-254" aria-hidden="true" tabindex="-1"></a><span class="co"># clean data</span></span>
-<span id="cb8-255"><a href="#cb8-255" aria-hidden="true" tabindex="-1"></a>clean_data <span class="ot">&lt;-</span> <span class="cf">function</span>(raw_traits){</span>
-<span id="cb8-256"><a href="#cb8-256" aria-hidden="true" tabindex="-1"></a>  traits <span class="ot">&lt;-</span> raw_traits <span class="sc">|&gt;</span></span>
-<span id="cb8-257"><a href="#cb8-257" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove NAs</span></span>
-<span id="cb8-258"><a href="#cb8-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Value)) <span class="sc">|&gt;</span></span>
-<span id="cb8-259"><a href="#cb8-259" aria-hidden="true" tabindex="-1"></a>  <span class="co"># order factor and rename variable gradient</span></span>
-<span id="cb8-260"><a href="#cb8-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Gradient =</span> <span class="fu">case_match</span>(Gradient,</span>
-<span id="cb8-261"><a href="#cb8-261" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"C"</span> <span class="sc">~</span> <span class="st">"Control"</span>,</span>
-<span id="cb8-262"><a href="#cb8-262" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"B"</span> <span class="sc">~</span> <span class="st">"Nutrients"</span>),</span>
-<span id="cb8-263"><a href="#cb8-263" aria-hidden="true" tabindex="-1"></a>         <span class="at">Gradient =</span> <span class="fu">factor</span>(Gradient, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Nutrients"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb8-264"><a href="#cb8-264" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select one species and one trait</span></span>
-<span id="cb8-265"><a href="#cb8-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Taxon <span class="sc">==</span> <span class="st">"alopecurus magellanicus"</span>,</span>
-<span id="cb8-266"><a href="#cb8-266" aria-hidden="true" tabindex="-1"></a>         Trait <span class="sc">==</span> <span class="st">"Leaf_Area_cm2"</span>)</span>
-<span id="cb8-267"><a href="#cb8-267" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-268"><a href="#cb8-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-269"><a href="#cb8-269" aria-hidden="true" tabindex="-1"></a><span class="co"># run a linear regression</span></span>
-<span id="cb8-270"><a href="#cb8-270" aria-hidden="true" tabindex="-1"></a>fit_model <span class="ot">&lt;-</span> <span class="cf">function</span>(data, response, predictor){</span>
-<span id="cb8-271"><a href="#cb8-271" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(response, <span class="st">"~"</span>, predictor)), <span class="at">data =</span> data)</span>
-<span id="cb8-272"><a href="#cb8-272" aria-hidden="true" tabindex="-1"></a>  mod</span>
-<span id="cb8-273"><a href="#cb8-273" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-274"><a href="#cb8-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-275"><a href="#cb8-275" aria-hidden="true" tabindex="-1"></a><span class="co"># make figure</span></span>
-<span id="cb8-276"><a href="#cb8-276" aria-hidden="true" tabindex="-1"></a>make_figure <span class="ot">&lt;-</span> <span class="cf">function</span>(traits){</span>
-<span id="cb8-277"><a href="#cb8-277" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(traits, <span class="fu">aes</span>(<span class="at">x =</span> Gradient, <span class="at">y =</span> Value)) <span class="sc">+</span></span>
-<span id="cb8-278"><a href="#cb8-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="fu">c</span>(<span class="st">"grey80"</span>, <span class="st">"darkgreen"</span>)) <span class="sc">+</span></span>
-<span id="cb8-279"><a href="#cb8-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="fu">expression</span>(Leaf<span class="sc">~</span>area<span class="sc">~</span>cm<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">+</span></span>
-<span id="cb8-280"><a href="#cb8-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb8-281"><a href="#cb8-281" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-282"><a href="#cb8-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-283"><a href="#cb8-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-284"><a href="#cb8-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-241"><a href="#cb8-241" aria-hidden="true" tabindex="-1"></a><span class="co"># plot treatments vs. plant height</span></span>
+<span id="cb8-242"><a href="#cb8-242" aria-hidden="true" tabindex="-1"></a>my_figure <span class="ot">&lt;-</span> <span class="fu">make_figure</span>(traits)</span>
+<span id="cb8-243"><a href="#cb8-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-244"><a href="#cb8-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-245"><a href="#cb8-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-246"><a href="#cb8-246" aria-hidden="true" tabindex="-1"></a>The functions that are called in the main script are "hidden" in a separate script.</span>
+<span id="cb8-247"><a href="#cb8-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-250"><a href="#cb8-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-251"><a href="#cb8-251" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: script-with-functions</span></span>
+<span id="cb8-252"><a href="#cb8-252" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb8-253"><a href="#cb8-253" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-254"><a href="#cb8-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-255"><a href="#cb8-255" aria-hidden="true" tabindex="-1"></a><span class="do">### My custom functions</span></span>
+<span id="cb8-256"><a href="#cb8-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-257"><a href="#cb8-257" aria-hidden="true" tabindex="-1"></a><span class="co"># clean data</span></span>
+<span id="cb8-258"><a href="#cb8-258" aria-hidden="true" tabindex="-1"></a>clean_data <span class="ot">&lt;-</span> <span class="cf">function</span>(raw_traits){</span>
+<span id="cb8-259"><a href="#cb8-259" aria-hidden="true" tabindex="-1"></a>  traits <span class="ot">&lt;-</span> raw_traits <span class="sc">|&gt;</span></span>
+<span id="cb8-260"><a href="#cb8-260" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove NAs</span></span>
+<span id="cb8-261"><a href="#cb8-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Value)) <span class="sc">|&gt;</span></span>
+<span id="cb8-262"><a href="#cb8-262" aria-hidden="true" tabindex="-1"></a>  <span class="co"># order factor and rename variable gradient</span></span>
+<span id="cb8-263"><a href="#cb8-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Gradient =</span> <span class="fu">case_match</span>(Gradient,</span>
+<span id="cb8-264"><a href="#cb8-264" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"C"</span> <span class="sc">~</span> <span class="st">"Control"</span>,</span>
+<span id="cb8-265"><a href="#cb8-265" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"B"</span> <span class="sc">~</span> <span class="st">"Nutrients"</span>),</span>
+<span id="cb8-266"><a href="#cb8-266" aria-hidden="true" tabindex="-1"></a>         <span class="at">Gradient =</span> <span class="fu">factor</span>(Gradient, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Nutrients"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb8-267"><a href="#cb8-267" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select one species and one trait</span></span>
+<span id="cb8-268"><a href="#cb8-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Taxon <span class="sc">==</span> <span class="st">"alopecurus magellanicus"</span>,</span>
+<span id="cb8-269"><a href="#cb8-269" aria-hidden="true" tabindex="-1"></a>         Trait <span class="sc">==</span> <span class="st">"Leaf_Area_cm2"</span>)</span>
+<span id="cb8-270"><a href="#cb8-270" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-271"><a href="#cb8-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-272"><a href="#cb8-272" aria-hidden="true" tabindex="-1"></a><span class="co"># run a linear regression</span></span>
+<span id="cb8-273"><a href="#cb8-273" aria-hidden="true" tabindex="-1"></a>fit_model <span class="ot">&lt;-</span> <span class="cf">function</span>(data, response, predictor){</span>
+<span id="cb8-274"><a href="#cb8-274" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(response, <span class="st">"~"</span>, predictor)), <span class="at">data =</span> data)</span>
+<span id="cb8-275"><a href="#cb8-275" aria-hidden="true" tabindex="-1"></a>  mod</span>
+<span id="cb8-276"><a href="#cb8-276" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-277"><a href="#cb8-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-278"><a href="#cb8-278" aria-hidden="true" tabindex="-1"></a><span class="co"># make figure</span></span>
+<span id="cb8-279"><a href="#cb8-279" aria-hidden="true" tabindex="-1"></a>make_figure <span class="ot">&lt;-</span> <span class="cf">function</span>(traits){</span>
+<span id="cb8-280"><a href="#cb8-280" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(traits, <span class="fu">aes</span>(<span class="at">x =</span> Gradient, <span class="at">y =</span> Value)) <span class="sc">+</span></span>
+<span id="cb8-281"><a href="#cb8-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="fu">c</span>(<span class="st">"grey80"</span>, <span class="st">"darkgreen"</span>)) <span class="sc">+</span></span>
+<span id="cb8-282"><a href="#cb8-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="fu">expression</span>(Leaf<span class="sc">~</span>area<span class="sc">~</span>cm<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb8-283"><a href="#cb8-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb8-284"><a href="#cb8-284" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb8-285"><a href="#cb8-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-286"><a href="#cb8-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-287"><a href="#cb8-287" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resources</span></span>
+<span id="cb8-286"><a href="#cb8-286" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-287"><a href="#cb8-287" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-288"><a href="#cb8-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-289"><a href="#cb8-289" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Filazzola, A., &amp; Lortie, C. J. (2022). <span class="co">[</span><span class="ot">A call for clean code to effectively communicate science</span><span class="co">](https://doi.org/10.1111/2041-210X.13961)</span>. Methods in Ecology and Evolution, 13(10), 2119-2128.</span>
+<span id="cb8-289"><a href="#cb8-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-290"><a href="#cb8-290" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resources</span></span>
+<span id="cb8-291"><a href="#cb8-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-292"><a href="#cb8-292" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Filazzola, A., &amp; Lortie, C. J. (2022). <span class="co">[</span><span class="ot">A call for clean code to effectively communicate science</span><span class="co">](https://doi.org/10.1111/2041-210X.13961)</span>. Methods in Ecology and Evolution, 13(10), 2119-2128.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
