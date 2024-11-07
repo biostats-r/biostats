@@ -208,7 +208,12 @@ tar_option_set(
 
 Note that packages that are only used in a quarto file can be loaded directly in there and do not need to be loaded in the `_targets.R` file.
 
-3.  The function `tar_source()` will **source all the R scripts** in the environment of the pipeline.
+3.  The function `tar_source()` will **source all R scripts in the folder called R** in the environment of the pipeline.
+It will by default search scripts in the folder called R.
+You can have the code in another folder and tell the function where to look for R srcipts `tar_source("other_folder/functions.R")`
+Importantly, the folder containing the code should be clean and only contain code that is used for the pipeline.
+Otherwise `tar_source()` will try to run other scripts in the folder.
+
 
 ```{r}
 #| label: tar-source
@@ -259,7 +264,7 @@ Each time the pipeline is run, targetes will check if the file has been changed 
 
 list(
   tar_target(name = file,
-             command = "data/PFTC4_Svalbard_2018_Gradient_Traits.csv",
+             command = here::here("data/PFTC4_Svalbard_2018_Gradient_Traits.csv"),
              format = "file")
   )
   
@@ -305,6 +310,7 @@ But we are missing one last function to make the figure.
 ## Exercise
 
 Write a function that makes a figure showing leaf area in both gradients.
+Add this function to the function.R script and save the file.
 :::
 
 The last step is to set up the targets pipeline.
@@ -315,6 +321,7 @@ The last step is to set up the targets pipeline.
 **Define the data file**
 
 Add the dataset as data file in the `_targets.R` file.
+Save the file.
 
 ```{r}
 #| label: data-target2
@@ -347,6 +354,7 @@ Add four more targets to the pipeline that
 
 The last three targets are calling custom functions from the `functions.R` file.
 The targets are separated by a comma.
+At the end save the file.
 
 ```{r}
 #| label: pipeline
@@ -380,6 +388,7 @@ Have a treat 🥕!
 ### Run the pipeline
 
 Now we are ready to run the pipeline.
+Note that all R files that are used in the pipeline need to be saved before you run the pipeline.
 The function `tar_make()` runs the pipeline.
 This function looks for the `_targets.R` in the working directory and runs the pipeline.
 It makes sure the pipeline is run in the correct order.
