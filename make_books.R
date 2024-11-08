@@ -43,4 +43,4 @@ quarto::quarto_render("StatisticsInR")
 
 
 # data lifecycle
-quarto::quarto_render("data_lifecycle")
+quarto::quarto_render("data_life-cycle")
