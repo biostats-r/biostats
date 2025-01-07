@@ -5,20 +5,20 @@ output:
 --- 
 
 ```{r setup&variables, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 
 # title: axis ticks
 # author: jonathan
-# revised: 15/3/2020 
+# revised: 15/3/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Essential/axis-ticks.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Essential/axis-ticks.Rmd")
 library(ggplot2)
 
 # variable 1
-values1 <- rnorm(200, mean=50, sd=10)
+values1 <- rnorm(200, mean = 50, sd = 10)
 # variable 2
-values2 <- c(rnorm(100, mean=20, sd=10), rnorm(100, mean=40, sd=10))
+values2 <- c(rnorm(100, mean = 20, sd = 10), rnorm(100, mean = 40, sd = 10))
 
 # dataframe
 df <- data.frame(values1, values2)
@@ -28,7 +28,7 @@ Not that essential to be honest, but something that can improve the readability 
 Letâs start with the code for a reference plot. This plot is stored in the object `baseplot` so that we can reuse it throughout the whole tutorial:
 ```{r plot}
 baseplot <- ggplot(df, aes(values1, values2)) +
-  geom_point(size=2)
+  geom_point(size = 2)
 baseplot
 ```
 <br/><br/>
@@ -38,16 +38,16 @@ baseplot
 Axis ticks on the Y-axis may be defined by the argument `breaks=` in `scale_y_continuous()` (note that it is of course possible to do the same on the X-axis using `scale_x_continuous()`). The syntax is `breaks=c(a, b, ...)` where `a, b, ...` are the ticks that you want to set on the axis. You can put as many as you want, not just 2. Here for example, we want to put 12, 30 and 55 (and only these values) on the Y-axis:
 
 ```{r breaks}
-baseplot + 
-  scale_y_continuous(breaks=c(12, 30, 55))
+baseplot +
+  scale_y_continuous(breaks = c(12, 30, 55))
 ```
 <br/><br/>
 
 To define the ticks in a more regular/organized manner, you may use `break=seq(a, b, c)` where `a` is the *start* of the interval where the ticks are displayed, `b` is the *end* of the interval where the ticks are displayed, and `c` defines the *frequency* of the ticks in the given interval. In the following example, we will start the ticks at 0 and stop at 50 on both the X-axis and Y-axis, and the ticks will be placed every 10:
 ```{r breaks2}
 baseplot +
-  scale_x_continuous(breaks=seq(0, 50, 10)) +
-  scale_y_continuous(breaks=seq(0, 50, 10))
+  scale_x_continuous(breaks = seq(0, 50, 10)) +
+  scale_y_continuous(breaks = seq(0, 50, 10))
 ```
 <br/><br/>
 
@@ -55,15 +55,15 @@ It is also possible to make things a bit more complex, for example by setting tw
 
 ```{r breaks3}
 baseplot +
-  scale_x_continuous(breaks=c(seq(0, 50, 5), seq(50, 90, 10))) +
-  scale_y_continuous(breaks=c(seq(0, 50, 5), seq(50, 90, 10)))
+  scale_x_continuous(breaks = c(seq(0, 50, 5), seq(50, 90, 10))) +
+  scale_y_continuous(breaks = c(seq(0, 50, 5), seq(50, 90, 10)))
 ```
 Here, you may notice that the X- and Y-axes stops before 90. ggplot knows that all values (data points) are well below 90, and thus resets automatically the upper limit of the axes. If you wish to impose the axis limits while setting the ticks, use the arguments `limits = c(a, b)` to set the lower limit to `a` and the upper limit to `b` (use `NA` to let ggplot compute the best lower/upper limit):
 
 ```{r breaks and limits}
 baseplot +
-  scale_x_continuous(limits=c(NA,90), breaks=c(seq(0, 50, 5), seq(50, 90, 10))) +
-  scale_y_continuous(limits=c(NA,90), breaks=c(seq(0, 60, 5), seq(60, 90, 10)))
+  scale_x_continuous(limits = c(NA, 90), breaks = c(seq(0, 50, 5), seq(50, 90, 10))) +
+  scale_y_continuous(limits = c(NA, 90), breaks = c(seq(0, 60, 5), seq(60, 90, 10)))
 ```
 
 <br/><br/>
@@ -72,9 +72,9 @@ baseplot +
 
 If one or both of the axes have a logarithmic scale (see [here](https://biostats.w.uib.no/axis-scale/){target="_blank"}), then it is also possible to set ticks in another way than the one imposed by default by ggplot. Use `annotation_logticks()` to display the ticks, then use `sides=` to define which side of the plot (i.e. which axis) will be affected by the modifications. Write `l` for left, `r` for right, `b` for bottom and `t` for top. Combinations such as `lr` or `lb` are possible.
 ```{r scale and ticks, warning=FALSE}
-baseplot + 
+baseplot +
   scale_y_continuous(trans = "log10") +
-  annotation_logticks(sides="l") 
+  annotation_logticks(sides = "l")
 ```
 <br/><br/>
 
