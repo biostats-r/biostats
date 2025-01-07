@@ -180,6 +180,14 @@ The [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) packag
 
 library(gt)
 
+# summarise data
+trait_height_summary <- trait_height |> 
+  group_by(Taxon) |> 
+  # calculate mean, sd and number observations for each taxon
+  summarise(mean = mean(Value), sd = sd(Value), n = n()) |> 
+  # filter species with at least ten observations
+  filter(n >= 10) 
+
 trait_height_summary |>
   gt() |> # just gt() is enought to make a table
   # improve column names
