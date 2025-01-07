@@ -169,21 +169,6 @@ Several packages, including `kableExtra` and `gt` can make beautiful tables.
 
 The block label need to start with `tbl-` if the main caption and table number are to be shown.  
 
-### kable
-
-```{r}
-#| echo: fenced
-#| label: tbl-kable
-#| tbl-cap: Simple tables with `kable()`
-
-trait_height_summary <- trait_height |>
-  group_by(Taxon) |>
-  summarise(mean = mean(Value), sd = sd(Value), n = n()) |>
-  filter(n > 10)
-
-knitr::kable(trait_height_summary) # show first 5 rows
-```
-
 ### gt
 
 The [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) package can make more elaborate tables than `knitr::kable()`.
@@ -192,22 +177,28 @@ The [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) packag
 #| label: tbl-gt
 #| echo: fenced
 #| tbl-cap: Tables with `gt()`
-#| tbl-subcap:
-#|    - "Basic `gt()` table"
-#|    - "`gt()` table with more features"
 
 library(gt)
-trait_height_summary |>
-  gt()
+
+# summarise data
+trait_height_summary <- trait_height |> 
+  group_by(Taxon) |> 
+  # calculate mean, sd and number observations for each taxon
+  summarise(mean = mean(Value), sd = sd(Value), n = n()) |> 
+  # filter species with at least ten observations
+  filter(n >= 10) 
 
 trait_height_summary |>
-  gt() |>
+  gt() |> # just gt() is enought to make a table
+  # improve column names
   cols_label(
     mean = "Mean", # Display column headers
     sd = "Standard deviation",
     n = "Number"
   ) |>
-  fmt_number(columns = c(mean, sd)) |> # defaults to two decimal places
+  # format some columns as numbers - defaults to two decimal places
+  fmt_number(columns = c(mean, sd)) |> 
+  # adds a spanner above some columns
   tab_spanner(label = "Height", columns = c(mean, sd))
 ```
 
