@@ -1,5 +1,5 @@
 # copy assets
-
+fs::dir_create("docs/figures")
 fs::file_copy("figures/icons_all.png", "docs/figures/icons_all.png")
 fs::file_copy("figures/favicon.png", "docs/figures/favicon.png")
 
