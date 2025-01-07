@@ -173,6 +173,39 @@ Generate a GitHub PAT and store it with `gitcreds::gitcreds_set()`.
 Then vaccinate git on you computer.
 :::
 
+
+::: callout-tip
+## Renaming the default branch
+
+Git repos typically have a default branch (you will learn more about branches in @sec-working-branches).
+The traditional name for this branch is "master", but "main" is now preferred as it is more inclusive.
+GitHub uses "main" but git still uses "master" (this might change).
+
+On [stackoverflow](https://stackoverflow.com/questions/tagged/git) and other help sites, you will see both branch names.
+The code will work if you use the name you have.
+
+You can set the default for git repos made on your computer by running:
+
+```{r}
+#| label: default-branch
+#| eval: false
+#| echo: true
+usethis::git_default_branch_configure(name = "main")
+
+```
+
+If you have a repo that still uses master, you can change the name of the default branch of your repo to "main" using: `usethis::git_default_branch_rename()`
+
+:::
+
+::: callout-note
+## Exercise 
+
+Set the default branch of your repo to "main" for all future git repos made on your computer.
+
+:::
+
+
 ## Making a repo
 
 Now you are ready to start using RStudio and GitHub.
@@ -188,7 +221,7 @@ By default, repositories on GitHub are publicly readable.
 They can be made private if necessary.
 
 ::: panel-tabset
-### New repo local 
+### 1. New repo local 
 
 This workflow should be used if you are starting a new project.
 
@@ -212,10 +245,18 @@ Then click on commit.
 #| label: fig-first-commit
 #| fig-cap: Commiting the first files.
 #| fig-alt: Screenshot of RStudio showing window for staging two files for the first commit, where the commit button is highlighted.
-knitr::include_graphics("Pics/gittutorial/5_5_first_commit.png.png")
+knitr::include_graphics("Pics/gittutorial/5_1_first_commit.png")
 ```
 
-Then let RStudio restart so that the git panel is activated.
+A new window will pop up.
+Add a commit message and click commit.
+
+```{r}
+#| label: fig-commit-message
+#| fig-cap: Commiting the first files.
+#| fig-alt: Screenshot of RStudio showing window for staging two files for the first commit, where the commit button is highlighted.
+knitr::include_graphics("Pics/gittutorial/5_2_first_commit2.png")
+```
 
 Once you have committed at least one file, you can create a repo on GitHub by running the following command in the console:
 
@@ -236,7 +277,7 @@ This is how your new repo looks like.
 knitr::include_graphics("Pics/gittutorial/10_new_repo.png")
 ```
 
-### Existing repo local 
+### 2. Existing repo local 
 
 Use this workflow if you already have an RStudio project on your computer and want to push it to GitHub.
 
@@ -246,15 +287,48 @@ Open your RStudio project and create a git repo for your project by typing the f
 usethis::use_git()
 ```
 
-After creating the repo, the function will ask whether you want to commit some files.
+After creating the repo, the function will ask whether you want to commit some files (@fig-commit-all).
 
-There might be some files that you do not want to commit, for example very large files or files with sensitive information such as passwords. In this case, don't let R commit everything, instead pick which files you want committed (see @sec-stage-commit-push) and improve the `.gitignore` (see @sec-gitignore) so they cannot be committed by accident.
+```{r}
+#| label: fig-commit-all
+#| fig-cap: Commit everything
+#| fig-alt: Screenshot of GitHub asking if all files should be commited
+knitr::include_graphics("Pics/gittutorial/5_3_commit_all.png")
+```
 
-Then let RStudio restart so that the git panel is activated.
+Do not commit any files yet and choose no. 
+There might be some files that you do not want to commit, for example very large files or files with sensitive information such as passwords.
+
+Next you will be asked to restart RStudio to activate the Git tab.
+Choose yes and wait.
+
+Before pushing the project to GitHub, you need to commit some files.
+We will explain how to commit files very briefly here and it will be covered in more detail later (see @sec-stage-commit-push).
+
+Go to the Git tab and tick the boxes a file, for example the gitignore file.
+
+Then click on commit.
+
+```{r}
+#| label: fig-first-commit2
+#| fig-cap: Commiting the first files.
+#| fig-alt: Screenshot of RStudio showing window for staging two files for the first commit, where the commit button is highlighted.
+knitr::include_graphics("Pics/gittutorial/5_1_first_commit.png")
+```
+
+A new window will pop up.
+Add a commit message and click commit.
+
+```{r}
+#| label: fig-commit-message2
+#| fig-cap: Commiting the first files.
+#| fig-alt: Screenshot of RStudio showing window for staging two files for the first commit, where the commit button is highlighted.
+knitr::include_graphics("Pics/gittutorial/5_2_first_commit2.png")
+```
 
 Once you have committed at least one file, you can create a repo on GitHub by running the following command in the console:
 
-```{r github, eval = FALSE, echo = TRUE}
+```{r github2, eval = FALSE, echo = TRUE}
 usethis::use_github()
 ```
 
@@ -262,17 +336,7 @@ By default, the repo name on GitHub will match the RStudio project name, and the
 
 Now go to GitHub, find your repo and check the files you committed have been uploaded.
 
-This is how your new repo looks like.
-
-```{r}
-#| label: fig-new-repo
-#| fig-cap: New repo on GitHub
-#| fig-alt: Screenshot of github.com showing new repo
-knitr::include_graphics("Pics/gittutorial/10_new_repo.png")
-```
-
-
-### Existing repo GitHub
+### 3. Existing repo GitHub
 
 This workflow is useful if you already have a repo on GitHub that you want to use.
 
@@ -303,46 +367,19 @@ If the repo you are trying to clone is not your own, the function will first mak
 The function will clone the repo onto your desktop by default.
 You can copy the entire directory from there to somewhere more appropriate.
 
-Now it is time to commit and push.
 :::
 
-
-::: callout-tip
-## Renaming the default branch
-
-Git repos typically have a default branch (you will learn more about branches in @sec-working-branches).
-The traditional name for this branch is "master", but "main" is now preferred as it is more inclusive.
-GitHub uses "main" but git still uses "master" (this might change).
-
-On [stackoverflow](https://stackoverflow.com/questions/tagged/git) and other help sites, you will see both branch names.
-The code will work if you use the name you have.
-
-You can change the name of the default branch of your repo to "main" with this code from the `usethis` package
-
-```{r}
-#| eval: false
-#| echo: true
-git_default_branch_rename()
-```
-
-You can set the default for all future git repos made on your computer by running.
-
-```{r}
-#| eval: false
-#| echo: true
-git_default_branch_configure(name = "main")
-```
-:::
 
 ::: callout-note
 ## Exercise 
 
 -   Create a new RStudio project, set up git on it and agree to commit the files. You should now have a git tab in RStudio.
--   Rename the default branch to "main".
 -   Set up the project to use GitHub, push the committed files and view them on GitHub.
 :::
 
-After one commit, your repo will have the following structure.
+Now it is time to learn more about how to commit, push, and pull.
+You have now made one commit to your repo on the main branch and your repo has the following structure (@fig-mermaid-init).
+
 
 ```{mermaid}
 %%| label: fig-mermaid-init
