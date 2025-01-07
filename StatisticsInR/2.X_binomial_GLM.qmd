@@ -15,7 +15,8 @@ source("../StatisticsInR/Files/biostats_theme.R")
 # load the sheep data
 sheep_data <- read_csv("../StatisticsInR/Files/sheep_data.csv")
 
-sheep_data <- sheep_data[is.na(sheep_data$Age) == FALSE, ]
+sheep_data <- sheep_data |> 
+  drop_na(Age)
 
 # create some example data
 set.seed(2020)
@@ -40,11 +41,11 @@ your_data <- example_data <- tibble(
   ), each = 10)
 )
 
-example_data2 <- example_data %>%
-  group_by(group, response) %>%
-  summarise(count = n()) %>%
-  ungroup() %>%
-  pivot_wider(names_from = "response", values_from = "count") %>%
+example_data2 <- example_data |>
+  group_by(group, response) |>
+  summarise(count = n()) |>
+  ungroup() |>
+  pivot_wider(names_from = "response", values_from = "count") |>
   mutate(
     explanatory = sample(1:100, 10, replace = TRUE),
     successes = `0`, failures = `1`
@@ -714,7 +715,9 @@ changes by one unit.
 #| label: fig-log-odds-plot
 #| include: true
 #| echo: false
-#| fig-cap: "Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue"
+#| fig-cap: >
+#|   Example of a Binomial GLM model line on the logit scale.
+#|   Intercept in orange and slope in blue
 
 example_data <- mutate(example_data,
   logity = predict.glm(glm_model_object,
@@ -785,7 +788,9 @@ the gradient of the model line will be different for different $X$ values
 #| label: fig-response-scale-example
 #| include: true
 #| echo: false
-#| fig-cap: "Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue"
+#| fig-cap: >
+#|   Example of a Binomial GLM model line on the scale of the response data. 
+#|   Intercept in orange and slope in blue
 #| fig-height: 5
 
 example_data <- mutate(example_data,
@@ -838,15 +843,15 @@ odds_y_x3 <- coef(glm_model_object)[1] + (coef(glm_model_object)[2] * 3)
 # estimate of probability of success when X = 2
 # take inverse of the logit link
 
-prob_X2 <- 1 / (1 + exp(-odds_y_x2))
+prob_x2 <- 1 / (1 + exp(-odds_y_x2))
 
 # estimate of probability of success when X = 3
 
-prob_X3 <- 1 / (1 + exp(-odds_y_x3))
+prob_x3 <- 1 / (1 + exp(-odds_y_x3))
 
 # slope from X = 2 to X = 3 on response scale
 
-prob_X3 - prob_X2
+prob_x3 - prob_x2
 ```
 
 If you were to repeat the example above for $X$ = 10 and $X$ = 11, you would not
@@ -1118,7 +1123,7 @@ newdata <- data.frame(explanatory = seq(min(example_data$explanatory),
 # REMEMBER the confidence intervals too, you can access these by taking the
 # $se.fit of the results of `predict`, $fit is the mean prediction
 
-predictions <- newdata %>%
+predictions <- newdata |>
   mutate(
     predictions_link = predict(glm_model_object,
       newdata = newdata,
@@ -1139,7 +1144,7 @@ predictions <- newdata %>%
       type = "response",
       se.fit = TRUE
     )$se.fit
-  ) %>%
+  ) |>
   as_tibble()
 
 
@@ -1166,7 +1171,7 @@ You need to add or
 subtract 1.96 times the standard error from the mean prediction. 
 
 ```{r fig-plot_ci_example, fig.cap = "Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the response scale (B)"}
-predictions <- predictions %>% mutate(
+predictions <- predictions |> mutate(
   upper_ci_link = predictions_link + (2 * SE_link),
   lower_ci_link = predictions_link - (2 * SE_link),
   upper_ci_response = predictions_response + (2 * SE_response),
@@ -1255,7 +1260,7 @@ newdata <- data.frame(Weight = seq(min(sheep_data$Weight),
   length.out = 100
 ))
 
-sheep_predictions <- newdata %>%
+sheep_predictions <- newdata |>
   mutate(
     predictions_link = predict(sheep_model,
       newdata,
@@ -1269,9 +1274,9 @@ sheep_predictions <- newdata %>%
       se.fit = TRUE
     )$fit -
       (1.96 * predict(sheep_model,
-        newdata,
-        type = "link",
-        se.fit = TRUE
+         newdata,
+         type = "link",
+         se.fit = TRUE
       )$se.fit),
     upper_ci_link = predict(sheep_model,
       newdata,
@@ -1279,9 +1284,9 @@ sheep_predictions <- newdata %>%
       se.fit = TRUE
     )$fit +
       (1.96 * predict(sheep_model,
-        newdata,
-        type = "link",
-        se.fit = TRUE
+         newdata,
+         type = "link",
+         se.fit = TRUE
       )$se.fit),
     # then predict on the response scale
     predictions_response = predict(sheep_model,
@@ -1306,9 +1311,9 @@ sheep_predictions <- newdata %>%
       se.fit = TRUE
     )$fit +
       (1.96 * predict(sheep_model,
-        newdata,
-        type = "response",
-        se.fit = TRUE
+         newdata,
+         type = "response",
+         se.fit = TRUE
       )$se.fit)
   )
 ```
@@ -1413,7 +1418,9 @@ To do this, we can re-plot the example plot from the section above.
 
 ```{r}
 #| label: fig-example_predictions_plot
-#| fig-cap: "plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"
+#| fig-cap: >
+#|   The fitted GLM line on the response scale 
+#|   including 95% confidence interval (grey)
 
 example_predictions_response +
   labs(title = "Model predictions and data on response scale")
