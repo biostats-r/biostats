@@ -5,11 +5,11 @@ output:
 --- 
 
 ```{r setup&variables, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 
 # title: Grid of clustered/grouped barplots
 # author: jonathan
-# revised: 14/3/2020 
+# revised: 14/3/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Faceted/grid-clustered-bars.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Faceted/grid-clustered-bars.Rmd")
@@ -22,13 +22,14 @@ year <- factor(rep(rep(2017:2019, each = 12), 2))
 month <- factor(rep(month.abb, 6), levels = c(month.abb))
 
 # predictor variables
-precipitations <- c(135.8, 88.4, 91.0, 111.7, 31.0, 120.2, 69.6, 142.2, 83.8, 208.6, 229.4, 141.4,
-                    109.8, 52.8, 37.7, 69.8, 50.8, 47.3, 30.7, 186.3, 294.6, 245.9, 57.6, 46.4,
-                    33.8, 62.6, 111.2, 12.8, 46.0, 125.4, 95.2, 180.8, 148.6, 132.0, 21.6, 224.4,
-                    34.2, 22.8, 61.0, 32.0, 29.6, 44.7, 42.4, 36.8, 61.8, 88.2, 92.6, 80.2,
-                    48.0, 11.2, 5.6, 24.2, 17.2, 31.6, 43.4, 75.3, 144.0, 103.0, 12.4, 36.6,
-                    29.4, 15.4, 57.6, 3.2, 25.2, 52.4, 65.0, 67.4, 79.0, 18.2, 7.8, 92.0)
-
+precipitations <- c(
+  135.8, 88.4, 91.0, 111.7, 31.0, 120.2, 69.6, 142.2, 83.8, 208.6, 229.4, 141.4,
+  109.8, 52.8, 37.7, 69.8, 50.8, 47.3, 30.7, 186.3, 294.6, 245.9, 57.6, 46.4,
+  33.8, 62.6, 111.2, 12.8, 46.0, 125.4, 95.2, 180.8, 148.6, 132.0, 21.6, 224.4,
+  34.2, 22.8, 61.0, 32.0, 29.6, 44.7, 42.4, 36.8, 61.8, 88.2, 92.6, 80.2,
+  48.0, 11.2, 5.6, 24.2, 17.2, 31.6, 43.4, 75.3, 144.0, 103.0, 12.4, 36.6,
+  29.4, 15.4, 57.6, 3.2, 25.2, 52.4, 65.0, 67.4, 79.0, 18.2, 7.8, 92.0
+)
 ```
 
 In this tutorial, we will see how to make a grid of clustered/ grouped bar plots using `facet_wrap()`. Such a grid may be useful when your data set contains several categorical predictor variables, and displaying the data in a single graph makes it hardly comprehensible. Compared to a grid of non-grouped bar plots (introduced [HERE](https://biostats.w.uib.no/grid-bar-plots/){target="_blank"}), it allows for side-by-side comparison of related groups in the form of color-coded clusters. 
@@ -63,16 +64,16 @@ Here is the code, and the corresponding faceted plot:
 
 ```{r plot}
 ggplot(df, aes(x = month, y = precipitations)) +
-  geom_col(aes(fill = year), position = "dodge") + 
-  facet_wrap(~location, ncol=1)
+  geom_col(aes(fill = year), position = "dodge") +
+  facet_wrap(~location, ncol = 1)
 ```
 <br/><br/>
 
 If the plan was to set up a grid with `location` in a single row instead of a single column, we should have used `facet_wrap(~location, nrow=1)`:
 ```{r plot2}
 ggplot(df, aes(x = month, y = precipitations)) +
-  geom_col(aes(fill = year), position = "dodge") + 
-  facet_wrap(~location, nrow=1)
+  geom_col(aes(fill = year), position = "dodge") +
+  facet_wrap(~location, nrow = 1)
 ```
 However, in this particular case, the design is not so attractive since the bars become very thin and the labels of the X-axes quite close to each other. 
 <br/><br/>
@@ -85,23 +86,24 @@ Here we have made use of `facet_wrap()`, but we could have written the code with
 + `cols = vars( )` which shows the levels of the given variable as columns.
 
 ```{r plot3, eval=FALSE}
-ggplot(df, aes(x = month, y = precipitations)) +          # left plot, levels in rows
-  geom_col(aes(fill = year), position = "dodge") + 
+ggplot(df, aes(x = month, y = precipitations)) + # left plot, levels in rows
+  geom_col(aes(fill = year), position = "dodge") +
   facet_grid(rows = vars(location))
 
-ggplot(df, aes(x = month, y = precipitations)) +          # right plot, levels in columns
-  geom_col(aes(fill = year), position = "dodge") + 
+ggplot(df, aes(x = month, y = precipitations)) + # right plot, levels in columns
+  geom_col(aes(fill = year), position = "dodge") +
   facet_grid(cols = vars(location))
 ```
 ```{r plot4, echo=FALSE, fig.height=4, fig.width=10}
 grid.arrange(
-  ggplot(df, aes(x = month, y = precipitations)) +          # left plot, levels in rows
-    geom_col(aes(fill = year), position = "dodge") + 
+  ggplot(df, aes(x = month, y = precipitations)) + # left plot, levels in rows
+    geom_col(aes(fill = year), position = "dodge") +
     facet_grid(rows = vars(location)),
-  ggplot(df, aes(x = month, y = precipitations)) +          # right plot, levels in columns
-    geom_col(aes(fill = year), position = "dodge") + 
+  ggplot(df, aes(x = month, y = precipitations)) + # right plot, levels in columns
+    geom_col(aes(fill = year), position = "dodge") +
     facet_grid(cols = vars(location)),
-  ncol=2)
+  ncol = 2
+)
 ```
 <br/><br/>
 
@@ -117,7 +119,7 @@ This data set may be alternatively plotted in the form of a *grid of non-grouped
 ```{r plot5, echo=FALSE}
 ggplot(df, aes(x = month, y = precipitations)) +
   geom_col() +
-  facet_grid(year~location) 
+  facet_grid(year ~ location)
 ```
 
 
