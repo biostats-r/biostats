@@ -29,9 +29,9 @@ quarto::quarto_render("quarto")
 {
   quarto::quarto_render(input = "quarto/demo_presentation.qmd", output_file = "demo_presentation.html")
   fs::dir_copy("quarto/demo_presentation_files/", "docs/quarto/demo_presentation_files/", overwrite = TRUE)
-  fs::dir_delete("quarto/demo_presentation_files/") 
+  fs::dir_delete("quarto/demo_presentation_files/")
   fs::file_copy("demo_presentation.html", "docs/quarto/demo_presentation.html", overwrite = TRUE)
-  fs::file_delete("demo_presentation.html") 
+  fs::file_delete("demo_presentation.html")
 }
 
 # targets

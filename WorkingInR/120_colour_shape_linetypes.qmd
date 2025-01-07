@@ -65,9 +65,11 @@ You can change the default colours/fill by either picking your own colours with 
 ```{r qual-manual, fig.width = 3.5, fig.height = 3}
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density() +
-  scale_fill_manual(values = c(Adelie = "pink", 
-                               Chinstrap = "purple", 
-                               Gentoo = "green"))
+  scale_fill_manual(values = c(
+    Adelie = "pink",
+    Chinstrap = "purple",
+    Gentoo = "green"
+  ))
 ```
 
 Picking your own colours can be hard!
@@ -186,18 +188,20 @@ Transparency is set by the `alpha` aesthetic, where 0 is completely transparent 
 The overlap between partially transparent objects is more opaque. 
 
 ```{r alpha, fig.width=5, fig.height=2, fig.cap = "Alpha values", echo = FALSE}
-tibble(x0 = 0:5, r = 0.5, alpha = x0/5) |> 
-  crossing(y0 = c(0, 0.4)) |> 
+tibble(x0 = 0:5, r = 0.5, alpha = x0 / 5) |>
+  crossing(y0 = c(0, 0.4)) |>
   ggplot(aes(x0 = x0, y0 = y0, r = r, alpha = I(alpha))) +
-  ggforce::geom_circle(fill = "black",show.legend = FALSE) + 
+  ggforce::geom_circle(fill = "black", show.legend = FALSE) +
   coord_equal() +
   labs(x = "Alpha") +
-  scale_x_continuous(expand = c(0.01, 0), breaks = 0:5, labels = 0:5/5) +
+  scale_x_continuous(expand = c(0.01, 0), breaks = 0:5, labels = 0:5 / 5) +
   theme_bw() +
-  theme(axis.title.y = element_blank(), 
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(), 
-        panel.grid  = element_blank())
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid = element_blank()
+  )
 ```
 You can map a variable to `alpha` in `aes()`, but it is probably more common to set `alpha`.
 This is very useful, for example, when there are many overlapping points in a scatterplot, or you want to see the data behind the confidence interval of a regression line (@sec-manual-plotting-of-a-linear-model). 
@@ -219,7 +223,7 @@ These are the available shapes.
 
 ```{r shapes, fig.cap = "Shapes", fig.height=2.5, echo = FALSE}
 step <- 9
-tibble(shape = 0:25, x = (shape) %% step, y = (shape) %/% step) |>  
+tibble(shape = 0:25, x = (shape) %% step, y = (shape) %/% step) |>
   ggplot(aes(x = x, y = y, shape = I(shape), label = shape)) +
   geom_point(size = 5, fill = "red") +
   scale_y_reverse(expand = c(0.1, 0)) +
@@ -232,8 +236,10 @@ Shapes 21-24 take a `fill` and a `colour` aesthetic, whereas all the other shape
 If you want to change the shape from the default shapes, use `scale_shape_manual()`.
 
 ```{r scale-shape-manual, fig.width = 3.5, fig.height = 3}
-ggplot(penguins, 
-       aes(x = body_mass_g, y = bill_length_mm, colour = species, shape = species)) +
+ggplot(
+  penguins,
+  aes(x = body_mass_g, y = bill_length_mm, colour = species, shape = species)
+) +
   geom_point() +
   scale_shape_manual(values = c(Adelie = 17, Chinstrap = 6, Gentoo = 16))
 ```
@@ -245,10 +251,12 @@ ggplot(penguins,
 You can change the line types of all the lines made by, for example, `geom_line()` by setting the linetype.
 
 ```{r chickweight, fig.height = 3, fig.width = 3.5}
-ggplot(ChickWeight, aes(x = Time,
-                        y = weight, 
-                        group = Chick,
-                        colour = Diet)) +
+ggplot(ChickWeight, aes(
+  x = Time,
+  y = weight,
+  group = Chick,
+  colour = Diet
+)) +
   geom_line(linetype = "dashed")
 ```
 
@@ -271,9 +279,9 @@ If you need to change the linetypes assigned to each value, you can use `scale_l
 #| echo: false
 
 tibble(
-    label = c("blank", "dotted", "dashed", "longdash", "solid"),
-    y = 5:1
-  ) |>  
+  label = c("blank", "dotted", "dashed", "longdash", "solid"),
+  y = 5:1
+) |>
   ggplot(aes(x = 0, xend = 1, y = y, yend = y, linetype = I(label))) +
   geom_segment(show.legend = FALSE) +
   geom_text(aes(label = label), x = 0.5, nudge_y = 0.3) +

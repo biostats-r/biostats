@@ -2,40 +2,43 @@
 
 
 ```{r setup, eval=TRUE, include=FALSE}
-
 # add all packages that need loading
 library(tidyverse)
 library(knitr)
 
 # source figure settings
 source("../StatisticsInR/Files/biostats_theme.R")
-
 ```
 
 ```{r setup-data, include=FALSE, echo=FALSE}
-
 # import data for the example
 dive_data <- read_csv("../StatisticsInR/Files/dive_depths.csv")
 
 # set the data type for each column
-dive_data <- dive_data %>% mutate(max_depth = as.integer(max_depth), Species = 
-                                  as.factor(species), Group = as.factor(group))
+dive_data <- dive_data %>% mutate(
+  max_depth = as.integer(max_depth), Species =
+    as.factor(species), Group = as.factor(group)
+)
 
 # load data for spurious correlation figure
 Spurious <- read_csv("./Files/Spurious.csv")
 # convert pounds to kg
-Spurious <- Spurious %>% mutate(uranium_us = round(uranium_us/2.205, 2))
+Spurious <- Spurious %>% mutate(uranium_us = round(uranium_us / 2.205, 2))
 
 # create an example dataset for illustrative purposes
 set.seed(2020) # make sure it is the same each time you run code
-your_data <- as_tibble(data.frame(response = 1:30,
-                                 explanatory = rnorm(30,1:30,3)))
+your_data <- as_tibble(data.frame(
+  response = 1:30,
+  explanatory = rnorm(30, 1:30, 3)
+))
 
 # create an example dataset for plotting
 set.seed(2020) # make sure it is the same each time you run code
-example_data <- as_tibble(data.frame(x = round(rnorm(100,1:100,10),2),
-                          y = seq(1,50,length.out=100),
-                          z = as.factor(1:100)))
+example_data <- as_tibble(data.frame(
+  x = round(rnorm(100, 1:100, 10), 2),
+  y = seq(1, 50, length.out = 100),
+  z = as.factor(1:100)
+))
 ```
 
 
@@ -116,14 +119,14 @@ For more examples of wrong assumptions of causality [click here](https://www.tyl
 </br>
 
 ```{r make-uranium-plot, include=TRUE, echo=FALSE, results='hide'}
-
-uranium_plot <- ggplot(Spurious, aes(y=uranium_us, x=maths_phd))+
-  geom_point()+
-  geom_smooth(method="lm")+
-  labs(y="Uranium stored in US (million kg)", 
-  x="Number maths PhDs awarded",
-  title="What NOT to do:\n An example of a spurious correlation")
-
+uranium_plot <- ggplot(Spurious, aes(y = uranium_us, x = maths_phd)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(
+    y = "Uranium stored in US (million kg)",
+    x = "Number maths PhDs awarded",
+    title = "What NOT to do:\n An example of a spurious correlation"
+  )
 ```
 
 
@@ -135,7 +138,6 @@ uranium_plot <- ggplot(Spurious, aes(y=uranium_us, x=maths_phd))+
 #| fig-cap: "Example of a spurious correlation (one that does not make sense causally). Scatterplot of number of maths PhDs awarded in a year against the amount of uranium stored in US power plants annually. Smooth line indicates a regression line for this data with the 95% confidence interval as the shaded area"
 
 uranium_plot
-
 ```
 
 </br>
@@ -267,15 +269,12 @@ First, we want to import the data and have a closer look by making a plot.
 ```{r make-dive-data-fig, include=TRUE, echo=TRUE}
 dive_data
 
-dive_fig <- ggplot(dive_data, aes(x=body_size_kg, y=max_depth, color=group))+
+dive_fig <- ggplot(dive_data, aes(x = body_size_kg, y = max_depth, color = group)) +
   geom_point()
-
 ```
 
 ```{r fig-dive, include=TRUE, echo=FALSE, fig.cap="Scatterplot of body size against maximum dive depth for marine mammals. Colours indicate taxonomic group"}
-
 dive_fig
-
 ```
 
 </br>
@@ -290,10 +289,8 @@ We will change this variable to be numeric so it better represents
 the characteristics of the data.
 
 ```{r format-divedata, include=TRUE, echo=TRUE}
-
 # format the divedata
 dive_data <- mutate(dive_data, body_size_kg = as.numeric(body_size_kg))
-
 ```
 
 Remember, we are interested in **whether body size (kg) influences maximum 
@@ -423,9 +420,7 @@ including your data frame name as the data argument.
 </br>
 
 ```{r model-example, include=TRUE, echo=TRUE, eval=TRUE}
-
 model_object <- lm(response ~ explanatory, data = your_data)
-
 ```
 
 Running the `lm()` as illustrated above runs the linear regression model 
@@ -445,9 +440,7 @@ whole entry `your_data$explanatory` rather than as the column name `explanatory`
 This makes it difficult to use this model for other things e.g. to predict.
 
 ```{r alternative-model-fit, include=TRUE, echo=TRUE}
-
 alternative <- lm(your_data$response ~ your_data$explanatory)
-
 ```
 
 </details>
@@ -463,9 +456,7 @@ likelihood estimates of <span style="color:orange">$\alpha$</span> and
 but <span style="color:blue">$\beta$</span> will be labelled by the name of the $X$ variable.
 
 ```{r example-coef1, include=TRUE, echo=TRUE}
-
 coef(model_object)
-
 ```
 
 </br>
@@ -496,9 +487,7 @@ response ($Y$) and body size as our explanatory variable ($X$).
 We can put these variables into the `lm()` function in the below format. 
 
 ```{r dive-model, include=TRUE, echo=TRUE}
-
 dive_model <- lm(max_depth ~ body_size_kg, data = dive_data)
-
 ```
 
 </br>
@@ -511,9 +500,7 @@ We can look at the maximum likelihood estimates of our model parameters
 using the function `coef()`.
 
 ```{r dive-coef1, include=TRUE, echo=TRUE}
-
 coef(dive_model)
-
 ```
 
 </br>
@@ -555,28 +542,43 @@ line, as well as representing the distribution of data points around the line.
 ```{r make-parameter-plot, echo=FALSE}
 fitted_values <- fitted(model_object)
 
-parameter_plot <- ggplot(your_data, aes(x=explanatory, y=response))+
-  geom_point(color = "grey")+
-  geom_abline(intercept=coef(model_object)[1], 
-              slope=coef(model_object)[2], 
-              color = "blue")+
-  geom_point(aes(x=0, y=coef(model_object)[1]), 
-                 colour = 'orange', size = 4, pch=8)+
-  geom_segment(aes(x=13, xend=13, y=coef(model_object)[1]+(coef(model_object)[2]*12),
-                                yend=coef(model_object)[1]+(coef(model_object)[2]*13)),
-                colour = 'darkblue')+
-  geom_segment(aes(x=12,xend=13, y=coef(model_object)[1]+(coef(model_object)[2]*12),
-                                yend=coef(model_object)[1]+(coef(model_object)[2]*12)),
-                colour = 'darkblue')+
-  geom_text(aes(x=15, y=11, label = "Gradient of slope"),
-            colour = 'darkblue', check_overlap = TRUE)+
-  geom_text(aes(x=2.5, y=0, label = "Incercept"),
-            colour = 'orange', check_overlap = TRUE)+
-  geom_text(aes(x=24.3, y=28, label = "Residual"),
-            colour = 'red', check_overlap = TRUE)+
-  geom_segment(aes(xend=explanatory, 
-                   yend=fitted_values), colour = 'red')
-
+parameter_plot <- ggplot(your_data, aes(x = explanatory, y = response)) +
+  geom_point(color = "grey") +
+  geom_abline(
+    intercept = coef(model_object)[1],
+    slope = coef(model_object)[2],
+    color = "blue"
+  ) +
+  geom_point(aes(x = 0, y = coef(model_object)[1]),
+    colour = "orange", size = 4, pch = 8
+  ) +
+  geom_segment(
+    aes(
+      x = 13, xend = 13, y = coef(model_object)[1] + (coef(model_object)[2] * 12),
+      yend = coef(model_object)[1] + (coef(model_object)[2] * 13)
+    ),
+    colour = "darkblue"
+  ) +
+  geom_segment(
+    aes(
+      x = 12, xend = 13, y = coef(model_object)[1] + (coef(model_object)[2] * 12),
+      yend = coef(model_object)[1] + (coef(model_object)[2] * 12)
+    ),
+    colour = "darkblue"
+  ) +
+  geom_text(aes(x = 15, y = 11, label = "Gradient of slope"),
+    colour = "darkblue", check_overlap = TRUE
+  ) +
+  geom_text(aes(x = 2.5, y = 0, label = "Incercept"),
+    colour = "orange", check_overlap = TRUE
+  ) +
+  geom_text(aes(x = 24.3, y = 28, label = "Residual"),
+    colour = "red", check_overlap = TRUE
+  ) +
+  geom_segment(aes(
+    xend = explanatory,
+    yend = fitted_values
+  ), colour = "red")
 ```
 
 
@@ -693,9 +695,7 @@ This measure tells you how far away the observations are from the fitted line,
 **the lower the number, the better the fit**. 
 
 ```{r shiny-app-reg, echo = FALSE, message = FALSE}
-
 knitr::include_app("https://shiny.math.ntnu.no/qmbio/Shiny_apps/Regression/")
-
 ```
 
 </br>
@@ -823,10 +823,8 @@ fewer degrees of freedom you will have.
 </br>
 
 ```{r get-dive-residual_var, include = TRUE, echo = TRUE}
-
 sigma2 <- summary(dive_model)$sigma^2
 sigma2
-
 ```
 
 </br>
@@ -863,9 +861,7 @@ To make this first plot, we only need to use two arguments:
 </br>
 
 ```{r make-dive-predictions, include = TRUE, echo = TRUE}
-
-depth_predictions <- predict(dive_model, type="response")
-
+depth_predictions <- predict(dive_model, type = "response")
 ```
 
 </br>
@@ -873,17 +869,17 @@ depth_predictions <- predict(dive_model, type="response")
 Once we have created predictions of $Y$ from the model object, we can then plot these using `geom_line()` as in the code below. 
 
 ```{r make-dive-model-fig, include = TRUE, echo = TRUE}
-dive_model_fig <- ggplot(dive_data, aes(x=body_size_kg, y=max_depth))+
-  geom_point(colour = 'grey70')+
-  geom_line(aes(y=depth_predictions))+
-  labs(y="Maximum Dive Depth (m)",
-  x="Body Size (kg)")
+dive_model_fig <- ggplot(dive_data, aes(x = body_size_kg, y = max_depth)) +
+  geom_point(colour = "grey70") +
+  geom_line(aes(y = depth_predictions)) +
+  labs(
+    y = "Maximum Dive Depth (m)",
+    x = "Body Size (kg)"
+  )
 ```
 
 ```{r fig-dive-model, include=TRUE, echo=FALSE, fig.cap="Scatter plot of dive depths against body size. The black line is the regression line predicted from the linear model"}
-
 dive_model_fig
-
 ``` 
 
 </br>
@@ -950,9 +946,7 @@ standard errors are shown as the second column in the third part,
 `Coefficients:`.
 
 ```{r example-model-summary, include = TRUE, echo = TRUE}
-
 summary(model_object)
-
 ```
 </br>
 
@@ -1005,29 +999,27 @@ slope from the example model.
 <details><summary> I had a go at calculating, what is the correct answer?</summary>
 
 ```{r ci-calculation, include = TRUE, echo = TRUE}
-
 # INTERCEPT
 
 # Upper confidence interval
-upper_ci_intercept <- summary(model_object)$coefficients[1,1] + 
-  (1.96*summary(model_object)$coefficients[1,2])
+upper_ci_intercept <- summary(model_object)$coefficients[1, 1] +
+  (1.96 * summary(model_object)$coefficients[1, 2])
 # Lower confidence interval
-lower_ci_intercept <- summary(model_object)$coefficients[1,1] - 
-  (1.96*summary(model_object)$coefficients[1,2])
+lower_ci_intercept <- summary(model_object)$coefficients[1, 1] -
+  (1.96 * summary(model_object)$coefficients[1, 2])
 
 # Print the interval
-c(upper_ci_intercept, lower_ci_intercept) 
+c(upper_ci_intercept, lower_ci_intercept)
 
 # SLOPE
 
 # Upper confidence interval
-upper_ci_slope <- summary(model_object)$coefficients[2,1] + (1.96*summary(model_object)$coefficients[2,2])
+upper_ci_slope <- summary(model_object)$coefficients[2, 1] + (1.96 * summary(model_object)$coefficients[2, 2])
 # Lower confidence interval
-lower_ci_slope <- summary(model_object)$coefficients[2,1] - (1.96*summary(model_object)$coefficients[2,2])
+lower_ci_slope <- summary(model_object)$coefficients[2, 1] - (1.96 * summary(model_object)$coefficients[2, 2])
 
 # Print the interval
-c(upper_ci_slope, lower_ci_slope) 
-
+c(upper_ci_slope, lower_ci_slope)
 ```
 
 </details>
@@ -1039,9 +1031,7 @@ To do this you can use the `confint()` function.
 The argument is a model object. 
 
 ```{r example-confint, include = TRUE, echo = TRUE}
-
 confint(model_object)
-
 ```
 
 </br>
@@ -1080,10 +1070,10 @@ function with the `interval="prediction"` argument.
 You also set the `newdata` argument to the value of $X$ you want to predict for.
 
 ```{r example-predict, include = TRUE, echo = TRUE, eval = FALSE}
-
-predict(model_object, newdata=x_predict, 
-                             type="response", interval = "prediction")
-
+predict(model_object,
+  newdata = x_predict,
+  type = "response", interval = "prediction"
+)
 ```
 
 </br>
@@ -1101,9 +1091,7 @@ Now, we will add uncertainty to that plot.
 First, we should look at the confidence intervals of our parameter estimates.
 
 ```{r dive-confint, include = TRUE, echo = TRUE}
-
-round(confint(dive_model),2)
-
+round(confint(dive_model), 2)
 ```
 
 </br>
@@ -1125,9 +1113,7 @@ We have to make predictions in order to plot rather than because we
 are interested in them. 
 
 ```{r make-dive-predictions2, include = TRUE, echo = TRUE}
-
-depth_predictions <- as_tibble(predict(dive_model, type="response", interval="confidence"))
-
+depth_predictions <- as_tibble(predict(dive_model, type = "response", interval = "confidence"))
 ```
 
 </br>
@@ -1137,31 +1123,31 @@ we can then plot these using `geom_line()` and `geom_ribbon()`
 for the confidence interval as in the code below.  
 
 ```{r make-dive-predictions-plot, include = TRUE, echo = TRUE}
-
 depth_predictions <- depth_predictions %>%
-                      mutate(x=dive_data$body_size_kg)
+  mutate(x = dive_data$body_size_kg)
 
-fig_7 <- ggplot()+
-  geom_ribbon(data=depth_predictions, aes(x=x, ymin=lwr, ymax=upr), fill='grey50')+
-  geom_point(data=dive_data, aes(x=body_size_kg, y=max_depth),colour = 'grey70')+
-  geom_line(data=depth_predictions, aes(y=fit, x=x))+
-  labs(y="Maximum Dive Depth (m)",
-  x="Body Size (kg)")
-
+fig_7 <- ggplot() +
+  geom_ribbon(data = depth_predictions, aes(x = x, ymin = lwr, ymax = upr), fill = "grey50") +
+  geom_point(data = dive_data, aes(x = body_size_kg, y = max_depth), colour = "grey70") +
+  geom_line(data = depth_predictions, aes(y = fit, x = x)) +
+  labs(
+    y = "Maximum Dive Depth (m)",
+    x = "Body Size (kg)"
+  )
 ```
 
 ```{r fig-dive-predictions-plot, include = TRUE, echo = FALSE, fig.cap="Scatter plot of dive depths against body size. Line is the regression line from a linear model. Shaded area is 95% confidence interval"}
-
 depth_predictions <- depth_predictions %>%
-                      mutate(x=dive_data$body_size_kg)
+  mutate(x = dive_data$body_size_kg)
 
-ggplot()+
-  geom_ribbon(data=depth_predictions, aes(x=x, ymin=lwr, ymax=upr), fill='grey50')+
-  geom_point(data=dive_data, aes(x=body_size_kg, y=max_depth),colour = 'grey70')+
-  geom_line(data=depth_predictions, aes(y=fit, x=x))+
-  labs(y="Maximum Dive Depth (m)",
-  x="Body Size (kg)")
-
+ggplot() +
+  geom_ribbon(data = depth_predictions, aes(x = x, ymin = lwr, ymax = upr), fill = "grey50") +
+  geom_point(data = dive_data, aes(x = body_size_kg, y = max_depth), colour = "grey70") +
+  geom_line(data = depth_predictions, aes(y = fit, x = x)) +
+  labs(
+    y = "Maximum Dive Depth (m)",
+    x = "Body Size (kg)"
+  )
 ```
 
 </br>
@@ -1187,10 +1173,10 @@ The whale washed up on shore in Tromsø, it weighed 75000kg.
 Based on our linear regression analysis, how deep would we expect it to dive?
 
 ```{r make-dive-predictions3, echo = TRUE, warning = FALSE}
-
-predict(dive_model, newdata=data.frame(body_size_kg=75000), 
-                             type="response", interval = "prediction")
-
+predict(dive_model,
+  newdata = data.frame(body_size_kg = 75000),
+  type = "response", interval = "prediction"
+)
 ```
 
 </br>
@@ -1260,20 +1246,18 @@ If the assumptions are met, you can expect a few characteristics of the plot:
 </br>
 
 ```{r fig-residuals-vs-fitted-fig, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) residuals vs fitted plot for a simple linear regression"}
-
 set.seed(2020)
-example_data$a <- rpois(100,as.numeric(example_data$z)^1.2)
+example_data$a <- rpois(100, as.numeric(example_data$z)^1.2)
 
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 
 example_model1 <- lm(x ~ y, data = example_data)
 plot(example_model1, which = 1)
-title(main="Good", line = 1)
+title(main = "Good", line = 1)
 
 example_model2 <- lm(y ~ a, data = example_data)
 plot(example_model2, which = 1)
-title(main="Bad", line = 1)
-
+title(main = "Bad", line = 1)
 ```
 
 **In reality, it will not be as clear cut as the examples above. 
@@ -1293,19 +1277,17 @@ are met, you can expect:
 </br>
 
 ```{r fig-normal-qq, echo = FALSE, fig.cap="Example of a good (left) and a bad (right) normal QQ diagnostic plot"}
-
 set.seed(2020)
 example_data$b <- as.numeric(example_data$z)^10
 
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 
 plot(example_model1, which = 2)
-title(main="Good", line = 1)
+title(main = "Good", line = 1)
 
-example_model3 <- lm(b~x, data=example_data)
+example_model3 <- lm(b ~ x, data = example_data)
 plot(example_model3, which = 2)
-title(main="Bad", line = 1)
-
+title(main = "Bad", line = 1)
 ```
 
 </br>
@@ -1326,16 +1308,16 @@ If the assumptions are met, you can expect:
 
 ```{r fig-scale-location, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) scale-location plot"}
 set.seed(2020)
-example_data$b <- rpois(100,as.numeric(example_data$z)^5)
+example_data$b <- rpois(100, as.numeric(example_data$z)^5)
 
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 
 plot(example_model1, which = 3)
-title(main="Good", line = 1)
+title(main = "Good", line = 1)
 
-example_model3 <- lm(b~x, data=example_data)
+example_model3 <- lm(b ~ x, data = example_data)
 plot(example_model3, which = 3)
-title(main="Bad", line = 1)
+title(main = "Bad", line = 1)
 ```
 
 </br>
@@ -1350,18 +1332,16 @@ If the assumptions are met, you can expect:
 </br>
 
 ```{r fig-cook-d, echo = FALSE, fig.cap = "Example of a good (left) and a bad (right) Cook's Distance plot"}
-
 example_data$a <- c(example_data$a[1:98], 1000, 150)
 
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 
 plot(example_model1, which = 4)
-title(main="Good", line = 1)
+title(main = "Good", line = 1)
 
-example_model3 <- lm(a~x, data=example_data)
+example_model3 <- lm(a ~ x, data = example_data)
 plot(example_model3, which = 4)
-title(main="Bad", line = 1)
-
+title(main = "Bad", line = 1)
 ```
 
 </br>
@@ -1392,7 +1372,6 @@ We will use one plot at a time to test specific assumptions.
 #| fig-cap: "Residuals vs fitted plot for dive depths model"
 
 plot(dive_model, which = 1)
-
 ```
 
  </br> 
@@ -1424,9 +1403,7 @@ But, we can have a look at the points causing the pattern
 (those with a maximum dive depth < 600m).
 
 ```{r dive-filter, echo = TRUE}
-
 filter(dive_data, max_depth < 600)
-
 ```
 
 </br>
@@ -1443,9 +1420,7 @@ very different.
 #### Normal QQ
 
 ```{r fig-dive-qq, echo = TRUE, fig.cap="Normal QQ plot for dive depth model"}
-
 plot(dive_model, which = 2)
-
 ```
 
 </br> 
@@ -1467,9 +1442,7 @@ We will need to look into them more in @fig-dive-cook-d.
 #### Scale-location
 
 ```{r fig-dive-scale, echo = TRUE, fig.cap="Scale-location plot for dive depth model"}
-
 plot(dive_model, which = 3)
-
 ```
 
 </br> 
@@ -1492,7 +1465,6 @@ So, this looks like things are ok.
 #| fig-cap: "Cook's distance plot for the dive depth model"
 
 plot(dive_model, which = 4)
-
 ```
 
 </br> 
@@ -1517,9 +1489,7 @@ our dataset and we have no reason to believe this data is a typo.
 would not remove from the data.**
 
 ```{r cuvier, echo = TRUE}
-
 dive_data %>% slice(10)
-
 ```
 
 </br>
@@ -1648,18 +1618,14 @@ variance assumption was not met well AND why the estimated relationship
 was so weak. 
 
 ```{r make-final-dive-fig, echo = TRUE}
-
-final_dive_fig<- ggplot(dive_data, aes(x=body_size_kg, y=max_depth, color=group))+
-  geom_point()+
-  facet_wrap(.~group)+
-  geom_smooth(method='lm')
-
+final_dive_fig <- ggplot(dive_data, aes(x = body_size_kg, y = max_depth, color = group)) +
+  geom_point() +
+  facet_wrap(. ~ group) +
+  geom_smooth(method = "lm")
 ```
 
 ```{r fig-final-dive, include = TRUE, echo = FALSE, fig.cap = "Plot of the relationship between dive depth and body size faceted by taxonomic group"}
-
 final_dive_fig
-
 ```
 
 </br>

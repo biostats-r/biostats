@@ -1,7 +1,7 @@
 library(webexercises)
 
 print_multichoice <- function(questions) {
-  for(i in seq_along(questions)){
+  for (i in seq_along(questions)) {
     cat("**Question", paste0(i, ":"), questions[[i]]$question, "**\n\n")
     cat(longmcq(questions[[i]]$choice))
     if (!is.null(questions[[i]]$hint)) {

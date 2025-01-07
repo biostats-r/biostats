@@ -1,7 +1,6 @@
 # Binomial generalized linear models
 
 ```{r setup, eval=TRUE, include=FALSE}
-
 # add all packages that need loading
 library(tidyverse)
 library(patchwork)
@@ -10,34 +9,46 @@ library(fontawesome)
 
 # source figure settings
 source("../StatisticsInR/Files/biostats_theme.R")
-
 ```
 
 ```{r setup-data, include=FALSE, echo=FALSE}
-
 # load the sheep data
 sheep_data <- read_csv("../StatisticsInR/Files/sheep_data.csv")
 
-sheep_data <- sheep_data[is.na(sheep_data$Age)==FALSE,]
+sheep_data <- sheep_data[is.na(sheep_data$Age) == FALSE, ]
 
 # create some example data
 set.seed(2020)
-your_data <- example_data <- tibble(explanatory = c(rnorm(50, 5, 3), 
-                                                    rnorm(50, 10, 3)),
-                           response = (c(sample(0:1, 50, replace = TRUE, 
-                                      prob = c(0.8, 0.2)), 
-                                sample(0:1, 50, replace = TRUE,
-                                       prob = c(0.2, 0.8)))),
-                           group = rep(c("a", "b", "c", "d", "e",
-                                         "f", "g", "h", "i", "j"), each = 10))
+your_data <- example_data <- tibble(
+  explanatory = c(
+    rnorm(50, 5, 3),
+    rnorm(50, 10, 3)
+  ),
+  response = (c(
+    sample(0:1, 50,
+      replace = TRUE,
+      prob = c(0.8, 0.2)
+    ),
+    sample(0:1, 50,
+      replace = TRUE,
+      prob = c(0.2, 0.8)
+    )
+  )),
+  group = rep(c(
+    "a", "b", "c", "d", "e",
+    "f", "g", "h", "i", "j"
+  ), each = 10)
+)
 
-example_data2 <- example_data %>% group_by(group, response) %>% 
+example_data2 <- example_data %>%
+  group_by(group, response) %>%
   summarise(count = n()) %>%
   ungroup() %>%
   pivot_wider(names_from = "response", values_from = "count") %>%
-  mutate(explanatory = sample(1:100, 10, replace = TRUE),
-         successes = `0`, failures = `1`)
-
+  mutate(
+    explanatory = sample(1:100, 10, replace = TRUE),
+    successes = `0`, failures = `1`
+  )
 ```
 
 ::: callout-note
@@ -81,12 +92,12 @@ The $Y$ values can only
 take values between 0 or 1 (either 0 and 1 themselves or proportions e.g. 0.1).  
 
 ```{r fig-nonlinear-plot, include = TRUE, echo = FALSE, fig.cap = "Example of a fitted Binomial GLM model. The estimated relationship is plotted on the scale of the data."}
-
-ggplot(aes(x = explanatory, y = response), data = example_data)+
-  geom_point(shape = 16)+
-  geom_smooth(method=stats::glm, method.args = list(family="binomial"), 
-              se=TRUE)
-
+ggplot(aes(x = explanatory, y = response), data = example_data) +
+  geom_point(shape = 16) +
+  geom_smooth(
+    method = stats::glm, method.args = list(family = "binomial"),
+    se = TRUE
+  )
 ```
 
 </br>
@@ -152,7 +163,7 @@ For this worked example, we will try to find out if/how body weight (kg)
 influences the survival probability of Soay sheep. 
 
 ```{r fig-sheep, echo=FALSE, eval=TRUE, fig.cap="Illustration of sheep by Emily G. Simmonds", fig.height=150}
-#include_graphics("./Figures/sheep.png")
+# include_graphics("./Figures/sheep.png")
 ```
 
 Biologically, it is expected that smaller sheep would find it harder to survive
@@ -193,21 +204,23 @@ top of each other.
 EGS: NEED TO ADD LINE TO READ IN DATA YOU CAN GET IT FROM THE PAPER LINK ABOVE THEN HOST IT.
 
 ```{r fig-sheep-data-plot, include = TRUE, echo = TRUE, fig.cap = "Scatterplot of weight and against survival of sheep, plot a = raw data, plot b = jittered points"}
+plot1 <- ggplot(sheep_data, aes(x = Weight, y = Survival)) +
+  geom_point(colour = "grey70", size = 2, alpha = 0.25) +
+  labs(
+    x = "Weight of sheep (kg)",
+    y = "Survival of sheep",
+    tag = "a"
+  )
 
-plot1 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
- geom_point(colour = "grey70", size = 2, alpha = 0.25)+
- labs(x = "Weight of sheep (kg)",
-      y = "Survival of sheep",
-      tag = "a")
-
-plot2 <- ggplot(sheep_data, aes(x = Weight, y = Survival))+
- geom_jitter(colour = "grey70", size = 2, height = 0.1, alpha = 0.25)+
- labs(x = "Weight of sheep (kg)",
-      y = "Survival of sheep",
-      tag = "b")
+plot2 <- ggplot(sheep_data, aes(x = Weight, y = Survival)) +
+  geom_jitter(colour = "grey70", size = 2, height = 0.1, alpha = 0.25) +
+  labs(
+    x = "Weight of sheep (kg)",
+    y = "Survival of sheep",
+    tag = "b"
+  )
 
 plot1 + plot2 + plot_layout(nrow = 1)
- 
 ```
 
 Since we are interested in 
@@ -545,20 +558,19 @@ Both modes of fitting are shown below.
 </br>
 
 ```{r model-example, include=TRUE, echo=TRUE, eval=TRUE}
-
 ### single trial version
 
-glm_model_object <- glm(response ~ explanatory, data = your_data,
-                     family = binomial(link = "logit"))
+glm_model_object <- glm(response ~ explanatory,
+  data = your_data,
+  family = binomial(link = "logit")
+)
 
 ### multiple trials version
 
-glm_multiple_trials <- glm(cbind(successes, failures) ~ explanatory, 
-                           data = example_data2,
-                     family = binomial(link = "logit"))
-
-
-
+glm_multiple_trials <- glm(cbind(successes, failures) ~ explanatory,
+  data = example_data2,
+  family = binomial(link = "logit")
+)
 ```
 
 Running the `glm()` as illustrated above runs the GLM 
@@ -571,11 +583,9 @@ as its argument and extracts the maximum likelihood estimates of
 <span style="color:blue">$\beta$</span>.
 
 ```{r coef-example, include = TRUE, echo = TRUE}
-
 coef(glm_model_object)
 
 coef(glm_multiple_trials)
-
 ```
 
 You can see that the format of the output is the same regardless of whether it
@@ -600,10 +610,10 @@ body weight (kg) ($X$) is the explanatory variable.
 We put these variables in the `glm()` function in the below format.
 
 ```{r sheep-model, include = TRUE, echo = TRUE}
-
-sheep_model <- glm(Survival ~ Weight, data = sheep_data, 
-                   family = binomial(link = "logit"))
-
+sheep_model <- glm(Survival ~ Weight,
+  data = sheep_data,
+  family = binomial(link = "logit")
+)
 ```
 
 We have run the model and have assigned it to an object name. A logit link was
@@ -615,9 +625,7 @@ Let us take a look at the maximum likelihood estimates of our model parameters (
 using the `coef()`.
 
 ```{r coef-sheep-model, include = TRUE, echo = TRUE}
-
 coef(sheep_model)
-
 ```
 
 
@@ -709,20 +717,26 @@ changes by one unit.
 #| fig-cap: "Example of a Binomial GLM model line on the logit scale. Intercept in orange and slope in blue"
 
 example_data <- mutate(example_data,
-                       logity = predict.glm(glm_model_object, 
-                                            newdata = example_data,
-                                            type="link"))
+  logity = predict.glm(glm_model_object,
+    newdata = example_data,
+    type = "link"
+  )
+)
 
-ggplot(example_data, aes(x = explanatory, y = logity))+
- labs(x = "x",
-      y = "log odds of y",
-      title = "Example of results of GLM on logit scale")+
+ggplot(example_data, aes(x = explanatory, y = logity)) +
+  labs(
+    x = "x",
+    y = "log odds of y",
+    title = "Example of results of GLM on logit scale"
+  ) +
   geom_line(aes(x = explanatory, y = logity),
-            colour = "blue")+
-  geom_point(aes(x = 0, y = coef(glm_model_object)[1],
-                 colour = "orange"), size = 4)+
+    colour = "blue"
+  ) +
+  geom_point(aes(
+    x = 0, y = coef(glm_model_object)[1],
+    colour = "orange"
+  ), size = 4) +
   theme(legend.position = "none")
- 
 ```
 
 
@@ -746,15 +760,13 @@ $$
 This can be done in R.
 
 ```{r intercept-convert, include = TRUE, echo = TRUE}
-
 # estimate of the intercept on logit scale (log odds of y)
 
 coef(glm_model_object)[1]
 
 # convert to response scale (a probability of success)
 
-1/(1 + exp(-(coef(glm_model_object)[1])))
- 
+1 / (1 + exp(-(coef(glm_model_object)[1])))
 ```
 
 </br>
@@ -776,23 +788,30 @@ the gradient of the model line will be different for different $X$ values
 #| fig-cap: "Example of a Binomial GLM model line on the scale of the response data. Intercept in orange and slope in blue"
 #| fig-height: 5
 
-example_data <- mutate(example_data, 
-                       predictions = predict(glm_model_object,
-                                             example_data,
-                                             type = "response"))
+example_data <- mutate(example_data,
+  predictions = predict(glm_model_object,
+    example_data,
+    type = "response"
+  )
+)
 
-ggplot(example_data, aes(x = explanatory, y = response))+
- geom_point(aes(x = explanatory, y = response),
-            colour = "grey70", size = 3)+
- labs(x = "x",
-      y = "y",
-      title = "Example of results of GLM on response")+
+ggplot(example_data, aes(x = explanatory, y = response)) +
+  geom_point(aes(x = explanatory, y = response),
+    colour = "grey70", size = 3
+  ) +
+  labs(
+    x = "x",
+    y = "y",
+    title = "Example of results of GLM on response"
+  ) +
   geom_line(aes(x = explanatory, y = predictions),
-            colour = "blue")+
-  geom_point(aes(x = 0, y = 1/(1+exp(-(coef(glm_model_object)[1]))),
-                 colour = "orange"), size = 4)+
+    colour = "blue"
+  ) +
+  geom_point(aes(
+    x = 0, y = 1 / (1 + exp(-(coef(glm_model_object)[1]))),
+    colour = "orange"
+  ), size = 4) +
   theme(legend.position = "none")
- 
 ```
 
 </br>
@@ -810,26 +829,24 @@ simply look at the change between two $X$ values.
 e.g.
 
 ```{r slope-convert, include = TRUE, echo = TRUE}
-
 # predict log odds of Y when X = 2 or X = 3
 # use a linear equation for this
 
-odds_y_x2 <- coef(glm_model_object)[1] + (coef(glm_model_object)[2]*2)
-odds_y_x3 <- coef(glm_model_object)[1] + (coef(glm_model_object)[2]*3)
+odds_y_x2 <- coef(glm_model_object)[1] + (coef(glm_model_object)[2] * 2)
+odds_y_x3 <- coef(glm_model_object)[1] + (coef(glm_model_object)[2] * 3)
 
 # estimate of probability of success when X = 2
 # take inverse of the logit link
 
-prob_X2 <- 1/(1 + exp(-odds_y_x2))
+prob_X2 <- 1 / (1 + exp(-odds_y_x2))
 
 # estimate of probability of success when X = 3
 
-prob_X3 <- 1/(1 + exp(-odds_y_x3))
+prob_X3 <- 1 / (1 + exp(-odds_y_x3))
 
 # slope from X = 2 to X = 3 on response scale
 
 prob_X3 - prob_X2
- 
 ```
 
 If you were to repeat the example above for $X$ = 10 and $X$ = 11, you would not
@@ -850,9 +867,7 @@ mean.
 For our sheep data model, the estimate of the intercept is:
 
 ```{r coef-sheep-model2, include = TRUE, echo = TRUE}
-
 coef(sheep_model)[1]
-
 ```
 
 This is the estimate of the log odds of survival for a sheep which has a body weight of 0 kg. 
@@ -864,9 +879,7 @@ weight of 0 kg we need to convert these estimates to the response scale using
 the code below:
 
 ```{r back-transform-sheep, include = TRUE, echo = TRUE}
-
-1/(1+exp(-coef(sheep_model)[1]))
-
+1 / (1 + exp(-coef(sheep_model)[1]))
 ```
 
 In other words, 
@@ -886,9 +899,7 @@ and the strength of the effect of body weight on survival of the sheep.
 
 
 ```{r coef-sheep-model3, include = TRUE, echo = TRUE}
-
 coef(sheep_model)[2]
-
 ```
 
 In this case, our model estimates that the log odds of the survival of the sheep
@@ -919,32 +930,33 @@ We will make predictions on both the link and response scale so that we
 can compare the results. 
 
 ```{r sheep-predictions1, include = TRUE, echo = TRUE}
-
-sheep_data <- mutate(sheep_data, 
-                     predictions_link = predict(sheep_model, 
-                                            type = "link"),
-                     predictions_response = predict(sheep_model, 
-                                            type = "response"))
-
+sheep_data <- mutate(sheep_data,
+  predictions_link = predict(sheep_model,
+    type = "link"
+  ),
+  predictions_response = predict(sheep_model,
+    type = "response"
+  )
+)
 ```
 
 Once we have created predictions of $Y$ from the model object, 
 we can plot these using `geom_line()` as in the code below.
 
 ```{r fig-sheep-preditions1, include = TRUE, echo = TRUE, fig.cap = "a) Plot of fitted GLM line on the logit scale b) Plot of jittered raw data and fitted GLM line for the soay sheep data on the response scale"}
-
-link <- ggplot(sheep_data, aes(x=Weight, y=predictions_link))+
-  geom_line(aes(y=predictions_link), colour = "blue")+
+link <- ggplot(sheep_data, aes(x = Weight, y = predictions_link)) +
+  geom_line(aes(y = predictions_link), colour = "blue") +
   labs(x = "Weight (kg)", y = "Log Odds of Survival")
 
-response <- ggplot(sheep_data, aes(x=Weight, y=Survival))+
-  geom_jitter(colour = "grey70", size = 2,
-              height = 0.05)+
-  geom_line(aes(y=predictions_response), colour = "blue")+
-  labs(x = "Weight (kg)", y ="Survival Probability")
+response <- ggplot(sheep_data, aes(x = Weight, y = Survival)) +
+  geom_jitter(
+    colour = "grey70", size = 2,
+    height = 0.05
+  ) +
+  geom_line(aes(y = predictions_response), colour = "blue") +
+  labs(x = "Weight (kg)", y = "Survival Probability")
 
 link + response + plot_layout(nrow = 1)
-
 ```
 
 </br>
@@ -999,9 +1011,7 @@ standard errors are shown in the second column of the third part,
 `Coefficients:`.
 
 ```{r summary_glm_example}
-
 summary(glm_model_object)
-
 ```
 </br>
 
@@ -1055,9 +1065,7 @@ intervals for the intercept and
 slope.
 
 ```{r confint_glm_example}
-
 confint(glm_model_object)
-
 ```
 
 
@@ -1098,39 +1106,45 @@ object. Therefore, the standard errors presented are for a 95% confidence
 interval. 
 
 ```{r preditions_example, echo = TRUE}
-
-# First create the new data to predict for 
+# First create the new data to predict for
 # This example generates 100 values of the explanatory variable from min to max
 
 newdata <- data.frame(explanatory = seq(min(example_data$explanatory),
-                                        max(example_data$explanatory),
-                                        length.out = 100))
+  max(example_data$explanatory),
+  length.out = 100
+))
 
 # Then add predictions to the newdata for the link and response scale
-# REMEMBER the confidence intervals too, you can access these by taking the 
+# REMEMBER the confidence intervals too, you can access these by taking the
 # $se.fit of the results of `predict`, $fit is the mean prediction
 
-predictions <- newdata %>% mutate(predictions_link = predict(glm_model_object, 
-                                                         newdata = newdata, 
-                                                         type="link", 
-                                                         se.fit=TRUE)$fit,
-                              SE_link = predict(glm_model_object, 
-                                                         newdata = newdata, 
-                                                         type="link", 
-                                                         se.fit=TRUE)$se.fit,
-                              predictions_response = predict(glm_model_object, 
-                                                         newdata = newdata, 
-                                                         type="response", se.fit=TRUE)$fit,
-                              SE_response = predict(glm_model_object, 
-                                                         newdata = newdata, 
-                                                         type="response",
-                                                         se.fit=TRUE)$se.fit) %>%
-                as_tibble()
+predictions <- newdata %>%
+  mutate(
+    predictions_link = predict(glm_model_object,
+      newdata = newdata,
+      type = "link",
+      se.fit = TRUE
+    )$fit,
+    SE_link = predict(glm_model_object,
+      newdata = newdata,
+      type = "link",
+      se.fit = TRUE
+    )$se.fit,
+    predictions_response = predict(glm_model_object,
+      newdata = newdata,
+      type = "response", se.fit = TRUE
+    )$fit,
+    SE_response = predict(glm_model_object,
+      newdata = newdata,
+      type = "response",
+      se.fit = TRUE
+    )$se.fit
+  ) %>%
+  as_tibble()
 
 
 
 predictions
-
 ```
 </br>
 
@@ -1152,44 +1166,64 @@ You need to add or
 subtract 1.96 times the standard error from the mean prediction. 
 
 ```{r fig-plot_ci_example, fig.cap = "Examples of plots of fitted GLM line and 95% confidence intervals (grey shaded area) on the link scale (A) and on the response scale (B)"}
+predictions <- predictions %>% mutate(
+  upper_ci_link = predictions_link + (2 * SE_link),
+  lower_ci_link = predictions_link - (2 * SE_link),
+  upper_ci_response = predictions_response + (2 * SE_response),
+  lower_ci_response = predictions_response - (2 * SE_response)
+)
 
-predictions <- predictions %>% mutate(upper_ci_link = predictions_link + (2*SE_link),
-                                      lower_ci_link = predictions_link - (2*SE_link),
-                                      upper_ci_response = predictions_response + (2*SE_response),
-                                      lower_ci_response = predictions_response - (2*SE_response))
+# plot predictions on the link scale
 
-# plot predictions on the link scale 
-
-example_predictions_link <- ggplot(data = predictions, 
-                                 aes(x = explanatory, 
-                                     y = predictions_link))+
-  geom_line(color="blue")+
-  geom_ribbon(aes(ymin = lower_ci_link, 
-                  ymax = upper_ci_link), 
-              alpha = 0.5)+
-  labs(title = "A. Predictions on link scale",
-       y = "Log odds of response",
-       x = "Explanatory")
+example_predictions_link <- ggplot(
+  data = predictions,
+  aes(
+    x = explanatory,
+    y = predictions_link
+  )
+) +
+  geom_line(color = "blue") +
+  geom_ribbon(
+    aes(
+      ymin = lower_ci_link,
+      ymax = upper_ci_link
+    ),
+    alpha = 0.5
+  ) +
+  labs(
+    title = "A. Predictions on link scale",
+    y = "Log odds of response",
+    x = "Explanatory"
+  )
 
 # For this plot, the base can be the response data
 example_predictions_response <- ggplot() +
-  geom_jitter(data = example_data, 
-              aes(x = explanatory, y = response), 
-              colour = "grey", size = 2, height = 0.01) +
-  geom_ribbon(data = predictions,
-              aes(x = explanatory,
-                  ymin = lower_ci_response, 
-                  ymax = upper_ci_response), 
-              alpha = 0.5) +
-  geom_line(data = predictions, 
-            aes(x = explanatory, y = predictions_response), 
-            colour = "blue") +
-  labs(title = "B. Predictions on response scale",
-       y = "Probability",
-       x = "Explanatory")
+  geom_jitter(
+    data = example_data,
+    aes(x = explanatory, y = response),
+    colour = "grey", size = 2, height = 0.01
+  ) +
+  geom_ribbon(
+    data = predictions,
+    aes(
+      x = explanatory,
+      ymin = lower_ci_response,
+      ymax = upper_ci_response
+    ),
+    alpha = 0.5
+  ) +
+  geom_line(
+    data = predictions,
+    aes(x = explanatory, y = predictions_response),
+    colour = "blue"
+  ) +
+  labs(
+    title = "B. Predictions on response scale",
+    y = "Probability",
+    x = "Explanatory"
+  )
 
 example_predictions_link + example_predictions_response
-
 ```
 
 
@@ -1202,9 +1236,7 @@ Now we will add uncertainty to that plot.
 First, we should look at the confidence intervals of our parameter estimates.
  
 ```{r}
-
-round(confint(sheep_model),2)
-
+round(confint(sheep_model), 2)
 ```
 
 The confidence interval has been rounded to two decimal places to make it 
@@ -1217,57 +1249,68 @@ response scale.
 
 
 ```{r sheep_predictions}
-
 # first make some new data to predict for
 newdata <- data.frame(Weight = seq(min(sheep_data$Weight),
-               max(sheep_data$Weight),
-               length.out = 100))
+  max(sheep_data$Weight),
+  length.out = 100
+))
 
-sheep_predictions <- newdata %>% 
-  mutate(predictions_link = predict(sheep_model,
-                                    newdata,
-                                    type="link", 
-                                    se.fit = TRUE)$fit,
-            # the next lines add the lower and upper ci bounds
-            lower_ci_link = predict(sheep_model,
-                                    newdata,
-                                    type="link", 
-                                    se.fit = TRUE)$fit - 
-                                    (1.96*predict(sheep_model,
-                                    newdata,
-                                    type="link", 
-                                    se.fit = TRUE)$se.fit),
-            upper_ci_link = predict(sheep_model, 
-                                    newdata,
-                                    type="link", 
-                                    se.fit = TRUE)$fit + 
-                                    (1.96*predict(sheep_model,
-                                    newdata,
-                                    type="link", 
-                                    se.fit = TRUE)$se.fit),
-            # then predict on the response scale
-            predictions_response = predict(sheep_model,
-                                    newdata,
-                                    type="response", 
-                                    se.fit = TRUE)$fit,
-            # and add the confidence interval bounds
-            lower_ci_response = predict(sheep_model,
-                                    newdata, 
-                                    type="response", 
-                                    se.fit = TRUE)$fit - 
-                                    (1.96*predict(sheep_model,
-                                    newdata,
-                                    type="response", 
-                                    se.fit = TRUE)$se.fit),
-            upper_ci_response = predict(sheep_model,
-                                    newdata, 
-                                    type="response", 
-                                    se.fit = TRUE)$fit + 
-                                    (1.96*predict(sheep_model,
-                                    newdata,
-                                    type="response", 
-                                    se.fit = TRUE)$se.fit))
-
+sheep_predictions <- newdata %>%
+  mutate(
+    predictions_link = predict(sheep_model,
+      newdata,
+      type = "link",
+      se.fit = TRUE
+    )$fit,
+    # the next lines add the lower and upper ci bounds
+    lower_ci_link = predict(sheep_model,
+      newdata,
+      type = "link",
+      se.fit = TRUE
+    )$fit -
+      (1.96 * predict(sheep_model,
+        newdata,
+        type = "link",
+        se.fit = TRUE
+      )$se.fit),
+    upper_ci_link = predict(sheep_model,
+      newdata,
+      type = "link",
+      se.fit = TRUE
+    )$fit +
+      (1.96 * predict(sheep_model,
+        newdata,
+        type = "link",
+        se.fit = TRUE
+      )$se.fit),
+    # then predict on the response scale
+    predictions_response = predict(sheep_model,
+      newdata,
+      type = "response",
+      se.fit = TRUE
+    )$fit,
+    # and add the confidence interval bounds
+    lower_ci_response = predict(sheep_model,
+      newdata,
+      type = "response",
+      se.fit = TRUE
+    )$fit -
+      (1.96 * predict(sheep_model,
+        newdata,
+        type = "response",
+        se.fit = TRUE
+      )$se.fit),
+    upper_ci_response = predict(sheep_model,
+      newdata,
+      type = "response",
+      se.fit = TRUE
+    )$fit +
+      (1.96 * predict(sheep_model,
+        newdata,
+        type = "response",
+        se.fit = TRUE
+      )$se.fit)
+  )
 ```
 </br>
 
@@ -1275,40 +1318,58 @@ Once we have created predictions of $Y$ from the model object,
 we can plot them using `geom_line()` and `geom_ribbon()` as in the code below.
 
 ```{r fig-sheep_predictions_plot, fig.cap = "A. plot of the fitted GLM line on the link scale including 95% confidence interval (grey), B. plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
-
 # Plot of Confidence Intervals on the link scale
 
-sheep_predictions_link <- ggplot(data = sheep_predictions, 
-                                 aes(x = Weight, 
-                                     y = predictions_link))+
-  geom_line(color="blue")+
-  geom_ribbon(aes(ymin = lower_ci_link, 
-                  ymax = upper_ci_link), 
-              alpha = 0.5)+
-  labs(title = "A. Predictions on link scale",
-       y = "Log odds of survival",
-       x = "Body weight (kg)")
+sheep_predictions_link <- ggplot(
+  data = sheep_predictions,
+  aes(
+    x = Weight,
+    y = predictions_link
+  )
+) +
+  geom_line(color = "blue") +
+  geom_ribbon(
+    aes(
+      ymin = lower_ci_link,
+      ymax = upper_ci_link
+    ),
+    alpha = 0.5
+  ) +
+  labs(
+    title = "A. Predictions on link scale",
+    y = "Log odds of survival",
+    x = "Body weight (kg)"
+  )
 
 # For this plot, the base can be the response data
 sheep_predictions_response <- ggplot() +
-  geom_jitter(data = sheep_data, 
-              aes(x = Weight, y = Survival), 
-              colour = "grey", size = 2, height = 0.01) +
-  geom_ribbon(data = sheep_predictions,
-              aes(x = Weight,
-                  ymin = lower_ci_response, 
-                  ymax = upper_ci_response), 
-              alpha = 0.5) +
-  geom_line(data = sheep_predictions, 
-            aes(x = Weight, y = predictions_response), 
-            colour = "blue") +
-  labs(title = "B. Predictions on response scale",
-       y = "Probability of survival",
-       x = "Body weight (kg)")
+  geom_jitter(
+    data = sheep_data,
+    aes(x = Weight, y = Survival),
+    colour = "grey", size = 2, height = 0.01
+  ) +
+  geom_ribbon(
+    data = sheep_predictions,
+    aes(
+      x = Weight,
+      ymin = lower_ci_response,
+      ymax = upper_ci_response
+    ),
+    alpha = 0.5
+  ) +
+  geom_line(
+    data = sheep_predictions,
+    aes(x = Weight, y = predictions_response),
+    colour = "blue"
+  ) +
+  labs(
+    title = "B. Predictions on response scale",
+    y = "Probability of survival",
+    x = "Body weight (kg)"
+  )
 
 
 sheep_predictions_link + sheep_predictions_response
-
 ```
 
 It can be observed from the figure above that the confidence intervals for the 
@@ -1355,8 +1416,7 @@ To do this, we can re-plot the example plot from the section above.
 #| fig-cap: "plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"
 
 example_predictions_response +
-    labs(title = "Model predictions and data on response scale")
-
+  labs(title = "Model predictions and data on response scale")
 ```
 
 If you look carefully at @fig-example_predictions_plot you can see that 
@@ -1382,13 +1442,14 @@ Then it would be possible to also test:
 * whether the data points are evenly distributed around the fitted line
 
 ```{r fig-example_predictions_plot_proportion, fig.cap = "plot of the fitted GLM line on the response scale with proportional response, including 95% confidence interval (grey)"}
-
-ggplot(aes(x = explanatory, y = successes/(successes + failures)), 
-       data = example_data2)+
-  geom_point(shape = 16)+
-  geom_smooth(method=stats::glm, method.args = list(family="binomial"), 
-              se=TRUE)
-
+ggplot(aes(x = explanatory, y = successes / (successes + failures)),
+  data = example_data2
+) +
+  geom_point(shape = 16) +
+  geom_smooth(
+    method = stats::glm, method.args = list(family = "binomial"),
+    se = TRUE
+  )
 ```
 
 </br> 
@@ -1436,9 +1497,7 @@ each researcher has to decide on their own how high a deviance ratio is a proble
 The deviance values are found in `summary()` at the bottom of the table
 
 ```{r, echo=TRUE, include=TRUE}
-
 summary(glm_model_object)
-
 ```
 
 </br> 
@@ -1467,10 +1526,8 @@ together.**
 </br>
 
 ```{r fig-sheep_predictions_plot2, fig.cap = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
-
 sheep_predictions_response +
   labs(title = "Model predictions on response scale")
-
 ```
 
 </br> 
@@ -1480,23 +1537,31 @@ section.
 This is partly caused because there is more data, so it overlaps a lot. 
 
 ```{r fig-sheep_predictions_plot3, fig.cap = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
-
 ggplot() +
-  geom_jitter(data = sheep_data, 
-              aes(x = Weight, y = Survival), 
-              colour = "grey70", size = 2, height = 0.1) +
-  geom_ribbon(data = sheep_predictions,
-              aes(x = Weight,
-                  ymin = lower_ci_response, 
-                  ymax = upper_ci_response), 
-              alpha = 0.5) +
-  geom_line(data = sheep_predictions, 
-            aes(x = Weight, y = predictions_response), 
-            colour = "blue") +
-  labs(title = "Model predictions on response scale",
-       y = "Probability of survival",
-       x = "Body weight (kg)")
-
+  geom_jitter(
+    data = sheep_data,
+    aes(x = Weight, y = Survival),
+    colour = "grey70", size = 2, height = 0.1
+  ) +
+  geom_ribbon(
+    data = sheep_predictions,
+    aes(
+      x = Weight,
+      ymin = lower_ci_response,
+      ymax = upper_ci_response
+    ),
+    alpha = 0.5
+  ) +
+  geom_line(
+    data = sheep_predictions,
+    aes(x = Weight, y = predictions_response),
+    colour = "blue"
+  ) +
+  labs(
+    title = "Model predictions on response scale",
+    y = "Probability of survival",
+    x = "Body weight (kg)"
+  )
 ```
 
 </br>
@@ -1518,9 +1583,7 @@ It seems that the model does capture the data quite well in this case.
 Next, we should **check overdispersion.**
 
 ```{r overdispersion_sheep}
-
 summary(sheep_model)
-
 ```
 
 The deviance ratio for the sheep model is:
@@ -1584,10 +1647,8 @@ On the response scale this increase is non-linear and is better shown with a
 graph. 
 
 ```{r fig-sheep_predictions_plot4, fig.cap = "Plot of the fitted GLM line on the response scale including 95% confidence interval (grey)"}
-
 sheep_predictions_response +
   labs(title = "Model predictions on response scale")
-
 ```
 
 </br>

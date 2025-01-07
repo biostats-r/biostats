@@ -1,6 +1,5 @@
 source("renv/activate.R")
 {
-  .ggOceanMapsenv <- new.env();
-  .ggOceanMapsenv$datapath <-  '~/ggOceanMapsLargeData'
+  .ggOceanMapsenv <- new.env()
+  .ggOceanMapsenv$datapath <- "~/ggOceanMapsLargeData"
 }
-

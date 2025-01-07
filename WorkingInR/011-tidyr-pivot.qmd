@@ -42,9 +42,8 @@ On the contrary, the following dataset is *not* tidy:
 #| echo: false
 #| message: false
 table2 <- read_delim(file = "data/nottidy.csv")
-#rmarkdown::paged_table() # conflicts with webexercises
+# rmarkdown::paged_table() # conflicts with webexercises
 gt::gt(table2)
-
 ```
 Indeed, at least one of the rules is broken since columns display data matching several variables (Date, time, Weather, etc).   
 
@@ -61,10 +60,12 @@ We can separate the values into multiple columns with `tidyr::separate_wider_del
 For example, in this small dataset, site code and plot number have been combined into one column separated by a hyphen.
 
 ```{r separate-data}
-dat <- tribble(~id, ~value,
-       "A-1", 1,
-       "A-2", 2,
-       "B-1", 3)
+dat <- tribble(
+  ~id, ~value,
+  "A-1", 1,
+  "A-2", 2,
+  "B-1", 3
+)
 
 dat
 ```
@@ -72,7 +73,7 @@ We can use `separate_wider_delim()` to split site and plot into separate columns
 The delimited is set by the `delim` argument.
 
 ```{r separate}
-dat |> 
+dat |>
   separate_wider_delim(cols = id, delim = "-", names = c("site", "plot"))
 ```
 
@@ -95,11 +96,13 @@ These are some Bergen climate data from [Wikipedia](https://no.wikipedia.org/wik
 
 ```{r, bergen_klima, echo = FALSE}
 bergen_klima <- read_delim(
-"Måned 	Jan 	Feb 	Mar 	Apr 	Mai 	Jun 	Jul 	Aug 	Sep 	Okt 	Nov 	Des
+  "Måned 	Jan 	Feb 	Mar 	Apr 	Mai 	Jun 	Jul 	Aug 	Sep 	Okt 	Nov 	Des
 Normal maks. temp. °C 	3.6 	4.0 	5.9 	9.1 	14.0 	16.8 	17.6 	17.4 	14.2 	11.2 	6.9 	4.7
 Døgnmiddeltemp. °C 	1.7 	1.7 	3.3 	5.8 	10.4 	13.1 	14.2 	14.2 	11.5 	8.8 	4.8 	2.7
 Normal min. temp. °C 	-0.4 	-0.5 	0.9 	3.0 	7.2 	10.2 	11.5 	11.6 	9.1 	6.6 	2.8 	0.6
-Nedbør (mm) 	190 	152 	170 	114 	106 	132 	148 	190 	283 	271 	259 	235", delim = "\t", trim_ws = TRUE)
+Nedbør (mm) 	190 	152 	170 	114 	106 	132 	148 	190 	283 	271 	259 	235",
+  delim = "\t", trim_ws = TRUE
+)
 bergen_klima
 ```
 
@@ -111,7 +114,7 @@ The months, selected by the `cols` argument in the column names (see @sec-select
 
 
 ```{r pivot-long}
-bergen_klima_long <- bergen_klima |> 
+bergen_klima_long <- bergen_klima |>
   pivot_longer(cols = Jan:Des, names_to = "Month", values_to = "value")
 bergen_klima_long
 ```
@@ -124,7 +127,7 @@ We can do this `pivot_wider()`.
 We can tell `pivot_wider()` which column contains what will become the column names and the data with the `names_from` and `values_from`, respectively.
 
 ```{r pivot-wider}
-bergen_klima_wider <- bergen_klima_long |> 
+bergen_klima_wider <- bergen_klima_long |>
   pivot_wider(names_from = "Måned", values_from = "value")
 
 bergen_klima_wider

@@ -37,7 +37,7 @@ Different combinations of variable types (continuous vs categorical) get differe
 ```{r}
 #| label: fig-ggally
 #| fig-cap: ggpairs() applied to the penguins dataset
-#| fig-alt: matrix of plots that show each variable in the penguins dataset plotted against every other variable. 
+#| fig-alt: matrix of plots that show each variable in the penguins dataset plotted against every other variable.
 #| results: hide
 #| message: false
 #| warning: false
@@ -65,7 +65,7 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent
   scale_size(range = c(2, 12), guide = "none") +
   scale_x_log10() +
   theme(legend.position = "inside", legend.position.inside = c(0.99, 0.01), legend.justification = c(1, 0)) +
-  labs(title = 'Year: {frame_time}', x = 'GDP per capita US$', y = 'Life expectancy yr', colour = "Continent") +
+  labs(title = "Year: {frame_time}", x = "GDP per capita US$", y = "Life expectancy yr", colour = "Continent") +
   transition_time(year) # animates ggplot
 ```
 This is not so useful for traditional journals (except perhaps in supplementary material), but some new journal may accept animations and other video. 
@@ -79,20 +79,19 @@ It is good for presentations and websites.
 #| label: fig-ggbeeswarm
 #| warning: false
 #| echo: false
-#| fig-cap: "`geom_jitter()` and alternatives from the `ggbeeswarm` package" 
+#| fig-cap: "`geom_jitter()` and alternatives from the `ggbeeswarm` package"
 #| fig-alt: "Plots of penguin body mass by species made using `geom_jitter()` and alternatives from the `ggbeeswarm` package"
 
 library(ggbeeswarm)
 p <- ggplot(palmerpenguins::penguins, aes(x = species, y = body_mass_g)) +
   labs(x = "Species", y = "Body mass, g")
 
-c("geom_jitter()", "geom_beeswarm(cex = 2.5)", "geom_quasirandom()") |> 
+c("geom_jitter()", "geom_beeswarm(cex = 2.5)", "geom_quasirandom()") |>
   map(\(geom){
     p + eval(parse(text = geom)) +
       ggtitle(paste0(str_extract(geom, "geom_[a-z]*"), "()"))
-  }) |> 
+  }) |>
   patchwork::wrap_plots()
-
 ```
 
 ## `ggfortify`
@@ -116,8 +115,8 @@ Use `geom_*_interactive()` to get tooltips.
 
 library(ggiraph)
 # remove ' from cote d'Ivoire
-gapminder <- gapminder |> 
-  mutate(country2 = str_replace(country, "'", "")) |> 
+gapminder <- gapminder |>
+  mutate(country2 = str_replace(country, "'", "")) |>
   filter(year == 1972)
 
 p <- ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)) +
@@ -126,11 +125,13 @@ p <- ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, colour = continent, size 
   scale_size(range = c(2, 12), guide = "none") +
   scale_x_log10() +
   theme(legend.position = "none") +
-  labs(x = 'GDP per capita US$', y = 'Life expectancy yr', colour = "Continent") 
+  labs(x = "GDP per capita US$", y = "Life expectancy yr", colour = "Continent")
 
 
-girafe(ggobj = p, 
-       options = list(opts_hover(css = "fill: red") ))
+girafe(
+  ggobj = p,
+  options = list(opts_hover(css = "fill: red"))
+)
 ```
 
 
@@ -147,20 +148,19 @@ Bored with solid fills?
 
 library(ggpattern)
 ggplot(penguins, aes(x = species)) +
-       geom_bar_pattern(
-         aes(
-           pattern_fill = species,
-           pattern_type = species
-         ),
-         pattern = 'polygon_tiling'
-       ) +
-       scale_pattern_type_manual(values = c("hexagonal", "rhombille", "pythagorean")) +
-       theme(legend.key.size = unit(1.5, 'cm')) + # larger legend
-       labs(
-         title    = "ggpattern::geom_density_pattern()",
-         subtitle = "pattern = 'polygon_tiling'"
-       )
-
+  geom_bar_pattern(
+    aes(
+      pattern_fill = species,
+      pattern_type = species
+    ),
+    pattern = "polygon_tiling"
+  ) +
+  scale_pattern_type_manual(values = c("hexagonal", "rhombille", "pythagorean")) +
+  theme(legend.key.size = unit(1.5, "cm")) + # larger legend
+  labs(
+    title    = "ggpattern::geom_density_pattern()",
+    subtitle = "pattern = 'polygon_tiling'"
+  )
 ```
 
 
@@ -175,14 +175,14 @@ If you want to label points on a plot, but the labels overlap, `ggrepel` can hel
 ```{r}
 #| label: fig-ggrepel
 #| fig-cap: "`geom_text()` and `geom_text_repel()`"
-#| fig-alt: Plots of milage against weight for cars. Left plot labels points with geom_text(), with a lot of overlapping text. Right plot uses geom_text_repel() to avoid overlapping. 
+#| fig-alt: Plots of milage against weight for cars. Left plot labels points with geom_text(), with a lot of overlapping text. Right plot uses geom_text_repel() to avoid overlapping.
 #| warning: false
 library(ggrepel)
 
-# base plot  
+# base plot
 p <- ggplot(mtcars, aes(x = wt, y = mpg, label = rownames(mtcars))) +
-        geom_point() +
-        labs(x = "Car weight", y = "Milage mgp")
+  geom_point() +
+  labs(x = "Car weight", y = "Milage mgp")
 
 # add labels (use geom_label/geom_label_repel to add background rectangle to text)
 p1 <- p + geom_text() + ggtitle("geom_text()")
@@ -225,7 +225,7 @@ ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm, color = species)) +
     # title has formatting
     title = "<span style = 'font-size:14pt; font-family:Helvetica;'>Flipper-body mass relationship similar between penguin species</span><br>
 <span style = 'color:#0072B2;'>Adelie</span> and <span style = 'color:#D55E00;'>Chinstrap</span>
-are smaller than <span style = 'color:#55aa55;'>Gentoo</span> penguins, 
+are smaller than <span style = 'color:#55aa55;'>Gentoo</span> penguins,
 but the flipper length-body mass relationship is similar."
   ) +
   theme(

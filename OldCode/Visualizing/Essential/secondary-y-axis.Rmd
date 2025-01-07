@@ -5,11 +5,11 @@ output:
 --- 
 
 ```{r setup&variables, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 
 # title: Secondary Y-axis
 # author: jonathan
-# revised: 15/3/2020 
+# revised: 15/3/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Essential/secondary-y-axis.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Essential/secondary-y-axis.Rmd")
@@ -18,9 +18,9 @@ library(gridExtra)
 # predictor variable
 ID <- 1:12
 # response variable 1
-response1 <- runif(12, min=25, max=50)
+response1 <- runif(12, min = 25, max = 50)
 # response variable 2
-response2 <- runif(12, min=4, max=15)
+response2 <- runif(12, min = 4, max = 15)
 # dataframe
 df <- data.frame(ID, response1, response2)
 ```
@@ -28,30 +28,31 @@ When overlaying two response variables on a single plot, you may want to give ea
 
 Adding a secondary Y-axis in ggplot is not complicated. The argument `sec.axis = sec_axis()` in `scale_y_continuous()` is indeed able to add one to the right side of any plot. Here we will see how this works with a simple example where one response variable (`response1`) is represented in the form of a bar plot, and another response variable (`response2`) is represented in the form of a line plot. Both response variables will eventually be plotted against the same predictor variable (`ID`). Here we first have a look at the response variables in two separate plots:
 ```{r separateplots1, eval=FALSE}
-ggplot(df, aes(x = ID)) +                                                        # bar plot - response1 vs. ID
+ggplot(df, aes(x = ID)) + # bar plot - response1 vs. ID
   geom_col(aes(y = response1), size = 1, color = "darkblue", fill = "white") +
-  scale_x_continuous(breaks=seq(1, 12, 1))
-ggplot(df, aes(x = ID)) +                                                        # line plot - response2 vs. ID
-  geom_line(aes(y = response2), size = 1.5, color="red") +
-  scale_x_continuous(breaks=seq(1, 12, 1))
+  scale_x_continuous(breaks = seq(1, 12, 1))
+ggplot(df, aes(x = ID)) + # line plot - response2 vs. ID
+  geom_line(aes(y = response2), size = 1.5, color = "red") +
+  scale_x_continuous(breaks = seq(1, 12, 1))
 ```
 ```{r separateplots2, echo=FALSE, fig.width=10, fig.height=4}
 grid.arrange(
-  ggplot(df, aes(x = ID)) +                                                      # bar plot - response1 vs. ID
+  ggplot(df, aes(x = ID)) + # bar plot - response1 vs. ID
     geom_col(aes(y = response1), size = 1, color = "darkblue", fill = "white") +
-    scale_x_continuous(breaks=seq(1, 12, 1)),
-  ggplot(df, aes(x = ID)) +                                                      # line plot - response2 vs. ID
-    geom_line(aes(y = response2), size = 1.5, color="red") +
-    scale_x_continuous(breaks=seq(1, 12, 1)),
-  ncol=2)
+    scale_x_continuous(breaks = seq(1, 12, 1)),
+  ggplot(df, aes(x = ID)) + # line plot - response2 vs. ID
+    geom_line(aes(y = response2), size = 1.5, color = "red") +
+    scale_x_continuous(breaks = seq(1, 12, 1)),
+  ncol = 2
+)
 ```
 <br/><br/>
 For each of the plots above, ggplot defines the scale of the Y-axis that fits best, i.e. almost the highest amplitude possible, where all data points are included. Now, let's put the two response variables in the same plot:
 ```{r oneplot}
-ggplot(df, aes(x = ID)) + 
-  geom_col(aes(y = response1), size = 1, color = "darkblue", fill = "white") +   # bar plot - response1 vs. ID
-  geom_line(aes(y = response2), size = 1.5, color="red")+                        # line plot - response2 vs. ID
-  scale_x_continuous(breaks=seq(1, 12, 1))
+ggplot(df, aes(x = ID)) +
+  geom_col(aes(y = response1), size = 1, color = "darkblue", fill = "white") + # bar plot - response1 vs. ID
+  geom_line(aes(y = response2), size = 1.5, color = "red") + # line plot - response2 vs. ID
+  scale_x_continuous(breaks = seq(1, 12, 1))
 ```
 <br/><br/>
 
@@ -59,29 +60,29 @@ As you realize here, ggplot has kept the scale of the Y-axis that fits best the 
 
 Before trying to fit the secondary axis, we may try to improve the display of `response2` so that it makes a better use of the plot area. To do so, we shall apply an arithmetic transformation to `response2` so that we change the amplitude of the display of the line plot. Here, we can for instance multiply the whole series by 2 so that it "uses more space" in the present plot. To do so, we just have to add `2*` in front of `response2` in `aes()`:
 ```{r amplitude}
-ggplot(df, aes(x = ID)) + 
+ggplot(df, aes(x = ID)) +
   geom_col(aes(y = response1), size = 1, color = "darkblue", fill = "white") +
-  geom_line(aes(y = 2*response2), size = 1.5, color="red") +
-  scale_x_continuous(breaks=seq(1, 12, 1))
+  geom_line(aes(y = 2 * response2), size = 1.5, color = "red") +
+  scale_x_continuous(breaks = seq(1, 12, 1))
 ```
 <br/><br/>
 Now, the line plot has better proportions compared to the the bar plot. We may thus add the secondary Y-axis to the right using `scale_y_continuous(sec.axis = sec_axis(~.))`. However, if we do so, the secondary axis that will appear will be identical to the primary axis. Its scale won't be fitted for the transformed variable `response2`. We thus need to apply an arithmetical transformation to the scale of the axis that will compensate for the transformation applied to the variable. Logically, since the variable was multiplied by 2, we need to compensate by dividing the scale by 2. To do so, we write `~./2` between the parentheses:
 ```{r secondary axis}
-ggplot(df, aes(x = ID)) + 
+ggplot(df, aes(x = ID)) +
   geom_col(aes(y = response1), size = 1, color = "darkblue", fill = "white") +
-  geom_line(aes(y= 2*response2), size = 1.5, color="red") +
-  scale_x_continuous(breaks=seq(1, 12, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~./2))      # adds the secondary Y-axis
+  geom_line(aes(y = 2 * response2), size = 1.5, color = "red") +
+  scale_x_continuous(breaks = seq(1, 12, 1)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 2)) # adds the secondary Y-axis
 ```
 <br/><br/>
 The resulting plot now has a secondary Y-axis which fits the variable `response2`. The only thing that is missing to finish the job is to add a title to the secondary axis. To do so, we add in `scale_y_continuous()` the argument `name=` followed by the text to display:
 
 ```{r title}
-ggplot(df, aes(x = ID)) + 
+ggplot(df, aes(x = ID)) +
   geom_col(aes(y = response1), size = 1, color = "darkblue", fill = "white") +
-  geom_line(aes(y= 2*response2), size = 1.5, color="red") +
-  scale_x_continuous(breaks=seq(1, 12, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~./2, name = "response2"))
+  geom_line(aes(y = 2 * response2), size = 1.5, color = "red") +
+  scale_x_continuous(breaks = seq(1, 12, 1)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 2, name = "response2"))
 ```
 <br/><br/>
 
