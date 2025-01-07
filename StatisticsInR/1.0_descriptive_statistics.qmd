@@ -29,17 +29,18 @@ Notice that the one tree species, *Juniper communis*, is much taller than the ot
 
 ```{r height data setup, echo=FALSE}
 # create a height table
-Species <- c("Juniper communis", "Betula nana", "Vaccinium myrtillus", "Festuca rubra", "Veronica alpina")
-Height <- c(200, 50, 15, 20, 10)
-height_data <- data.frame(Species, Height)
+species <- c("Juniper communis", "Betula nana", "Vaccinium myrtillus", 
+  "Festuca rubra", "Veronica alpina")
+height <- c(200, 50, 15, 20, 10)
+height_data <- tibble(species, height)
 
 # create a second one to show median and mode
-Species <- c(
-  "Juniper communis", "Betula nana", "Vaccinium myrtillus", "Festuca rubra", "Veronica alpina",
-  "Viola biflora"
+species <- c(
+  "Juniper communis", "Betula nana", "Vaccinium myrtillus", "Festuca rubra", 
+"Veronica alpina", "Viola biflora"
 )
-Height <- c(200, 50, 15, 20, 10, 10)
-height_data2 <- data.frame(Species, Height)
+height <- c(200, 50, 15, 20, 10, 10)
+height_data2 <- tibble(species, height)
 ```
 ```{r view table, echo=FALSE, eval= TRUE}
 head(height_data)
@@ -69,8 +70,10 @@ In R, the function that calculates the mean is called `mean()`.
 We will first look at our height data and the use the `mean()` function to find the value for our data:
 
 ```{r mean, echo=TRUE, eval=TRUE}
-head(height_data) # we use `head()` to look at our data set already loaded into R
-mean(height_data$Height) # then we use the `mean()` function to calculate the mean for our height sample
+ # we use `head()` to look at our data set already loaded into R
+head(height_data)
+# then we use the `mean()` function to calculate the mean for our height sample
+mean(height_data$height) 
 ```
 
 And so, we have a mean of 59 cm for the height of our five plant species. 
@@ -93,7 +96,7 @@ If the sample contains an even number _n_ of entries, then the median is the mea
 In R, the function that calculates the median is called `median()`:
 
 ```{r median odd, echo=TRUE, eval=TRUE}
-median(height_data$Height) # takes the median of the height data
+median(height_data$height) # takes the median of the height data
 ```
 
 Above, we have the median height of our odd numbered sample.
@@ -102,8 +105,9 @@ Now our sample has six entries.
 How does that change the median?
 
 ```{r median even, echo=TRUE, eval=TRUE}
-head(height_data2) # we use `head()` to look at our new data set already loaded into R
-median(height_data2$Height) # takes the median
+# we use `head()` to look at our new data set already loaded into R
+head(height_data2) 
+median(height_data2$height) # takes the median
 ```
 
 We see that the median of the even sample is between the two middle values in the data, 15 and 20.
@@ -119,8 +123,8 @@ The *minimum* and *maximum* of a sample are the smallest and largest entries, re
 In R, the functions that calculate the minimum and maximum  are called `min()` and `max()`, respectively:
 
 ```{r min and max, echo = TRUE, eval=TRUE}
-min(height_data2$Height) # find the minimum
-max(height_data2$Height) # find the maximum
+min(height_data2$height) # find the minimum
+max(height_data2$height) # find the maximum
 ```
 We see that `min()` picked out the height of the shortest species in our data (*Veronica alpina* and *Viola biflora*) and `max()` picked out the height of the tallest species (*Juniper communis*). 
 
@@ -133,9 +137,12 @@ However, `range()` returns a vector that contains the minimum and the maximum, r
 To calculate the difference between these values, you may use `diff(range())` or `max()-min()`:
 
 ```{r range, echo = TRUE, eval=TRUE}
-range(height_data2$Height) # find the range of the sample as a vector
-diff(range(height_data2$Height)) # find the range as difference between minimum and maximum values with diff()
-max(height_data2$Height) - min(height_data2$Height) # find the range as difference between minimum and maximum values
+# find the range of the sample as a vector
+range(height_data2$height)
+# find the range as difference between minimum and maximum values with diff()
+diff(range(height_data2$height)) 
+# find the range as difference between minimum and maximum values
+max(height_data2$height) - min(height_data2$height) 
 ```
 We see that the `range()` returns our minimum and maximum height values, while the other two functions return the difference between the minumum and and maximum height values.
 
@@ -145,7 +152,7 @@ It can be calculated by taking taking the mean of the minumum and maximum value 
 In R, you can calculate the midpoint of a sample with: 
 
 ```{r midpoint, echo = TRUE, eval=TRUE}
-(max(height_data2$Height) + min(height_data2$Height)) / 2
+(max(height_data2$height) + min(height_data2$height)) / 2
 ```
 Notice how the midpoint is still greater than the height of five of the species measured because of the relative tallness of *Juniper communis* compared to the rest of the community.
 
@@ -156,10 +163,13 @@ There is not a standard *mode* function in R, so here, we present a method to fi
 We will use the `tidyverse` package to manipulate the data and find the *mode* (see the basics in R for more on `tidyverse`):
 
 ```{r mode, echo=TRUE, eval=TRUE}
-height_mode <- height_data2 %>% # use "pipe operators", `%>%`, to pass the data for further manipulations
-  group_by(Height) %>% # group the data by their height values
-  summarise(N_height = n()) %>% # count `n()` how many entries have the same value
-  filter(N_height == max(N_height)) # return the mode by pulling out the values with the highest count
+# use "pipe operators", `|>`, to pass the data for further manipulations
+height_mode <- height_data2 |>
+  group_by(height) %>% # group the data by their height values
+# count `n()` how many entries have the same value
+  summarise(N_height = n()) %>% 
+# return the mode by pulling out the values with the highest count
+  filter(N_height == max(N_height)) 
 
 height_mode # see the mode
 ```
@@ -187,7 +197,7 @@ Note-variance is always positive because of the squared difference.
 In R, the function that calculates the variance is `var()`:
 
 ```{r variance, echo=TRUE, eval=TRUE}
-var(height_data2$Height) # finds the variance of the sample
+var(height_data2$height) # finds the variance of the sample
 ```
 Here, we get the variance of the height data- the variance is over 27 times larger than the tallest species' height! 
 Why might that be?
@@ -201,8 +211,8 @@ In R, the standard deviation is obtained via the function `sd()`.
 Note that you will obtain the same result by calculating “manually” the square root of the variance with `sqrt(var())`:
 
 ```{r standard deviation, echo=TRUE, eval=TRUE}
-sd(height_data2$Height) # finds the standard deviation of the sample
-sqrt(var(height_data2$Height)) # alternative method to find the standard deviation
+sd(height_data2$height) # finds the standard deviation of the sample
+sqrt(var(height_data2$height)) # alternative method to find the standard deviation
 ```
 Note how much closer the sd is to the values within our height data.
 
@@ -217,7 +227,9 @@ There is no standard function to calculate a samples standard error in R, but ma
 Here is a way to calculate the se from scratch:
 
 ```{r standard error, echo=TRUE, eval=TRUE}
-sd(height_data2$Height) / sqrt(length(height_data2$Height)) # take the sd of the sample and divide by the square root, `sqrt()`, of the number of observations or `length()` of the sample.
+# take the sd of the sample and divide by the square root, `sqrt()`, 
+# of the number of observations or `length()` of the sample.
+sd(height_data2$height) / sqrt(length(height_data2$height))
 ```
 We can interpret the se as the expected "error" in our estimate of mean plant height. 
 What would happen to the standard error if we measured the height of every plant in the meadow? 
@@ -250,15 +262,19 @@ If you choose to use only `quantile()` with no other argument than the vector co
 If you need only Q1, Q2 and Q3, you use an extra argument (see the following example):
 
 ```{r quartiles, echo = TRUE}
-quantile(height_data2$Height) # Find the Q0, Q1, Q2, Q3, and Q4
-quantile(height_data2$Height, probs = c(0.25, 0.5, 0.75)) # Find the Q1, Q2, and Q3 by defining which quartiles (in proportions) using the probs argument
+ # Find the Q0, Q1, Q2, Q3, and Q4
+quantile(height_data2$height)
+# Find the Q1, Q2, and Q3 by defining which quartiles (in proportions)
+# using the probs argument
+quantile(height_data2$height, probs = c(0.25, 0.5, 0.75))
 ```
 
 Quartiles can be visualized with `ggplot()` and `geom_boxplot()`:
 
 ```{r fig-quartiles-boxplot, echo=TRUE}
-ggplot(height_data2, aes(y = Height, x = "")) +
-  geom_boxplot() + # assign the vector "x" as the y variable in the 'aes' argument and pass it to 'geom_boxplot'
+ggplot(height_data2, aes(y = height, x = "")) +
+# assign the vector "x" as the y variable in 'aes' and pass it to 'geom_boxplot'
+  geom_boxplot() + 
   labs(title = "Height Boxplot") +
   xlab(label = "") + # this and the following lines label the axes and quartiles
   annotate("text", x = 1.1, y = 200, label = "<-Q4 or max") +
