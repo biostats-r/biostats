@@ -16,11 +16,11 @@ source("../Templates/biostats_theme.R")
 #| label: data
 #| include: false
 
-traits <- read_delim("data/PFTC4_Svalbard_2018_ITEX_Traits.csv") 
+traits <- read_delim("data/PFTC4_Svalbard_2018_ITEX_Traits.csv")
 
 # filter out height data
-trait_height <- traits |> 
-  filter(Trait == "Plant_Height_cm") |> 
+trait_height <- traits |>
+  filter(Trait == "Plant_Height_cm") |>
   drop_na(Treatment)
 ```
 
@@ -98,7 +98,7 @@ It could be written with `paste()` but I prefer `glue::glue()` syntax - the code
 p <- ggplot(trait_height, aes(x = Value, fill = Treatment)) +
   geom_density(bounds = c(0, Inf), alpha = 0.5) +
   labs(x = "Plant height cm", y = "Density")
-p 
+p
 ```
 
 :::
@@ -118,7 +118,7 @@ p <- ggplot(trait_height, aes(x = Value, fill = Treatment)) +
   geom_density(bounds = c(0, Inf), alpha = 0.5) +
   labs(x = "Plant height cm", y = "Density") +
   theme_classic()
-p 
+p
 ```
 
 To give all the figures in a document a consistent theme, you can set the default theme near the start of the document, perhaps in the code block where the package are loaded, with `theme_set()`. 
@@ -174,14 +174,14 @@ The block label need to start with `tbl-` if the main caption and table number a
 ```{r}
 #| echo: fenced
 #| label: tbl-kable
-#| tbl-cap: Simple tables with `kable()` 
+#| tbl-cap: Simple tables with `kable()`
 
-trait_height_summary <- trait_height |> 
-  group_by(Taxon) |> 
-  summarise(mean = mean(Value), sd = sd(Value), n = n()) |> 
-  filter(n > 10) 
+trait_height_summary <- trait_height |>
+  group_by(Taxon) |>
+  summarise(mean = mean(Value), sd = sd(Value), n = n()) |>
+  filter(n > 10)
 
-  knitr::kable(trait_height_summary) # show first 5 rows
+knitr::kable(trait_height_summary) # show first 5 rows
 ```
 
 ### gt
@@ -192,20 +192,22 @@ The [`gt`](https://gt.rstudio.com/articles/intro-creating-gt-tables.html) packag
 #| label: tbl-gt
 #| echo: fenced
 #| tbl-cap: Tables with `gt()`
-#| tbl-subcap: 
+#| tbl-subcap:
 #|    - "Basic `gt()` table"
 #|    - "`gt()` table with more features"
 
 library(gt)
-trait_height_summary |> 
+trait_height_summary |>
   gt()
 
-trait_height_summary|> 
-  gt() |> 
-  cols_label(mean = "Mean",           # Display column headers
-             sd = "Standard deviation",
-             n = "Number") |>
-  fmt_number(columns = c(mean, sd)) |> # defaults to two decimal places 
+trait_height_summary |>
+  gt() |>
+  cols_label(
+    mean = "Mean", # Display column headers
+    sd = "Standard deviation",
+    n = "Number"
+  ) |>
+  fmt_number(columns = c(mean, sd)) |> # defaults to two decimal places
   tab_spanner(label = "Height", columns = c(mean, sd))
 ```
 

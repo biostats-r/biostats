@@ -46,7 +46,6 @@ It avoids unnecessary repetition and can save costly running time.
 #| fig-alt: Reproducible targets pipeline.
 
 knitr::include_graphics("Pics/reproducible_pipeline.png")
-
 ```
 
 ::: callout-tip
@@ -72,7 +71,6 @@ This file lives at the root of the R project folder.
 #| fig-alt: The file structure of a target pipeline.
 
 knitr::include_graphics("Pics/file_structure.png")
-
 ```
 
 An R project will have many other files and it is recommended to keep code and data files in separate folders to keep the repository tidy.
@@ -129,7 +127,7 @@ tar_option_set(
   # cluster, select a controller from the {crew.cluster} package.
   # For the cloud, see plugin packages like {crew.aws.batch}.
   # The following example is a controller for Sun Grid Engine (SGE).
-  # 
+  #
   #   controller = crew.cluster::crew_controller_sge(
   #     # Number of workers that the pipeline can scale up to:
   #     workers = 10,
@@ -162,7 +160,6 @@ list(
     command = coefficients(lm(y ~ x, data = data))
   )
 )
-
 ```
 
 ::: callout-note
@@ -222,7 +219,6 @@ Otherwise `tar_source()` will try to run other scripts in the folder.
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-
 ```
 
 4.  In the last section the pipeline is defined consisting of a **list of targets**. Each target is a step in the pipeline, for example importing data, run an analysis or make a figure and looks like a normal R object (e.g. tibble, vector, figure). Each target is declared by the `tar_target()` function and separated by a comma. The `tar_target()` needs two arguments: `name` defines the target name and `command` the code to produce the target. Usually the command is calling a custom function.
@@ -236,10 +232,11 @@ Here is a target that uses the function `fit_model()` that was created in the pr
 
 # fit model for plant height
 list(
-  tar_target(name = model,
-             command = fit_model(data))
+  tar_target(
+    name = model,
+    command = fit_model(data)
   )
-
+)
 ```
 
 Each target should have a unique name that can be called downstream in the pipeline.
@@ -263,11 +260,12 @@ Each time the pipeline is run, targetes will check if the file has been changed 
 #| echo: true
 
 list(
-  tar_target(name = file,
-             command = here::here("data/PFTC4_Svalbard_2018_Gradient_Traits.csv"),
-             format = "file")
+  tar_target(
+    name = file,
+    command = "data/PFTC4_Svalbard_2018_Gradient_Traits.csv",
+    format = "file"
   )
-  
+)
 ```
 
 ::: callout-tip
@@ -298,7 +296,6 @@ Add all the necessary R packages in `tar_option_set()` in the `_targets.R` file 
 tar_option_set(
   packages = c("tidyverse") # packages that your targets need to run
 )
-
 ```
 :::
 
@@ -329,11 +326,12 @@ Save the file.
 #| echo: true
 
 list(
-  tar_target(name = file,
-             command = path,
-             format = "file")
+  tar_target(
+    name = file,
+    command = path,
+    format = "file"
   )
-  
+)
 ```
 :::
 
@@ -363,22 +361,25 @@ At the end save the file.
 
 list(
   # data file
-  tar_target(name = file,
-             command = path,
-             format = "file"),
-  
+  tar_target(
+    name = file,
+    command = path,
+    format = "file"
+  ),
+
   # import data
-  tar_target(name = target1,
-             command = function1),
-  
+  tar_target(
+    name = target1,
+    command = function1
+  ),
+
   # clean data
-  tar_target(name = target2,
-             command = function2),
-  
+  tar_target(
+    name = target2,
+    command = function2
+  ),
   ...
-  
-  )
-  
+)
 ```
 :::
 
@@ -403,7 +404,6 @@ When running the pipeline for the first time you will see a list of all the targ
 #| fig-alt: R output after running the pipeline for the first time.
 
 knitr::include_graphics("Pics/pipeline.png")
-
 ```
 
 All targets are saved to the `_targets/`folder.
@@ -428,7 +428,6 @@ Circles are targets, triangles functions, and the colour indicates if the target
 #| fig-alt: Dependency graph that vizualises the target pipeline.
 
 knitr::include_graphics("Pics/viz_workflow.png")
-
 ```
 
 ::: callout-note
@@ -448,7 +447,6 @@ In the long run this will save a lot of computational time and is one of the big
 #| fig-alt: R output after running the pipeline.
 
 knitr::include_graphics("Pics/pipeline2.png")
-
 ```
 
 ::: callout-note
@@ -474,7 +472,6 @@ This is a huge advantage of the targets pipeline and can save a lot of time.
 #| echo: true
 
 tar_load(model)
-
 ```
 
 To access all the targets at once use `tar_load_everything()`.
@@ -503,7 +500,6 @@ Then add new code in small steps and check regularly if the plan is still workin
 #| fig-alt: Dependency graph that vizualises a complex target pipeline.
 
 knitr::include_graphics("Pics/complex_network.png")
-
 ```
 :::
 
@@ -521,7 +517,6 @@ Error messages in targets can be hard to understand and will look something like
 #| fig-alt: Error in the pipeline.
 
 knitr::include_graphics("Pics/error.png")
-
 ```
 
 You can see that the pipeline broke when running the target *model*.
@@ -535,7 +530,6 @@ To learn more about the problem run the command `targets::tar_meta(fields = erro
 #| fig-alt: Find out more about a problem in the pipeline.
 
 knitr::include_graphics("Pics/solve_error.png")
-
 ```
 
 The R output now gives some more information about the problem.
@@ -560,7 +554,6 @@ This is usually if the name is spelled wrong or when using an old name.
 #| fig-alt: Error message for missing object.
 
 knitr::include_graphics("Pics/error_not_found.png")
-
 ```
 
 ### Duplicate target
@@ -577,7 +570,6 @@ Rename one of the objects and the problem is solved.
 #| fig-alt: Error message for duplicate target.
 
 knitr::include_graphics("Pics/error_duplicate.png")
-
 ```
 
 ### Clean pipeline

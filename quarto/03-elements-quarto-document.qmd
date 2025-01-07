@@ -104,7 +104,7 @@ It requires some external tools to be installed, which can be done with the `tin
 #| eval: false
 #| echo: true
 # run this only once
-install.packages('tinytex')
+install.packages("tinytex")
 tinytex::install_tinytex()
 ```
 
@@ -169,11 +169,14 @@ You can see this mode by clicking on "Source" above the document
 fs::dir_create(here::here("docs/quarto/Pics"))
 fs::file_copy(
   here::here("quarto/Pics/source-editor.png"),
-  here::here("docs/quarto/Pics/source-editor.png"), 
-  overwrite = TRUE)
+  here::here("docs/quarto/Pics/source-editor.png"),
+  overwrite = TRUE
+)
 fs::file_copy(
-  here::here("quarto/Pics/visual-editor.png"), 
-  here::here("docs/quarto/Pics/visual-editor.png"), overwrite = TRUE)
+  here::here("quarto/Pics/visual-editor.png"),
+  here::here("docs/quarto/Pics/visual-editor.png"),
+  overwrite = TRUE
+)
 ```
 
 ```{r}
@@ -182,9 +185,11 @@ fs::file_copy(
 #| fig-cap: "The Source code and Visual editors"
 #| fig-alt: Screenshots of the source code and visual editors
 #| out-height: "797px"
-#remotes::install_github("xvrdm/ricv")
-ricv::ricv(img1 = "Pics/source-editor.png", img2 = "Pics/visual-editor.png",
-     options = list(addCircle = TRUE, hoverStart = TRUE))
+# remotes::install_github("xvrdm/ricv")
+ricv::ricv(
+  img1 = "Pics/source-editor.png", img2 = "Pics/visual-editor.png",
+  options = list(addCircle = TRUE, hoverStart = TRUE)
+)
 ```
 
 Paragraphs have a blank line between them.
@@ -354,7 +359,7 @@ Options are given in special comments at the top of the block.
 #| message: false
 
 # load data
-traits <- read_delim("data/PFTC4_Svalbard_2018_ITEX_Traits.csv") 
+traits <- read_delim("data/PFTC4_Svalbard_2018_ITEX_Traits.csv")
 ```
 
 ::: callout-important
@@ -399,12 +404,14 @@ Use the following widget, which initially shows the defaults, to explore what is
 library(reactable)
 library(crosstalk) # remotes::install_github("richardjtelford/crosstalk@no-all)
 
-block_options <- crossing(eval = c(TRUE, FALSE), 
-         echo = c(TRUE, FALSE), 
-         message = c(TRUE, FALSE), 
-         warning = c(TRUE, FALSE), 
-         include = c(TRUE, FALSE), 
-         output = c("true", "asis", "false")) |> 
+block_options <- crossing(
+  eval = c(TRUE, FALSE),
+  echo = c(TRUE, FALSE),
+  message = c(TRUE, FALSE),
+  warning = c(TRUE, FALSE),
+  include = c(TRUE, FALSE),
+  output = c("true", "asis", "false")
+) |>
   mutate(
     Code = if_else(echo & include, "shown", "hidden"),
     Messages = case_when(
@@ -426,10 +433,11 @@ block_options <- crossing(eval = c(TRUE, FALSE),
       output == "asis" ~ "raw markdown",
       TRUE ~ "shown"
     )
-  ) |> 
+  ) |>
   mutate(across(eval:include, tolower),
-         across(eval:include, \(x)factor(x, levels = c("true", "false"))),
-         output = factor(output, levels = c("true", "asis", "false")))
+    across(eval:include, \(x)factor(x, levels = c("true", "false"))),
+    output = factor(output, levels = c("true", "asis", "false"))
+  )
 
 # make crosstalk shared data
 data <- SharedData$new(block_options)
@@ -437,7 +445,6 @@ data <- SharedData$new(block_options)
 # make select input
 filter_select("eval", "eval", data, ~eval, multiple = FALSE)
 filter_select("include", "include", data, ~include, multiple = FALSE)
-
 ```
 
 ```{r}
@@ -456,33 +463,33 @@ filter_select("output", "output", data, ~output, multiple = FALSE)
 ```{r}
 #| echo: false
 reactable(data,
-          minRows = 1,
-          pagination = FALSE,
-          showPageInfo = FALSE,
-          outlined = TRUE,
-          defaultColDef = colDef(
-             style = function(value) {
-               cols <- c("hidden" = "#bce2f7", "shown" = "#bdf7bc", "none" = "#f7c0bc", "raw markdown" = "#bdf7bc")
-              colour <- as.vector(cols[value])
-        list(background = colour)
-      }
-          ),
-
-          columns = list(
-             eval = colDef(show = FALSE),
-             echo = colDef(show = FALSE),
-             message = colDef(show = FALSE),
-             warning = colDef(show = FALSE), 
-             include = colDef(show = FALSE), 
-             output = colDef(show = FALSE),  
-             Code = colDef(show = TRUE),
-             Messages = colDef(show = TRUE),  
-             Warnings = colDef(show = TRUE), 
-            `Text, figures & tables` = colDef(show = TRUE)
-          ), 
-          theme = reactableTheme(
-            backgroundColor = "lightgrey"
-  ))
+  minRows = 1,
+  pagination = FALSE,
+  showPageInfo = FALSE,
+  outlined = TRUE,
+  defaultColDef = colDef(
+    style = function(value) {
+      cols <- c("hidden" = "#bce2f7", "shown" = "#bdf7bc", "none" = "#f7c0bc", "raw markdown" = "#bdf7bc")
+      colour <- as.vector(cols[value])
+      list(background = colour)
+    }
+  ),
+  columns = list(
+    eval = colDef(show = FALSE),
+    echo = colDef(show = FALSE),
+    message = colDef(show = FALSE),
+    warning = colDef(show = FALSE),
+    include = colDef(show = FALSE),
+    output = colDef(show = FALSE),
+    Code = colDef(show = TRUE),
+    Messages = colDef(show = TRUE),
+    Warnings = colDef(show = TRUE),
+    `Text, figures & tables` = colDef(show = TRUE)
+  ),
+  theme = reactableTheme(
+    backgroundColor = "lightgrey"
+  )
+)
 ```
 
 ```{js echo = FALSE}
@@ -623,8 +630,8 @@ If there are many results to report, consider storing them in a list as in the f
 #| label: height-info
 
 # filter out height data
-trait_height <- traits |> 
-  filter(Trait == "Plant_Height_cm") |> 
+trait_height <- traits |>
+  filter(Trait == "Plant_Height_cm") |>
   drop_na(Treatment)
 
 # make list summarising height data
@@ -639,7 +646,7 @@ height_info <- list(
 #| echo: false
 #| results: asis
 cat("``` markdown\n")
-cat("We measured `r height_info$n` plants. 
+cat("We measured `r height_info$n` plants.
 The minimum height was `r height_info$min` cm and the maximum `r height_info$max` cm.")
 cat("\n```")
 ```
@@ -707,12 +714,12 @@ round(151.98646, digits = -1) # negative values round to the left of the decimal
 # Use signif() to set the required number of significant figures
 signif(c(0.15198646, 151.98646), digits = 4)
 
-# format.pval() is a special function for formatting p-values. 
+# format.pval() is a special function for formatting p-values.
 # Use the eps argument to set the minimum exact values to display.
 format.pval(c(0.194342, 0.00000194342), digits = 3, eps = 0.001)
 
 # format() when you need more control over how the number is displayed
-format(1504703.232, big.mark = ".", decimal.mark = ",",  nsmall = 1) # Norwegian format
+format(1504703.232, big.mark = ".", decimal.mark = ",", nsmall = 1) # Norwegian format
 ```
 
 
