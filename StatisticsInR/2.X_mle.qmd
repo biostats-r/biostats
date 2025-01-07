@@ -1,10 +1,9 @@
-# Maximum likelihood estimation"
+# Maximum likelihood estimation
 
 
 ```{r setup, eval=TRUE, include=FALSE}
 # add all packages that need loading
 library(tidyverse)
-library(gridExtra)
 
 # source figure settings
 # source("../StatisticsInR/Files/biostats_theme.R")
@@ -18,9 +17,13 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 datafile <- read_csv("./Files/destr_example.csv")
 ```
 
-### Before you start {.facta .toc-ignore}
+::: callout-note
+## Before you start
 
-You should be familiar with basic statistical theory, basics of R, and probability distributions. You should be able to explain the meaning of: a population, a sample, a parameter, and statistical inference. If you can't, head [here]() first.
+You should be familiar with basic statistical theory, basics of R, and probability distributions.
+You should be able to explain the meaning of: a population, a sample, a parameter, and statistical inference. If you can't, head [here]() first.
+
+:::
 
 </br>
 
@@ -57,34 +60,48 @@ Let's suppose that a population is following a normal distribution but its mean 
 
 [ The below is a nice example. I would not mention 'guessing' as really we are using a fixed mathematical process. I think it is simpler to keep one example all through and then give the code and equations for other distributions at the end e.g. use Binomial throughout then have Poisson and Normal at the end? ]{style="color:blue"}
 
-Let's Suppose we have data points from a normal distribution. The data points are shown in the figure 2 below (the R code that was used to generate the image is provided as well). To get an intuition of MLE,we suggest different sets of normal distribution parameters (mean and variance), we plot the curves corresponding to each set and we try to guess which of them would maximize the probability of observing the data. In other words, we want to find the values of mean and variance that result in the curve that best fits the data. </br>
+Let's suppose we have data points from a normal distribution. The data points are shown in the figure 2 below (the R code that was used to generate the image is provided as well). To get an intuition of MLE,we suggest different sets of normal distribution parameters (mean and variance), we plot the curves corresponding to each set and we try to guess which of them would maximize the probability of observing the data. In other words, we want to find the values of mean and variance that result in the curve that best fits the data. </br>
 
 ```{r echo=FALSE}
+#| label: fig-normal-dists
+#| echo: false
+#| fig-cap: >
+#|   Example of data points (blue dots) and fits from different normal
+#|   distribution curves generated from different sets of parameter values
+#|   (f ∼ N (10, 2.25), f1 ∼ N (10, 9), f2 ∼ N (10, 0.25) and f3∼ N (8, 2.25)). 
+#|   Created by Safa Chaabani*
 numb <- rep(0, 10)
 numb1 <- c(7.5, 8.5, 8.8, 9.3, 9.5, 9.6, 9.7, 9.8, 10.2, 11.8)
-data1 <- as.data.frame(cbind(numb1, numb))
+data1 <- data.frame(numb1, numb)
 
 p <- ggplot(data1, aes(x = numb1, y = numb)) +
   geom_point(shape = 21, colour = "black", fill = "skyblue1", size = 5)
 
 p + stat_function(fun = dnorm, args = list(mean = 10, sd = 2.25), aes(col = "purple"), size = 1) +
-  stat_function(fun = dnorm, args = list(mean = 10, sd = 9), aes(col = "chartreuse3"), size = 1) +
-  stat_function(fun = dnorm, args = list(mean = 10, sd = 0.25), aes(col = "darkorange2"), size = 1) +
-  stat_function(fun = dnorm, args = list(mean = 8, sd = 2.25), aes(colour = "blue"), size = 1) + ylab("Density") +
+  stat_function(fun = dnorm, args = list(mean = 10, sd = 9), 
+                aes(col = "chartreuse3"), size = 1) +
+  stat_function(fun = dnorm, args = list(mean = 10, sd = 0.25), 
+                aes(col = "darkorange2"), size = 1) +
+  stat_function(fun = dnorm, args = list(mean = 8, sd = 2.25), 
+                aes(colour = "blue"), size = 1) + 
+  ylab("Density") +
   scale_x_continuous(limits = c(5, 16)) +
   theme_bw() +
   scale_color_identity(
     name = "Probability density ",
     breaks = c("purple", "chartreuse3", "darkorange2", "blue"),
-    labels = c("f∼ N (10, 2.25)", "f1∼ N (10, 9)", "f2∼ N (10, 0.25)", "f3∼ N (8, 2.25)"), guide = "legend"
-  ) + labs(title = "Figure 2", caption = "Data by Safa Chaabani")
+    labels = c("f∼ N (10, 2.25)", "f1∼ N (10, 9)", "f2∼ N (10, 0.25)", 
+               "f3∼ N (8, 2.25)"), 
+    guide = "legend"
+  ) + 
+  labs(caption = "Data by Safa Chaabani")
 ```
 
-*Figure 2: Example of data points (blue dots) and fits from different normal distribution curves generated from different sets of parameter values (f ∼ N (10, 2.25), f1 ∼ N (10, 9), f2 ∼ N (10, 0.25) and f3∼ N (8, 2.25)). Created by Safa Chaabani*
+
 
 </br>
 
-The distribution from which the data were generated is most probably f \~ N(10, 2.25), which is the purple curve in Figure 2.
+The distribution from which the data were generated is most probably f \~ N(10, 2.25), which is the purple curve in @fig-normal-dists.
 
 [ The normal distribution is a tricky one here as there are two parameters so makes it more complex. ]{style="color:blue"}
 
@@ -177,12 +194,15 @@ We will use a dataset of the number of visitors of a museum per day for 300 days
 
 Here we will use the modeling technique that we have learnt above using R.
 
-Let's first have a look at the distribution of visitors:
+Let's first have a look at the distribution of visitors @fig-museum
 
 ```{r echo=TRUE}
-library(ggplot2)
-
-data3 <- read.csv("./Files/visitors.csv", header = TRUE, sep = ";")
+#| label: fig-museum
+#| echo: false 
+#| fig-cap: >
+#|   Example of data showing the number of visitors of a museum per day for
+#|   about 300 days. Data by Safa Chaabani
+data3 <- read_csv2("./Files/visitors.csv")
 
 ggplot(data3) +
   geom_histogram(
@@ -198,12 +218,12 @@ ggplot(data3) +
     y = ..density..
   ), colour = "red") +
   labs(
-    title = "Figure 3", subtitle = "Number of visitors per day",
+    subtitle = "Number of visitors per day",
     caption = "Data by Safa Chaabani"
   )
 ```
 
-*Figure 3: Example of data showing the number of visitors of a museum per day for about 300 days. Data by Safa Chaabani*
+
 
 This looks like an exponential distribution. Since it is count data of the number of visitors, we can use Poisson distribution.
 

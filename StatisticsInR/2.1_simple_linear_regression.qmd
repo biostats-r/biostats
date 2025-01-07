@@ -15,30 +15,33 @@ source("../StatisticsInR/Files/biostats_theme.R")
 dive_data <- read_csv("../StatisticsInR/Files/dive_depths.csv")
 
 # set the data type for each column
-dive_data <- dive_data %>% mutate(
-  max_depth = as.integer(max_depth), Species =
-    as.factor(species), Group = as.factor(group)
+dive_data <- dive_data |> 
+  mutate(
+    max_depth = as.integer(max_depth), 
+    Species = as.factor(species), 
+    Group = as.factor(group)
 )
 
 # load data for spurious correlation figure
-Spurious <- read_csv("./Files/Spurious.csv")
+spurious <- read_csv("./Files/Spurious.csv")
 # convert pounds to kg
-Spurious <- Spurious %>% mutate(uranium_us = round(uranium_us / 2.205, 2))
+spurious <- spurious |> 
+  mutate(uranium_us = round(uranium_us / 2.205, 2))
 
 # create an example dataset for illustrative purposes
 set.seed(2020) # make sure it is the same each time you run code
-your_data <- as_tibble(data.frame(
+your_data <- tibble(
   response = 1:30,
   explanatory = rnorm(30, 1:30, 3)
-))
+)
 
 # create an example dataset for plotting
 set.seed(2020) # make sure it is the same each time you run code
-example_data <- as_tibble(data.frame(
+example_data <- tibble(
   x = round(rnorm(100, 1:100, 10), 2),
   y = seq(1, 50, length.out = 100),
   z = as.factor(1:100)
-))
+)
 ```
 
 
@@ -119,7 +122,7 @@ For more examples of wrong assumptions of causality [click here](https://www.tyl
 </br>
 
 ```{r make-uranium-plot, include=TRUE, echo=FALSE, results='hide'}
-uranium_plot <- ggplot(Spurious, aes(y = uranium_us, x = maths_phd)) +
+uranium_plot <- ggplot(spurious, aes(y = uranium_us, x = maths_phd)) +
   geom_point() +
   geom_smooth(method = "lm") +
   labs(
@@ -135,7 +138,12 @@ uranium_plot <- ggplot(Spurious, aes(y = uranium_us, x = maths_phd)) +
 #| label: fig-spurious
 #| include: true
 #| echo: false
-#| fig-cap: "Example of a spurious correlation (one that does not make sense causally). Scatterplot of number of maths PhDs awarded in a year against the amount of uranium stored in US power plants annually. Smooth line indicates a regression line for this data with the 95% confidence interval as the shaded area"
+#| fig-cap: >
+#|   Example of a spurious correlation (one that does not make sense causally).
+#|   Scatterplot of number of maths PhDs awarded in a year against the amount of
+#|   uranium stored in US power plants annually. 
+#|   Smooth line indicates a regression line for this data with the 
+#|   95% confidence interval as the shaded area
 
 uranium_plot
 ```
@@ -269,7 +277,8 @@ First, we want to import the data and have a closer look by making a plot.
 ```{r make-dive-data-fig, include=TRUE, echo=TRUE}
 dive_data
 
-dive_fig <- ggplot(dive_data, aes(x = body_size_kg, y = max_depth, color = group)) +
+dive_fig <- ggplot(dive_data, 
+                   aes(x = body_size_kg, y = max_depth, color = group)) +
   geom_point()
 ```
 
@@ -554,14 +563,16 @@ parameter_plot <- ggplot(your_data, aes(x = explanatory, y = response)) +
   ) +
   geom_segment(
     aes(
-      x = 13, xend = 13, y = coef(model_object)[1] + (coef(model_object)[2] * 12),
+      x = 13, xend = 13, 
+      y = coef(model_object)[1] + (coef(model_object)[2] * 12),
       yend = coef(model_object)[1] + (coef(model_object)[2] * 13)
     ),
     colour = "darkblue"
   ) +
   geom_segment(
     aes(
-      x = 12, xend = 13, y = coef(model_object)[1] + (coef(model_object)[2] * 12),
+      x = 12, xend = 13, 
+      y = coef(model_object)[1] + (coef(model_object)[2] * 12),
       yend = coef(model_object)[1] + (coef(model_object)[2] * 12)
     ),
     colour = "darkblue"
@@ -586,7 +597,10 @@ parameter_plot <- ggplot(your_data, aes(x = explanatory, y = response)) +
 #| label: fig-parameter-plot
 #| include: true
 #| echo: false
-#| fig-cap: "Illustration of components of a linear regression. Intercept is in orange, slope is in blue, and the residuals (explained later) are in red"
+#| fig-cap: >
+#|   Illustration of components of a linear regression. 
+#|   Intercept is in orange, slope is in blue, 
+#|   and the residuals (explained later) are in red
 
 parameter_plot
 ``` 
@@ -799,7 +813,7 @@ In this case our model estimates a negative slope.
 This means that for every increase of 1 kg in body size of marine mammals the maximum dive depth decreases by 
 0.005 m. 
 In other words, there is a negative relationship between body weight 
-and dive depth and as $X$ increases $Y$ decreases (@fig-fig-6).
+and dive depth and as $X$ increases $Y$ decreases (@fig-dive).
 
 </br>
 
@@ -1014,9 +1028,11 @@ c(upper_ci_intercept, lower_ci_intercept)
 # SLOPE
 
 # Upper confidence interval
-upper_ci_slope <- summary(model_object)$coefficients[2, 1] + (1.96 * summary(model_object)$coefficients[2, 2])
+upper_ci_slope <- summary(model_object)$coefficients[2, 1] + 
+                  (1.96 * summary(model_object)$coefficients[2, 2])
 # Lower confidence interval
-lower_ci_slope <- summary(model_object)$coefficients[2, 1] - (1.96 * summary(model_object)$coefficients[2, 2])
+lower_ci_slope <- summary(model_object)$coefficients[2, 1] - 
+                  (1.96 * summary(model_object)$coefficients[2, 2])
 
 # Print the interval
 c(upper_ci_slope, lower_ci_slope)
@@ -1113,7 +1129,9 @@ We have to make predictions in order to plot rather than because we
 are interested in them. 
 
 ```{r make-dive-predictions2, include = TRUE, echo = TRUE}
-depth_predictions <- as_tibble(predict(dive_model, type = "response", interval = "confidence"))
+depth_predictions <- as_tibble(
+  predict(dive_model, type = "response", interval = "confidence")
+)
 ```
 
 </br>
@@ -1123,12 +1141,14 @@ we can then plot these using `geom_line()` and `geom_ribbon()`
 for the confidence interval as in the code below.  
 
 ```{r make-dive-predictions-plot, include = TRUE, echo = TRUE}
-depth_predictions <- depth_predictions %>%
+depth_predictions <- depth_predictions |>
   mutate(x = dive_data$body_size_kg)
 
 fig_7 <- ggplot() +
-  geom_ribbon(data = depth_predictions, aes(x = x, ymin = lwr, ymax = upr), fill = "grey50") +
-  geom_point(data = dive_data, aes(x = body_size_kg, y = max_depth), colour = "grey70") +
+  geom_ribbon(data = depth_predictions, aes(x = x, ymin = lwr, ymax = upr), 
+    fill = "grey50") +
+  geom_point(data = dive_data, aes(x = body_size_kg, y = max_depth), 
+    colour = "grey70") +
   geom_line(data = depth_predictions, aes(y = fit, x = x)) +
   labs(
     y = "Maximum Dive Depth (m)",
@@ -1137,12 +1157,14 @@ fig_7 <- ggplot() +
 ```
 
 ```{r fig-dive-predictions-plot, include = TRUE, echo = FALSE, fig.cap="Scatter plot of dive depths against body size. Line is the regression line from a linear model. Shaded area is 95% confidence interval"}
-depth_predictions <- depth_predictions %>%
+depth_predictions <- depth_predictions |>
   mutate(x = dive_data$body_size_kg)
 
 ggplot() +
-  geom_ribbon(data = depth_predictions, aes(x = x, ymin = lwr, ymax = upr), fill = "grey50") +
-  geom_point(data = dive_data, aes(x = body_size_kg, y = max_depth), colour = "grey70") +
+  geom_ribbon(data = depth_predictions, aes(x = x, ymin = lwr, ymax = upr),
+    fill = "grey50") +
+  geom_point(data = dive_data, aes(x = body_size_kg, y = max_depth),
+    colour = "grey70") +
   geom_line(data = depth_predictions, aes(y = fit, x = x)) +
   labs(
     y = "Maximum Dive Depth (m)",
@@ -1450,7 +1472,7 @@ plot(dive_model, which = 3)
 The assumption we are checking with this plot is: 
 **Do the residuals have equal variance across fitted values?**
 
-@fig-fig-14 shows a very similar picture to @fig-fig-12. 
+@fig-dive-scale shows a very similar picture to @fig-dive-residual.
 While there is a slight increase in variance as the amount of data increases, 
 the amount of change is < 0.5 and there is not much structure in the points. 
 So, this looks like things are ok.
@@ -1489,7 +1511,7 @@ our dataset and we have no reason to believe this data is a typo.
 would not remove from the data.**
 
 ```{r cuvier, echo = TRUE}
-dive_data %>% slice(10)
+dive_data |> slice(10)
 ```
 
 </br>
@@ -1618,7 +1640,10 @@ variance assumption was not met well AND why the estimated relationship
 was so weak. 
 
 ```{r make-final-dive-fig, echo = TRUE}
-final_dive_fig <- ggplot(dive_data, aes(x = body_size_kg, y = max_depth, color = group)) +
+final_dive_fig <- ggplot(
+  dive_data,
+  aes(x = body_size_kg, y = max_depth, color = group)
+) +
   geom_point() +
   facet_wrap(facets = vars(group)) +
   geom_smooth(method = "lm")
