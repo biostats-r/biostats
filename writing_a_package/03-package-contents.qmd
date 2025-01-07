@@ -65,7 +65,6 @@ For example, if you wanted to test if function `my_import()` could correctly imp
 test_that("import works", {
   expect_equal(nrow(my_import(test_path("testdata.csv"))), 10)
 })
-
 ```
 
 :::
@@ -81,7 +80,7 @@ For example, if you were writing a package to import, process, and plot logger d
 Functions are made with the keyword function, can have one or more arguments separated by commas, and needs assigning to a name.
 
 ```{r function}
-my_function <- function(arg1 = 1, arg2){
+my_function <- function(arg1 = 1, arg2) {
   arg1 * arg2
 }
 
@@ -101,9 +100,9 @@ This is better behaved than the base R equivalent `on.exit()`.
 Even if the function throws an error, the state of `options` will be reverted to its original state.
 
 ```{r on-exit}
-my_function <- function(x){
+my_function <- function(x) {
   op <- options(digits = 1) # set options
-  withr::defer(options(op)) #next line
+  withr::defer(options(op)) # next line
   print(x)
 }
 ```
@@ -116,7 +115,7 @@ Use code to validate that the data are correct, or else throw an error.
 `if` statements and `stop()` are useful here.
 
 ```{r eval = TRUE, error = TRUE}
-my_function <- function(arg1 = 1, arg2){
+my_function <- function(arg1 = 1, arg2) {
   if (!is.numeric(arg1) || !is.numeric(arg2)) {
     stop("Arguments arg1 and arg2 must be numeric")
   }
@@ -137,17 +136,17 @@ You can find out the class of an object with `class()`
 The class of an object can be set with `class()`.
 
 ```{r class}
-my_function <- function(){
+my_function <- function() {
   result <- complex_logic()
   class(result) <- "my_class"
   result
-  }
+}
 ```
 
 If the object already has a class and you want to keep it, you need something like
 
 ```{r class2}
-  class(result) <- c("my_class", class(result))
+class(result) <- c("my_class", class(result))
 ```
 
 To make a `print()` or `plot()` method for `my_class`, we simply make a function called `print.my_class` or `plot.my_class`.
@@ -170,10 +169,10 @@ The first is to pass unknown arguments to a second function (e.g., `plot.cca()`)
 If we make a `plot.my_class()` function we can use the ellipses so we don't need to specify all the possible arguments in plot.
 
 ```{r ellipses1}
-plot.my_class <- function(obj, ...){
-  #logic to prepare data for plotting
+plot.my_class <- function(obj, ...) {
+  # logic to prepare data for plotting
   x <- obj$x
-  y <-obj$y
+  y <- obj$y
   plot(x, y, ...)
 }
 ```
@@ -184,7 +183,7 @@ The second way to use ellipses is when there are a variable number of arguments.
 We can capture the `...` using `list()`, and then process it further.
 
 ```{r dot-list, eval = TRUE}
-dot_to_list <- function(...){
+dot_to_list <- function(...) {
   list(...)
 }
 
@@ -198,7 +197,7 @@ Tidyverse packages such as `dplyr` and `ggplot2` which use Non-Standard Evaluati
 We cannot just do something like this as we get an error
 
 ```{r tidyselect, error = TRUE, eval = TRUE}
-my_select <- function(data, col){
+my_select <- function(data, col) {
   select(data, col)
 }
 
@@ -208,30 +207,30 @@ my_select(penguins, col = species)
 One solution is to use the curly-curly notation
 
 ```{r tidyselect-working, error = TRUE, eval = TRUE}
-#select
-my_select2 <- function(data, col){
-  select(data, {{col}})
+# select
+my_select2 <- function(data, col) {
+  select(data, {{ col }})
 }
 
 my_select2(penguins, col = species)
 
 # filter
-my_filter <- function(data, col, `%test%`, value){
-  filter(data, {{col}} %test% value)
+my_filter <- function(data, col, `%test%`, value) {
+  filter(data, {{ col }} %test% value)
 }
 
 my_filter(penguins, col = species, `%test%` = `==`, value = "Adelie")
 
-#mutate Note the := operator.
-my_mutate <- function(data, col1, col2, sum_col){
-  mutate(data, {{sum_col}} := {{col1}} + {{col2}})
+# mutate Note the := operator.
+my_mutate <- function(data, col1, col2, sum_col) {
+  mutate(data, {{ sum_col }} := {{ col1 }} + {{ col2 }})
 }
 
 my_mutate(penguins, bill_length_mm, bill_depth_mm, sum_col = bill)
 
-#ggplot
-my_plot <- function(data, x, y){
-  ggplot(data, aes(x = {{x}}, y = {{y}})) + 
+# ggplot
+my_plot <- function(data, x, y) {
+  ggplot(data, aes(x = {{ x }}, y = {{ y }})) +
     geom_point()
 }
 
@@ -241,7 +240,7 @@ my_plot(penguins, x = bill_length_mm, y = body_mass_g)
 Another is to have the arguments as strings and use the `.data` pronoun from `rlang` (don't forget to import `rlang` (see @sec-importing-exporting-functions).
 
 ```{r .data, eval = TRUE}
-my_select3 <- function(data, col){
+my_select3 <- function(data, col) {
   select(data, .data[[col]])
 }
 
@@ -251,12 +250,11 @@ my_select3(penguins, col = "species")
 NSE can also be a problem for functions that don't take column names as arguments.
 
 ```{r NSE}
-process_penguin_type_data <- function(data){
-  data %>% 
-    group_by(species) %>% 
+process_penguin_type_data <- function(data) {
+  data |>
+    group_by(species) |>
     summarise(bill = mean(bill_length_mm))
-} 
-
+}
 ```
 
 The this function should work, but will generate a note in the checking stage.
@@ -273,17 +271,17 @@ as the check does not recognise `species` or `bill_length_mm`.
 To fix this, either declare these variables as global with this line added to the file (outside the function).
 
 ```{r globalvariables}
-utils::globalVariables(c('bill_length_mm', 'species'))
+utils::globalVariables(c("bill_length_mm", "species"))
 ```
 
 Or, perhaps better, use the `.data` pronoun.
 
 ```{r NSE2}
-process_penguin_type_data <- function(data){
-  data %>% 
-    group_by(.data$species) %>% 
+process_penguin_type_data <- function(data) {
+  data |>
+    group_by(.data$species) |>
     summarise(bill = mean(.data$bill_length_mm))
-} 
+}
 ```
 
 ## Documentation with Roxygen2 {#sec-documentation-with-roxygen2}
@@ -325,7 +323,7 @@ If you want to use a function from any other package (except `base`) you need to
 
 ```{r use-package}
 use_package("dplyr")
-#use_dev_package("packageFromGithub")
+# use_dev_package("packageFromGithub")
 ```
 
 You can now use a function from `dplyr` with `dplyr::mutate`.
@@ -337,7 +335,7 @@ We could use
 
 to import all functions in the package, or
 
-    #' @importFrom dplyr %>%
+    #' @importFrom dplyr mutate
 
 if we want to just import specific functions.
 This is safer as it minimises the risk of conflicts.
@@ -358,7 +356,7 @@ Other functions that are not exported are internal to the package, they can be a
 Convert the roxygen comments to .Rd files with
 
 ```{r document}
-devtools::document() 
+devtools::document()
 ```
 
 View the compiled help files by running

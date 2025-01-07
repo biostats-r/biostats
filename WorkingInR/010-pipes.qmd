@@ -34,7 +34,7 @@ The R code for a pipe is `|>`.
 Pipes pass the results from one function directly into the next function.
 
 ```{r pipes}
-penguins |> 
+penguins |>
   group_by(species) |>
   summarise(mean = mean(bill_length_mm, na.rm = TRUE))
 ```
@@ -48,11 +48,11 @@ You never need to use pipes, but they can make code more readable.
 Here is a recipe for mashed potato using pipes.
 
 ```{r potatoes, eval = FALSE}
-buy("potatoes", kg = "1") |> 
-  peel() |> 
-  boil(minutes = "15") |> 
-  drain() |> 
-  mash(add = list("salt", "milk", "butter")) |> 
+buy("potatoes", kg = "1") |>
+  peel() |>
+  boil(minutes = "15") |>
+  drain() |>
+  mash(add = list("salt", "milk", "butter")) |>
   serve(decorate = "parsley")
 ```
 
@@ -73,7 +73,7 @@ and be rewritten as
 
 ```{r, eval = FALSE}
 f |>
- read_csv()
+  read_csv()
 ```
 
 If you want to put the object passed through the pipe into the second argument, you need to name the first, so that it is not available.
@@ -93,7 +93,6 @@ penguins |>
 Or we can use the placeholder `_`
 
 ```{r placeholder-argument, eval = FALSE}
-
 # named first argument, penguins pipes into second argument
 penguins |>
   lm(bill_length ~ species, data = _) # R 4.2 and newer only
@@ -108,17 +107,20 @@ You probably won't have to do this very often.
 
 # Using a anonymous function
 rnorm(10) |>
-  (function(x){x - mean(x)})() # Result from rnorm is passed to the anonymous function as x 
+  (function(x) {
+    x - mean(x)
+  })() # Result from rnorm is passed to the anonymous function as x
 
 # Using the \ shortcut for function
 rnorm(10) |>
-  (\(x){x - mean(x)})()
+  (\(x){
+    x - mean(x)
+  })()
 
 # using pipebind
 library(pipebind)
 rnorm(10) |>
   bind(x, x - mean(x))
-
 ```
 
 ::: callout-tip

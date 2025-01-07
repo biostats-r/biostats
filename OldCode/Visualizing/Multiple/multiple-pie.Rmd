@@ -5,19 +5,21 @@ output:
 --- 
 
 ```{r setup&variables, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 
 # title: Creating a multiple pie/donut chart
 # author: jonathan
-# revised: 5/4/2020 
+# revised: 5/4/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Multiple/multiple-pie.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Multiple/multiple-pie.Rmd")
 library(ggplot2)
 type <- rep(c("O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-"), 2)
-country <- c(rep("Norway", 8), rep("UK",8))
-percentage <- c(33.2,	41.6,	6.8,	3.4,	5.8,	7.4,	1.2,	0.6,
-                37.0,	31.0,	8.0,	3.0,	11.0,	7.0,	2.0,	1.0)
+country <- c(rep("Norway", 8), rep("UK", 8))
+percentage <- c(
+  33.2, 41.6, 6.8, 3.4, 5.8, 7.4, 1.2, 0.6,
+  37.0, 31.0, 8.0, 3.0, 11.0, 7.0, 2.0, 1.0
+)
 ```
 We have seen previously how to make a [pie chart](https://biostats.w.uib.no/creating-a-pie-chart/){target="_blank"} and a [donut chart](https://biostats.w.uib.no/creating-a-donut-chart/){target="_blank"} based on a single data series. Making a multiple pie/donut chart which allows for comparison of 2+ data series is nothing complicated. If you know already how to make a multiple [stacked bar plot](https://biostats.w.uib.no/stacking-data-series-in-bars/){target="_blank"}, then you know almost everything about multiple pie/donut chart. The principle is as follows: start by making a multiple stacked bar plot, then transform it by placing it into a polar coordinate system.
 
@@ -65,8 +67,8 @@ ggplot(df, aes(x = country, y = percentage, fill = type)) +
 Note that the legend does not help determine which country is represented by the pie. Is Norway inside or outside? We can solve the problem by adding `color=country` in `aes()` to highlight the elements based on the variable country. And with  `scale_color_manual(values=c("red", "blue"))` and `size=.8`, we change the thickness and colors of the frames around the elements:
 ```{r plot3}
 ggplot(df, aes(x = country, y = percentage, fill = type, color = country)) +
-  geom_col(size=.8) +
-  scale_color_manual(values=c("red", "blue")) +
+  geom_col(size = .8) +
+  scale_color_manual(values = c("red", "blue")) +
   scale_fill_viridis_d() +
   coord_polar("y")
 ```
@@ -76,7 +78,7 @@ If you prefer to have a multiple donut chart instead of a multiple pie chart, th
 ```{r plot4}
 ggplot(df, aes(x = country, y = percentage, fill = type)) +
   geom_col() +
-  scale_x_discrete(limits = c(" ", "Norway","UK")) +
+  scale_x_discrete(limits = c(" ", "Norway", "UK")) +
   scale_fill_viridis_d() +
   coord_polar("y")
 ```
@@ -86,7 +88,7 @@ Finally, we may use `theme_void()` to get rid of the useless elements of the the
 ```{r plot5}
 ggplot(df, aes(x = country, y = percentage, fill = type)) +
   geom_col() +
-  scale_x_discrete(limits = c(" ", "Norway","UK")) +
+  scale_x_discrete(limits = c(" ", "Norway", "UK")) +
   scale_fill_viridis_d() +
   coord_polar("y") +
   theme_void()

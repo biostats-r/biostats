@@ -5,11 +5,11 @@ output:
 --- 
 
 ```{r setup&variables, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 
 # title: Creating an donut chart
 # author: jonathan
-# revised: 17/3/2020 
+# revised: 17/3/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Simple/donut-chart.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Simple/donut-chart.Rmd")
@@ -22,7 +22,7 @@ Let's see that with the example previously used [here](){target="_blank"} for dr
 # variable 1
 type <- c("O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-")
 # variable 2
-proportion <- c(33.2,	41.6,	6.8,	3.4,	5.8,	7.4,	1.2,	0.6)
+proportion <- c(33.2, 41.6, 6.8, 3.4, 5.8, 7.4, 1.2, 0.6)
 # dataframe
 df <- data.frame(type, proportion)
 ```
@@ -41,7 +41,7 @@ In this example, we will decompose the procedure into four steps:
 
 We use `geom_col()` to draw the bar plot and we map the variable with `aes()`. Here, `x=` is set but not named by the mean of `""`, while `y =` is set to `proportion`. We use `fill=` to attribute a specific color to each blood type, and apply the color palette viridis to use a better set of colors than those provided automatically by `ggplot()`:
 ```{r plot}
-ggplot(df, aes(x="", y=proportion, fill=type))+
+ggplot(df, aes(x = "", y = proportion, fill = type)) +
   geom_col() +
   scale_fill_viridis_d()
 ```
@@ -52,8 +52,8 @@ ggplot(df, aes(x="", y=proportion, fill=type))+
 Now we need to add some space next to the stacked bar. First we set up both position and width for the bar. For example, we set the position of the bar to 2 on the X-axis by writing `aes(x=2)`. Then we set the bar width to 1 with `width=1`, meaning that the limits of the bar relative to the X-axis are 1.5 and 2.5. If we now restrict the display of the X-axis to the range 0.5-2.5 with `xlim(0.5,2.5)`, we end up with an empty space and the stacked bar both of a width of 1 next to each other:
 
 ```{r empty}
-ggplot(df, aes(x=2, y=proportion, fill=type))+
-  geom_col(width=1) +
+ggplot(df, aes(x = 2, y = proportion, fill = type)) +
+  geom_col(width = 1) +
   xlim(0.5, 2.5) +
   scale_fill_viridis_d()
 ```
@@ -66,11 +66,11 @@ Now we need to exchange the cartesian coordinate system in a polar coordinate sy
 
 
 ```{r polar}
-ggplot(df, aes(x=2, y=proportion, fill=type))+
-  geom_col(width=1) +
+ggplot(df, aes(x = 2, y = proportion, fill = type)) +
+  geom_col(width = 1) +
   xlim(0.5, 2.5) +
   scale_fill_viridis_d() +
-  coord_polar("y") 
+  coord_polar("y")
 ```
 As you see here, the empty space to the left of the bar becomes the empty space at the center of the pie chart, thus creating the donut chart.
 <br/><br/>
@@ -79,8 +79,8 @@ As you see here, the empty space to the left of the bar becomes the empty space 
 
 The circular axis around the chart has very little meaning; it may thus be taken away. One way to do it is to remove the whole *theme*, which means that the grey background disappears as well. To do so, we just add `theme_void`:
 ```{r theme}
-ggplot(df, aes(x=2, y=proportion, fill=type))+
-  geom_col(width=1) +
+ggplot(df, aes(x = 2, y = proportion, fill = type)) +
+  geom_col(width = 1) +
   xlim(0.5, 2.5) +
   scale_fill_viridis_d() +
   coord_polar("y") +

@@ -58,10 +58,9 @@ It is advisable name the function with a meaningful name and not to use my_funct
 #| label: multiplier
 #| eval: true
 #| echo: true
-my_multiplier <- function(arg1, arg2){
+my_multiplier <- function(arg1, arg2) {
   arg1 * arg2
 }
-
 ```
 
 To run the function, type the name of the function and set values for each argument inside brackets following the name of the function.
@@ -73,7 +72,6 @@ The function will then return the result.
 #| echo: true
 
 my_multiplier(arg1 = 3, arg2 = 4)
-
 ```
 
 
@@ -95,14 +93,13 @@ The output of the function can be stored as an object *my_model*.
 #| label: regression-function
 #| eval: false
 #| echo: true
-fit_model <- function(data, response, predictor){
-    mod <- lm(as.formula(paste(response, "~", predictor)), data = data)
-    mod
+fit_model <- function(data, response, predictor) {
+  mod <- lm(as.formula(paste(response, "~", predictor)), data = data)
+  mod
 }
 
 my_model <- fit_model(data = my_data, response = value, predictor = treatment)
 my_model
-
 ```
 
 
@@ -169,13 +166,19 @@ traits <- raw_traits |>
   # remove NAs
   filter(!is.na(Value)) |>
   # order factor and rename variable gradient
-  mutate(Gradient = case_match(Gradient,
-                               "C" ~ "Control",
-                               "B" ~ "Nutrients"),
-         Gradient = factor(Gradient, levels = c("Control", "Nutrients"))) |>
+  mutate(
+    Gradient = case_match(
+      Gradient,
+      "C" ~ "Control",
+      "B" ~ "Nutrients"
+    ),
+    Gradient = factor(Gradient, levels = c("Control", "Nutrients"))
+  ) |>
   # select one species and one trait
-  filter(Taxon == "alopecurus magellanicus",
-         Trait == "Leaf_Area_cm2")
+  filter(
+    Taxon == "alopecurus magellanicus",
+    Trait == "Leaf_Area_cm2"
+  )
 
 # run a linear model
 mod_area <- lm(Value ~ Gradient, data = traits)
@@ -186,9 +189,8 @@ check_model(mod_area)
 # make figure
 ggplot(traits, aes(x = Gradient, y = Value)) +
   geom_boxplot(fill = c("grey80", "darkgreen")) +
-  labs(x = "", y = expression(Leaf~area~cm^2)) +
+  labs(x = "", y = expression(Leaf ~ area ~ cm^2)) +
   theme_bw()
-
 ```
 
 
@@ -220,9 +222,11 @@ raw_traits <- read_delim(file = here("data/PFTC4_Svalbard_2018_Gradient_Traits.c
 traits <- clean_data(raw_traits)
 
 # run model
-my_model <- fit_model(data = traits, 
-                      response = "Value", 
-                      predictor = "Gradient")
+my_model <- fit_model(
+  data = traits,
+  response = "Value",
+  predictor = "Gradient"
+)
 # model summary
 summary(my_model)
 # check model assumptions
@@ -230,7 +234,6 @@ check_model(my_model)
 
 # plot treatments vs. plant height
 my_figure <- make_figure(traits)
-
 ```
 
 The functions that are called in the main script are "hidden" in a separate script.
@@ -243,34 +246,39 @@ The functions that are called in the main script are "hidden" in a separate scri
 ### My custom functions
 
 # clean data
-clean_data <- function(raw_traits){
+clean_data <- function(raw_traits) {
   traits <- raw_traits |>
-  # remove NAs
-  filter(!is.na(Value)) |>
-  # order factor and rename variable gradient
-  mutate(Gradient = case_match(Gradient,
-                               "C" ~ "Control",
-                               "B" ~ "Nutrients"),
-         Gradient = factor(Gradient, levels = c("Control", "Nutrients"))) |>
-  # select one species and one trait
-  filter(Taxon == "alopecurus magellanicus",
-         Trait == "Leaf_Area_cm2")
+    # remove NAs
+    filter(!is.na(Value)) |>
+    # order factor and rename variable gradient
+    mutate(
+      Gradient = case_match(
+        Gradient,
+        "C" ~ "Control",
+        "B" ~ "Nutrients"
+      ),
+      Gradient = factor(Gradient, levels = c("Control", "Nutrients"))
+    ) |>
+    # select one species and one trait
+    filter(
+      Taxon == "alopecurus magellanicus",
+      Trait == "Leaf_Area_cm2"
+    )
 }
 
 # run a linear regression
-fit_model <- function(data, response, predictor){
+fit_model <- function(data, response, predictor) {
   mod <- lm(as.formula(paste(response, "~", predictor)), data = data)
   mod
 }
 
 # make figure
-make_figure <- function(traits){
-ggplot(traits, aes(x = Gradient, y = Value)) +
-  geom_boxplot(fill = c("grey80", "darkgreen")) +
-  labs(x = "", y = expression(Leaf~area~cm^2)) +
-  theme_bw()
+make_figure <- function(traits) {
+  ggplot(traits, aes(x = Gradient, y = Value)) +
+    geom_boxplot(fill = c("grey80", "darkgreen")) +
+    labs(x = "", y = expression(Leaf ~ area ~ cm^2)) +
+    theme_bw()
 }
-
 ```
 
 

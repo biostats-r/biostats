@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: Repeated Measures ANOVA
 # author: jonathan
-# revised: 15/4/2020 
+# revised: 15/4/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/ANOVA/repeated.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/ANOVA/repeated.Rmd")
@@ -23,16 +23,16 @@ Unlike [one-way ANOVA](http://biostats.w.uib.no/one-way-anova/){target="_blank"}
 Letâs take an example where 5 rats are weighed 4 times with intervals of 4 weeks (week8 to 20). Here is the code for the dataframe:
 ```{r dataframe}
 # response variable
-rat.weight <- c(164,164,158,159,155,220,230,226,227,222,261,275,264,280,272,306,326,320,330,312)
+rat.weight <- c(164, 164, 158, 159, 155, 220, 230, 226, 227, 222, 261, 275, 264, 280, 272, 306, 326, 320, 330, 312)
 
-# predictor variable 
-time.point <- as.factor(c(rep("week08",5), rep("week12",5), rep("week16",5), rep("week20",5)))
+# predictor variable
+time.point <- as.factor(c(rep("week08", 5), rep("week12", 5), rep("week16", 5), rep("week20", 5)))
 
 # individual ID
-rat.ID <- as.factor(rep(c("rat1","rat2","rat3", "rat4", "rat5"),4))
+rat.ID <- as.factor(rep(c("rat1", "rat2", "rat3", "rat4", "rat5"), 4))
 
 # dataframe
-my.dataframe <- data.frame(rat.ID,time.point,rat.weight)
+my.dataframe <- data.frame(rat.ID, time.point, rat.weight)
 ```
 <br/><br/>
 
@@ -69,7 +69,7 @@ library(nlme)
 The following code fits the linear mixed effect model. The syntax is `lme(response ~ predictor, random=~1|subjects, data = my.dataframe)`, where `response` is the response variable, `predictor` is the predictor variable or factor (which categorizes the observations), `subjects` is the variable that defines the individuals, and `dataframe` the name of the dataframe that contains the data.
 We first need to fit the model with `lme()` and then we store it in the object `model`. We then compute and display the table for the analysis using `anova()`:
 ```{r lme}
-model <- lme(rat.weight ~ time.point, random=~1|rat.ID, data = my.dataframe)
+model <- lme(rat.weight ~ time.point, random = ~ 1 | rat.ID, data = my.dataframe)
 anova(model)
 ```
 

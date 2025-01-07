@@ -5,19 +5,19 @@ output:
 --- 
 
 ```{r setup&variables, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 
 # title: Overlaying a line plot and a bar plot
 # author: jonathan
-# revised: 28/3/2020 
+# revised: 28/3/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Visualizing/Multiple/line-bar-plot.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Visualizing/Multiple/line-bar-plot.Rmd")
 library(ggplot2)
 library(gridExtra)
 ID <- as.factor(1:12)
-series1 <- runif(12, min=25, max=50)
-series2 <- runif(12, min=4, max=15)
+series1 <- runif(12, min = 25, max = 50)
+series2 <- runif(12, min = 4, max = 15)
 ```
 
 A combination that is frequently seen is the overlay of a bar/column chart and a line chart. A typical example of this is the graph displaying temperatures and precipitations in your favorite newspapers or weather forecast website, as illustrated in the picture below.
@@ -43,36 +43,36 @@ str(df)
 The following codes draw a bar plot based on `series1` and a line plot based on `series2`:
 
 ```{r plots1, eval=FALSE}
-ggplot(df, aes(x = ID, y = series1)) +                            # bar plot
-  geom_col(size = 1, color = "darkblue", fill = "white") 
+ggplot(df, aes(x = ID, y = series1)) + # bar plot
+  geom_col(size = 1, color = "darkblue", fill = "white")
 
-ggplot(df, aes(x = ID, y = series2)) +                            # line plot
-  geom_line(size = 1.5, color="red", group = 1)
+ggplot(df, aes(x = ID, y = series2)) + # line plot
+  geom_line(size = 1.5, color = "red", group = 1)
 ```
 ```{r plots2, fig.width=10, fig.height=4, echo=FALSE}
 grid.arrange(
-  ggplot(df, aes(ID, series1)) +                            # bar plot
+  ggplot(df, aes(ID, series1)) + # bar plot
     geom_col(size = 1, color = "darkblue", fill = "white"),
-ggplot(df, aes(ID, series2)) +                            # line plot
-  geom_line(size = 1.5, color="red", group = 1),
-ncol=2
+  ggplot(df, aes(ID, series2)) + # line plot
+    geom_line(size = 1.5, color = "red", group = 1),
+  ncol = 2
 )
 ```
 <br/><br/>
 
 Now, we “just” have to merge these two plots into one figure. But we have to be careful when mapping the data for each plot. Both plots use `ID` for the X-axis; however, the line plot uses `series2` for its Y-axis, while the column plot uses `series`1. This means that we must create a mapping for each of the plot by using `aes()` twice, one for each `geom`:
 ```{r combined}
-ggplot(df) + 
+ggplot(df) +
   geom_col(aes(x = ID, y = series1), size = 1, color = "darkblue", fill = "white") +
-  geom_line(aes(x = ID, y = series2), size = 1.5, color="red", group = 1)
+  geom_line(aes(x = ID, y = series2), size = 1.5, color = "red", group = 1)
 ```
 <br/><br/>
 
 Alternatively, since `ID` is the predictor variable for both the line plot and the bar plot, we can place `aes(ID)` in `ggplot()`, but we still have to use `aes()` to map the response variable in each geometry:
 ```{r combined2, eval=FALSE}
-ggplot(df, aes(x = ID)) + 
+ggplot(df, aes(x = ID)) +
   geom_col(aes(y = series1), size = 1, color = "darkblue", fill = "white") +
-  geom_line(aes(y = series2), size = 1.5, color="red", group = 1)
+  geom_line(aes(y = series2), size = 1.5, color = "red", group = 1)
 ```
 The result (now shown here) is identical to the plot above.
 <br/><br/>
@@ -81,10 +81,10 @@ As you may see here, the two plot types appear correctly in the same graph, as e
 
 Here is the code to set up the secondary Y-axis that fits our example:
 ```{r secondary-axis}
-ggplot(df) + 
+ggplot(df) +
   geom_col(aes(x = ID, y = series1), size = 1, color = "darkblue", fill = "white") +
-  geom_line(aes(x = ID, y = 3*series2), size = 1.5, color="red", group = 1) + 
-  scale_y_continuous(sec.axis = sec_axis(~./3, name = "series2"))
+  geom_line(aes(x = ID, y = 3 * series2), size = 1.5, color = "red", group = 1) +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 3, name = "series2"))
 ```
 <br/><br/>
 

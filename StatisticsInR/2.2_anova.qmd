@@ -1,8 +1,20 @@
 # Anova
 
-# Before you start {.facta}
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+library(tidyverse)
+```
+
+
+
+::: callout-note
+## Before you start
 
 You should be familiar with basic statistical theory, basics of R, continuous and  categorical data, hypothesis testing, statistical modelling, and linear models.
+
+:::
 
 ## Introduction
 
@@ -10,7 +22,7 @@ Analysis of variance (ANOVA) is a statistical test used to look at differences i
 
 The development of ANOVA was historically associated with the development of experimental design, and especially factorial experiments (an experiment to study the effect of two or more factors (categorical predictors) simultaneously on a response variable). It was introduced by the statistician and evolutionary biologist Ronald Fisher. Let's have a look at one of Fisher's own examples:
 
-•	**Experimental design (Figure1)**: a field which had received a dressing of dung, was divided into 36 patches. Within these 36 patches, 12 varieties of potatoes were grown, each variety was grown in 3 patches scattered over the field. Each patch was sub-divided into three lines, one of which received an additional basal dressing only. The other two lines received additional dressings of sulphate and chloride of potash, respectively.
+•	**Experimental design (@fig-fisher)**: a field which had received a dressing of dung, was divided into 36 patches. Within these 36 patches, 12 varieties of potatoes were grown, each variety was grown in 3 patches scattered over the field. Each patch was sub-divided into three lines, one of which received an additional basal dressing only. The other two lines received additional dressings of sulphate and chloride of potash, respectively.
 
 •	**Research question:**   do these varieties have different yields (weight per plant)?  Do these treatments influence these yields?  And are the effects of the treatments different between these varieties of potatoes? 
 
@@ -18,9 +30,21 @@ The development of ANOVA was historically associated with the development of exp
 
 </br>
 
-<img src="./figures/figure1.png" width=80%>
+```{r}
+#| label: fig-fisher
+#| echo: false
+#| fig-cap: >
+#|   Schematic representation of Fisher’s experiment.
+#|   The different colors represent the 12 varieties; the 36 squares correspond
+#|   to the different patches; each patch includes 3 different lines which
+#|   correspond to the 3 treatments inside each patch (see 1st patch): extra
+#|   basal dressing in white (BD), sulfate in light green (SO₄²-) and chloride
+#|   of potash in light orange (KCl). Created by Safa. Chaabani
 
-*Figure 1: Schematic representation of Fisher’s experiment. The different colors represent the 12 varieties; the 36 squares correspond to the different patches; each patch includes 3 different lines which correspond to the 3 treatments inside each patch (see 1st patch): extra basal dressing in white (BD), sulfate in light green (SO₄²-) and chloride of potash in light orange (KCl). Created by Safa. Chaabani*
+knitr::include_graphics("./Figures/figure1.png")
+```
+
+
 
 ANOVA is used when you have a categorical independent/ predictor/ explanatory variable (with two or more levels; these levels are the treatment in Fisher’s experiment above) and a continuous dependent/response variable (this is yield in Fisher’s example). It is used to test for differences in the means of the response variable broken down by the levels (for example: groups/ sub-populations/ treatments…) of the predictor variable.
 
@@ -28,7 +52,7 @@ Categorical variables can be divided into two types (see Figure 2): Nominal (no 
 
 </br>
 
-<img src="./figures/figure2.png" width=80%>
+<img src="./Figures/figure2.png" width=80%>
 
 *Figure 2: Examples of categorical variables.Created by Safa.Chaabani.*
 
@@ -90,7 +114,7 @@ A Student’s t-test can only be used for two groups, therefore, if you have mor
 
 </br>
 
-<img src="./figures/figure3.png" width=80%>
+<img src="./Figures/figure3.png" width=80%>
 
 *Figure 3:Example of data that can be used for ANOVA. The response variable is the number of hours spent in waiting room, and the categorical predictor is the hospital (A, B or C). By Rebecca Barter (2017).*
 
@@ -129,15 +153,14 @@ To spell it out mathematically, we can write these entities as they are represen
 ```{r add-data, echo=FALSE, message=FALSE, warning=FALSE}
 library(kableExtra)
 
-table1<-read.csv("./Files/table1.csv",header=T,sep=";")
-colnames(table1)[1]<-"Source of variation"
-table1 %>%
-  kbl(align = "c") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "responsive"))%>%
-  row_spec(0, color = "black", background = "white") %>%
-
-  row_spec(1, background = "white")%>%
-row_spec(2, background = "lightgrey")%>%
+table1 <- read_csv2("./Files/table1.csv")
+colnames(table1)[1] <- "Source of variation"
+table1 |>
+  kbl(align = "c") |>
+  kable_styling(bootstrap_options = c("hover", "condensed", "responsive")) |>
+  row_spec(0, color = "black", background = "white") |>
+  row_spec(1, background = "white") |>
+  row_spec(2, background = "lightgrey") |>
   row_spec(3, background = "white")
 ```
 
@@ -150,69 +173,78 @@ Where df is the degrees of freedom, SS is the sum of squares, MS is the mean sum
 Let’s consider an experiment designed to test plant yields from a control and two different fertiliser treatments. The plants from each group were collected, and the dry weight of the plants are measured (grams).  Figure 4 illustrates two possible outcomes of this experiment and gives an example of the between- and within- group variability. 
 
 ```{r echo=T, fig.show='hide',message=FALSE, warning=FALSE, include=T}
-
-
 ## This script is to reproduce Figure 4 in R
 
-PlantGrowth<-read.csv("./Files/plgrowth.csv",header=T,sep=",")
+plant_growth <- read_csv("./Files/plgrowth.csv")
 
-PlantGrowth2<-read.csv("./Files/plgrowth2.csv",header=T,sep=";")
+plant_growth2 <- read_csv2("./Files/plgrowth2.csv")
 
 library(ggplot2)
 library(grid)
-library(pBrackets) 
+library(pBrackets)
 library(gridExtra)
 
 
 annotation <- data.frame(
-  x = c(2.6,2.8),
-  y = c(4.5,5.5),
+  x = c(2.6, 2.8),
+  y = c(4.5, 5.5),
   label = c("Within", "Between")
 )
 annotation1 <- data.frame(
-  x = c(1.6,2.6),
-  y = c(5.25,5.1),
+  x = c(1.6, 2.6),
+  y = c(5.25, 5.1),
   label = c("Within", "Between")
 )
 
-plot1<-ggplot(PlantGrowth, aes(x = group, y = weight))+
-   geom_point(fill="blue")+ 
-  geom_segment(aes(x=0.9,y=5.032, xend=1.1,yend=5.032), color="red", size=2)+
-   geom_segment(aes(x=1.9,y=4.661, xend=2.1,yend=4.661), color="red", size=2)+
-  geom_segment(aes(x=2.9,y=5.526, xend=3.1,yend=5.526), color="red", size=2)+
-  geom_text(data=annotation1, aes( x=x, y=y, label=label), color="black",size=3 , fontface="bold" )+
-  theme_bw()+labs( title="A",y="Weight (g)", x = "Group")
+plot1 <- ggplot(plant_growth, aes(x = group, y = weight)) +
+  geom_point(fill = "blue") +
+  geom_segment(aes(x = 0.9, y = 5.032, xend = 1.1, yend = 5.032), 
+               color = "red", size = 2) +
+  geom_segment(aes(x = 1.9, y = 4.661, xend = 2.1, yend = 4.661), 
+               color = "red", size = 2) +
+  geom_segment(aes(x = 2.9, y = 5.526, xend = 3.1, yend = 5.526), 
+               color = "red", size = 2) +
+  geom_text(data = annotation1, aes(x = x, y = y, label = label), 
+            color = "black", size = 3, fontface = "bold") +
+  theme_bw() +
+  labs(title = "A", y = "Weight (g)", x = "Group")
 
 
-plot2<-ggplot(PlantGrowth2, aes(x = group, y = weight)) +
-geom_point()+ geom_segment(aes(x=0.9,y=5.32, xend=1.1,yend=5.32), color="red", size=2)+
- geom_segment(aes(x=1.9,y=4.56, xend=2.1,yend=4.56), color="red", size=2)+
-  geom_segment(aes(x=2.9,y=6.43, xend=3.1,yend=6.43), color="red", size=2)+
-  geom_text(data=annotation, aes( x=x, y=y, label=label),                 
-            color="black", 
-            size=3 , fontface="bold" )+
-  theme_bw()+labs(title = "B",y="", x = "Group")
+plot2 <- ggplot(plant_growth2, aes(x = group, y = weight)) +
+  geom_point() +
+  geom_segment(aes(x = 0.9, y = 5.32, xend = 1.1, yend = 5.32), 
+               color = "red", size = 2) +
+  geom_segment(aes(x = 1.9, y = 4.56, xend = 2.1, yend = 4.56), 
+               color = "red", size = 2) +
+  geom_segment(aes(x = 2.9, y = 6.43, xend = 3.1, yend = 6.43), 
+               color = "red", size = 2) +
+  geom_text(
+    data = annotation, aes(x = x, y = y, label = label),
+    color = "black",
+    size = 3, fontface = "bold"
+  ) +
+  theme_bw() +
+  labs(title = "B", y = "", x = "Group")
 
 
-grid.arrange(plot1, plot2,ncol=2)
+grid.arrange(plot1, plot2, ncol = 2)
 
-grid.brackets(93, 55, 93, 224, lwd=2, col="darkolivegreen3")
-grid.brackets(229, 108, 229, 185, lwd=2, col="mediumorchid4")
+grid.brackets(93, 55, 93, 224, lwd = 2, col = "darkolivegreen3")
+grid.brackets(229, 108, 229, 185, lwd = 2, col = "mediumorchid4")
 
-grid.brackets(498, 82, 498, 233, lwd=2, col="mediumorchid4")
-grid.brackets(424, 197, 424, 274, lwd=2, col="darkolivegreen3")
-
+grid.brackets(498, 82, 498, 233, lwd = 2, col = "mediumorchid4")
+grid.brackets(424, 197, 424, 274, lwd = 2, col = "darkolivegreen3")
 ```
 
 </br>
 
-<img src="./figures/fig44.png" width=80%>
+<img src="./Figures/fig44.png" width=80%>
 
 *Figure 4: Plant weights (g) (y-axis) from the fertilizer experiment. The red lines correspond to the groups means, the dots correspond to the individual observations inside each group: (x-axis) control, treatment 1 and treatment 2. In Figure A, there is low between group variation compared to the residual (unexplained) variation (variability between < variability within); In Figure B, there is high variation between-groups compared to the residual (unexplained) variation (variability between> variability within). Data by Safa Chaabani.*
 
 </br>
 
-<img src="./figures/fig6.png" width=90%>
+<img src="./Figures/fig6.png" width=90%>
 
 *Figure 5:Example of calculation of SSt, SSb and SSe: the dashed blue line is the average of all observations or grand mean $\bar{\bar{Y}}$. The red lines are the groups means ($\bar{Y}$ctr; $\bar{Y}$trt1 and $\bar{Y}$trt2). The three groups have 10 observations each $(n_i=10)$, and the total number of observations is then n=30. In this example: SSt= $\sum (observation- grand mean)^2$. SSb =$\sum (n_i )(group mean- grand mean)^2$. SSe= $\sum (observation- group mean)^2$. Created by Safa Chaabani.*
 

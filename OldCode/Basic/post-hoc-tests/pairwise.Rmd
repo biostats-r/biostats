@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: Pairwise Comparisons with corrections
 # author: jonathan
-# revised: 1/2/2020 
+# revised: 1/2/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/post-hoc tests/pairwise.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/post-hoc tests/pairwise.Rmd")
@@ -26,13 +26,13 @@ Let's reuse the example introduced [here (one-way ANOVA)](https://biostats.w.uib
 To create the corresponding dataframe, use the following code:
 ```{r dataframe}
 # response variable
-size <- c(25,22,28,24,26,24,22,21,23,25,26,30,25,24,21,27,28,23,25,24,20,22,24,23,22,24,20,19,21,22)
+size <- c(25, 22, 28, 24, 26, 24, 22, 21, 23, 25, 26, 30, 25, 24, 21, 27, 28, 23, 25, 24, 20, 22, 24, 23, 22, 24, 20, 19, 21, 22)
 
 # predictor variable
-location <- as.factor(c(rep("ForestA",10), rep("ForestB",10), rep("ForestC",10)))
+location <- as.factor(c(rep("ForestA", 10), rep("ForestB", 10), rep("ForestC", 10)))
 
 # dataframe
-my.dataframe <- data.frame(size,location)
+my.dataframe <- data.frame(size, location)
 ```
 <br/><br/>
 
@@ -43,9 +43,9 @@ This syntax is `pairwise.t.test(response, predictor, p.adjust.method= )` where `
 Now let’s look at 3 variants of *post hoc* pairwise t-tests, the first one *without* correction, the second one with *bonferroni* correction and the last one with *hochberg* correction:
 
 ```{r pairwise}
-pairwise.t.test(size, location, p.adjust.method="none")
-pairwise.t.test(size, location, p.adjust.method="bonferroni")
-pairwise.t.test(size, location, p.adjust.method="hochberg")
+pairwise.t.test(size, location, p.adjust.method = "none")
+pairwise.t.test(size, location, p.adjust.method = "bonferroni")
+pairwise.t.test(size, location, p.adjust.method = "hochberg")
 ```
 
 The three outputs are presented above. Each one displays the same type of table with pairwise comparisons, the last line shows the adjustment method. The results are very different in these 3 cases. Using no correction or hochberg correction, 2 p-values drop under 0.05, whereas only one p-value is less than 0.05 when using bonferroni correction. This difference may be decisive for interpreting the outcome of your experiment and may change a lot the conclusions of your research. Therefore, it is important that you weigh the pros and cons when deciding which adjustment method to apply to your dataset.
@@ -55,9 +55,9 @@ The three outputs are presented above. Each one displays the same type of table 
 When you need to perform pairwise comparisons as a follow up to [Kruskal-Wallis test](https://biostats.w.uib.no/comparing-two-means-kruskal-wallis-test/){target="_blank"} with more than 2 groups and for which the assumption of normality of distribution is challenged, you may use the function `pairwise.wilcox.test()` which allows for performing **multiple Wilcoxon tests** on **all possible pairwise comparisons**. `pairwise.wilcox.test()` works in a similar way to `pairwise.t.test()` with the same arguments and syntax:
 
 ```{r pairwise2, warning=FALSE}
-pairwise.wilcox.test(size, location, p.adjust.method="none")
-pairwise.wilcox.test(size, location, p.adjust.method="bonferroni")
-pairwise.wilcox.test(size, location, p.adjust.method="hochberg")
+pairwise.wilcox.test(size, location, p.adjust.method = "none")
+pairwise.wilcox.test(size, location, p.adjust.method = "bonferroni")
+pairwise.wilcox.test(size, location, p.adjust.method = "hochberg")
 ```
 Again, the p-values largely vary depending on the method used for correction (if any). 
 
