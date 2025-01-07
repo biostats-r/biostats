@@ -29,13 +29,12 @@ The `penguins` dataset from `palmerpenguins` is used as an example.
 ```{r is.na}
 x <- c(0, 7, NA)
 is.na(x)
-
 ```
 
 We could use this, for example, to find the number of missing values in a column of the `penguins` data.
 
 ```{r is.na.sum}
-penguins |> 
+penguins |>
   summarise(n_missing = sum(is.na(bill_length_mm)))
 ```
 
@@ -46,7 +45,7 @@ When you import a text file (e.g., a csv file) any blank cells, or cells with "N
 If you have coded missing values as something else, you can use the `na` argument to `read_delim()`
 
 ```{r, eval = FALSE}
-# set blank cells, "NA" or "missing" to NA  
+# set blank cells, "NA" or "missing" to NA
 read_delim(file = "my_file.csv", na = c("", "NA", "missing"))
 ```
 
@@ -58,7 +57,7 @@ We can remove rows with `NA` in particular columns from a data frame using `drop
 For example, to remove rows in the `penguins` data set with an `NA` in the `bill_length_mm` or `bill_depth_mm` columns, we could use
 
 ```{r drop-na}
-penguins |> 
+penguins |>
   drop_na(bill_length_mm, bill_depth_mm)
 ```
 
@@ -66,7 +65,7 @@ Alternatively, we can use `filter()` and `is.na()`.
 This is most useful when removing `NA` is one of several arguments to `filter`.
 
 ```{r filter-na}
-penguins |> 
+penguins |>
   filter(species == "Gentoo", !is.na(bill_length_mm))
 ```
 
@@ -87,11 +86,12 @@ You can use `tidyr::replace_na()` to do this.
 Here, the code replaces missing values for bill length with the mean value for bill length.
 
 ```{r replace-na}
-penguins |> 
+penguins |>
   mutate(
     bill_length_mm = replace_na(
-      data = bill_length_mm, 
-      replace = mean(bill_length_mm, na.rm = TRUE))
+      data = bill_length_mm,
+      replace = mean(bill_length_mm, na.rm = TRUE)
+    )
   )
 ```
 
@@ -100,8 +100,8 @@ penguins |>
 The code in the previous section won't work if we try to replace an `NA` in a factor. 
 
 ```{r bad-factor, error = TRUE, message = TRUE}
-penguins |> 
-  mutate(sex = replace_na(sex, "missing")) |> 
+penguins |>
+  mutate(sex = replace_na(sex, "missing")) |>
   distinct(sex)
 ```
 
@@ -110,8 +110,8 @@ As the warning indicates, the problem is that "missing" is not one of the levels
 Instead we need to use the function `forcats::fct_explicit_na()` (the `forcats` package is part of `tidyverse` for manipulating factors).
 
 ```{r good-factor}
-penguins |> 
-  mutate(sex = fct_explicit_na(sex, na_level = "missing")) |> 
+penguins |>
+  mutate(sex = fct_explicit_na(sex, na_level = "missing")) |>
   count(sex)
 ```
 
@@ -153,7 +153,7 @@ Occasionally we do want to keep the rows with `NA`.
 Perhaps we have a column of comments, many of which are `NA`, and we only want to remove rows where the non-`NA` values meet some criterion.
 
 ```{r}
-penguins |> 
+penguins |>
   filter(sex == "Female" | is.na(sex))
 ```
 
@@ -228,17 +228,19 @@ By default, if any values are `NA` in either vector, the result is also `NA`.
 If you want to find the correlation between two vectors without the `NA`, then use
 
 ```{r cor}
-cor(x = penguins$bill_length_mm,
-    y = penguins$bill_depth_mm, 
-    use = "pairwise.complete.obs")
+cor(
+  x = penguins$bill_length_mm,
+  y = penguins$bill_depth_mm,
+  use = "pairwise.complete.obs"
+)
 ```
 
 If you have a matrix (or data frame), and want to calculate a correlation matrix, then `use = "complete.obs"` will calculate this using just the rows that have no `NA`, and `use = "pairwise.complete.obs"` will calculate the correlation between each pair of variables using all complete pairs of observations on those variables. 
 
 ```{r cor-matrix}
-penguins |> 
-  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |> 
-  cor(use = "pairwise.complete.obs") 
+penguins |>
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |>
+  cor(use = "pairwise.complete.obs")
 ```
 
 ### Missing values and regession models
@@ -298,22 +300,21 @@ By default, missing values in the `x` or `y` aesthetics are dropped by `ggplot()
 This behaviour can be controlled with the `na.value` argument to the relevant `scale_*_*()` function.
 
 ```{r ggplot2, warning = TRUE, fig.height=3, fig.width=3}
-#x or y NA
+# x or y NA
 p <- tibble(
-  x = 1:5, 
+  x = 1:5,
   y = c(1, 2, NA, 4, 5),
   colour = c(1, 2, 3, 4, NA)
-) |> 
+) |>
   ggplot(aes(x = x, y = y, colour = colour)) +
   geom_point(size = 3)
 
 p
 
 # change defaults
-p + 
+p +
   scale_y_continuous(na.value = 0) +
   scale_colour_continuous(na.value = "hotpink")
-
 ```
 
 

@@ -58,13 +58,13 @@ High-resolution (1:10 million) data are in the `rnaturalearthhires` package, ins
 #| message: false
 library(rnaturalearth)
 
-world <- ne_countries(scale = 110) 
+world <- ne_countries(scale = 110)
 small_scale_map <- ggplot() +
   geom_sf(data = world) +
   coord_sf(xlim = c(-20, 50), ylim = c(33, 80)) +
   ggtitle("Europe")
 
-europe <- ne_countries(scale = 50, continent = "Europe") 
+europe <- ne_countries(scale = 50, continent = "Europe")
 medium_scale_map <- ggplot() +
   geom_sf(data = europe) +
   coord_sf(xlim = c(5, 30), ylim = c(55, 71)) +
@@ -73,7 +73,7 @@ medium_scale_map <- ggplot() +
 # Need extra package for high resolution data
 # install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
 
-norway <- ne_countries(scale = 10, country = "Norway") 
+norway <- ne_countries(scale = 10, country = "Norway")
 
 large_scale_map <- ggplot() +
   geom_sf(data = norway) +
@@ -110,11 +110,15 @@ Natural Earth datasets can be downloaded directly from the [website](https://www
 #| results: hide
 
 # download if needed
-if(!file.exists("maps/ne_10m_rivers_europe.shp")){
-  ne_download(scale = 10, type = "rivers_lake_centerlines", category = "physical", 
-            destdir = "maps/", load = FALSE) # major rivers
-  ne_download(scale = 10, type = "lakes", category = "physical", 
-            destdir = "maps/", load = FALSE) # major lakes
+if (!file.exists("maps/ne_10m_rivers_europe.shp")) {
+  ne_download(
+    scale = 10, type = "rivers_lake_centerlines", category = "physical",
+    destdir = "maps/", load = FALSE
+  ) # major rivers
+  ne_download(
+    scale = 10, type = "lakes", category = "physical",
+    destdir = "maps/", load = FALSE
+  ) # major lakes
 }
 
 rivers <- ne_load(scale = 10, type = "rivers_lake_centerlines", destdir = "maps")
@@ -122,8 +126,8 @@ lakes <- ne_load(scale = 10, type = "lakes", destdir = "maps")
 
 ggplot() +
   geom_sf(data = europe) +
-  geom_sf(data = rivers, colour = "blue", linewidth = 0.2) + 
-  geom_sf(data = lakes, fill = "lightblue") + 
+  geom_sf(data = rivers, colour = "blue", linewidth = 0.2) +
+  geom_sf(data = lakes, fill = "lightblue") +
   coord_sf(xlim = c(5, 30), ylim = c(55, 71))
 ```
 
@@ -141,7 +145,6 @@ To avoid repeatedly downloading the same data, open the .Rprofile file by runnin
 #| label: setup-ggOceanMapsData
 #| eval: false
 usethis::edit_r_profile()
-
 ```
 
 and add
@@ -151,8 +154,7 @@ and add
 #| eval: false
 
 .ggOceanMapsenv <- new.env()
-.ggOceanMapsenv$datapath <- '~/ggOceanMapsLargeData' # you can use a different directory if you want
-
+.ggOceanMapsenv$datapath <- "~/ggOceanMapsLargeData" # you can use a different directory if you want
 ```
 
 Save the file and restart R (Session \> Restart R).
@@ -164,10 +166,12 @@ Now `ggOceanMaps` is ready to use.
 #| message: false
 #| fig-alt: Base map from ggOceanMaps
 library(ggOceanMaps)
-#limits are given longitude min/max, latitude min/max
-basemap(limits = c(-30, 30, 50, 80),
-        bathymetry = TRUE,
-        glaciers = TRUE)
+# limits are given longitude min/max, latitude min/max
+basemap(
+  limits = c(-30, 30, 50, 80),
+  bathymetry = TRUE,
+  glaciers = TRUE
+)
 ```
 
 ::: callout-note
@@ -202,7 +206,7 @@ library(sf)
 
 fylker <- st_read("data/Fylker.geojson")
 
-ggplot(fylker) + 
+ggplot(fylker) +
   geom_sf()
 ```
 
@@ -278,14 +282,15 @@ Downloaded tiles will be stored in the maps directory (which you may need to mak
 library(ggspatial)
 ggplot() +
   annotation_map_tile(
-    type = "osm", 
-    cachedir = "maps/", 
-    zoomin = -1) + # sets the zoom level relative to the default
+    type = "osm",
+    cachedir = "maps/",
+    zoomin = -1
+  ) + # sets the zoom level relative to the default
   coord_sf(
-    xlim = c(4.5, 6), 
+    xlim = c(4.5, 6),
     ylim = c(60.5, 61),
-    crs = 4326) # EPSG code for WGS84
-
+    crs = 4326
+  ) # EPSG code for WGS84
 ```
 
 Several different types of maps are available (see `rosm::osm.types()`) and more can be added.
@@ -301,21 +306,24 @@ c("osm", "cartodark", "cartolight") |> # some need registration
   map(\(osm_type){
     ggplot() +
       annotation_map_tile(
-        type = osm_type, 
-        cachedir = "maps/", 
-        zoomin = -1) +
+        type = osm_type,
+        cachedir = "maps/",
+        zoomin = -1
+      ) +
       coord_sf(
-        xlim = c(5.24, 5.36), 
+        xlim = c(5.24, 5.36),
         ylim = c(60.37, 60.41),
-        crs = 4326) +
+        crs = 4326
+      ) +
       ggtitle(osm_type) +
-      theme(axis.text = element_blank(),
-            axis.ticks = element_blank(), 
-            title = element_text(size = 11), 
-            plot.margin = margin(1, 1, 1, 1))
-}) |> 
+      theme(
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        title = element_text(size = 11),
+        plot.margin = margin(1, 1, 1, 1)
+      )
+  }) |>
   patchwork::wrap_plots()
-
 ```
 
 ### `ggmap`
@@ -356,7 +364,6 @@ bergen <- get_map(
   maptype = "satellite"
 )
 ggmap(bergen)
-
 ```
 
 This map made by `ggmap` is a `ggplot` object to which other geoms can be added.
@@ -397,13 +404,12 @@ aquaculture <- st_read("data/flate-ihht-akvakulturregisteret20220928.geojson")
 ggplot() +
   geom_sf(data = europe) +
   geom_sf(data = aquaculture, colour = "red") +
-  coord_sf(xlim = c(5, 30), ylim = c(55, 71))  
+  coord_sf(xlim = c(5, 30), ylim = c(55, 71))
 
 # with ggOceanMaps
 
 basemap(limits = c(-30, 30, 50, 80)) +
   geom_sf(data = aquaculture, colour = "red")
-
 ```
 
 Alternatively, you can make/import a tibble with the geographic data and add them to the basemap with the relevant spatially aware geom from `ggspatial`.
@@ -417,16 +423,20 @@ So `geom_spatial_point()` rather than `geom_point()` and `geom_spatial_path()` r
 library(ggspatial)
 
 # GPS tracking data of osprey. Data from https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.w6m905qt2
-osprey <- read_delim("maps/osprey/06982.txt", 
-                     locale = locale(decimal_mark = ",")) |> 
+osprey <- read_delim("maps/osprey/06982.txt",
+  locale = locale(decimal_mark = ",")
+) |>
   janitor::clean_names()
 
 # ggOceanMaps
 
 basemap(data = osprey) +
   geom_spatial_path(aes(x = longitude_e, y = latitude_n, colour = speed),
-            data = osprey, linewidth = 1) +
-  labs(colour = expression(Speed~km~h^{-1}))
+    data = osprey, linewidth = 1
+  ) +
+  labs(colour = expression(Speed ~ km ~ h^{
+    -1
+  }))
 ```
 
 `geom_spatial_point()` assumes that the data are latitude-longitude coordinates.
@@ -455,7 +465,6 @@ For example:
 #| label: parzer
 
 parzer::parse_lat("60° 22' 50.52''N")
-
 ```
 :::
 
@@ -482,17 +491,20 @@ Here, I use data on 2021 phosphorous discharge in municipal wastewater from [SSB
 #| results: hide
 #| fig-cap: Total phosphate discharge in municipal wastewater by fylke.
 #| fig-alt: Cloropleth map of phosphate discharges by fylke. Discharges are hightest in Vestland
-p_discharge <- readxl::read_excel(path = "data/05280_20230421-012359.xlsx",
-                                  skip = 4, n_max = 11) |>
-  janitor::clean_names() |> 
+p_discharge <- readxl::read_excel(
+  path = "data/05280_20230421-012359.xlsx",
+  skip = 4, n_max = 11
+) |>
+  janitor::clean_names() |>
   separate_wider_regex(
     cols = x1, # split fist column
-    patterns = c(Fylkesnummer = "\\d{2}", " ", Fylkesnavn = ".*"))# using regular expressions
+    patterns = c(Fylkesnummer = "\\d{2}", " ", Fylkesnavn = ".*")
+  ) # using regular expressions
 # \\d{2} = 2 numbers, " " = space, ".*" = any number of any character, ie everything else
 
 # join to fylker
 fylker_2021 <- st_read("data/fylker2021.json") # older flyker map to match data
-fylker_discharge <- fylker_2021 |> 
+fylker_discharge <- fylker_2021 |>
   left_join(p_discharge, by = "Fylkesnummer")
 
 ggplot(fylker_discharge) +
@@ -525,8 +537,10 @@ kart <- cartogram_cont(fylker_discharge_sim, weight = "total_discharge", itermax
 ggplot(kart) +
   geom_sf(aes(fill = total_discharge)) +
   labs(fill = "Wastewater\nP discharge\ntonnes") +
-  theme(legend.position.inside = c(.99, .01), 
-        legend.justification = c(1, 0))
+  theme(
+    legend.position.inside = c(.99, .01),
+    legend.justification = c(1, 0)
+  )
 ```
 :::
 
@@ -571,16 +585,16 @@ library(tidyterra)
 norway_dem <- rast("data/50N000E_20101117_gmted_med300.tif")
 
 # make coastline mask
-coast_vector <- fylker |> 
+coast_vector <- fylker |>
   # transfrom to crs of raster
-  st_transform(crs = terra::crs(norway_dem)) |> 
+  st_transform(crs = terra::crs(norway_dem)) |>
   # convert to spatVector
-  vect()  
+  vect()
 
 # crop to vestland and rename the data layer
 vestland_extent <- ext(4.5, 9, 59, 62)
-vestland_dem <- crop(norway_dem, vestland_extent) |> 
-  mask(coast_vector) |> 
+vestland_dem <- crop(norway_dem, vestland_extent) |>
+  mask(coast_vector) |>
   rename(Elevation = `50N000E_20101117_gmted_med300`)
 
 # plot
@@ -624,7 +638,7 @@ On small scale maps, they can be inaccurate as the scale varies.
 ggplot() +
   geom_sf(data = norway) +
   coord_sf(xlim = c(4, 9), ylim = c(59, 62)) +
-  annotation_scale(location = "br")  + # br = bottom right
+  annotation_scale(location = "br") + # br = bottom right
   annotation_north_arrow(style = north_arrow_minimal)
 ```
 
@@ -655,24 +669,27 @@ The [projection wizard](https://projectionwizard.org/#) can help choose a projec
 #| warning: false
 world <- ne_countries(scale = "medium")
 
-default <- ggplot(world) + geom_sf()
+default <- ggplot(world) +
+  geom_sf()
 
 mollweide <- ggplot(world) + # Equal-area world map projection
-  geom_sf() + 
+  geom_sf() +
   coord_sf(crs = "+proj=moll") # projection specified with a 'proj' string
 
 sf_use_s2(FALSE) # might need to turn spherical geometry off for some projections
-polar_lambert <-  world |> 
+polar_lambert <- world |>
   # !important - don't crop to tightly or crop lines will show in plot
-  st_crop(y = c(xmin = -180, ymin = 50, xmax = 180, ymax = 90)) |> 
+  st_crop(y = c(xmin = -180, ymin = 50, xmax = 180, ymax = 90)) |>
   ggplot() + # Transverse cylindrical equal-area
   geom_sf() +
   # projection specified with a proj string
-  coord_sf(crs = '+proj=laea +lon_0=14.4140625 +lat_0=90 +datum=WGS84 +units=m +no_defs', 
-           ylim = c(100000, -3500000), # xlim/ylim in units of projection
-           xlim = c(-2000000, 2000000)) # here in metres
+  coord_sf(
+    crs = "+proj=laea +lon_0=14.4140625 +lat_0=90 +datum=WGS84 +units=m +no_defs",
+    ylim = c(100000, -3500000), # xlim/ylim in units of projection
+    xlim = c(-2000000, 2000000)
+  ) # here in metres
 
-default/mollweide/polar_lambert
+default / mollweide / polar_lambert
 ```
 
 ::: callout-note
@@ -694,11 +711,10 @@ The [`leaflet`](https://rstudio.github.io/leaflet/) or [`mapgl`](https://walker-
 
 library(leaflet) # NB uses pipes |> not +
 
-leaflet() |>  # initialise map
+leaflet() |> # initialise map
   setView(lng = 5.3, lat = 60.4, zoom = 9) |> # set initial map area
   addTiles() |> # add background map
-  addPolygons(data = aquaculture, popup = aquaculture$name)  # add fish farms
-
+  addPolygons(data = aquaculture, popup = aquaculture$name) # add fish farms
 ```
 
 It is possible to change the [background map](https://leaflet-extras.github.io/leaflet-providers/preview/) to one that is less cluttered or a satellite view.

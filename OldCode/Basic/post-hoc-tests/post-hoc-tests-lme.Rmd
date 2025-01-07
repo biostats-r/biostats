@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # title: Post Hoc Tests - multiple comparisons in linear mixed effect models
 # author: jonathan
-# revised: 13/4/2020 
+# revised: 13/4/2020
 
 WEB <- c("https://bioceed.uib.no/dropfolder/bioSTATS/Rmd/Basic/post-hoc tests/post-hoc-tests-lme.html")
 GIT <- c("https://github.com/jonathansoule/biostats/blob/master/Basic/post-hoc tests/post-hoc-tests-lme.Rmd")
@@ -25,16 +25,16 @@ We will reuse the example introduced [here (repeated measures ANOVA)](https://bi
 To create the corresponding dataframe, use the following code:
 ```{r dataframe}
 # response variable
-rat.weight <- c(164,164,158,159,155,220,230,226,227,222,261,275,264,280,272,306,326,320,330,312)
+rat.weight <- c(164, 164, 158, 159, 155, 220, 230, 226, 227, 222, 261, 275, 264, 280, 272, 306, 326, 320, 330, 312)
 
 # predictor variable
-time.point <- as.factor(c(rep("week08",5), rep("week12",5), rep("week16",5), rep("week20",5)))
+time.point <- as.factor(c(rep("week08", 5), rep("week12", 5), rep("week16", 5), rep("week20", 5)))
 
 # individual ID
-rat.ID <- as.factor(rep(c("rat1","rat2","rat3", "rat4", "rat5"),4))
+rat.ID <- as.factor(rep(c("rat1", "rat2", "rat3", "rat4", "rat5"), 4))
 
 # dataframe
-my.dataframe <- data.frame(rat.ID,time.point,rat.weight)
+my.dataframe <- data.frame(rat.ID, time.point, rat.weight)
 ```
 <br/><br/>
 
@@ -50,7 +50,7 @@ ggplot(my.dataframe, aes(x = time.point, y = rat.weight, group = rat.ID, color =
 and the model that was fitted with `lme()`:
 ```{r model}
 # linear mixed effect model stored in the object 'model'
-model <- lme(rat.weight ~ time.point, random=~1|rat.ID, data=my.dataframe)
+model <- lme(rat.weight ~ time.point, random = ~ 1 | rat.ID, data = my.dataframe)
 ```
 <br/><br/>
 
@@ -86,7 +86,7 @@ Running the test with `glht()` involves two steps:
 Let's apply this to our example:
 ```{r glht}
 # running glht()
-post.hoc <- glht(model, linfct = mcp(time.point = 'Tukey'))
+post.hoc <- glht(model, linfct = mcp(time.point = "Tukey"))
 
 # displaying the result table with summary()
 summary(post.hoc)

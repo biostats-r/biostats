@@ -36,9 +36,11 @@ In this tutorial, you will learn how to manipulate character (text) vectors with
 Consider this vector of diatom species names (which could be a column in a `data.frame` or `tibble`)
 
 ```{r diatoms}
-diatoms <- c("Navicula_elkab",
-             "Nitzschia_palea",
-             "Aulacoseira_granulata") # a vector
+diatoms <- c(
+  "Navicula_elkab",
+  "Nitzschia_palea",
+  "Aulacoseira_granulata"
+) # a vector
 ```
 
 Each element in the character vector is known as a string.
@@ -46,7 +48,7 @@ We might want to detect which strings have a particular pattern, or replace, rem
 We can do this with the `stringr` package which is loaded when `tidyverse` is loaded.
 
 ```{r eval = FALSE}
-library("tidyverse")# load stringr, ggplot2, dplyr etc
+library("tidyverse") # load stringr, ggplot2, dplyr etc
 ```
 
 This tutorial starts with detecting or replacing fixed patterns and then shows how you can use regular expressions to extract varying patterns.
@@ -69,11 +71,13 @@ This return a logical vector: `TRUE` where the character vector includes the pat
 If the vector `diatoms` was a column in a `tibble` (or `data.frame`), we can use this test in a `filter` to select rows. 
 
 ```{r detect-tibble}
-diatom_df <- tibble(species = diatoms, 
-                    count = c(27, 3, 46))
+diatom_df <- tibble(
+  species = diatoms,
+  count = c(27, 3, 46)
+)
 diatom_df
 
-diatom_df %>% 
+diatom_df %>%
   filter(str_detect(string = diatoms, pattern = "Navicula"))
 ```
 
@@ -135,16 +139,19 @@ So `"Navicula|Nitzschia"` will match either genus.
 Detect which diatom name includes a number
 
 ```{r metachar-ex, exercise = TRUE}
-diatoms <- c("Navicula sp2",
-             "Nitzschia palea",
-             "Aulacoseira granulata") 
+diatoms <- c(
+  "Navicula sp2",
+  "Nitzschia palea",
+  "Aulacoseira granulata"
+)
 str_detect()
-
 ```
 ```{r metachar-ex-solution}
-diatoms <- c("Navicula sp2",
-             "Nitzschia palea",
-             "Aulacoseira granulata") 
+diatoms <- c(
+  "Navicula sp2",
+  "Nitzschia palea",
+  "Aulacoseira granulata"
+)
 
 str_detect(string = diatoms, pattern = "\\d")
 ```
@@ -168,7 +175,7 @@ We can control how many times something gets matched by following it with a quan
 So to match either "palaeoecology" or "paleoecology", we can follow the "a" with a "?".
 
 ```{r regex-1}
-#match both palaeoecology and paleoecology
+# match both palaeoecology and paleoecology
 str_detect(c("palaeoecology", "paleoecology"), pattern = "pala?eo")
 ```
 
@@ -176,7 +183,7 @@ str_detect(c("palaeoecology", "paleoecology"), pattern = "pala?eo")
 To match a four digit sequence we can use `"\\d{4}"`.
 
 ```{r regex-2}
-#detect year from code
+# detect year from code
 str_detect(c("x2020", "20.20"), pattern = "\\d{4}")
 ```
 
@@ -185,16 +192,19 @@ str_detect(c("x2020", "20.20"), pattern = "\\d{4}")
 Detect which diatoms have a word with at least 10 characters
 
 ```{r repeat-ex, exercise = TRUE}
-diatoms <- c("Navicula elkab",
-             "Nitzschia palea",
-             "Aulacoseira granulata") 
+diatoms <- c(
+  "Navicula elkab",
+  "Nitzschia palea",
+  "Aulacoseira granulata"
+)
 str_detect()
-
 ```
 ```{r repeat-ex-solution}
-diatoms <- c("Navicula elkab",
-             "Nitzschia palea",
-             "Aulacoseira granulata") 
+diatoms <- c(
+  "Navicula elkab",
+  "Nitzschia palea",
+  "Aulacoseira granulata"
+)
 
 str_detect(string = diatoms, pattern = "\\w{10,}")
 ```
@@ -212,16 +222,19 @@ You can use anchors so that matches are only made at the start or end of a strin
 Detect which diatoms end in an "a".
 
 ```{r anchor-ex, exercise = TRUE}
-diatoms <- c("Navicula_elkab",
-             "Nitzschia_palea",
-             "Aulacoseira_granulata") 
+diatoms <- c(
+  "Navicula_elkab",
+  "Nitzschia_palea",
+  "Aulacoseira_granulata"
+)
 str_detect()
-
 ```
 ```{r anchor-ex-solution}
-diatoms <- c("Navicula_elkab",
-             "Nitzschia_palea",
-             "Aulacoseira_granulata") 
+diatoms <- c(
+  "Navicula_elkab",
+  "Nitzschia_palea",
+  "Aulacoseira_granulata"
+)
 
 str_detect(string = diatoms, pattern = "a$")
 ```
@@ -256,7 +269,6 @@ What happens if you forget to escape a metacharacter
 ```{r escape-ex, exercise = TRUE}
 has_dot <- c("Navicula.elkab", "Navicula radiosa")
 str_detect(string = has_dot, pattern = ".")
-
 ```
 
 Why?
@@ -292,10 +304,12 @@ If we want to remove some character, we can either use `str_replace` and set `re
 We can use `str_replace` on a column in a tibble with a `mutate`
 
 ```{r replace-tibble}
-diatom_df %>% 
-  mutate(species = str_replace(string = species,
-                               pattern = "_", 
-                               replacement  = " "))
+diatom_df %>%
+  mutate(species = str_replace(
+    string = species,
+    pattern = "_",
+    replacement = " "
+  ))
 ```
 
 
@@ -340,13 +354,11 @@ Extract the habitat type from these filenames.
 
 ```{r extract-ex, exercise = TRUE}
 filenames <- c("c:/pond_2020.xls", "d:/data/marsh_2018.xls")
-
-
 ```
 ```{r extract-ex-solution}
 str_replace(filenames, pattern = ".*/(\\w*)_\\d{4}\\.xls$", replacement = "\\1")
-#or extract word followed by an "_", then remove "_"
-str_extract(filenames, pattern = "\\w*_") %>% 
+# or extract word followed by an "_", then remove "_"
+str_extract(filenames, pattern = "\\w*_") %>%
   str_remove(pattern = "_")
 ```
 
@@ -368,15 +380,18 @@ str_to_lower(mess)
 Make the diatoms vector upper case.
 
 ```{r case-ex, exercise = TRUE}
-diatoms <- c("Navicula_elkab",
-             "Nitzschia_palea",
-             "Aulacoseira_granulata") 
-
+diatoms <- c(
+  "Navicula_elkab",
+  "Nitzschia_palea",
+  "Aulacoseira_granulata"
+)
 ```
 ```{r case-ex-solution}
-diatoms <- c("Navicula_elkab",
-             "Nitzschia_palea",
-             "Aulacoseira_granulata") 
+diatoms <- c(
+  "Navicula_elkab",
+  "Nitzschia_palea",
+  "Aulacoseira_granulata"
+)
 str_to_upper(diatoms)
 ```
 

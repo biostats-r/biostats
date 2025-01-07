@@ -35,8 +35,8 @@ ggplot(penguins, aes(x = species)) +
 If we have already calculated the amount, then we can use `geom_col()` to get an identical figure.
 
 ```{r col, fig.height = 3, fig.width = 3}
-penguins |> 
-  count(species) |> 
+penguins |>
+  count(species) |>
   ggplot(aes(x = species, y = n)) +
   geom_col()
 ```
@@ -51,7 +51,7 @@ Density plots use a kernel smoother (often a Gaussian kernel - the normal bell-s
 ```{r hist-density, fig.keep='none', message = FALSE}
 base <- ggplot(penguins, aes(x = flipper_length_mm))
 p_hist <- base + geom_histogram()
-p_dens <- base + geom_density() 
+p_dens <- base + geom_density()
 p_hist
 p_dens
 ```
@@ -105,7 +105,7 @@ If we want show the distribution of a continuous variable conditioned by a categ
 ```{r hist-density2, fig.keep='none', message = FALSE}
 base <- ggplot(penguins, aes(x = flipper_length_mm, fill = species))
 p_hist <- base + geom_histogram()
-p_dens <- base + geom_density(alpha  = 0.4) # set alpha to make transparent
+p_dens <- base + geom_density(alpha = 0.4) # set alpha to make transparent
 
 p_hist
 p_dens
@@ -155,12 +155,11 @@ p_sina <- base + geom_sina(aes(colour = species))
 library(ggbeeswarm)
 p_bees <- base + geom_beeswarm(aes(colour = species))
 p_quasi <- base + geom_quasirandom(aes(colour = species))
-
 ```
 
 ```{r boxplots-etc-plot, echo=FALSE}
-p_prange + labs(title= "geom_pointrange()") + 
-p_box + labs(title = "geom_boxplot()") +
+p_prange + labs(title = "geom_pointrange()") +
+  p_box + labs(title = "geom_boxplot()") +
   p_vio + labs(title = "geom_violin()") +
   p_point + labs(title = "geom_point()") +
   p_jit + labs(title = "geom_jitter()") +
@@ -169,7 +168,6 @@ p_box + labs(title = "geom_boxplot()") +
   p_quasi + labs(title = "geom_quasirandom()") &
   labs(y = "Flipper length") &
   theme(axis.title.x = element_blank(), legend.position = "none")
-
 ```
 
 - `geom_pointrange()` is showing the mean $\pm$ 2 standard deviations. 
@@ -188,8 +186,8 @@ It is possible to use multiple geoms on top of each other, for example, `geom_si
 ## Many distributions of a continuous variable split by a categorical variable
 
 ```{r boxplots-etc2, fig.height = 4, fig.width=4}
-penguins |> 
-  drop_na(flipper_length_mm, sex) |> 
+penguins |>
+  drop_na(flipper_length_mm, sex) |>
   ggplot(aes(x = species, y = flipper_length_mm)) +
   geom_violin(aes(fill = sex))
 ```
@@ -207,7 +205,6 @@ The standard plot for two continuous variables is the scatterplot, which we can 
 ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
   geom_point() +
   labs(x = "Body mass, g", y = "Bill length,  mm", colour = "Species")
-
 ```
 
 The x-axis should be the predictor (independent) variable, and the y-axis the response (dependent) variable. 
@@ -244,8 +241,8 @@ Some choices
 
 ```{r ggpairs, message = FALSE}
 library(GGally)
-penguins |> 
-  select(-year) |> 
+penguins |>
+  select(-year) |>
   ggpairs(mapping = aes(colour = species))
 ```
 
@@ -256,27 +253,26 @@ First calculate the correlations between the numeric variables, then reshape the
 
 ```{r correlation, eval=TRUE}
 # Select only numeric variables and remove all NAs
-penguin_matrix <- penguins |> 
-  select(bill_length_mm:body_mass_g) |> 
+penguin_matrix <- penguins |>
+  select(bill_length_mm:body_mass_g) |>
   drop_na(bill_length_mm)
 
 # Calculate the correlation between all variables and rearrange the table
 cor_matrix <- cor(penguin_matrix)
 
 # rearrange
-cor_long <- cor_matrix |> 
-  as.data.frame() |> 
-  rownames_to_column() |> 
-  pivot_longer(cols = -rowname, names_to = "colname", values_to = "cor") |> 
-  #only upper triangle
+cor_long <- cor_matrix |>
+  as.data.frame() |>
+  rownames_to_column() |>
+  pivot_longer(cols = -rowname, names_to = "colname", values_to = "cor") |>
+  # only upper triangle
   filter(rowname < colname)
-
 ```
 
 Now we can use the function `geom_tile()` to plot the data.
 
 ```{r heatmap, eval=TRUE}
-ggplot(data = cor_long, aes(x = rowname, y = colname, fill = cor)) + 
+ggplot(data = cor_long, aes(x = rowname, y = colname, fill = cor)) +
   geom_tile() +
   scale_fill_gradient2() +
   theme(axis.title = element_blank())
@@ -285,12 +281,11 @@ ggplot(data = cor_long, aes(x = rowname, y = colname, fill = cor)) +
 Alternatively, we can use `geom_point()` and use the size aesthetic to scale the points by the absolute value of the correlation to give more visual weight to the larger correlations.
 
 ```{r heatmap-circles, eval=TRUE}
-ggplot(data = cor_long, aes(x = rowname, y = colname, colour = cor, size = abs(cor))) + 
+ggplot(data = cor_long, aes(x = rowname, y = colname, colour = cor, size = abs(cor))) +
   geom_point() +
   scale_colour_gradient2() +
   scale_size_continuous(range = c(2, 20)) +
   theme(axis.title = element_blank())
-
 ```
 
 
@@ -303,7 +298,6 @@ Time is usually on the x axis.
 ggplot(economics, aes(x = date, y = unemploy)) +
   geom_line() +
   labs(x = "", y = "Unemployment")
-
 ```
 
 `geom_line()` will draw a line from the left to the right of the screen regardless of the order of the data.

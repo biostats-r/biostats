@@ -8,7 +8,6 @@ library(tidyverse)
 library(lubridate)
 library(tidylog)
 library(validate)
-
 ```
 
 
@@ -39,7 +38,6 @@ Otherwise, you can just load the packages.
 #| eval: false
 library(tidyverse)
 library(lubridate)
-
 ```
 
 Another useful package for data curation is **tidylog**, which is built on the **dplyr** and **tidyr** packages and provides useful information about the functions used.
@@ -55,7 +53,6 @@ Let's install and/or load **tidylog**.
 #| echo: true
 #| eval: false
 library(tidylog)
-
 ```
 
 Note, that once **tidylog** is loaded it will automatically prioritize the tidylog function before the dplyr and tidyr functions.
@@ -69,9 +66,8 @@ There are a few packages that can help with some of this work and for this tutor
 #| echo: true
 #| eval: false
 
-#install.packages("validate")
+# install.packages("validate")
 library(validate)
-
 ```
 
 ## Import data
@@ -87,7 +83,6 @@ Give the dataset a name using a backwards pointing arrow: `<-` The name should i
 #| echo: true
 
 raw_traits <- read_csv("data/PFTC4_Svalbard_2018_Gradient_Traits.csv")
-
 ```
 
 The dataset has 11345 rows and 15 columns and a number of numeric, character and date variables.
@@ -107,43 +102,46 @@ But if you want to replicate the code to introduce errors you can find the code 
 #| echo: false
 #| message: false
 
-raw_traits <- raw_traits |> 
+raw_traits <- raw_traits |>
   # simplify
-  filter(Functional_group == "vascular") |> 
-  select(-Project, -Functional_group, -Year, -Latitude_N, -Longitude_E) |> 
-  #introduce errors
+  filter(Functional_group == "vascular") |>
+  select(-Project, -Functional_group, -Year, -Latitude_N, -Longitude_E) |>
+  # introduce errors
   # wrong date
-  mutate(Date = as.character(Date),
-         Date = if_else(ID == "AMO3822", "18", Date),
-         # giant leaf
-         Value = if_else(ID == "ANH3472" & Trait == "Leaf_Area_cm2", 17965, Value),
-         # diverse species names
-         Taxon = case_when(ID == "BON2388" ~ "oxiria digyna",
-                           ID == "ATX7216" ~ "oxyria digina",
-                           ID == "BSV7581" ~ "oxyra digyna",
-                           ID == "BUF9439" ~ "calalmagrostis neglecta",
-                           TRUE ~ Taxon),
-         # introduce NAs
-         Value = if_else(ID %in% c("BLQ1061", "AZO1656", "AMV4451") & Trait == "LDMC", NA_real_, Value),
-         # make wrong ID
-         ID = if_else(ID == "BGP8422", "BGB8422", ID))
-  
+  mutate(
+    Date = as.character(Date),
+    Date = if_else(ID == "AMO3822", "18", Date),
+    # giant leaf
+    Value = if_else(ID == "ANH3472" & Trait == "Leaf_Area_cm2", 17965, Value),
+    # diverse species names
+    Taxon = case_when(
+      ID == "BON2388" ~ "oxiria digyna",
+      ID == "ATX7216" ~ "oxyria digina",
+      ID == "BSV7581" ~ "oxyra digyna",
+      ID == "BUF9439" ~ "calalmagrostis neglecta",
+      TRUE ~ Taxon
+    ),
+    # introduce NAs
+    Value = if_else(ID %in% c("BLQ1061", "AZO1656", "AMV4451") & Trait == "LDMC", NA_real_, Value),
+    # make wrong ID
+    ID = if_else(ID == "BGP8422", "BGB8422", ID)
+  )
+
 # add duplicate row
-duplicate <- raw_traits |> 
+duplicate <- raw_traits |>
   slice(378)
 
 # introduce dry weight measurements with wrong unit (mg instead of g)
-wrong_decimal <- raw_traits |> 
-  filter(Trait == "Dry_Mass_g") |> 
-  sample_n(size = 50, replace = FALSE) |> 
+wrong_decimal <- raw_traits |>
+  filter(Trait == "Dry_Mass_g") |>
+  sample_n(size = 50, replace = FALSE) |>
   mutate(Value2 = Value / 1000)
 
-raw_traits <- raw_traits |> 
-  left_join(wrong_decimal, by = c("Date", "Gradient", "Site", "PlotID", "Individual_nr", "ID", "Taxon", "Trait", "Value", "Elevation_m")) |> 
-  mutate(Value = if_else(!is.na(Value2), Value2, Value)) |> 
-  select(-Value2) |> 
+raw_traits <- raw_traits |>
+  left_join(wrong_decimal, by = c("Date", "Gradient", "Site", "PlotID", "Individual_nr", "ID", "Taxon", "Trait", "Value", "Elevation_m")) |>
+  mutate(Value = if_else(!is.na(Value2), Value2, Value)) |>
+  select(-Value2) |>
   bind_rows(duplicate)
-
 ```
 
 
@@ -157,7 +155,6 @@ Note that the last column and many rows are not shown.
 #| label: display-table
 #| echo: true
 raw_traits
-
 ```
 
 At the top you can see that the dataset has `r dim(raw_traits)[1]` observations and `r length(raw_traits)` columns.
@@ -181,9 +178,8 @@ For this we use the function `distinct()` on the variable *Date*.
 ```{r}
 #| label: distinct
 #| echo: true
-raw_traits |> 
+raw_traits |>
   distinct(Date)
-
 ```
 
 We see that there are 6 distinct dates in the variable *Date*.
@@ -199,20 +195,17 @@ Note that for this tutorial, we use a different way of displaying the output
 #| label: filter-wrong-date
 #| echo: true
 #| eval: false
-raw_traits |> 
-  filter(Date == "18") |> 
+raw_traits |>
+  filter(Date == "18") |>
   View()
-
 ```
 
 ```{r}
 #| label: print-wrong-date
 #| echo: false
-raw_traits |> 
-  filter(Date == "18") |> 
+raw_traits |>
+  filter(Date == "18") |>
   print()
-
-
 ```
 
 We can see that a single observation (with multiple traits) has the wrong date.
@@ -232,7 +225,6 @@ The date on the envelope is *18 July 2018* (@fig-envelope), and it seems that th
 #| fig-alt: "A photo showing the envelope of the leaf with the wrong date."
 
 knitr::include_graphics("./pics/envelope.png")
-
 ```
 
 Let's replace the wrong date and give the variable *Date* the right class.
@@ -247,10 +239,9 @@ Note that we now have to assign the table to a new or the same name to make the 
 ```{r}
 #| label: replace-date
 #| echo: true
-raw_traits <- raw_traits |> 
-  mutate(Date = if_else(ID == "AMO3822", "2018-07-18", Date)) |> 
+raw_traits <- raw_traits |>
+  mutate(Date = if_else(ID == "AMO3822", "2018-07-18", Date)) |>
   mutate(Date = ymd(Date))
-        
 ```
 
 An important step and good practice when cleaning data is to check that the right correction has been done.
@@ -264,10 +255,9 @@ Another way would be to run the `distinct(Date)` function again.
 ```{r}
 #| label: chacke-date
 #| echo: true
-raw_traits |> 
-  filter(ID == "AMO3822") |> 
+raw_traits |>
+  filter(ID == "AMO3822") |>
   select(Date)
-
 ```
 
 The date has been fixed.
@@ -307,22 +297,19 @@ Let's make some rules about data types using the `validator()` function:
 
 # rules
 rules <- validator(
-  
+
   # check variable types
   is.character(Gradient),
   is.character(PlotID),
   is.character(ID),
   is.character(Taxon),
   is.character(Trait),
-
   is.numeric(Site),
   is.numeric(Individual_nr),
   is.numeric(Value),
   is.numeric(Elevation_m),
-  
-  is.Date(Date))
-
-
+  is.Date(Date)
+)
 ```
 
 Now the rules can be applied to the dataset using the `confront()` function.
@@ -335,7 +322,6 @@ Now the rules can be applied to the dataset using the `confront()` function.
 
 out <- confront(raw_traits, rules)
 summary(out)
-  
 ```
 
 The summary function gives an overview of each rule and how many passes and fails there are.
@@ -362,13 +348,13 @@ When getting a duplicate, these different options for why there is a duplicate h
 #| echo: true
 
 rules <- validator(
-  
+
   # check variable types
-  is_unique(Date, Gradient, Site, PlotID, Individual_nr, ID, Taxon, Trait))
+  is_unique(Date, Gradient, Site, PlotID, Individual_nr, ID, Taxon, Trait)
+)
 
 out <- confront(raw_traits, rules)
 summary(out)
-
 ```
 
 Two observations fail the rules and are not unique.
@@ -382,7 +368,6 @@ For this, use the plot function.
 #| echo: true
 
 plot(out)
-
 ```
 
 To fix the problem, we need to know which observation is a duplicate.
@@ -393,7 +378,6 @@ Here, we can use the function `violating()` for the data and the results and it 
 #| echo: true
 
 violating(raw_traits, out)
-
 ```
 
 We get two exact duplicates, where even *Value* is the same.
@@ -405,11 +389,10 @@ We group by the variables we expect to be unique and use `distinct()` with the a
 ```{r}
 #| label: remove-duplicates
 #| echo: true
-raw_traits <- raw_traits |> 
-  group_by(Date, Gradient, Site, PlotID, Individual_nr, ID, Taxon, Trait) |> 
-  distinct(.keep_all = TRUE) |> 
+raw_traits <- raw_traits |>
+  group_by(Date, Gradient, Site, PlotID, Individual_nr, ID, Taxon, Trait) |>
+  distinct(.keep_all = TRUE) |>
   ungroup()
-
 ```
 
 Tidylog shows again what happens and how many rows have been removed.
@@ -428,9 +411,9 @@ A quick way to get an overview of all NAs in the dataset is to select for any NA
 ```{r}
 #| label: check-na
 #| echo: true
-raw_traits %>% 
-  select(where( ~any(is.na(.)))) %>% 
-  summarise(across(everything(), ~sum(is.na(.))))
+raw_traits %>%
+  select(where(~ any(is.na(.)))) %>%
+  summarise(across(everything(), ~ sum(is.na(.))))
 ```
 
 The variables *Date* and *Value* have NAs.
@@ -447,9 +430,8 @@ For this we will use the function `drop_na()` on the variable *Value.*
 ```{r}
 #| label: remove-na
 #| echo: true
-raw_traits <- raw_traits |> 
+raw_traits <- raw_traits |>
   drop_na(Value)
-
 ```
 
 This operation has removed 3 rows, which is the number of NA's in this variable.
@@ -474,12 +456,11 @@ For this, we need to get a list of valid IDs, using the `get_PFTC_envelope_codes
 #| label: make-ids
 #| echo: true
 
-#remotes::install_github("Plant-Functional-Trait-Course/PFTCFunctions")
+# remotes::install_github("Plant-Functional-Trait-Course/PFTCFunctions")
 
 library("PFTCFunctions")
 
 leaf_ID <- get_PFTC_envelope_codes(seed = 32)
-
 ```
 
 
@@ -493,8 +474,8 @@ Let's make some rules to check the variables Gradient, Site and leaf_ID.
 rules <- validator(
   Gradient %in% c("B", "C"),
   Site %in% c(1:7),
-  ID %in% c(leaf_ID$hashcode))
-
+  ID %in% c(leaf_ID$hashcode)
+)
 ```
 
 And then check the rules in the dataset.
@@ -506,7 +487,6 @@ And then check the rules in the dataset.
 
 out <- confront(raw_traits, rules)
 summary(out)
-  
 ```
 
 There are 14 rows with a wrong leaf ID.
@@ -517,7 +497,6 @@ There are 14 rows with a wrong leaf ID.
 #| echo: true
 
 violating(raw_traits, out)
-  
 ```
 
 The ID BGB8422 does not exist in the list of valid leaf IDs.
@@ -531,9 +510,8 @@ With the function `str_detect()` we can search for specific strings like "BGB" o
 #| label: find-wrong-ID
 #| echo: true
 
-leaf_ID |> 
+leaf_ID |>
   filter(str_detect(hashcode, "8422"))
-  
 ```
 
 When searching for the combinations of numbers, we find a ID that is very similar but a B is replaced by the P.
@@ -576,8 +554,8 @@ But because we have different traits, we need to use a conditional rule:
 
 # rules
 rules <- validator(
-  if (Trait == "LDMC") Value <= 1)
-
+  if (Trait == "LDMC") Value <= 1
+)
 ```
 
 And then check the rules in the dataset.
@@ -589,7 +567,6 @@ And then check the rules in the dataset.
 
 out <- confront(raw_traits, rules)
 summary(out)
-  
 ```
 
 None of the values is violating the rules, so all is good.
@@ -607,11 +584,10 @@ This is a good way to see small typos in the species names.
 ```{r}
 #| label: unique-names
 #| echo: true
-raw_traits |> 
-  distinct(Taxon) |> 
-  arrange(Taxon) |> 
+raw_traits |>
+  distinct(Taxon) |>
+  arrange(Taxon) |>
   print(n = Inf)
-
 ```
 
 There are four different versions for *oxyra digyna* and two for *calamagrostis neglecta*.
@@ -625,13 +601,16 @@ Because we have to change multiple species names, we will use `case_when()`, whi
 ```{r}
 #| label: fix-oxyra
 #| echo: true
-raw_traits <- raw_traits |> 
-  mutate(Taxon = case_when(Taxon %in% c("oxiria digyna", 
-                                        "oxyria digina", 
-                                        "oxyra digyna") ~ "oxyria digyna",
-                           Taxon == "calalmagrostis neglecta" ~ "calamagrostis neglecta",
-                           TRUE ~ Taxon))
-
+raw_traits <- raw_traits |>
+  mutate(Taxon = case_when(
+    Taxon %in% c(
+      "oxiria digyna",
+      "oxyria digina",
+      "oxyra digyna"
+    ) ~ "oxyria digyna",
+    Taxon == "calalmagrostis neglecta" ~ "calamagrostis neglecta",
+    TRUE ~ Taxon
+  ))
 ```
 
 
@@ -645,15 +624,20 @@ Let's make a taxon dictionary.
 #| label: dictionary
 #| echo: true
 #| eval: false
-dictionary <- tibble(bad_name = c("oxiria digyna", 
-                                  "oxyria digina", 
-                                  "oxyra digyna", 
-                                  "calalmagrostis neglecta"),
-                     good_name = c("oxyria digyna", 
-                                   "oxyria digyna", 
-                                   "oxyria digyna", 
-                                   "calamagrostis neglecta"))
-
+dictionary <- tibble(
+  bad_name = c(
+    "oxiria digyna",
+    "oxyria digina",
+    "oxyra digyna",
+    "calalmagrostis neglecta"
+  ),
+  good_name = c(
+    "oxyria digyna",
+    "oxyria digyna",
+    "oxyria digyna",
+    "calamagrostis neglecta"
+  )
+)
 ```
 
 Next, we need to join the dictionary to the dataset using the bad name column.
@@ -663,11 +647,9 @@ And with coalesce with can replace the bad names with the good names.
 #| label: ix-with-dictionary
 #| echo: true
 #| eval: false
-raw_traits <- raw_traits |> 
-  left_join(dictionary, by = c("Taxon" = "bad_name")) |> 
+raw_traits <- raw_traits |>
+  left_join(dictionary, by = c("Taxon" = "bad_name")) |>
   mutate(Taxon = coalesce(good_name, Taxon))
-  
-
 ```
 
 ### Checking Taxon using TNRS
@@ -692,13 +674,12 @@ We are showing the density for each trait and colour the two different gradients
 #| label: fig-hist
 #| fig-cap: "Density distributions of all measured traits."
 #| fig-alt: "A plto showing the density distributions of all measured traits."
-#| 
-raw_traits |> 
+#|
+raw_traits |>
   ggplot(aes(x = Value, fill = Gradient)) +
   geom_density(alpha = 0.7) +
   scale_fill_manual(values = c("green4", "grey")) +
-  facet_wrap(~ Trait, scales = "free")
-
+  facet_wrap(~Trait, scales = "free")
 ```
 
 Note that the size traits (plant height, leaf mass, area and thickness) have distributions with very long tails.
@@ -716,20 +697,23 @@ Let's log transform the size traits first.
 #| warnigs: false
 
 
-raw_traits <- raw_traits |> 
-  mutate(Value_log = if_else(Trait %in% c(
-    "Plant_Height_cm",
-    "Wet_Mass_g",
-    "Dry_Mass_g",
-    "Leaf_Area_cm2",
-    "Leaf_Thickness_mm"), log(Value), Value),
+raw_traits <- raw_traits |>
+  mutate(
+    Value_log = if_else(Trait %in% c(
+      "Plant_Height_cm",
+      "Wet_Mass_g",
+      "Dry_Mass_g",
+      "Leaf_Area_cm2",
+      "Leaf_Thickness_mm"
+    ), log(Value), Value),
     Trait = recode(Trait,
-                   "Plant_Height_cm" = "Plant_Height_cm_log",
-                   "Wet_Mass_g" = "Wet_Mass_g_log",
-                   "Dry_Mass_g" = "Dry_Mass_g_log",
-                   "Leaf_Area_cm2" = "Leaf_Area_cm2_log",
-                   "Leaf_Thickness_mm" = "Thickness_mm_log"))
-
+      "Plant_Height_cm" = "Plant_Height_cm_log",
+      "Wet_Mass_g" = "Wet_Mass_g_log",
+      "Dry_Mass_g" = "Dry_Mass_g_log",
+      "Leaf_Area_cm2" = "Leaf_Area_cm2_log",
+      "Leaf_Thickness_mm" = "Thickness_mm_log"
+    )
+  )
 ```
 
 And remake the density plot using the log-transformed values.
@@ -738,13 +722,12 @@ And remake the density plot using the log-transformed values.
 #| label: fig-hist-log
 #| fig-cap: "Density distributions of all measured traits."
 #| fig-alt: "A plot showing the density distributions of all measured traits."
-#| 
-raw_traits |> 
+#|
+raw_traits |>
   ggplot(aes(x = Value_log, fill = Gradient)) +
   geom_density(alpha = 0.7) +
   scale_fill_manual(values = c("green4", "grey")) +
-  facet_wrap(~ Trait, scales = "free")
-
+  facet_wrap(~Trait, scales = "free")
 ```
 
 The size traits do not have a long tail anymore.
@@ -755,10 +738,11 @@ For this we can filter observations in the trait *Leaf Area* that have *Value* l
 ```{r}
 #| label: giant-leaf
 #| echo: true
-raw_traits |> 
-  filter(Trait == "Leaf_Area_cm2_log",
-         Value > 10)
-
+raw_traits |>
+  filter(
+    Trait == "Leaf_Area_cm2_log",
+    Value > 10
+  )
 ```
 
 
@@ -773,10 +757,11 @@ Note that we have to fix the problem for the *Value* and *Value_log* column.
 #| label: fix-giant-leaf
 #| echo: true
 
-raw_traits <- raw_traits |> 
-  mutate(Value = if_else(ID == "ANH3472" & Trait == "Leaf_Area_cm2_log", 1.7965, Value),
-         Value_log = if_else(ID == "ANH3472" & Trait == "Leaf_Area_cm2_log", log(1.7965), Value_log))
-
+raw_traits <- raw_traits |>
+  mutate(
+    Value = if_else(ID == "ANH3472" & Trait == "Leaf_Area_cm2_log", 1.7965, Value),
+    Value_log = if_else(ID == "ANH3472" & Trait == "Leaf_Area_cm2_log", log(1.7965), Value_log)
+  )
 ```
 
 
@@ -792,11 +777,10 @@ We would expect a positive correlation between the two variables, where large le
 #| fig-alt: "A plot showing the correlation between leaf area and dry mass. The two variables are positively correlated, but there is a separate point cloud with lower dry mass and area."
 
 raw_traits |>
-  dplyr::select(-Value) |> 
+  dplyr::select(-Value) |>
   tidyr::pivot_wider(names_from = Trait, values_from = Value_log) |>
   ggplot(aes(x = Dry_Mass_g_log, y = Leaf_Area_cm2_log)) +
   geom_point()
-
 ```
 
 We see a good correlation between leaf area and dry mass.
@@ -835,7 +819,7 @@ This can easily be seen, when adding the regression lines for each data cloud, a
 #| echo: false
 
 raw_traits |>
-  dplyr::select(-Value) |> 
+  dplyr::select(-Value) |>
   tidyr::pivot_wider(names_from = Trait, values_from = Value_log) |>
   ggplot(aes(x = Dry_Mass_g_log, y = Leaf_Area_cm2_log)) +
   geom_point() +
@@ -843,9 +827,6 @@ raw_traits |>
   geom_abline(intercept = 6.6612, slope = 0.9158, colour = "red") +
   geom_abline(intercept = 8.6612, slope = 0.9158, colour = "red") +
   geom_abline(intercept = 10.6612, slope = 0.9158, colour = "red")
-  
-  
-
 ```
 
 

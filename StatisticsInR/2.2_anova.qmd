@@ -129,15 +129,14 @@ To spell it out mathematically, we can write these entities as they are represen
 ```{r add-data, echo=FALSE, message=FALSE, warning=FALSE}
 library(kableExtra)
 
-table1<-read.csv("./Files/table1.csv",header=T,sep=";")
-colnames(table1)[1]<-"Source of variation"
+table1 <- read.csv("./Files/table1.csv", header = T, sep = ";")
+colnames(table1)[1] <- "Source of variation"
 table1 %>%
   kbl(align = "c") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "responsive"))%>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "responsive")) %>%
   row_spec(0, color = "black", background = "white") %>%
-
-  row_spec(1, background = "white")%>%
-row_spec(2, background = "lightgrey")%>%
+  row_spec(1, background = "white") %>%
+  row_spec(2, background = "lightgrey") %>%
   row_spec(3, background = "white")
 ```
 
@@ -150,58 +149,60 @@ Where df is the degrees of freedom, SS is the sum of squares, MS is the mean sum
 Let’s consider an experiment designed to test plant yields from a control and two different fertiliser treatments. The plants from each group were collected, and the dry weight of the plants are measured (grams).  Figure 4 illustrates two possible outcomes of this experiment and gives an example of the between- and within- group variability. 
 
 ```{r echo=T, fig.show='hide',message=FALSE, warning=FALSE, include=T}
-
-
 ## This script is to reproduce Figure 4 in R
 
-PlantGrowth<-read.csv("./Files/plgrowth.csv",header=T,sep=",")
+PlantGrowth <- read.csv("./Files/plgrowth.csv", header = T, sep = ",")
 
-PlantGrowth2<-read.csv("./Files/plgrowth2.csv",header=T,sep=";")
+PlantGrowth2 <- read.csv("./Files/plgrowth2.csv", header = T, sep = ";")
 
 library(ggplot2)
 library(grid)
-library(pBrackets) 
+library(pBrackets)
 library(gridExtra)
 
 
 annotation <- data.frame(
-  x = c(2.6,2.8),
-  y = c(4.5,5.5),
+  x = c(2.6, 2.8),
+  y = c(4.5, 5.5),
   label = c("Within", "Between")
 )
 annotation1 <- data.frame(
-  x = c(1.6,2.6),
-  y = c(5.25,5.1),
+  x = c(1.6, 2.6),
+  y = c(5.25, 5.1),
   label = c("Within", "Between")
 )
 
-plot1<-ggplot(PlantGrowth, aes(x = group, y = weight))+
-   geom_point(fill="blue")+ 
-  geom_segment(aes(x=0.9,y=5.032, xend=1.1,yend=5.032), color="red", size=2)+
-   geom_segment(aes(x=1.9,y=4.661, xend=2.1,yend=4.661), color="red", size=2)+
-  geom_segment(aes(x=2.9,y=5.526, xend=3.1,yend=5.526), color="red", size=2)+
-  geom_text(data=annotation1, aes( x=x, y=y, label=label), color="black",size=3 , fontface="bold" )+
-  theme_bw()+labs( title="A",y="Weight (g)", x = "Group")
+plot1 <- ggplot(PlantGrowth, aes(x = group, y = weight)) +
+  geom_point(fill = "blue") +
+  geom_segment(aes(x = 0.9, y = 5.032, xend = 1.1, yend = 5.032), color = "red", size = 2) +
+  geom_segment(aes(x = 1.9, y = 4.661, xend = 2.1, yend = 4.661), color = "red", size = 2) +
+  geom_segment(aes(x = 2.9, y = 5.526, xend = 3.1, yend = 5.526), color = "red", size = 2) +
+  geom_text(data = annotation1, aes(x = x, y = y, label = label), color = "black", size = 3, fontface = "bold") +
+  theme_bw() +
+  labs(title = "A", y = "Weight (g)", x = "Group")
 
 
-plot2<-ggplot(PlantGrowth2, aes(x = group, y = weight)) +
-geom_point()+ geom_segment(aes(x=0.9,y=5.32, xend=1.1,yend=5.32), color="red", size=2)+
- geom_segment(aes(x=1.9,y=4.56, xend=2.1,yend=4.56), color="red", size=2)+
-  geom_segment(aes(x=2.9,y=6.43, xend=3.1,yend=6.43), color="red", size=2)+
-  geom_text(data=annotation, aes( x=x, y=y, label=label),                 
-            color="black", 
-            size=3 , fontface="bold" )+
-  theme_bw()+labs(title = "B",y="", x = "Group")
+plot2 <- ggplot(PlantGrowth2, aes(x = group, y = weight)) +
+  geom_point() +
+  geom_segment(aes(x = 0.9, y = 5.32, xend = 1.1, yend = 5.32), color = "red", size = 2) +
+  geom_segment(aes(x = 1.9, y = 4.56, xend = 2.1, yend = 4.56), color = "red", size = 2) +
+  geom_segment(aes(x = 2.9, y = 6.43, xend = 3.1, yend = 6.43), color = "red", size = 2) +
+  geom_text(
+    data = annotation, aes(x = x, y = y, label = label),
+    color = "black",
+    size = 3, fontface = "bold"
+  ) +
+  theme_bw() +
+  labs(title = "B", y = "", x = "Group")
 
 
-grid.arrange(plot1, plot2,ncol=2)
+grid.arrange(plot1, plot2, ncol = 2)
 
-grid.brackets(93, 55, 93, 224, lwd=2, col="darkolivegreen3")
-grid.brackets(229, 108, 229, 185, lwd=2, col="mediumorchid4")
+grid.brackets(93, 55, 93, 224, lwd = 2, col = "darkolivegreen3")
+grid.brackets(229, 108, 229, 185, lwd = 2, col = "mediumorchid4")
 
-grid.brackets(498, 82, 498, 233, lwd=2, col="mediumorchid4")
-grid.brackets(424, 197, 424, 274, lwd=2, col="darkolivegreen3")
-
+grid.brackets(498, 82, 498, 233, lwd = 2, col = "mediumorchid4")
+grid.brackets(424, 197, 424, 274, lwd = 2, col = "darkolivegreen3")
 ```
 
 </br>
