@@ -154,7 +154,9 @@ and add
 #| eval: false
 
 .ggOceanMapsenv <- new.env()
-.ggOceanMapsenv$datapath <- "~/ggOceanMapsLargeData" # you can use a different directory if you want
+.ggOceanMapsenv$datapath <- "~/ggOceanMapsLargeData"
+# you can use a different directory if you want.
+# This one should work on any computer
 ```
 
 Save the file and restart R (Session \> Restart R).
@@ -303,7 +305,7 @@ Several different types of maps are available (see `rosm::osm.types()`) and more
 #| fig-alt: maps of Bergen with different tiled backgrounds
 # rosm::osm.types()
 c("osm", "cartodark", "cartolight") |> # some need registration
-  map(\(osm_type){
+  map(\(osm_type) {
     ggplot() +
       annotation_map_tile(
         type = osm_type,
@@ -342,7 +344,8 @@ Then you can run this line in the console
 #| label: register-google
 #| eval: false
 
-register_google(key = "[your key]", write = TRUE) # the write argument will save the key for you.
+# the write argument will save the key for you.
+register_google(key = "[your key]", write = TRUE)
 ```
 
 Your key is private.
@@ -360,7 +363,7 @@ Now you can use `ggmap`
 library(ggmap)
 
 bergen <- get_map(
-  location = c(5.24, 60.37, 5.36, 60.41), #  left/bottom/right/top
+  location = c(5.24, 60.37, 5.36, 60.41), # left/bottom/right/top
   maptype = "satellite"
 )
 ggmap(bergen)
@@ -419,10 +422,12 @@ So `geom_spatial_point()` rather than `geom_point()` and `geom_spatial_path()` r
 #| label: fig-geom-spatial-points
 #| message: false
 #| fig-cap: Flight speed of a migrating osprey
-#| fig-alt: Maps showing flight speed of a migrating osprey from Germany to West Africa.
+#| fig-alt: >
+#|   Maps showing flight speed of a migrating osprey from Germany to West Africa.
 library(ggspatial)
 
-# GPS tracking data of osprey. Data from https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.w6m905qt2
+# GPS tracking data of osprey. Data from
+# https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.w6m905qt2
 osprey <- read_delim("maps/osprey/06982.txt",
   locale = locale(decimal_mark = ",")
 ) |>
@@ -490,7 +495,9 @@ Here, I use data on 2021 phosphorous discharge in municipal wastewater from [SSB
 #| message: false
 #| results: hide
 #| fig-cap: Total phosphate discharge in municipal wastewater by fylke.
-#| fig-alt: Cloropleth map of phosphate discharges by fylke. Discharges are hightest in Vestland
+#| fig-alt: >
+#|   Cloropleth map of phosphate discharges by fylke.
+#|   Discharges are hightest in Vestland
 p_discharge <- readxl::read_excel(
   path = "data/05280_20230421-012359.xlsx",
   skip = 4, n_max = 11
@@ -500,7 +507,9 @@ p_discharge <- readxl::read_excel(
     cols = x1, # split fist column
     patterns = c(Fylkesnummer = "\\d{2}", " ", Fylkesnavn = ".*")
   ) # using regular expressions
-# \\d{2} = 2 numbers, " " = space, ".*" = any number of any character, ie everything else
+# \\d{2} = 2 numbers
+# " " = space
+# ".*" = any number of any character, ie everything else
 
 # join to fylker
 fylker_2021 <- st_read("data/fylker2021.json") # older flyker map to match data
@@ -522,8 +531,11 @@ This is a cartogram, which can be made with the `cartogram` package.
 ```{r}
 #| label: fig-cartogram
 #| message: false
-#| fig-cap: Cartogram showing total phosphate discharge in municipal wastewater by fylke.
-#| fig-alt: Cartogram showing total phosphate discharge in municipal wastewater by fylke. Vestland is larger and Innlandet is smaller than in the normal map.
+#| fig-cap: >
+#|  Cartogram showing total phosphate discharge in municipal wastewater by fylke.
+#| fig-alt: >
+#|   Cartogram showing total phosphate discharge in municipal wastewater by
+#|   fylke. Vestland is larger and Innlandet is smaller than in the normal map.
 
 library(cartogram)
 
@@ -706,7 +718,9 @@ The [`leaflet`](https://rstudio.github.io/leaflet/) or [`mapgl`](https://walker-
 
 ```{r}
 #| label: fig-leaflet
-#| fig-cap: leaflet map showing fish farms. You can zoom and pan the map, or click to get the fish farm name.
+#| fig-cap: >
+#|   leaflet map showing fish farms. You can zoom and pan the map, or click
+#|   to get the fish farm name.
 #| fig-alt: Zoomable and panable map showing fish farm locations.
 
 library(leaflet) # NB uses pipes |> not +

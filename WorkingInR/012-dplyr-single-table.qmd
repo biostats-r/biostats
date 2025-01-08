@@ -59,7 +59,7 @@ The names do not need quote marks.
 
 ```{r select1}
 #select species, bill_length_mm & bill_depth_mm
-penguins |> 
+penguins |>
   select(species, bill_length_mm, bill_depth_mm)
 ```
 
@@ -67,7 +67,7 @@ This is equivalent to the base R code
 
 ```{r select1.5}
 #select species, bill_length_mm & bill_depth_mm
-penguins[, c("species", "bill_length_mm", "bill_depth_mm")] 
+penguins[, c("species", "bill_length_mm", "bill_depth_mm")]
 ```
 
 Remember that if you want to use the output of this code in a further analysis, you need to assign it to an object name with `<-`.
@@ -85,8 +85,12 @@ From the `penguins` data, select
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
-penguins |> 
+```{r}
+#| label: hint-1
+#| eval: false
+#| tidy: false
+#| nolint: true
+penguins |>
   select(___, ___)
 ```
 
@@ -118,7 +122,7 @@ If there is a pattern to the column names that we want to select (or remove), th
 For example, to select columns that start with "bill", we can use `starts_with()`.
 
 ```{r select4}
-#select bill_length_mm & bill_depth_mm" 
+#select bill_length_mm & bill_depth_mm"
 penguins |> select(starts_with("bill"))
 ```
 
@@ -150,9 +154,12 @@ From the `penguins` data, select
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
+```{r}
+#| label: hint-2
+#| eval: false
+#| tidy: false
 # hint 1
-penguins |> 
+penguins |>
   select(-___)
 
 # hint 2
@@ -219,7 +226,7 @@ Other tests include
 -   `near` safe function for testing equality of numeric data as it has a tolerance for rounding errors.
 
 ```{r filter-near}
-sqrt(2) ^ 2 == 2 # should be true, but rounding errors 
+sqrt(2) ^ 2 == 2 # should be true, but rounding errors
 sqrt(2) ^ 2 - 2 # the difference
 near(sqrt(2) ^ 2, 2) # safe alternative
 ```
@@ -234,11 +241,12 @@ near(sqrt(2) ^ 2, 2) # safe alternative
 -   `%in%` is used when you want to test if a value is in a vector
 
 ```{r filter-in}
-penguins |> 
+penguins |>
   filter(species %in% c("Adelie", "Chinstrap"))
-#equivalent to 
-penguins |> 
-  filter(species == "Adelie" | species == "Chinstrap") # with many alternatives, this gets long
+#equivalent to
+penguins |>
+  filter(species == "Adelie" | species == "Chinstrap")
+  # with many alternatives, this gets very long
 ```
 
 ### Filtering on multiple criteria
@@ -248,14 +256,14 @@ If we want to filter on multiple criteria, we need to decide whether we want all
 If we want all criteria to be `TRUE`, we can separate them by a comma (or by an `&` if you want to be explicit).
 
 ```{r filter-AND}
-penguins |> 
+penguins |>
   filter(bill_length_mm > 40, bill_depth_mm > 18)
 ```
 
 If we want rows where any of the criteria is `TRUE`, we can separate them by a `|`.
 
 ```{r filter-OR}
-penguins |> 
+penguins |>
   filter(bill_length_mm > 40 | bill_depth_mm > 18)
 ```
 
@@ -299,7 +307,10 @@ From the `penguins` data, filter
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
+```{r}
+#| label: hint-3
+#| eval: false
+#| tidy: false
 #hint 1
 penguins |> filter(___ = ___)
 
@@ -359,7 +370,10 @@ From the `penguins` data, find distinct values of
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
+```{r}
+#| label: hint-4
+#| eval: false
+#| tidy: false
 penguins |> distinct(___, ___)
 
 ```
@@ -384,7 +398,7 @@ The function `mutate()` can add an new column or replace an existing one.
 To make a new column called `body_mass_kg` we can use
 
 ```{r}
-penguins |> 
+penguins |>
   mutate(body_mass_kg = body_mass_g / 1000)
 ```
 
@@ -408,9 +422,12 @@ With the `penguins` data,
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
+```{r}
+#| label: hint-5
+#| eval: false
+#| tidy: false
 # hint 1
-penguins |> 
+penguins |>
   mutate(___ = ___)
 ```
 
@@ -425,7 +442,7 @@ Remember to separate arguments with a comma.
 
 ```{r summarise1}
 penguins |> summarise(
-  flipper_len_mean = mean(flipper_length_mm, na.rm = TRUE), 
+  flipper_len_mean = mean(flipper_length_mm, na.rm = TRUE),
   flipper_len_sd = sd(flipper_length_mm, na.rm = TRUE)
   )
 ```
@@ -443,8 +460,11 @@ With the `penguins` data, find
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
-penguins |> 
+```{r}
+#| label: hint-6
+#| eval: false
+#| tidy: false
+penguins |>
   summarise(___ = ___(___))
 ```
 
@@ -460,14 +480,14 @@ This can be done with the `across()` helper function.
 ```{r across}
 penguins |>
    summarise(
-     across(c(bill_length_mm, bill_depth_mm), 
+     across(c(bill_length_mm, bill_depth_mm),
             .fns = \(x)mean(x, na.rm = TRUE)))
 
 #using a list of functions
 penguins |>
   summarise(
-    across(.cols = starts_with("bill"), 
-           .fns = list(sd = \(x)sd(x, na.rm = TRUE), 
+    across(.cols = starts_with("bill"),
+           .fns = list(sd = \(x)sd(x, na.rm = TRUE),
                        mean = \(x)mean(x, na.rm = TRUE))))
 ```
 
@@ -481,8 +501,8 @@ Instead of working on the entire dataset, they now work on each group in the dat
 To find the mean flipper length for each species, we need to `group_by()` species and then `summarise()`.
 
 ```{r group-by}
-penguins |> 
-  group_by(species) |> 
+penguins |>
+  group_by(species) |>
   summarise(mean_flipper_length = mean(flipper_length_mm))
 ```
 
@@ -500,8 +520,11 @@ With the `penguins` data, find
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
-penguins |> 
+```{r}
+#| label: hint-7
+#| eval: false
+#| tidy: false
+penguins |>
   group_by(___)
   summarise(___ =  ___(___))
 ```
@@ -536,9 +559,12 @@ Sort the `penguins` data by
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
+```{r}
+#| label: hint-8
+#| eval: false
+#| tidy: false
 # hint 1
-penguins |> 
+penguins |>
   arrange(___, ___)
 
 # hint 2
@@ -554,15 +580,15 @@ The function `n` can count how many rows there are in the each group (or the ent
 It can be used with either `mutate()` or `summarise()`.
 
 ```{r n}
-penguins |> 
-  group_by(species) |> 
+penguins |>
+  group_by(species) |>
   summarise(n = n())
 ```
 
 Or with `count()`
 
 ```{r count}
-penguins |> 
+penguins |>
   count(species)
 ```
 
@@ -580,13 +606,16 @@ From the `penguins` data, find
 
 <summary>Hint</summary>
 
-```{r, eval = FALSE}
-penguins |> 
+```{r}
+#| label: hint-9
+#| eval: false
+#| tidy: false
+penguins |>
   count(___, ___)
 
 # or
-penguins |> 
-  group_by(___) |> 
+penguins |>
+  group_by(___) |>
   summarise(___ = n())
 
 ```
