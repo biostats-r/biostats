@@ -3,3 +3,4 @@
 # This file forces renv to use them
 
 library(rioja)
+library(Hmisc)

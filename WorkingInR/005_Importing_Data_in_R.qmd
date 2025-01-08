@@ -213,6 +213,7 @@ Much better is to a path relative to your RStudio project (remember to use an RS
 If the contents of your RStudio project looked like this
 
 ```{r}
+#| label: file-tree
 #| column: page-right
 #| echo: false
 ## good
@@ -295,12 +296,14 @@ To do this, we can print the object or `View()` it.
 We can also get details of the column specification
 
 ```{r}
+#| label: spec
 spec(weather)
 ```
 
 Any parsing problems (for example if there text in a column that should be numeric) will be shown with `problems()`
 
 ```{r}
+#| label: problems
 problems(weather)
 ```
 
@@ -498,7 +501,7 @@ counts
 
 
 
-Note that `col_types` is particularly useful when importing tabular data that includes formatted dates.
+`col_types` is particularly useful when importing tabular data that includes formatted dates.
 Dates are usually recognized as `character` when their format does not match the expected format set as default (locale, etc).
 In the following example, dates entered  as `yyyy-mm-dd` in the last column are recognized as of type `date`:
 ```{r col-types-dates1, echo=TRUE} 
@@ -541,10 +544,11 @@ These data are plant biomass data from an alpine grassland near Mt Gonga, China.
 `readr` imports objects into the computers memory. 
 This is fine for most datasets. 
 But very large datasets (gigabytes) - will not fit into memory and another solution is needed. 
-Here we can use apache arrow with the [`arrow` package](https://arrow.apache.org/docs/r/articles/dataset.html). 
-This can work with `dplyr` functions to process large datasets efficiently.
+We can use apache arrow with the [`arrow` package](https://arrow.apache.org/docs/r/articles/dataset.html) or duckDB with [duckplyr](https://duckplyr.tidyverse.org/).
+Both can work with `dplyr` functions to process large datasets efficiently.
 
 :::
+
 
 ### White space delimited files
 
@@ -555,6 +559,7 @@ Sometimes multiple spaces are used so the columns line up, making the text file 
 Instead we can use `read_table()`, shown here with some test data.
 
 ```{r}
+#| label: read-white-space
 read_table(" Species   Value
             Navicula       1
             Cymbella       2")
@@ -574,6 +579,36 @@ Import part "3a. Clegg et al. 2011 Hudson Lake Midge Temperature Data" from "ala
 `skip` and 
 `n_max` argument can be useful.
 </details> 
+:::
+
+::: callout-tip
+## Reading multiple files
+
+If you want to read many files with the **same structure**, you can supply `read_delim()` with a vector of files names.
+
+```{r}
+#| label: multiple-files
+#| eval: false
+
+# get a vector of files
+files <- list.files(path = "data/", pattern = "csv")
+files
+#> file1.csv file2.csv
+
+# read them in at once
+# record paths in a column called filename
+read_csv(files, id = "filename")
+#> # A tibble: 4 × 3
+#>   filename      x     y
+#>   <chr>     <dbl> <dbl>
+#> 1 file1.csv     1     2
+#> 2 file1.csv     3     4
+#> 3 file2.csv     5     6
+#> 4 file2.csv     7     8
+```
+
+If the files do not have identical structures, perhaps one of the files has text where it should have a number, you either have to use the `col_types` argument to convert everything to the same format, or iterate (@sec-iterate) over the files to import and fix them.
+
 :::
 
 
