@@ -63,10 +63,13 @@ For example, if you wanted to test if function `my_import()` could correctly imp
 ```{r}
 #| eval: false
 test_that("import works", {
-  expect_equal(nrow(my_import(test_path("testdata.csv"))), 10)
+  path <- test_path("testdata.csv")
+  import <- my_import(path)
+  expect_equal(nrow(inport), 10)
 })
 ```
 
+You can have multiple expectations in each test.
 :::
 
 Look for examples of tests on GitHub if you need inspiration.
@@ -76,6 +79,9 @@ This is also best practice when writing functions.
 For example, if you were writing a package to import, process, and plot logger data, you would make at least three functions to do this, not one function that does everything.
 
 ## Functions {#sec-functions}
+
+Functions live in the R/ directory in files with the extension .R. 
+You can have one or more functions in a file.
 
 Functions are made with the keyword function, can have one or more arguments separated by commas, and needs assigning to a name.
 
@@ -339,8 +345,9 @@ to import all functions in the package, or
 
 if we want to just import specific functions.
 This is safer as it minimises the risk of conflicts.
+This can be tedious to write if you want to import many function. The `autoimport` package can add the imports (mostly) automatically.
 
-Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (@troubleshooting).
+Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (@sec-troubleshooting).
 
 ### Exporting functions
 
@@ -422,8 +429,8 @@ Here is the entry from `R/data.R`:
     "trait"
 
 The first line gives the title followed by the desciption.
-The \@format field lets you describe the data.
-The last line has the object name in quotes (note no #' first).
+The `@format` field lets you describe the data.
+The last line has the object name in quotes (note no `#'` first).
 
 ## Adding other files
 

@@ -15,8 +15,13 @@ The `directlabels` package helps add labels to plots as a alternative to includi
 
 ```{r}
 #| label: fig-directlabels
-#| fig-cap: Reaction time against day of sleep deprivation experiment. Subject ID are on the right of the plot.
-#| fig-alt: Line graph showing reaction time against day of sleep deprivation experiment. Subject ID are on the right of the plot next to their respective line and with the same colour as the line.
+#| fig-cap: >
+#|   Reaction time against day of sleep deprivation experiment.
+#|   Subject ID are on the right of the plot.
+#| fig-alt: >
+#|   Line graph showing reaction time against day of sleep deprivation
+#|   experiment. Subject ID are on the right of the plot next to their
+#|   respective line and with the same colour as the line.
 
 
 library(directlabels)
@@ -37,7 +42,9 @@ Different combinations of variable types (continuous vs categorical) get differe
 ```{r}
 #| label: fig-ggally
 #| fig-cap: ggpairs() applied to the penguins dataset
-#| fig-alt: matrix of plots that show each variable in the penguins dataset plotted against every other variable.
+#| fig-alt: >
+#|   Matrix of plots that show each variable in the penguins dataset plotted against
+#|   every other variable.
 #| results: hide
 #| message: false
 #| warning: false
@@ -55,7 +62,9 @@ It won't animate a Disney film, but `gganimate` will help bring your data to lif
 ```{r}
 #| label: fig-gganimate
 #| fig-cap: Relationship between life expectancy and GDP per capita over time.
-#| fig-alt: Animation of the relationship between life expectancy and GDP per capita over time using the gapminder dataset.
+#| fig-alt: >
+#|   Animation of the relationship between life expectancy and GDP per capita
+#|   over time using the gapminder dataset.
 library(gganimate)
 library(gapminder) # world health data
 
@@ -64,8 +73,15 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent
   scale_colour_manual(values = continent_colors) +
   scale_size(range = c(2, 12), guide = "none") +
   scale_x_log10() +
-  theme(legend.position = "inside", legend.position.inside = c(0.99, 0.01), legend.justification = c(1, 0)) +
-  labs(title = "Year: {frame_time}", x = "GDP per capita US$", y = "Life expectancy yr", colour = "Continent") +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0)
+  ) +
+  labs(
+    title = "Year: {frame_time}", x = "GDP per capita US$",
+    y = "Life expectancy yr", colour = "Continent"
+  ) +
   transition_time(year) # animates ggplot
 ```
 This is not so useful for traditional journals (except perhaps in supplementary material), but some new journal may accept animations and other video. 
@@ -80,14 +96,16 @@ It is good for presentations and websites.
 #| warning: false
 #| echo: false
 #| fig-cap: "`geom_jitter()` and alternatives from the `ggbeeswarm` package"
-#| fig-alt: "Plots of penguin body mass by species made using `geom_jitter()` and alternatives from the `ggbeeswarm` package"
+#| fig-alt: >
+#|   "Plots of penguin body mass by species made using `geom_jitter()`
+#|   and alternatives from the `ggbeeswarm` package"
 
 library(ggbeeswarm)
 p <- ggplot(palmerpenguins::penguins, aes(x = species, y = body_mass_g)) +
   labs(x = "Species", y = "Body mass, g")
 
 c("geom_jitter()", "geom_beeswarm(cex = 2.5)", "geom_quasirandom()") |>
-  map(\(geom){
+  map(\(geom) {
     p + eval(parse(text = geom)) +
       ggtitle(paste0(str_extract(geom, "geom_[a-z]*"), "()"))
   }) |>
@@ -110,8 +128,14 @@ Use `geom_*_interactive()` to get tooltips.
 
 ```{r}
 #| label: fig-ggiraph
-#| fig-cap: Interactive plot of life expectancy against GDP per capita in 1972. Hover mouse over a point to see which country it represents.
-#| fig-alt: Interactive plot of life expectancy against GDP per capita from the gapminder dataset. Hovering the mouse over a point brings up a tool tip that shows which country it represents.
+#| fig-cap: >
+#|   Interactive plot of life expectancy against GDP per capita in 1972. Hover
+#|   mouse over a point to see which country it represents.
+#| fig-alt: >
+#|   Interactive plot of life expectancy against GDP per capita from the
+#|   gapminder dataset.
+#|   Hovering the mouse over a point brings up a tool tip that shows which
+#|   country it represents.
 
 library(ggiraph)
 # remove ' from cote d'Ivoire
@@ -119,7 +143,10 @@ gapminder <- gapminder |>
   mutate(country2 = str_replace(country, "'", "")) |>
   filter(year == 1972)
 
-p <- ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)) +
+p <- ggplot(
+  gapminder,
+  aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)
+) +
   geom_point_interactive(aes(tooltip = country, data_id = country2, alpha = 0.7)) +
   scale_colour_manual(values = continent_colors) +
   scale_size(range = c(2, 12), guide = "none") +
@@ -142,8 +169,12 @@ Bored with solid fills?
 
 ```{r}
 #| label: fig-ggpattern
-#| fig-cap: Bar chart made with `geom_bar_pattern()` showing three different pattern types.
-#| fig-alt: Barchart of the penguin data showing three different pattern types and a larger legend than default so the patterns show clearly.
+#| fig-cap: >
+#|   Bar chart made with `geom_bar_pattern()`
+#|   showing three different pattern types.
+#| fig-alt: >
+#|   Barchart of the penguin data showing three different pattern types and a
+#|   larger legend than default so the patterns show clearly.
 
 
 library(ggpattern)
@@ -175,7 +206,10 @@ If you want to label points on a plot, but the labels overlap, `ggrepel` can hel
 ```{r}
 #| label: fig-ggrepel
 #| fig-cap: "`geom_text()` and `geom_text_repel()`"
-#| fig-alt: Plots of milage against weight for cars. Left plot labels points with geom_text(), with a lot of overlapping text. Right plot uses geom_text_repel() to avoid overlapping.
+#| fig-alt: >
+#|   Plots of milage against weight for cars.
+#|   Left plot labels points with geom_text(), with a lot of overlapping text.
+#|   Right plot uses geom_text_repel() to avoid overlapping.
 #| warning: false
 library(ggrepel)
 
@@ -207,8 +241,12 @@ This can be an alternative to using a legend.
 ```{r}
 #| label: fig-ggtext
 #| warning: false
-#| fig-cap: Coloured text in the title indicates which species is which, so a legend is not required.
-#| fig-alt: Plot of penguins flipper-length against body-mass. Plot title has coloured text to indicate the species, so a legend is not required.
+#| fig-cap: >
+#|   Coloured text in the title indicates which species is which,
+#|   so a legend is not required.
+#| fig-alt: >
+#|   Plot of penguins flipper-length against body-mass.
+#|   Plot title has coloured text to indicate the species, so a legend is not required.
 
 library(ggtext)
 
@@ -223,8 +261,10 @@ ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm, color = species)) +
     x = "Body mass g",
     y = "Flipper length mm",
     # title has formatting
-    title = "<span style = 'font-size:14pt; font-family:Helvetica;'>Flipper-body mass relationship similar between penguin species</span><br>
-<span style = 'color:#0072B2;'>Adelie</span> and <span style = 'color:#D55E00;'>Chinstrap</span>
+    title = "<span style = 'font-size:14pt; font-family:Helvetica;'>
+    Flipper-body mass relationship similar between penguin species</span><br>
+<span style = 'color:#0072B2;'>Adelie</span> and
+<span style = 'color:#D55E00;'>Chinstrap</span>
 are smaller than <span style = 'color:#55aa55;'>Gentoo</span> penguins,
 but the flipper length-body mass relationship is similar."
   ) +

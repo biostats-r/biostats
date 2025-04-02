@@ -101,7 +101,7 @@ The code in the previous section won't work if we try to replace an `NA` in a fa
 
 ```{r bad-factor, error = TRUE, message = TRUE}
 penguins |>
-  mutate(sex = replace_na(sex, "missing")) |>
+  mutate(sex = replace_na(sex, "missing")) |> # throws error
   distinct(sex)
 ```
 
@@ -111,7 +111,7 @@ Instead we need to use the function `forcats::fct_explicit_na()` (the `forcats` 
 
 ```{r good-factor}
 penguins |>
-  mutate(sex = fct_explicit_na(sex, na_level = "missing")) |>
+  mutate(sex = fct_na_value_to_level(sex, level = "missing")) |>
   count(sex)
 ```
 
@@ -158,36 +158,6 @@ penguins |>
 ```
 
 Here the `|` means OR in Boolean logic.
-
-### Missing values and dplyr `if_else()` and `case_when()`
-
-Sometimes is it useful to set values to `NA` with `if_else()` (when there is a choice of two outcomes) or `case_when()` (when there is a choice of two or more outcomes).
-
-All possible values returned by `if_else()` and `case_when()` need to be of the same type (character, numeric, integer, logical).
-If the types are inconsistent, an error is produced.
-This is useful as forcing consistency helps avoid unexpected behaviour.
-
-```{r case-when-error, error=TRUE}
-x <- 0:2
-case_when(
-  x == 0 ~ NA,
-  x == 1 ~ "One",
-  x == 2 ~ "Two"
-)
-```
-The problem occurs here because `NA` is treated as a logical vector, while the other values are characters.
-The solution is to use `NA_character_` which is an `NA` with the correct type.
-
-```{r case-when}
-x <- 0:2
-case_when(
-  x == 0 ~ NA_character_,
-  x == 1 ~ "One",
-  x == 2 ~ "Two"
-)
-```
-
-Other typed `NA` include `NA_real_` for numeric values and `NA_integer` for integer values.
 
 
 ## Statistics with missing values
@@ -270,7 +240,11 @@ When comparing models, for example with `anova()`, all models need to have been 
 This can cause problems if `NA` have caused different numbers of observations to be removed.
 
 ```{r bad-anova, error = TRUE}
-mod2 <- lm(bill_length_mm ~ body_mass_g + sex, data = penguins, na.action = na.exclude)
+mod2 <- lm(
+  bill_length_mm ~ body_mass_g + sex,
+  data = penguins,
+  na.action = na.exclude
+)
 
 anova(mod, mod2)
 ```

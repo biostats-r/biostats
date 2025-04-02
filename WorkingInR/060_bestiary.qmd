@@ -87,8 +87,10 @@ Round brackets `()` are also used to force the order of operations in an calcula
 Single square brackets `[]` are used for sub-setting vectors, matrices and similar objects.
 
 ```{r square-bracket}
-month.name[6:7] # extract the 6th and 7th element of month.name
-penguins[1, "species"] # first element of species column (dplyr gives neater ways to do this)
+# extract the 6th and 7th element of month.name
+month.name[6:7]
+# extract first element of species column (dplyr gives neater ways to do this)
+penguins[1, "species"]
 ```
 
 Double square brackets are used to extract elements from a list
@@ -104,8 +106,8 @@ Curly brackets or braces `{}` are used to keep code that needs to be run togethe
 This is commonly done when writing a function
 
 ```{r, results='hide'}
-cylinder_volume <- function(radius = 1, height){
-  radius ^ 2 * pi * height 
+cylinder_volume <- function(radius = 1, height) {
+  radius ^ 2 * pi * height
 }
 
 cylinder_volume(height = 2)
@@ -114,7 +116,7 @@ cylinder_volume(height = 2)
 or when writing an `if` statement
 
 ```{r, eval = FALSE}
-if(logical_condition){
+if (logical_condition) {
   #some code to run if logical_condition is TRUE
 }
 ```
@@ -125,7 +127,8 @@ The curly brackets demarcate R code to include in the output.
 ```{r}
 
 glue::glue("The penguins dataset has {nrow(penguins)} rows")
-paste("The penguins dataset has", nrow(penguins), "rows") # base R alternative gets clunky fast
+# base R alternative gets clunky fast
+paste("The penguins dataset has", nrow(penguins), "rows")
 ```
 
 Double curly brackets `{{}}` are used programming with `tidyverse`.
@@ -163,7 +166,7 @@ A single colon `:` is used to get a sequence between two values with a step size
 
 ```{r colon}
 1:10
-#equivalent to 
+#equivalent to
 seq(from = 1, to = 10, by = 1)
 ```
 
@@ -172,7 +175,7 @@ A single colon is also used when detaching a package which is almost, but not qu
 
 ```{r, eval = FALSE}
 library(mgcv) # loads mgcv package
-detach("package:mgcv") # 
+detach("package:mgcv")
 ```
 
 Because `detach` is not exactly the opposite of `library`, it is normally better to restart the R session (In Rstudio go to 'Session' then 'Restart R').
@@ -337,7 +340,7 @@ These are useful for navigating long scripts.
 
 ```{r}
 #### this is a section break ####
-# Only needs one leading #, 
+# Only needs one leading #,
 # but symmetry makes code more beautiful
 ```
 
@@ -354,14 +357,16 @@ viridisLite::viridis(n = 5)
 ```
 
 ```{r viridis-plot, fig.cap = "Viridis colours", fig.height = 3, fig.width=3, echo = FALSE}
-tibble(x = viridisLite::viridis(n = 5)) |> 
+tibble(x = viridisLite::viridis(n = 5)) |>
   ggplot(aes(x = factor(x, levels = rev(x)), y = 1, label = x, fill = I(x))) +
   geom_col(show.legend = FALSE) +
-  geom_text(y = 0.5, angle = 0, aes(colour = I(c(rep("white", 2), rep("black", 3)))), show.legend = FALSE, size = 6) +
+  geom_text(y = 0.5, angle = 0,
+            aes(colour = I(c(rep("white", 2), rep("black", 3)))),
+            show.legend = FALSE, size = 6) +
   coord_flip() +
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0)) +
-  theme(axis.text = element_blank(), 
+  theme(axis.text = element_blank(),
         axis.title = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank())
@@ -392,7 +397,7 @@ Some of the mathematical operators are used by tidyverse and associated packages
 
 
 ```{r}
-p_box <- ggplot(penguins, aes(x = species, y = bill_length_mm)) + 
+p_box <- ggplot(penguins, aes(x = species, y = bill_length_mm)) +
   geom_boxplot() +
   labs(x = "Species", y = "Bill length mm")
 ```
@@ -401,12 +406,12 @@ p_box <- ggplot(penguins, aes(x = species, y = bill_length_mm)) +
 
 
 ```{r patchwork, warning = FALSE, fig.cap="Boxplot and violin plot combined with `patchwork`"}
-p_violin <- ggplot(penguins, aes(x = species, y = bill_length_mm)) + 
+p_violin <- ggplot(penguins, aes(x = species, y = bill_length_mm)) +
   geom_violin() +
   labs(x = "Species", y = "Bill length mm")
 
 library(patchwork)
-p_box + p_violin & 
+p_box + p_violin &
   theme(axis.text.x = element_text(angle = 45))
 ```
 

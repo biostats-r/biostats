@@ -40,9 +40,9 @@ Let use `left_join()` to add the location of each island to the penguin data set
 ```{r penguin-islands}
 # location of the three islands in the Palmer Archipelago
 
-penguin_islands <- tribble(
-  ~ island, ~ Latitude, ~ Longitude, # tribble is a convenient way to make small datasets
-  "Torgersen", -64.766667,-64.083333,
+penguin_islands <- tribble(# tribble is a convenient way to make small datasets
+  ~ island, ~ Latitude, ~ Longitude,
+  "Torgersen", -64.766667, -64.083333,
   "Biscoe", -64.818569, -63.775636,
   #"Dream",  -64.733333, -64.233333, # Dream data missing
   "Alpha", -64.316667, -63)
@@ -55,8 +55,8 @@ Here, we are joining by a single column with the same name in both data frames.
 It is possible to join by multiple columns and where the columns have different names in each dataset.
 
 ```{r penguin-leftjoin}
-penguin_small <- penguins |> 
-  group_by(species) |> 
+penguin_small <- penguins |>
+  group_by(species) |>
   slice(1:2) # small version of data for easy viewing
 
 
@@ -115,7 +115,7 @@ knitr::include_graphics("figures/semi-join.gif")
 ```
 
 ```{r semi-join}
-penguin_islands |> 
+penguin_islands |>
   semi_join(penguins, by = join_by(island))
 ```
 
@@ -127,7 +127,7 @@ knitr::include_graphics("figures/anti-join.gif")
 ```
 
 ```{r anti-join}
-penguin_islands |> 
+penguin_islands |>
   anti_join(penguins, by = join_by(island))
 ```
 
@@ -162,11 +162,11 @@ One feature of `bind_rows()` that I find useful is the `.id` argument that makes
 ```{r bind-rows, eval = TRUE}
 svalbard_islands <-  tribble( ~ island, ~ Latitude, ~ Longitude,
    "Nordaustlandet", 79.558405, 24.017351,
- "Prins Karls Forland", 78.554090, 11.256545)
+   "Prins Karls Forland", 78.554090, 11.256545)
 
 bind_rows(
-  Palmer = penguin_islands, 
-  Svalbard = svalbard_islands, 
+  Palmer = penguin_islands,
+  Svalbard = svalbard_islands,
   .id = "Archipelago")
 ```
 
