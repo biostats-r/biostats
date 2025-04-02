@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.53">
+<meta name="generator" content="quarto-1.6.39">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>4&nbsp; Package Contents – Writing an R package</title>
 <style>
@@ -68,12 +68,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3e476e15ae565c222d94875412ae43a1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d3043699f4f525e226433170f63674df.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-09d31aecdfaed6635bc15332bd6d5cdd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-f217443c5b0c50e22034f6b67fd2df8d.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -296,18 +296,22 @@ tests for import functions
 <p>For example, if you wanted to test if function <code>my_import()</code> could correctly import a file (“tests/testthat/testdata.csv”) with the correct number of rows, we could use</p>
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">test_that</span><span class="op">(</span><span class="st">"import works"</span>, <span class="op">{</span></span>
-<span>  <span class="fu">expect_equal</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu">my_import</span><span class="op">(</span><span class="fu">test_path</span><span class="op">(</span><span class="st">"testdata.csv"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span>  <span class="va">path</span> <span class="op">&lt;-</span> <span class="fu">test_path</span><span class="op">(</span><span class="st">"testdata.csv"</span><span class="op">)</span></span>
+<span>  <span class="va">import</span> <span class="op">&lt;-</span> <span class="fu">my_import</span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
+<span>  <span class="fu">expect_equal</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">inport</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>You can have multiple expectations in each test.</p>
 </div>
 </div>
 <p>Look for examples of tests on GitHub if you need inspiration.</p>
 <p>Functions are much easier to test if the functions do one job. This is also best practice when writing functions. For example, if you were writing a package to import, process, and plot logger data, you would make at least three functions to do this, not one function that does everything.</p>
 </section><section id="sec-functions" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="sec-functions">
 <span class="header-section-number">4.3</span> Functions</h2>
+<p>Functions live in the R/ directory in files with the extension .R. You can have one or more functions in a file.</p>
 <p>Functions are made with the keyword function, can have one or more arguments separated by commas, and needs assigning to a name.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arg1</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">arg2</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arg1</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">arg2</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">arg1</span> <span class="op">*</span> <span class="va">arg2</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -318,9 +322,9 @@ tests for import functions
 <span class="header-section-number">4.3.1</span> Well behaved functions</h3>
 <p>Try not to alter the state of the users R session. Don’t include calls to <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> or <code><a href="https://rdrr.io/r/base/library.html">require()</a></code> in functions (see <a href="#sec-importing-exporting-functions" class="quarto-xref"><span>Section 4.4.1</span></a>). If you need to change the state, then revert it with when the function finishes. You can do this with <code><a href="https://withr.r-lib.org/reference/defer.html">withr::defer()</a></code>. This is better behaved than the base R equivalent <code><a href="https://rdrr.io/r/base/on.exit.html">on.exit()</a></code>. Even if the function throws an error, the state of <code>options</code> will be reverted to its original state.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># set options</span></span>
-<span>  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/defer.html">defer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span><span class="op">)</span> <span class="co">#next line</span></span>
+<span>  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/defer.html">defer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span><span class="op">)</span> <span class="co"># next line</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -328,7 +332,7 @@ tests for import functions
 <span class="header-section-number">4.3.2</span> Data validation - expect the unexpected.</h3>
 <p>If you are going to release your package, you need to try to make it idiot proof. Assume users will make mistakes with their data input. Use code to validate that the data are correct, or else throw an error. <code>if</code> statements and <code><a href="https://rdrr.io/r/base/stop.html">stop()</a></code> are useful here.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arg1</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">arg2</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arg1</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">arg2</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">arg1</span><span class="op">)</span> <span class="op">||</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">arg2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Arguments arg1 and arg2 must be numeric"</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
@@ -347,15 +351,15 @@ tests for import functions
 <p>You can find out the class of an object with <code><a href="https://rdrr.io/r/base/class.html">class()</a></code></p>
 <p>The class of an object can be set with <code><a href="https://rdrr.io/r/base/class.html">class()</a></code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">complex_logic</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"my_class"</span></span>
 <span>  <span class="va">result</span></span>
-<span>  <span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If the object already has a class and you want to keep it, you need something like</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"my_class"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"my_class"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To make a <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> method for <code>my_class</code>, we simply make a function called <code>print.my_class</code> or <code>plot.my_class</code>. The method will be declared automatically when the documentation (<a href="#sec-documentation-with-roxygen2" class="quarto-xref"><span>Section 4.4</span></a>) is made.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -381,17 +385,17 @@ Going further with classes
 <p>The first is to pass unknown arguments to a second function (e.g., <code>plot.cca()</code>).</p>
 <p>If we make a <code>plot.my_class()</code> function we can use the ellipses so we don’t need to specify all the possible arguments in plot.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot.my_class</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">obj</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co">#logic to prepare data for plotting</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot.my_class</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">obj</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># logic to prepare data for plotting</span></span>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">$</span><span class="va">x</span></span>
-<span>  <span class="va">y</span> <span class="op">&lt;-</span><span class="va">obj</span><span class="op">$</span><span class="va">y</span></span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">$</span><span class="va">y</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now all of arguments to <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot.default()</a></code> can be used.</p>
 <p>The second way to use ellipses is when there are a variable number of arguments. We can capture the <code>...</code> using <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>, and then process it further.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dot_to_list</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dot_to_list</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -412,7 +416,7 @@ Going further with classes
 <p>Tidyverse packages such as <code>dplyr</code> and <code>ggplot2</code> which use Non-Standard Evaluation (NSE) are great for using in a script but a little challenging to use in functions.</p>
 <p>We cannot just do something like this as we get an error</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_select</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_select</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -423,9 +427,9 @@ Going further with classes
 </div>
 <p>One solution is to use the curly-curly notation</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#select</span></span>
-<span><span class="va">my_select2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span><span class="va">col</span><span class="op">}</span><span class="op">}</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># select</span></span>
+<span><span class="va">my_select2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span> <span class="va">col</span> <span class="op">}</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">my_select2</span><span class="op">(</span><span class="va">penguins</span>, col <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -446,8 +450,8 @@ Going further with classes
 # ℹ 334 more rows</code></pre>
 </div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># filter</span></span>
-<span><span class="va">my_filter</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span>, <span class="va">`%test%`</span>, <span class="va">value</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span><span class="va">col</span><span class="op">}</span><span class="op">}</span> <span class="op">%test%</span> <span class="va">value</span><span class="op">)</span></span>
+<span><span class="va">my_filter</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span>, <span class="va">`%test%`</span>, <span class="va">value</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span> <span class="va">col</span> <span class="op">}</span><span class="op">}</span> <span class="op">%test%</span> <span class="va">value</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">my_filter</span><span class="op">(</span><span class="va">penguins</span>, col <span class="op">=</span> <span class="va">species</span>, `%test%` <span class="op">=</span> <span class="va">`==`</span>, value <span class="op">=</span> <span class="st">"Adelie"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -468,9 +472,9 @@ Going further with classes
 # ℹ 142 more rows
 # ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 </div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#mutate Note the := operator.</span></span>
-<span><span class="va">my_mutate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col1</span>, <span class="va">col2</span>, <span class="va">sum_col</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span><span class="va">sum_col</span><span class="op">}</span><span class="op">}</span> <span class="op">:=</span> <span class="op">{</span><span class="op">{</span><span class="va">col1</span><span class="op">}</span><span class="op">}</span> <span class="op">+</span> <span class="op">{</span><span class="op">{</span><span class="va">col2</span><span class="op">}</span><span class="op">}</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># mutate Note the := operator.</span></span>
+<span><span class="va">my_mutate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col1</span>, <span class="va">col2</span>, <span class="va">sum_col</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span> <span class="va">sum_col</span> <span class="op">}</span><span class="op">}</span> <span class="op">:=</span> <span class="op">{</span><span class="op">{</span> <span class="va">col1</span> <span class="op">}</span><span class="op">}</span> <span class="op">+</span> <span class="op">{</span><span class="op">{</span> <span class="va">col2</span> <span class="op">}</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">my_mutate</span><span class="op">(</span><span class="va">penguins</span>, <span class="va">bill_length_mm</span>, <span class="va">bill_depth_mm</span>, sum_col <span class="op">=</span> <span class="va">bill</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -491,9 +495,9 @@ Going further with classes
 # ℹ 334 more rows
 # ℹ 3 more variables: sex &lt;fct&gt;, year &lt;int&gt;, bill &lt;dbl&gt;</code></pre>
 </div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#ggplot</span></span>
-<span><span class="va">my_plot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="op">{</span><span class="op">{</span><span class="va">x</span><span class="op">}</span><span class="op">}</span>, y <span class="op">=</span> <span class="op">{</span><span class="op">{</span><span class="va">y</span><span class="op">}</span><span class="op">}</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ggplot</span></span>
+<span><span class="va">my_plot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="op">{</span><span class="op">{</span> <span class="va">x</span> <span class="op">}</span><span class="op">}</span>, y <span class="op">=</span> <span class="op">{</span><span class="op">{</span> <span class="va">y</span> <span class="op">}</span><span class="op">}</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -511,7 +515,7 @@ Going further with classes
 </div>
 <p>Another is to have the arguments as strings and use the <code>.data</code> pronoun from <code>rlang</code> (don’t forget to import <code>rlang</code> (see <a href="#sec-importing-exporting-functions" class="quarto-xref"><span>Section 4.4.1</span></a>).</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_select3</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_select3</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">data</span>, <span class="va">.data</span><span class="op">[[</span><span class="va">col</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -539,11 +543,11 @@ Going further with classes
 </div>
 <p>NSE can also be a problem for functions that don’t take column names as arguments.</p>
 <div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">process_penguin_type_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">data</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">process_penguin_type_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">summarise</span><span class="op">(</span>bill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The this function should work, but will generate a note in the checking stage. as the check does not recognise <code>species</code> or <code>bill_length_mm</code>.</p>
 <pre><code>&gt; checking R code for possible problems ... NOTE
@@ -555,15 +559,15 @@ Going further with classes
     bill_length_mm species</code></pre>
 <p>To fix this, either declare these variables as global with this line added to the file (outside the function).</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/globalVariables.html">globalVariables</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'bill_length_mm'</span>, <span class="st">'species'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/globalVariables.html">globalVariables</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bill_length_mm"</span>, <span class="st">"species"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Or, perhaps better, use the <code>.data</code> pronoun.</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">process_penguin_type_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">data</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">species</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">process_penguin_type_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">summarise</span><span class="op">(</span>bill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">bill_length_mm</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section><section id="sec-documentation-with-roxygen2" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="sec-documentation-with-roxygen2">
 <span class="header-section-number">4.4</span> Documentation with Roxygen2</h2>
@@ -582,14 +586,14 @@ Going further with classes
 <p>If you want to use a function from any other package (except <code>base</code>) you need to add the dependency to the package to the DESCRIPTION file.</p>
 <div class="cell">
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">use_package</span><span class="op">(</span><span class="st">"dplyr"</span><span class="op">)</span></span>
-<span><span class="co">#use_dev_package("packageFromGithub")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co"># use_dev_package("packageFromGithub")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>You can now use a function from <code>dplyr</code> with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate</a></code>. This gets messy if you need to use lots of functions from a package. Then it is better to import them. We could use</p>
 <pre><code>#' @import dplyr</code></pre>
 <p>to import all functions in the package, or</p>
-<pre><code>#' @importFrom dplyr %&gt;%</code></pre>
-<p>if we want to just import specific functions. This is safer as it minimises the risk of conflicts.</p>
-<p>Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (<span class="citation" data-cites="troubleshooting">@troubleshooting</span>).</p>
+<pre><code>#' @importFrom dplyr mutate</code></pre>
+<p>if we want to just import specific functions. This is safer as it minimises the risk of conflicts. This can be tedious to write if you want to import many function. The <code>autoimport</code> package can add the imports (mostly) automatically.</p>
+<p>Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (<a href="06-troubleshooting.html" class="quarto-xref"><span>Chapter 7</span></a>).</p>
 </section><section id="exporting-functions" class="level3" data-number="4.4.2"><h3 data-number="4.4.2" class="anchored" data-anchor-id="exporting-functions">
 <span class="header-section-number">4.4.2</span> Exporting functions</h3>
 <p>If you want to make your function available to users you normally need to export them. You can do this by adding <code>@export</code> to the roxygen comments.</p>
@@ -599,7 +603,7 @@ Going further with classes
 <span class="header-section-number">4.4.3</span> Generate the .Rd files</h3>
 <p>Convert the roxygen comments to .Rd files with</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html">document</a></span><span class="op">(</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html">document</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>View the compiled help files by running</p>
 <div class="cell">
@@ -644,7 +648,7 @@ Going further with classes
 #' }
 #' @source \url{http://https://www.uib.no/en/rg/EECRG/114808/plant-functional-traits-course-4}
 "trait"</code></pre>
-<p>The first line gives the title followed by the desciption. The @format field lets you describe the data. The last line has the object name in quotes (note no #’ first).</p>
+<p>The first line gives the title followed by the desciption. The <code>@format</code> field lets you describe the data. The last line has the object name in quotes (note no <code>#'</code> first).</p>
 </section></section><section id="adding-other-files" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="adding-other-files">
 <span class="header-section-number">4.6</span> Adding other files</h2>
 <p>R gets upset if there are files where they are not supposed to be in the R package. You cannot put extra files into the package root directory. The solution is to put extra files into subdirectories in <code>inst/</code>.</p>
@@ -922,8 +926,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1085,7 +1087,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1386,433 +1387,438 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb43-67"><a href="#cb43-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb43-68"><a href="#cb43-68" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb43-69"><a href="#cb43-69" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">"import works"</span>, {</span>
-<span id="cb43-70"><a href="#cb43-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">nrow</span>(<span class="fu">my_import</span>(<span class="fu">test_path</span>(<span class="st">"testdata.csv"</span>))), <span class="dv">10</span>)</span>
-<span id="cb43-71"><a href="#cb43-71" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb43-72"><a href="#cb43-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-73"><a href="#cb43-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-74"><a href="#cb43-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-75"><a href="#cb43-75" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb43-76"><a href="#cb43-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-77"><a href="#cb43-77" aria-hidden="true" tabindex="-1"></a>Look for examples of tests on GitHub if you need inspiration.</span>
+<span id="cb43-70"><a href="#cb43-70" aria-hidden="true" tabindex="-1"></a>  path <span class="ot">&lt;-</span> <span class="fu">test_path</span>(<span class="st">"testdata.csv"</span>)</span>
+<span id="cb43-71"><a href="#cb43-71" aria-hidden="true" tabindex="-1"></a>  import <span class="ot">&lt;-</span> <span class="fu">my_import</span>(path)</span>
+<span id="cb43-72"><a href="#cb43-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">nrow</span>(inport), <span class="dv">10</span>)</span>
+<span id="cb43-73"><a href="#cb43-73" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb43-74"><a href="#cb43-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-75"><a href="#cb43-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-76"><a href="#cb43-76" aria-hidden="true" tabindex="-1"></a>You can have multiple expectations in each test.</span>
+<span id="cb43-77"><a href="#cb43-77" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb43-78"><a href="#cb43-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-79"><a href="#cb43-79" aria-hidden="true" tabindex="-1"></a>Functions are much easier to test if the functions do one job.</span>
-<span id="cb43-80"><a href="#cb43-80" aria-hidden="true" tabindex="-1"></a>This is also best practice when writing functions.</span>
-<span id="cb43-81"><a href="#cb43-81" aria-hidden="true" tabindex="-1"></a>For example, if you were writing a package to import, process, and plot logger data, you would make at least three functions to do this, not one function that does everything.</span>
-<span id="cb43-82"><a href="#cb43-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-83"><a href="#cb43-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Functions {#sec-functions}</span></span>
+<span id="cb43-79"><a href="#cb43-79" aria-hidden="true" tabindex="-1"></a>Look for examples of tests on GitHub if you need inspiration.</span>
+<span id="cb43-80"><a href="#cb43-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-81"><a href="#cb43-81" aria-hidden="true" tabindex="-1"></a>Functions are much easier to test if the functions do one job.</span>
+<span id="cb43-82"><a href="#cb43-82" aria-hidden="true" tabindex="-1"></a>This is also best practice when writing functions.</span>
+<span id="cb43-83"><a href="#cb43-83" aria-hidden="true" tabindex="-1"></a>For example, if you were writing a package to import, process, and plot logger data, you would make at least three functions to do this, not one function that does everything.</span>
 <span id="cb43-84"><a href="#cb43-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-85"><a href="#cb43-85" aria-hidden="true" tabindex="-1"></a>Functions are made with the keyword function, can have one or more arguments separated by commas, and needs assigning to a name.</span>
+<span id="cb43-85"><a href="#cb43-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## Functions {#sec-functions}</span></span>
 <span id="cb43-86"><a href="#cb43-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-87"><a href="#cb43-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r function}</span></span>
-<span id="cb43-88"><a href="#cb43-88" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function(arg1 = 1, arg2){</span></span>
-<span id="cb43-89"><a href="#cb43-89" aria-hidden="true" tabindex="-1"></a><span class="in">  arg1 * arg2</span></span>
-<span id="cb43-90"><a href="#cb43-90" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-87"><a href="#cb43-87" aria-hidden="true" tabindex="-1"></a>Functions live in the R/ directory in files with the extension .R. </span>
+<span id="cb43-88"><a href="#cb43-88" aria-hidden="true" tabindex="-1"></a>You can have one or more functions in a file.</span>
+<span id="cb43-89"><a href="#cb43-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-90"><a href="#cb43-90" aria-hidden="true" tabindex="-1"></a>Functions are made with the keyword function, can have one or more arguments separated by commas, and needs assigning to a name.</span>
 <span id="cb43-91"><a href="#cb43-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-92"><a href="#cb43-92" aria-hidden="true" tabindex="-1"></a><span class="in">my_function(3, 4)</span></span>
-<span id="cb43-93"><a href="#cb43-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-94"><a href="#cb43-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-95"><a href="#cb43-95" aria-hidden="true" tabindex="-1"></a>Functions need to be saved in <span class="in">`R/`</span>.</span>
-<span id="cb43-96"><a href="#cb43-96" aria-hidden="true" tabindex="-1"></a>Related functions can be saved in the same file.</span>
-<span id="cb43-97"><a href="#cb43-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-98"><a href="#cb43-98" aria-hidden="true" tabindex="-1"></a><span class="fu">### Well behaved functions</span></span>
+<span id="cb43-92"><a href="#cb43-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r function}</span></span>
+<span id="cb43-93"><a href="#cb43-93" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function(arg1 = 1, arg2) {</span></span>
+<span id="cb43-94"><a href="#cb43-94" aria-hidden="true" tabindex="-1"></a><span class="in">  arg1 * arg2</span></span>
+<span id="cb43-95"><a href="#cb43-95" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-96"><a href="#cb43-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-97"><a href="#cb43-97" aria-hidden="true" tabindex="-1"></a><span class="in">my_function(3, 4)</span></span>
+<span id="cb43-98"><a href="#cb43-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb43-99"><a href="#cb43-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-100"><a href="#cb43-100" aria-hidden="true" tabindex="-1"></a>Try not to alter the state of the users R session.</span>
-<span id="cb43-101"><a href="#cb43-101" aria-hidden="true" tabindex="-1"></a>Don't include calls to <span class="in">`library()`</span> or <span class="in">`require()`</span> in functions (see @sec-importing-exporting-functions).</span>
-<span id="cb43-102"><a href="#cb43-102" aria-hidden="true" tabindex="-1"></a>If you need to change the state, then revert it with when the function finishes.</span>
-<span id="cb43-103"><a href="#cb43-103" aria-hidden="true" tabindex="-1"></a>You can do this with <span class="in">`withr::defer()`</span>.</span>
-<span id="cb43-104"><a href="#cb43-104" aria-hidden="true" tabindex="-1"></a>This is better behaved than the base R equivalent <span class="in">`on.exit()`</span>.</span>
-<span id="cb43-105"><a href="#cb43-105" aria-hidden="true" tabindex="-1"></a>Even if the function throws an error, the state of <span class="in">`options`</span> will be reverted to its original state.</span>
-<span id="cb43-106"><a href="#cb43-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-107"><a href="#cb43-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r on-exit}</span></span>
-<span id="cb43-108"><a href="#cb43-108" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function(x){</span></span>
-<span id="cb43-109"><a href="#cb43-109" aria-hidden="true" tabindex="-1"></a><span class="in">  op &lt;- options(digits = 1) # set options</span></span>
-<span id="cb43-110"><a href="#cb43-110" aria-hidden="true" tabindex="-1"></a><span class="in">  withr::defer(options(op)) #next line</span></span>
-<span id="cb43-111"><a href="#cb43-111" aria-hidden="true" tabindex="-1"></a><span class="in">  print(x)</span></span>
-<span id="cb43-112"><a href="#cb43-112" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb43-113"><a href="#cb43-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-114"><a href="#cb43-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-115"><a href="#cb43-115" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data validation - expect the unexpected.</span></span>
-<span id="cb43-116"><a href="#cb43-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-117"><a href="#cb43-117" aria-hidden="true" tabindex="-1"></a>If you are going to release your package, you need to try to make it idiot proof.</span>
-<span id="cb43-118"><a href="#cb43-118" aria-hidden="true" tabindex="-1"></a>Assume users will make mistakes with their data input.</span>
-<span id="cb43-119"><a href="#cb43-119" aria-hidden="true" tabindex="-1"></a>Use code to validate that the data are correct, or else throw an error.</span>
-<span id="cb43-120"><a href="#cb43-120" aria-hidden="true" tabindex="-1"></a><span class="in">`if`</span> statements and <span class="in">`stop()`</span> are useful here.</span>
+<span id="cb43-100"><a href="#cb43-100" aria-hidden="true" tabindex="-1"></a>Functions need to be saved in <span class="in">`R/`</span>.</span>
+<span id="cb43-101"><a href="#cb43-101" aria-hidden="true" tabindex="-1"></a>Related functions can be saved in the same file.</span>
+<span id="cb43-102"><a href="#cb43-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-103"><a href="#cb43-103" aria-hidden="true" tabindex="-1"></a><span class="fu">### Well behaved functions</span></span>
+<span id="cb43-104"><a href="#cb43-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-105"><a href="#cb43-105" aria-hidden="true" tabindex="-1"></a>Try not to alter the state of the users R session.</span>
+<span id="cb43-106"><a href="#cb43-106" aria-hidden="true" tabindex="-1"></a>Don't include calls to <span class="in">`library()`</span> or <span class="in">`require()`</span> in functions (see @sec-importing-exporting-functions).</span>
+<span id="cb43-107"><a href="#cb43-107" aria-hidden="true" tabindex="-1"></a>If you need to change the state, then revert it with when the function finishes.</span>
+<span id="cb43-108"><a href="#cb43-108" aria-hidden="true" tabindex="-1"></a>You can do this with <span class="in">`withr::defer()`</span>.</span>
+<span id="cb43-109"><a href="#cb43-109" aria-hidden="true" tabindex="-1"></a>This is better behaved than the base R equivalent <span class="in">`on.exit()`</span>.</span>
+<span id="cb43-110"><a href="#cb43-110" aria-hidden="true" tabindex="-1"></a>Even if the function throws an error, the state of <span class="in">`options`</span> will be reverted to its original state.</span>
+<span id="cb43-111"><a href="#cb43-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-112"><a href="#cb43-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r on-exit}</span></span>
+<span id="cb43-113"><a href="#cb43-113" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function(x) {</span></span>
+<span id="cb43-114"><a href="#cb43-114" aria-hidden="true" tabindex="-1"></a><span class="in">  op &lt;- options(digits = 1) # set options</span></span>
+<span id="cb43-115"><a href="#cb43-115" aria-hidden="true" tabindex="-1"></a><span class="in">  withr::defer(options(op)) # next line</span></span>
+<span id="cb43-116"><a href="#cb43-116" aria-hidden="true" tabindex="-1"></a><span class="in">  print(x)</span></span>
+<span id="cb43-117"><a href="#cb43-117" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-118"><a href="#cb43-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-119"><a href="#cb43-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-120"><a href="#cb43-120" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data validation - expect the unexpected.</span></span>
 <span id="cb43-121"><a href="#cb43-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-122"><a href="#cb43-122" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = TRUE, error = TRUE}</span></span>
-<span id="cb43-123"><a href="#cb43-123" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function(arg1 = 1, arg2){</span></span>
-<span id="cb43-124"><a href="#cb43-124" aria-hidden="true" tabindex="-1"></a><span class="in">  if (!is.numeric(arg1) || !is.numeric(arg2)) {</span></span>
-<span id="cb43-125"><a href="#cb43-125" aria-hidden="true" tabindex="-1"></a><span class="in">    stop("Arguments arg1 and arg2 must be numeric")</span></span>
-<span id="cb43-126"><a href="#cb43-126" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb43-127"><a href="#cb43-127" aria-hidden="true" tabindex="-1"></a><span class="in">  arg1 * arg2</span></span>
-<span id="cb43-128"><a href="#cb43-128" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb43-129"><a href="#cb43-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-130"><a href="#cb43-130" aria-hidden="true" tabindex="-1"></a><span class="in">my_function(3, "4")</span></span>
-<span id="cb43-131"><a href="#cb43-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-132"><a href="#cb43-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-133"><a href="#cb43-133" aria-hidden="true" tabindex="-1"></a><span class="fu">### S3 classes in R</span></span>
+<span id="cb43-122"><a href="#cb43-122" aria-hidden="true" tabindex="-1"></a>If you are going to release your package, you need to try to make it idiot proof.</span>
+<span id="cb43-123"><a href="#cb43-123" aria-hidden="true" tabindex="-1"></a>Assume users will make mistakes with their data input.</span>
+<span id="cb43-124"><a href="#cb43-124" aria-hidden="true" tabindex="-1"></a>Use code to validate that the data are correct, or else throw an error.</span>
+<span id="cb43-125"><a href="#cb43-125" aria-hidden="true" tabindex="-1"></a><span class="in">`if`</span> statements and <span class="in">`stop()`</span> are useful here.</span>
+<span id="cb43-126"><a href="#cb43-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-127"><a href="#cb43-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = TRUE, error = TRUE}</span></span>
+<span id="cb43-128"><a href="#cb43-128" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function(arg1 = 1, arg2) {</span></span>
+<span id="cb43-129"><a href="#cb43-129" aria-hidden="true" tabindex="-1"></a><span class="in">  if (!is.numeric(arg1) || !is.numeric(arg2)) {</span></span>
+<span id="cb43-130"><a href="#cb43-130" aria-hidden="true" tabindex="-1"></a><span class="in">    stop("Arguments arg1 and arg2 must be numeric")</span></span>
+<span id="cb43-131"><a href="#cb43-131" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb43-132"><a href="#cb43-132" aria-hidden="true" tabindex="-1"></a><span class="in">  arg1 * arg2</span></span>
+<span id="cb43-133"><a href="#cb43-133" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb43-134"><a href="#cb43-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-135"><a href="#cb43-135" aria-hidden="true" tabindex="-1"></a>When you use a generic function in R such as <span class="in">`plot()`</span>, <span class="in">`print()`</span>, <span class="in">`autoplot()`</span> or <span class="in">`summary()`</span>, what happens is that the class of the object in determined and dispatched to the appropriate function, which will have the name of the generic followed by the name of the class, separated by a dot.</span>
-<span id="cb43-136"><a href="#cb43-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-137"><a href="#cb43-137" aria-hidden="true" tabindex="-1"></a>So a call to <span class="in">`plot()`</span> with an object of class <span class="in">`cca`</span> will be dispatched to <span class="in">`plot.cca`</span>.</span>
-<span id="cb43-138"><a href="#cb43-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-139"><a href="#cb43-139" aria-hidden="true" tabindex="-1"></a>You can find out the class of an object with <span class="in">`class()`</span></span>
-<span id="cb43-140"><a href="#cb43-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-141"><a href="#cb43-141" aria-hidden="true" tabindex="-1"></a>The class of an object can be set with <span class="in">`class()`</span>.</span>
-<span id="cb43-142"><a href="#cb43-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-143"><a href="#cb43-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r class}</span></span>
-<span id="cb43-144"><a href="#cb43-144" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function(){</span></span>
-<span id="cb43-145"><a href="#cb43-145" aria-hidden="true" tabindex="-1"></a><span class="in">  result &lt;- complex_logic()</span></span>
-<span id="cb43-146"><a href="#cb43-146" aria-hidden="true" tabindex="-1"></a><span class="in">  class(result) &lt;- "my_class"</span></span>
-<span id="cb43-147"><a href="#cb43-147" aria-hidden="true" tabindex="-1"></a><span class="in">  result</span></span>
-<span id="cb43-148"><a href="#cb43-148" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb43-149"><a href="#cb43-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-150"><a href="#cb43-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-151"><a href="#cb43-151" aria-hidden="true" tabindex="-1"></a>If the object already has a class and you want to keep it, you need something like</span>
-<span id="cb43-152"><a href="#cb43-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-153"><a href="#cb43-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r class2}</span></span>
-<span id="cb43-154"><a href="#cb43-154" aria-hidden="true" tabindex="-1"></a><span class="in">  class(result) &lt;- c("my_class", class(result))</span></span>
-<span id="cb43-155"><a href="#cb43-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-156"><a href="#cb43-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-157"><a href="#cb43-157" aria-hidden="true" tabindex="-1"></a>To make a <span class="in">`print()`</span> or <span class="in">`plot()`</span> method for <span class="in">`my_class`</span>, we simply make a function called <span class="in">`print.my_class`</span> or <span class="in">`plot.my_class`</span>.</span>
-<span id="cb43-158"><a href="#cb43-158" aria-hidden="true" tabindex="-1"></a>The method will be declared automatically when the documentation (@sec-documentation-with-roxygen2) is made.</span>
-<span id="cb43-159"><a href="#cb43-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-160"><a href="#cb43-160" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb43-161"><a href="#cb43-161" aria-hidden="true" tabindex="-1"></a><span class="fu">## Going further with classes</span></span>
-<span id="cb43-162"><a href="#cb43-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-163"><a href="#cb43-163" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Make your <span class="co">[</span><span class="ot">own generics</span><span class="co">](https://adv-r.hadley.nz/s3.html#s3-methods)</span></span>
-<span id="cb43-164"><a href="#cb43-164" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Use the more formal <span class="co">[</span><span class="ot">S4 or R6 class</span><span class="co">](https://adv-r.hadley.nz/oo.html)</span> systems</span>
-<span id="cb43-165"><a href="#cb43-165" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb43-166"><a href="#cb43-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-135"><a href="#cb43-135" aria-hidden="true" tabindex="-1"></a><span class="in">my_function(3, "4")</span></span>
+<span id="cb43-136"><a href="#cb43-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-137"><a href="#cb43-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-138"><a href="#cb43-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### S3 classes in R</span></span>
+<span id="cb43-139"><a href="#cb43-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-140"><a href="#cb43-140" aria-hidden="true" tabindex="-1"></a>When you use a generic function in R such as <span class="in">`plot()`</span>, <span class="in">`print()`</span>, <span class="in">`autoplot()`</span> or <span class="in">`summary()`</span>, what happens is that the class of the object in determined and dispatched to the appropriate function, which will have the name of the generic followed by the name of the class, separated by a dot.</span>
+<span id="cb43-141"><a href="#cb43-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-142"><a href="#cb43-142" aria-hidden="true" tabindex="-1"></a>So a call to <span class="in">`plot()`</span> with an object of class <span class="in">`cca`</span> will be dispatched to <span class="in">`plot.cca`</span>.</span>
+<span id="cb43-143"><a href="#cb43-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-144"><a href="#cb43-144" aria-hidden="true" tabindex="-1"></a>You can find out the class of an object with <span class="in">`class()`</span></span>
+<span id="cb43-145"><a href="#cb43-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-146"><a href="#cb43-146" aria-hidden="true" tabindex="-1"></a>The class of an object can be set with <span class="in">`class()`</span>.</span>
+<span id="cb43-147"><a href="#cb43-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-148"><a href="#cb43-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r class}</span></span>
+<span id="cb43-149"><a href="#cb43-149" aria-hidden="true" tabindex="-1"></a><span class="in">my_function &lt;- function() {</span></span>
+<span id="cb43-150"><a href="#cb43-150" aria-hidden="true" tabindex="-1"></a><span class="in">  result &lt;- complex_logic()</span></span>
+<span id="cb43-151"><a href="#cb43-151" aria-hidden="true" tabindex="-1"></a><span class="in">  class(result) &lt;- "my_class"</span></span>
+<span id="cb43-152"><a href="#cb43-152" aria-hidden="true" tabindex="-1"></a><span class="in">  result</span></span>
+<span id="cb43-153"><a href="#cb43-153" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-154"><a href="#cb43-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-155"><a href="#cb43-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-156"><a href="#cb43-156" aria-hidden="true" tabindex="-1"></a>If the object already has a class and you want to keep it, you need something like</span>
+<span id="cb43-157"><a href="#cb43-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-158"><a href="#cb43-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r class2}</span></span>
+<span id="cb43-159"><a href="#cb43-159" aria-hidden="true" tabindex="-1"></a><span class="in">class(result) &lt;- c("my_class", class(result))</span></span>
+<span id="cb43-160"><a href="#cb43-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-161"><a href="#cb43-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-162"><a href="#cb43-162" aria-hidden="true" tabindex="-1"></a>To make a <span class="in">`print()`</span> or <span class="in">`plot()`</span> method for <span class="in">`my_class`</span>, we simply make a function called <span class="in">`print.my_class`</span> or <span class="in">`plot.my_class`</span>.</span>
+<span id="cb43-163"><a href="#cb43-163" aria-hidden="true" tabindex="-1"></a>The method will be declared automatically when the documentation (@sec-documentation-with-roxygen2) is made.</span>
+<span id="cb43-164"><a href="#cb43-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-165"><a href="#cb43-165" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb43-166"><a href="#cb43-166" aria-hidden="true" tabindex="-1"></a><span class="fu">## Going further with classes</span></span>
 <span id="cb43-167"><a href="#cb43-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-168"><a href="#cb43-168" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ellipses ...</span></span>
-<span id="cb43-169"><a href="#cb43-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-170"><a href="#cb43-170" aria-hidden="true" tabindex="-1"></a>Ellipses can be used in two ways when writing functions.</span>
+<span id="cb43-168"><a href="#cb43-168" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Make your <span class="co">[</span><span class="ot">own generics</span><span class="co">](https://adv-r.hadley.nz/s3.html#s3-methods)</span></span>
+<span id="cb43-169"><a href="#cb43-169" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Use the more formal <span class="co">[</span><span class="ot">S4 or R6 class</span><span class="co">](https://adv-r.hadley.nz/oo.html)</span> systems</span>
+<span id="cb43-170"><a href="#cb43-170" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb43-171"><a href="#cb43-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-172"><a href="#cb43-172" aria-hidden="true" tabindex="-1"></a>The first is to pass unknown arguments to a second function (e.g., <span class="in">`plot.cca()`</span>).</span>
-<span id="cb43-173"><a href="#cb43-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-174"><a href="#cb43-174" aria-hidden="true" tabindex="-1"></a>If we make a <span class="in">`plot.my_class()`</span> function we can use the ellipses so we don't need to specify all the possible arguments in plot.</span>
-<span id="cb43-175"><a href="#cb43-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-176"><a href="#cb43-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r ellipses1}</span></span>
-<span id="cb43-177"><a href="#cb43-177" aria-hidden="true" tabindex="-1"></a><span class="in">plot.my_class &lt;- function(obj, ...){</span></span>
-<span id="cb43-178"><a href="#cb43-178" aria-hidden="true" tabindex="-1"></a><span class="in">  #logic to prepare data for plotting</span></span>
-<span id="cb43-179"><a href="#cb43-179" aria-hidden="true" tabindex="-1"></a><span class="in">  x &lt;- obj$x</span></span>
-<span id="cb43-180"><a href="#cb43-180" aria-hidden="true" tabindex="-1"></a><span class="in">  y &lt;-obj$y</span></span>
-<span id="cb43-181"><a href="#cb43-181" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(x, y, ...)</span></span>
-<span id="cb43-182"><a href="#cb43-182" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb43-183"><a href="#cb43-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-184"><a href="#cb43-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-185"><a href="#cb43-185" aria-hidden="true" tabindex="-1"></a>Now all of arguments to <span class="in">`plot.default()`</span> can be used.</span>
-<span id="cb43-186"><a href="#cb43-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-187"><a href="#cb43-187" aria-hidden="true" tabindex="-1"></a>The second way to use ellipses is when there are a variable number of arguments.</span>
-<span id="cb43-188"><a href="#cb43-188" aria-hidden="true" tabindex="-1"></a>We can capture the <span class="in">`...`</span> using <span class="in">`list()`</span>, and then process it further.</span>
+<span id="cb43-172"><a href="#cb43-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-173"><a href="#cb43-173" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ellipses ...</span></span>
+<span id="cb43-174"><a href="#cb43-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-175"><a href="#cb43-175" aria-hidden="true" tabindex="-1"></a>Ellipses can be used in two ways when writing functions.</span>
+<span id="cb43-176"><a href="#cb43-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-177"><a href="#cb43-177" aria-hidden="true" tabindex="-1"></a>The first is to pass unknown arguments to a second function (e.g., <span class="in">`plot.cca()`</span>).</span>
+<span id="cb43-178"><a href="#cb43-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-179"><a href="#cb43-179" aria-hidden="true" tabindex="-1"></a>If we make a <span class="in">`plot.my_class()`</span> function we can use the ellipses so we don't need to specify all the possible arguments in plot.</span>
+<span id="cb43-180"><a href="#cb43-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-181"><a href="#cb43-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r ellipses1}</span></span>
+<span id="cb43-182"><a href="#cb43-182" aria-hidden="true" tabindex="-1"></a><span class="in">plot.my_class &lt;- function(obj, ...) {</span></span>
+<span id="cb43-183"><a href="#cb43-183" aria-hidden="true" tabindex="-1"></a><span class="in">  # logic to prepare data for plotting</span></span>
+<span id="cb43-184"><a href="#cb43-184" aria-hidden="true" tabindex="-1"></a><span class="in">  x &lt;- obj$x</span></span>
+<span id="cb43-185"><a href="#cb43-185" aria-hidden="true" tabindex="-1"></a><span class="in">  y &lt;- obj$y</span></span>
+<span id="cb43-186"><a href="#cb43-186" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(x, y, ...)</span></span>
+<span id="cb43-187"><a href="#cb43-187" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-188"><a href="#cb43-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb43-189"><a href="#cb43-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-190"><a href="#cb43-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r dot-list, eval = TRUE}</span></span>
-<span id="cb43-191"><a href="#cb43-191" aria-hidden="true" tabindex="-1"></a><span class="in">dot_to_list &lt;- function(...){</span></span>
-<span id="cb43-192"><a href="#cb43-192" aria-hidden="true" tabindex="-1"></a><span class="in">  list(...)</span></span>
-<span id="cb43-193"><a href="#cb43-193" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-190"><a href="#cb43-190" aria-hidden="true" tabindex="-1"></a>Now all of arguments to <span class="in">`plot.default()`</span> can be used.</span>
+<span id="cb43-191"><a href="#cb43-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-192"><a href="#cb43-192" aria-hidden="true" tabindex="-1"></a>The second way to use ellipses is when there are a variable number of arguments.</span>
+<span id="cb43-193"><a href="#cb43-193" aria-hidden="true" tabindex="-1"></a>We can capture the <span class="in">`...`</span> using <span class="in">`list()`</span>, and then process it further.</span>
 <span id="cb43-194"><a href="#cb43-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-195"><a href="#cb43-195" aria-hidden="true" tabindex="-1"></a><span class="in">dot_to_list(1, 2, "c")</span></span>
-<span id="cb43-196"><a href="#cb43-196" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-197"><a href="#cb43-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-198"><a href="#cb43-198" aria-hidden="true" tabindex="-1"></a><span class="fu">### Using `dplyr`, `ggplot2` etc {#sec-tidyverse}</span></span>
+<span id="cb43-195"><a href="#cb43-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r dot-list, eval = TRUE}</span></span>
+<span id="cb43-196"><a href="#cb43-196" aria-hidden="true" tabindex="-1"></a><span class="in">dot_to_list &lt;- function(...) {</span></span>
+<span id="cb43-197"><a href="#cb43-197" aria-hidden="true" tabindex="-1"></a><span class="in">  list(...)</span></span>
+<span id="cb43-198"><a href="#cb43-198" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb43-199"><a href="#cb43-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-200"><a href="#cb43-200" aria-hidden="true" tabindex="-1"></a>Tidyverse packages such as <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> which use Non-Standard Evaluation (NSE) are great for using in a script but a little challenging to use in functions.</span>
-<span id="cb43-201"><a href="#cb43-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-202"><a href="#cb43-202" aria-hidden="true" tabindex="-1"></a>We cannot just do something like this as we get an error</span>
-<span id="cb43-203"><a href="#cb43-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-204"><a href="#cb43-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tidyselect, error = TRUE, eval = TRUE}</span></span>
-<span id="cb43-205"><a href="#cb43-205" aria-hidden="true" tabindex="-1"></a><span class="in">my_select &lt;- function(data, col){</span></span>
-<span id="cb43-206"><a href="#cb43-206" aria-hidden="true" tabindex="-1"></a><span class="in">  select(data, col)</span></span>
-<span id="cb43-207"><a href="#cb43-207" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-200"><a href="#cb43-200" aria-hidden="true" tabindex="-1"></a><span class="in">dot_to_list(1, 2, "c")</span></span>
+<span id="cb43-201"><a href="#cb43-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-202"><a href="#cb43-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-203"><a href="#cb43-203" aria-hidden="true" tabindex="-1"></a><span class="fu">### Using `dplyr`, `ggplot2` etc {#sec-tidyverse}</span></span>
+<span id="cb43-204"><a href="#cb43-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-205"><a href="#cb43-205" aria-hidden="true" tabindex="-1"></a>Tidyverse packages such as <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> which use Non-Standard Evaluation (NSE) are great for using in a script but a little challenging to use in functions.</span>
+<span id="cb43-206"><a href="#cb43-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-207"><a href="#cb43-207" aria-hidden="true" tabindex="-1"></a>We cannot just do something like this as we get an error</span>
 <span id="cb43-208"><a href="#cb43-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-209"><a href="#cb43-209" aria-hidden="true" tabindex="-1"></a><span class="in">my_select(penguins, col = species)</span></span>
-<span id="cb43-210"><a href="#cb43-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-211"><a href="#cb43-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-212"><a href="#cb43-212" aria-hidden="true" tabindex="-1"></a>One solution is to use the curly-curly notation</span>
+<span id="cb43-209"><a href="#cb43-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tidyselect, error = TRUE, eval = TRUE}</span></span>
+<span id="cb43-210"><a href="#cb43-210" aria-hidden="true" tabindex="-1"></a><span class="in">my_select &lt;- function(data, col) {</span></span>
+<span id="cb43-211"><a href="#cb43-211" aria-hidden="true" tabindex="-1"></a><span class="in">  select(data, col)</span></span>
+<span id="cb43-212"><a href="#cb43-212" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb43-213"><a href="#cb43-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-214"><a href="#cb43-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tidyselect-working, error = TRUE, eval = TRUE}</span></span>
-<span id="cb43-215"><a href="#cb43-215" aria-hidden="true" tabindex="-1"></a><span class="in">#select</span></span>
-<span id="cb43-216"><a href="#cb43-216" aria-hidden="true" tabindex="-1"></a><span class="in">my_select2 &lt;- function(data, col){</span></span>
-<span id="cb43-217"><a href="#cb43-217" aria-hidden="true" tabindex="-1"></a><span class="in">  select(data, {{col}})</span></span>
-<span id="cb43-218"><a href="#cb43-218" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb43-219"><a href="#cb43-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-220"><a href="#cb43-220" aria-hidden="true" tabindex="-1"></a><span class="in">my_select2(penguins, col = species)</span></span>
-<span id="cb43-221"><a href="#cb43-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-222"><a href="#cb43-222" aria-hidden="true" tabindex="-1"></a><span class="in"># filter</span></span>
-<span id="cb43-223"><a href="#cb43-223" aria-hidden="true" tabindex="-1"></a><span class="in">my_filter &lt;- function(data, col, `%test%`, value){</span></span>
-<span id="cb43-224"><a href="#cb43-224" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(data, {{col}} %test% value)</span></span>
-<span id="cb43-225"><a href="#cb43-225" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-214"><a href="#cb43-214" aria-hidden="true" tabindex="-1"></a><span class="in">my_select(penguins, col = species)</span></span>
+<span id="cb43-215"><a href="#cb43-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-216"><a href="#cb43-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-217"><a href="#cb43-217" aria-hidden="true" tabindex="-1"></a>One solution is to use the curly-curly notation</span>
+<span id="cb43-218"><a href="#cb43-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-219"><a href="#cb43-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tidyselect-working, error = TRUE, eval = TRUE}</span></span>
+<span id="cb43-220"><a href="#cb43-220" aria-hidden="true" tabindex="-1"></a><span class="in"># select</span></span>
+<span id="cb43-221"><a href="#cb43-221" aria-hidden="true" tabindex="-1"></a><span class="in">my_select2 &lt;- function(data, col) {</span></span>
+<span id="cb43-222"><a href="#cb43-222" aria-hidden="true" tabindex="-1"></a><span class="in">  select(data, {{ col }})</span></span>
+<span id="cb43-223"><a href="#cb43-223" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-224"><a href="#cb43-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-225"><a href="#cb43-225" aria-hidden="true" tabindex="-1"></a><span class="in">my_select2(penguins, col = species)</span></span>
 <span id="cb43-226"><a href="#cb43-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-227"><a href="#cb43-227" aria-hidden="true" tabindex="-1"></a><span class="in">my_filter(penguins, col = species, `%test%` = `==`, value = "Adelie")</span></span>
-<span id="cb43-228"><a href="#cb43-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-229"><a href="#cb43-229" aria-hidden="true" tabindex="-1"></a><span class="in">#mutate Note the := operator.</span></span>
-<span id="cb43-230"><a href="#cb43-230" aria-hidden="true" tabindex="-1"></a><span class="in">my_mutate &lt;- function(data, col1, col2, sum_col){</span></span>
-<span id="cb43-231"><a href="#cb43-231" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(data, {{sum_col}} := {{col1}} + {{col2}})</span></span>
-<span id="cb43-232"><a href="#cb43-232" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-227"><a href="#cb43-227" aria-hidden="true" tabindex="-1"></a><span class="in"># filter</span></span>
+<span id="cb43-228"><a href="#cb43-228" aria-hidden="true" tabindex="-1"></a><span class="in">my_filter &lt;- function(data, col, `%test%`, value) {</span></span>
+<span id="cb43-229"><a href="#cb43-229" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(data, {{ col }} %test% value)</span></span>
+<span id="cb43-230"><a href="#cb43-230" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-231"><a href="#cb43-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-232"><a href="#cb43-232" aria-hidden="true" tabindex="-1"></a><span class="in">my_filter(penguins, col = species, `%test%` = `==`, value = "Adelie")</span></span>
 <span id="cb43-233"><a href="#cb43-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-234"><a href="#cb43-234" aria-hidden="true" tabindex="-1"></a><span class="in">my_mutate(penguins, bill_length_mm, bill_depth_mm, sum_col = bill)</span></span>
-<span id="cb43-235"><a href="#cb43-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-236"><a href="#cb43-236" aria-hidden="true" tabindex="-1"></a><span class="in">#ggplot</span></span>
-<span id="cb43-237"><a href="#cb43-237" aria-hidden="true" tabindex="-1"></a><span class="in">my_plot &lt;- function(data, x, y){</span></span>
-<span id="cb43-238"><a href="#cb43-238" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(data, aes(x = {{x}}, y = {{y}})) + </span></span>
-<span id="cb43-239"><a href="#cb43-239" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point()</span></span>
-<span id="cb43-240"><a href="#cb43-240" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb43-241"><a href="#cb43-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-242"><a href="#cb43-242" aria-hidden="true" tabindex="-1"></a><span class="in">my_plot(penguins, x = bill_length_mm, y = body_mass_g)</span></span>
-<span id="cb43-243"><a href="#cb43-243" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-244"><a href="#cb43-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-245"><a href="#cb43-245" aria-hidden="true" tabindex="-1"></a>Another is to have the arguments as strings and use the <span class="in">`.data`</span> pronoun from <span class="in">`rlang`</span> (don't forget to import <span class="in">`rlang`</span> (see @sec-importing-exporting-functions).</span>
+<span id="cb43-234"><a href="#cb43-234" aria-hidden="true" tabindex="-1"></a><span class="in"># mutate Note the := operator.</span></span>
+<span id="cb43-235"><a href="#cb43-235" aria-hidden="true" tabindex="-1"></a><span class="in">my_mutate &lt;- function(data, col1, col2, sum_col) {</span></span>
+<span id="cb43-236"><a href="#cb43-236" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(data, {{ sum_col }} := {{ col1 }} + {{ col2 }})</span></span>
+<span id="cb43-237"><a href="#cb43-237" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-238"><a href="#cb43-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-239"><a href="#cb43-239" aria-hidden="true" tabindex="-1"></a><span class="in">my_mutate(penguins, bill_length_mm, bill_depth_mm, sum_col = bill)</span></span>
+<span id="cb43-240"><a href="#cb43-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-241"><a href="#cb43-241" aria-hidden="true" tabindex="-1"></a><span class="in"># ggplot</span></span>
+<span id="cb43-242"><a href="#cb43-242" aria-hidden="true" tabindex="-1"></a><span class="in">my_plot &lt;- function(data, x, y) {</span></span>
+<span id="cb43-243"><a href="#cb43-243" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(data, aes(x = {{ x }}, y = {{ y }})) +</span></span>
+<span id="cb43-244"><a href="#cb43-244" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point()</span></span>
+<span id="cb43-245"><a href="#cb43-245" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb43-246"><a href="#cb43-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-247"><a href="#cb43-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r .data, eval = TRUE}</span></span>
-<span id="cb43-248"><a href="#cb43-248" aria-hidden="true" tabindex="-1"></a><span class="in">my_select3 &lt;- function(data, col){</span></span>
-<span id="cb43-249"><a href="#cb43-249" aria-hidden="true" tabindex="-1"></a><span class="in">  select(data, .data[[col]])</span></span>
-<span id="cb43-250"><a href="#cb43-250" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-247"><a href="#cb43-247" aria-hidden="true" tabindex="-1"></a><span class="in">my_plot(penguins, x = bill_length_mm, y = body_mass_g)</span></span>
+<span id="cb43-248"><a href="#cb43-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-249"><a href="#cb43-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-250"><a href="#cb43-250" aria-hidden="true" tabindex="-1"></a>Another is to have the arguments as strings and use the <span class="in">`.data`</span> pronoun from <span class="in">`rlang`</span> (don't forget to import <span class="in">`rlang`</span> (see @sec-importing-exporting-functions).</span>
 <span id="cb43-251"><a href="#cb43-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-252"><a href="#cb43-252" aria-hidden="true" tabindex="-1"></a><span class="in">my_select3(penguins, col = "species")</span></span>
-<span id="cb43-253"><a href="#cb43-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-254"><a href="#cb43-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-255"><a href="#cb43-255" aria-hidden="true" tabindex="-1"></a>NSE can also be a problem for functions that don't take column names as arguments.</span>
+<span id="cb43-252"><a href="#cb43-252" aria-hidden="true" tabindex="-1"></a><span class="in">```{r .data, eval = TRUE}</span></span>
+<span id="cb43-253"><a href="#cb43-253" aria-hidden="true" tabindex="-1"></a><span class="in">my_select3 &lt;- function(data, col) {</span></span>
+<span id="cb43-254"><a href="#cb43-254" aria-hidden="true" tabindex="-1"></a><span class="in">  select(data, .data[[col]])</span></span>
+<span id="cb43-255"><a href="#cb43-255" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb43-256"><a href="#cb43-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-257"><a href="#cb43-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r NSE}</span></span>
-<span id="cb43-258"><a href="#cb43-258" aria-hidden="true" tabindex="-1"></a><span class="in">process_penguin_type_data &lt;- function(data){</span></span>
-<span id="cb43-259"><a href="#cb43-259" aria-hidden="true" tabindex="-1"></a><span class="in">  data %&gt;% </span></span>
-<span id="cb43-260"><a href="#cb43-260" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(species) %&gt;% </span></span>
-<span id="cb43-261"><a href="#cb43-261" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(bill = mean(bill_length_mm))</span></span>
-<span id="cb43-262"><a href="#cb43-262" aria-hidden="true" tabindex="-1"></a><span class="in">} </span></span>
-<span id="cb43-263"><a href="#cb43-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-264"><a href="#cb43-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-265"><a href="#cb43-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-266"><a href="#cb43-266" aria-hidden="true" tabindex="-1"></a>The this function should work, but will generate a note in the checking stage.</span>
-<span id="cb43-267"><a href="#cb43-267" aria-hidden="true" tabindex="-1"></a>as the check does not recognise <span class="in">`species`</span> or <span class="in">`bill_length_mm`</span>.</span>
-<span id="cb43-268"><a href="#cb43-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-269"><a href="#cb43-269" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt; checking R code for possible problems ... NOTE</span></span>
-<span id="cb43-270"><a href="#cb43-270" aria-hidden="true" tabindex="-1"></a><span class="in">      process_penguin_type_data: no visible binding for global variable</span></span>
-<span id="cb43-271"><a href="#cb43-271" aria-hidden="true" tabindex="-1"></a><span class="in">        ‘species’</span></span>
-<span id="cb43-272"><a href="#cb43-272" aria-hidden="true" tabindex="-1"></a><span class="in">      process_penguin_type_data: no visible binding for global variable</span></span>
-<span id="cb43-273"><a href="#cb43-273" aria-hidden="true" tabindex="-1"></a><span class="in">        ‘bill_length_mm’</span></span>
-<span id="cb43-274"><a href="#cb43-274" aria-hidden="true" tabindex="-1"></a><span class="in">      Undefined global functions or variables:</span></span>
-<span id="cb43-275"><a href="#cb43-275" aria-hidden="true" tabindex="-1"></a><span class="in">        bill_length_mm species</span></span>
-<span id="cb43-276"><a href="#cb43-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-277"><a href="#cb43-277" aria-hidden="true" tabindex="-1"></a>To fix this, either declare these variables as global with this line added to the file (outside the function).</span>
-<span id="cb43-278"><a href="#cb43-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-279"><a href="#cb43-279" aria-hidden="true" tabindex="-1"></a><span class="in">```{r globalvariables}</span></span>
-<span id="cb43-280"><a href="#cb43-280" aria-hidden="true" tabindex="-1"></a><span class="in">utils::globalVariables(c('bill_length_mm', 'species'))</span></span>
-<span id="cb43-281"><a href="#cb43-281" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-257"><a href="#cb43-257" aria-hidden="true" tabindex="-1"></a><span class="in">my_select3(penguins, col = "species")</span></span>
+<span id="cb43-258"><a href="#cb43-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-259"><a href="#cb43-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-260"><a href="#cb43-260" aria-hidden="true" tabindex="-1"></a>NSE can also be a problem for functions that don't take column names as arguments.</span>
+<span id="cb43-261"><a href="#cb43-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-262"><a href="#cb43-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r NSE}</span></span>
+<span id="cb43-263"><a href="#cb43-263" aria-hidden="true" tabindex="-1"></a><span class="in">process_penguin_type_data &lt;- function(data) {</span></span>
+<span id="cb43-264"><a href="#cb43-264" aria-hidden="true" tabindex="-1"></a><span class="in">  data |&gt;</span></span>
+<span id="cb43-265"><a href="#cb43-265" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(species) |&gt;</span></span>
+<span id="cb43-266"><a href="#cb43-266" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(bill = mean(bill_length_mm))</span></span>
+<span id="cb43-267"><a href="#cb43-267" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-268"><a href="#cb43-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-269"><a href="#cb43-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-270"><a href="#cb43-270" aria-hidden="true" tabindex="-1"></a>The this function should work, but will generate a note in the checking stage.</span>
+<span id="cb43-271"><a href="#cb43-271" aria-hidden="true" tabindex="-1"></a>as the check does not recognise <span class="in">`species`</span> or <span class="in">`bill_length_mm`</span>.</span>
+<span id="cb43-272"><a href="#cb43-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-273"><a href="#cb43-273" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt; checking R code for possible problems ... NOTE</span></span>
+<span id="cb43-274"><a href="#cb43-274" aria-hidden="true" tabindex="-1"></a><span class="in">      process_penguin_type_data: no visible binding for global variable</span></span>
+<span id="cb43-275"><a href="#cb43-275" aria-hidden="true" tabindex="-1"></a><span class="in">        ‘species’</span></span>
+<span id="cb43-276"><a href="#cb43-276" aria-hidden="true" tabindex="-1"></a><span class="in">      process_penguin_type_data: no visible binding for global variable</span></span>
+<span id="cb43-277"><a href="#cb43-277" aria-hidden="true" tabindex="-1"></a><span class="in">        ‘bill_length_mm’</span></span>
+<span id="cb43-278"><a href="#cb43-278" aria-hidden="true" tabindex="-1"></a><span class="in">      Undefined global functions or variables:</span></span>
+<span id="cb43-279"><a href="#cb43-279" aria-hidden="true" tabindex="-1"></a><span class="in">        bill_length_mm species</span></span>
+<span id="cb43-280"><a href="#cb43-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-281"><a href="#cb43-281" aria-hidden="true" tabindex="-1"></a>To fix this, either declare these variables as global with this line added to the file (outside the function).</span>
 <span id="cb43-282"><a href="#cb43-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-283"><a href="#cb43-283" aria-hidden="true" tabindex="-1"></a>Or, perhaps better, use the <span class="in">`.data`</span> pronoun.</span>
-<span id="cb43-284"><a href="#cb43-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-285"><a href="#cb43-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{r NSE2}</span></span>
-<span id="cb43-286"><a href="#cb43-286" aria-hidden="true" tabindex="-1"></a><span class="in">process_penguin_type_data &lt;- function(data){</span></span>
-<span id="cb43-287"><a href="#cb43-287" aria-hidden="true" tabindex="-1"></a><span class="in">  data %&gt;% </span></span>
-<span id="cb43-288"><a href="#cb43-288" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(.data$species) %&gt;% </span></span>
-<span id="cb43-289"><a href="#cb43-289" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(bill = mean(.data$bill_length_mm))</span></span>
-<span id="cb43-290"><a href="#cb43-290" aria-hidden="true" tabindex="-1"></a><span class="in">} </span></span>
-<span id="cb43-291"><a href="#cb43-291" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-292"><a href="#cb43-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-293"><a href="#cb43-293" aria-hidden="true" tabindex="-1"></a><span class="fu">## Documentation with Roxygen2 {#sec-documentation-with-roxygen2}</span></span>
-<span id="cb43-294"><a href="#cb43-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-295"><a href="#cb43-295" aria-hidden="true" tabindex="-1"></a>The documentation for the package lives in <span class="in">`man/`</span> in .Rd files.</span>
-<span id="cb43-296"><a href="#cb43-296" aria-hidden="true" tabindex="-1"></a>The files are written in a LaTeX like language, that is quite hard to get to right.</span>
-<span id="cb43-297"><a href="#cb43-297" aria-hidden="true" tabindex="-1"></a>Fortunately, the <span class="co">[</span><span class="ot">`roxygen2` package</span><span class="co">](https://roxygen2.r-lib.org/index.html)</span> takes most of the pain away as the format is much simpler.</span>
-<span id="cb43-298"><a href="#cb43-298" aria-hidden="true" tabindex="-1"></a>Also, some parts of the documentation are automatically generated by inspecting the code, and it is easier to keep the documentation and code in sync because the are in the same file.</span>
-<span id="cb43-299"><a href="#cb43-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-300"><a href="#cb43-300" aria-hidden="true" tabindex="-1"></a>The roxygen2 comments sit above the function, and start with <span class="in">`#'`</span> to distinguish them from ordinary comments.</span>
-<span id="cb43-301"><a href="#cb43-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-302"><a href="#cb43-302" aria-hidden="true" tabindex="-1"></a>The first sentence of the roxygen becomes the title of the help file.</span>
-<span id="cb43-303"><a href="#cb43-303" aria-hidden="true" tabindex="-1"></a>Then we can use roxygen tags for the rest of the documentation.</span>
-<span id="cb43-304"><a href="#cb43-304" aria-hidden="true" tabindex="-1"></a>Roxygen tags all start with an <span class="in">`@`</span>.</span>
-<span id="cb43-305"><a href="#cb43-305" aria-hidden="true" tabindex="-1"></a>Once you type this, RStudio gives you suggestions.</span>
-<span id="cb43-306"><a href="#cb43-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-307"><a href="#cb43-307" aria-hidden="true" tabindex="-1"></a><span class="in">`@description`</span> One paragraph description of what the function does.</span>
-<span id="cb43-308"><a href="#cb43-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-309"><a href="#cb43-309" aria-hidden="true" tabindex="-1"></a><span class="in">`@param`</span> argument_name followed by a description of the argument All parameters must be documented.</span>
+<span id="cb43-283"><a href="#cb43-283" aria-hidden="true" tabindex="-1"></a><span class="in">```{r globalvariables}</span></span>
+<span id="cb43-284"><a href="#cb43-284" aria-hidden="true" tabindex="-1"></a><span class="in">utils::globalVariables(c("bill_length_mm", "species"))</span></span>
+<span id="cb43-285"><a href="#cb43-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-286"><a href="#cb43-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-287"><a href="#cb43-287" aria-hidden="true" tabindex="-1"></a>Or, perhaps better, use the <span class="in">`.data`</span> pronoun.</span>
+<span id="cb43-288"><a href="#cb43-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-289"><a href="#cb43-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r NSE2}</span></span>
+<span id="cb43-290"><a href="#cb43-290" aria-hidden="true" tabindex="-1"></a><span class="in">process_penguin_type_data &lt;- function(data) {</span></span>
+<span id="cb43-291"><a href="#cb43-291" aria-hidden="true" tabindex="-1"></a><span class="in">  data |&gt;</span></span>
+<span id="cb43-292"><a href="#cb43-292" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(.data$species) |&gt;</span></span>
+<span id="cb43-293"><a href="#cb43-293" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(bill = mean(.data$bill_length_mm))</span></span>
+<span id="cb43-294"><a href="#cb43-294" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb43-295"><a href="#cb43-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-296"><a href="#cb43-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-297"><a href="#cb43-297" aria-hidden="true" tabindex="-1"></a><span class="fu">## Documentation with Roxygen2 {#sec-documentation-with-roxygen2}</span></span>
+<span id="cb43-298"><a href="#cb43-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-299"><a href="#cb43-299" aria-hidden="true" tabindex="-1"></a>The documentation for the package lives in <span class="in">`man/`</span> in .Rd files.</span>
+<span id="cb43-300"><a href="#cb43-300" aria-hidden="true" tabindex="-1"></a>The files are written in a LaTeX like language, that is quite hard to get to right.</span>
+<span id="cb43-301"><a href="#cb43-301" aria-hidden="true" tabindex="-1"></a>Fortunately, the <span class="co">[</span><span class="ot">`roxygen2` package</span><span class="co">](https://roxygen2.r-lib.org/index.html)</span> takes most of the pain away as the format is much simpler.</span>
+<span id="cb43-302"><a href="#cb43-302" aria-hidden="true" tabindex="-1"></a>Also, some parts of the documentation are automatically generated by inspecting the code, and it is easier to keep the documentation and code in sync because the are in the same file.</span>
+<span id="cb43-303"><a href="#cb43-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-304"><a href="#cb43-304" aria-hidden="true" tabindex="-1"></a>The roxygen2 comments sit above the function, and start with <span class="in">`#'`</span> to distinguish them from ordinary comments.</span>
+<span id="cb43-305"><a href="#cb43-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-306"><a href="#cb43-306" aria-hidden="true" tabindex="-1"></a>The first sentence of the roxygen becomes the title of the help file.</span>
+<span id="cb43-307"><a href="#cb43-307" aria-hidden="true" tabindex="-1"></a>Then we can use roxygen tags for the rest of the documentation.</span>
+<span id="cb43-308"><a href="#cb43-308" aria-hidden="true" tabindex="-1"></a>Roxygen tags all start with an <span class="in">`@`</span>.</span>
+<span id="cb43-309"><a href="#cb43-309" aria-hidden="true" tabindex="-1"></a>Once you type this, RStudio gives you suggestions.</span>
 <span id="cb43-310"><a href="#cb43-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-311"><a href="#cb43-311" aria-hidden="true" tabindex="-1"></a><span class="in">`@details`</span> All the gory details.</span>
-<span id="cb43-312"><a href="#cb43-312" aria-hidden="true" tabindex="-1"></a>Possibly several paragraphs (separate with a blank line).</span>
-<span id="cb43-313"><a href="#cb43-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-314"><a href="#cb43-314" aria-hidden="true" tabindex="-1"></a><span class="in">`@return`</span> A description of the object returned by the function (if any)</span>
-<span id="cb43-315"><a href="#cb43-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-316"><a href="#cb43-316" aria-hidden="true" tabindex="-1"></a><span class="in">`@examples`</span> Working examples which will be run when the package is tested.</span>
-<span id="cb43-317"><a href="#cb43-317" aria-hidden="true" tabindex="-1"></a>Examples should run relatively quickly or they become tedious.</span>
-<span id="cb43-318"><a href="#cb43-318" aria-hidden="true" tabindex="-1"></a>They need to use <span class="in">`library()`</span> to load any packages needed other than the package being developed.</span>
-<span id="cb43-319"><a href="#cb43-319" aria-hidden="true" tabindex="-1"></a>Any packages loaded by <span class="in">`library()`</span> need to be declared in the DESCRIPTION file (see @sec-importing-exporting-functions)</span>
-<span id="cb43-320"><a href="#cb43-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-321"><a href="#cb43-321" aria-hidden="true" tabindex="-1"></a>You can use <span class="co">[</span><span class="ot">markdown</span><span class="co">](https://roxygen2.r-lib.org/articles/markdown.html)</span> to enhance the documentation, including links etc.</span>
-<span id="cb43-322"><a href="#cb43-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-323"><a href="#cb43-323" aria-hidden="true" tabindex="-1"></a><span class="fu">### Importing functions {#sec-importing-exporting-functions}</span></span>
+<span id="cb43-311"><a href="#cb43-311" aria-hidden="true" tabindex="-1"></a><span class="in">`@description`</span> One paragraph description of what the function does.</span>
+<span id="cb43-312"><a href="#cb43-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-313"><a href="#cb43-313" aria-hidden="true" tabindex="-1"></a><span class="in">`@param`</span> argument_name followed by a description of the argument All parameters must be documented.</span>
+<span id="cb43-314"><a href="#cb43-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-315"><a href="#cb43-315" aria-hidden="true" tabindex="-1"></a><span class="in">`@details`</span> All the gory details.</span>
+<span id="cb43-316"><a href="#cb43-316" aria-hidden="true" tabindex="-1"></a>Possibly several paragraphs (separate with a blank line).</span>
+<span id="cb43-317"><a href="#cb43-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-318"><a href="#cb43-318" aria-hidden="true" tabindex="-1"></a><span class="in">`@return`</span> A description of the object returned by the function (if any)</span>
+<span id="cb43-319"><a href="#cb43-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-320"><a href="#cb43-320" aria-hidden="true" tabindex="-1"></a><span class="in">`@examples`</span> Working examples which will be run when the package is tested.</span>
+<span id="cb43-321"><a href="#cb43-321" aria-hidden="true" tabindex="-1"></a>Examples should run relatively quickly or they become tedious.</span>
+<span id="cb43-322"><a href="#cb43-322" aria-hidden="true" tabindex="-1"></a>They need to use <span class="in">`library()`</span> to load any packages needed other than the package being developed.</span>
+<span id="cb43-323"><a href="#cb43-323" aria-hidden="true" tabindex="-1"></a>Any packages loaded by <span class="in">`library()`</span> need to be declared in the DESCRIPTION file (see @sec-importing-exporting-functions)</span>
 <span id="cb43-324"><a href="#cb43-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-325"><a href="#cb43-325" aria-hidden="true" tabindex="-1"></a>The roxygen comments are also where you import functions from other packages.</span>
-<span id="cb43-326"><a href="#cb43-326" aria-hidden="true" tabindex="-1"></a>This information will be written into the NAMESPACE file so you don't have to (see the <span class="co">[</span><span class="ot">R package book</span><span class="co">](https://r-pkgs.org/namespace.html#namespace)</span> for more information about this file).</span>
-<span id="cb43-327"><a href="#cb43-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-328"><a href="#cb43-328" aria-hidden="true" tabindex="-1"></a>If you want to use a function from any other package (except <span class="in">`base`</span>) you need to add the dependency to the package to the DESCRIPTION file.</span>
-<span id="cb43-329"><a href="#cb43-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-330"><a href="#cb43-330" aria-hidden="true" tabindex="-1"></a><span class="in">```{r use-package}</span></span>
-<span id="cb43-331"><a href="#cb43-331" aria-hidden="true" tabindex="-1"></a><span class="in">use_package("dplyr")</span></span>
-<span id="cb43-332"><a href="#cb43-332" aria-hidden="true" tabindex="-1"></a><span class="in">#use_dev_package("packageFromGithub")</span></span>
-<span id="cb43-333"><a href="#cb43-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-334"><a href="#cb43-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-335"><a href="#cb43-335" aria-hidden="true" tabindex="-1"></a>You can now use a function from <span class="in">`dplyr`</span> with <span class="in">`dplyr::mutate`</span>.</span>
-<span id="cb43-336"><a href="#cb43-336" aria-hidden="true" tabindex="-1"></a>This gets messy if you need to use lots of functions from a package.</span>
-<span id="cb43-337"><a href="#cb43-337" aria-hidden="true" tabindex="-1"></a>Then it is better to import them.</span>
-<span id="cb43-338"><a href="#cb43-338" aria-hidden="true" tabindex="-1"></a>We could use</span>
-<span id="cb43-339"><a href="#cb43-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-340"><a href="#cb43-340" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @import dplyr</span></span>
-<span id="cb43-341"><a href="#cb43-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-342"><a href="#cb43-342" aria-hidden="true" tabindex="-1"></a>to import all functions in the package, or</span>
+<span id="cb43-325"><a href="#cb43-325" aria-hidden="true" tabindex="-1"></a>You can use <span class="co">[</span><span class="ot">markdown</span><span class="co">](https://roxygen2.r-lib.org/articles/markdown.html)</span> to enhance the documentation, including links etc.</span>
+<span id="cb43-326"><a href="#cb43-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-327"><a href="#cb43-327" aria-hidden="true" tabindex="-1"></a><span class="fu">### Importing functions {#sec-importing-exporting-functions}</span></span>
+<span id="cb43-328"><a href="#cb43-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-329"><a href="#cb43-329" aria-hidden="true" tabindex="-1"></a>The roxygen comments are also where you import functions from other packages.</span>
+<span id="cb43-330"><a href="#cb43-330" aria-hidden="true" tabindex="-1"></a>This information will be written into the NAMESPACE file so you don't have to (see the <span class="co">[</span><span class="ot">R package book</span><span class="co">](https://r-pkgs.org/namespace.html#namespace)</span> for more information about this file).</span>
+<span id="cb43-331"><a href="#cb43-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-332"><a href="#cb43-332" aria-hidden="true" tabindex="-1"></a>If you want to use a function from any other package (except <span class="in">`base`</span>) you need to add the dependency to the package to the DESCRIPTION file.</span>
+<span id="cb43-333"><a href="#cb43-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-334"><a href="#cb43-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{r use-package}</span></span>
+<span id="cb43-335"><a href="#cb43-335" aria-hidden="true" tabindex="-1"></a><span class="in">use_package("dplyr")</span></span>
+<span id="cb43-336"><a href="#cb43-336" aria-hidden="true" tabindex="-1"></a><span class="in"># use_dev_package("packageFromGithub")</span></span>
+<span id="cb43-337"><a href="#cb43-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-338"><a href="#cb43-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-339"><a href="#cb43-339" aria-hidden="true" tabindex="-1"></a>You can now use a function from <span class="in">`dplyr`</span> with <span class="in">`dplyr::mutate`</span>.</span>
+<span id="cb43-340"><a href="#cb43-340" aria-hidden="true" tabindex="-1"></a>This gets messy if you need to use lots of functions from a package.</span>
+<span id="cb43-341"><a href="#cb43-341" aria-hidden="true" tabindex="-1"></a>Then it is better to import them.</span>
+<span id="cb43-342"><a href="#cb43-342" aria-hidden="true" tabindex="-1"></a>We could use</span>
 <span id="cb43-343"><a href="#cb43-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-344"><a href="#cb43-344" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @importFrom dplyr %&gt;%</span></span>
+<span id="cb43-344"><a href="#cb43-344" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @import dplyr</span></span>
 <span id="cb43-345"><a href="#cb43-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-346"><a href="#cb43-346" aria-hidden="true" tabindex="-1"></a>if we want to just import specific functions.</span>
-<span id="cb43-347"><a href="#cb43-347" aria-hidden="true" tabindex="-1"></a>This is safer as it minimises the risk of conflicts.</span>
-<span id="cb43-348"><a href="#cb43-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-349"><a href="#cb43-349" aria-hidden="true" tabindex="-1"></a>Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (@troubleshooting).</span>
-<span id="cb43-350"><a href="#cb43-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-351"><a href="#cb43-351" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exporting functions</span></span>
-<span id="cb43-352"><a href="#cb43-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-353"><a href="#cb43-353" aria-hidden="true" tabindex="-1"></a>If you want to make your function available to users you normally need to export them. </span>
-<span id="cb43-354"><a href="#cb43-354" aria-hidden="true" tabindex="-1"></a>You can do this by adding <span class="in">`@export`</span> to the roxygen comments.</span>
+<span id="cb43-346"><a href="#cb43-346" aria-hidden="true" tabindex="-1"></a>to import all functions in the package, or</span>
+<span id="cb43-347"><a href="#cb43-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-348"><a href="#cb43-348" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @importFrom dplyr mutate</span></span>
+<span id="cb43-349"><a href="#cb43-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-350"><a href="#cb43-350" aria-hidden="true" tabindex="-1"></a>if we want to just import specific functions.</span>
+<span id="cb43-351"><a href="#cb43-351" aria-hidden="true" tabindex="-1"></a>This is safer as it minimises the risk of conflicts.</span>
+<span id="cb43-352"><a href="#cb43-352" aria-hidden="true" tabindex="-1"></a>This can be tedious to write if you want to import many function. The <span class="in">`autoimport`</span> package can add the imports (mostly) automatically.</span>
+<span id="cb43-353"><a href="#cb43-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-354"><a href="#cb43-354" aria-hidden="true" tabindex="-1"></a>Forgetting to import functions or to declare the dependencies in the DESCRIPTION file are very common problems when checking the package, but the message is informative (@sec-troubleshooting).</span>
 <span id="cb43-355"><a href="#cb43-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-356"><a href="#cb43-356" aria-hidden="true" tabindex="-1"></a>Functions extending S3 generics (e.g. <span class="in">`plot.myclass()`</span>) don't need to be exported, but it makes it easier for the user to find your function and access the help file.</span>
+<span id="cb43-356"><a href="#cb43-356" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exporting functions</span></span>
 <span id="cb43-357"><a href="#cb43-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-358"><a href="#cb43-358" aria-hidden="true" tabindex="-1"></a>Other functions that are not exported are internal to the package, they can be accessed by the user with <span class="in">`mypackage:::unexported()`</span> but they should not need to do this.</span>
-<span id="cb43-359"><a href="#cb43-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-360"><a href="#cb43-360" aria-hidden="true" tabindex="-1"></a><span class="fu">### Generate the .Rd files</span></span>
-<span id="cb43-361"><a href="#cb43-361" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-362"><a href="#cb43-362" aria-hidden="true" tabindex="-1"></a>Convert the roxygen comments to .Rd files with</span>
-<span id="cb43-363"><a href="#cb43-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-364"><a href="#cb43-364" aria-hidden="true" tabindex="-1"></a><span class="in">```{r document}</span></span>
-<span id="cb43-365"><a href="#cb43-365" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::document() </span></span>
-<span id="cb43-366"><a href="#cb43-366" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-367"><a href="#cb43-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-368"><a href="#cb43-368" aria-hidden="true" tabindex="-1"></a>View the compiled help files by running</span>
-<span id="cb43-369"><a href="#cb43-369" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-370"><a href="#cb43-370" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-all}</span></span>
-<span id="cb43-371"><a href="#cb43-371" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::load_all()</span></span>
-<span id="cb43-372"><a href="#cb43-372" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-373"><a href="#cb43-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-374"><a href="#cb43-374" aria-hidden="true" tabindex="-1"></a>which simulates loading the package without having to install it properly.</span>
-<span id="cb43-375"><a href="#cb43-375" aria-hidden="true" tabindex="-1"></a>Then you can use <span class="in">`?`</span> as normal to get the help (links won't work)</span>
-<span id="cb43-376"><a href="#cb43-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-377"><a href="#cb43-377" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb43-358"><a href="#cb43-358" aria-hidden="true" tabindex="-1"></a>If you want to make your function available to users you normally need to export them. </span>
+<span id="cb43-359"><a href="#cb43-359" aria-hidden="true" tabindex="-1"></a>You can do this by adding <span class="in">`@export`</span> to the roxygen comments.</span>
+<span id="cb43-360"><a href="#cb43-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-361"><a href="#cb43-361" aria-hidden="true" tabindex="-1"></a>Functions extending S3 generics (e.g. <span class="in">`plot.myclass()`</span>) don't need to be exported, but it makes it easier for the user to find your function and access the help file.</span>
+<span id="cb43-362"><a href="#cb43-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-363"><a href="#cb43-363" aria-hidden="true" tabindex="-1"></a>Other functions that are not exported are internal to the package, they can be accessed by the user with <span class="in">`mypackage:::unexported()`</span> but they should not need to do this.</span>
+<span id="cb43-364"><a href="#cb43-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-365"><a href="#cb43-365" aria-hidden="true" tabindex="-1"></a><span class="fu">### Generate the .Rd files</span></span>
+<span id="cb43-366"><a href="#cb43-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-367"><a href="#cb43-367" aria-hidden="true" tabindex="-1"></a>Convert the roxygen comments to .Rd files with</span>
+<span id="cb43-368"><a href="#cb43-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-369"><a href="#cb43-369" aria-hidden="true" tabindex="-1"></a><span class="in">```{r document}</span></span>
+<span id="cb43-370"><a href="#cb43-370" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::document()</span></span>
+<span id="cb43-371"><a href="#cb43-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-372"><a href="#cb43-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-373"><a href="#cb43-373" aria-hidden="true" tabindex="-1"></a>View the compiled help files by running</span>
+<span id="cb43-374"><a href="#cb43-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-375"><a href="#cb43-375" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-all}</span></span>
+<span id="cb43-376"><a href="#cb43-376" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::load_all()</span></span>
+<span id="cb43-377"><a href="#cb43-377" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb43-378"><a href="#cb43-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-379"><a href="#cb43-379" aria-hidden="true" tabindex="-1"></a>Many packages include data, either because they are needed for examples, or because the aim of the package is to distribute a dataset (probably with some functions to access it).</span>
-<span id="cb43-380"><a href="#cb43-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-381"><a href="#cb43-381" aria-hidden="true" tabindex="-1"></a>Data are stored in <span class="in">`data/`</span> as <span class="in">`.rda`</span> files and can be loaded into R with the <span class="in">`data()`</span> function.</span>
-<span id="cb43-382"><a href="#cb43-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-383"><a href="#cb43-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{r penguins, eval = FALSE}</span></span>
-<span id="cb43-384"><a href="#cb43-384" aria-hidden="true" tabindex="-1"></a><span class="in">data("penguins", package = "palmerpenguins")</span></span>
-<span id="cb43-385"><a href="#cb43-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-386"><a href="#cb43-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-387"><a href="#cb43-387" aria-hidden="true" tabindex="-1"></a>The best way to add <span class="in">`.rda`</span> files is to use the function <span class="in">`use_data_raw()`</span> with the name of the dataset you want create.</span>
-<span id="cb43-388"><a href="#cb43-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-389"><a href="#cb43-389" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb43-390"><a href="#cb43-390" aria-hidden="true" tabindex="-1"></a><span class="in">use_data_raw(name = "dataset1")</span></span>
-<span id="cb43-391"><a href="#cb43-391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-392"><a href="#cb43-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-393"><a href="#cb43-393" aria-hidden="true" tabindex="-1"></a>This will create <span class="in">`data_raw/`</span> and add a file called <span class="in">`dataset1.R`</span> that looks like this.</span>
-<span id="cb43-394"><a href="#cb43-394" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-395"><a href="#cb43-395" aria-hidden="true" tabindex="-1"></a><span class="in">```{r data_set1, eval = FALSE}</span></span>
-<span id="cb43-396"><a href="#cb43-396" aria-hidden="true" tabindex="-1"></a><span class="in">## code to prepare `dataset1` dataset goes here</span></span>
+<span id="cb43-379"><a href="#cb43-379" aria-hidden="true" tabindex="-1"></a>which simulates loading the package without having to install it properly.</span>
+<span id="cb43-380"><a href="#cb43-380" aria-hidden="true" tabindex="-1"></a>Then you can use <span class="in">`?`</span> as normal to get the help (links won't work)</span>
+<span id="cb43-381"><a href="#cb43-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-382"><a href="#cb43-382" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb43-383"><a href="#cb43-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-384"><a href="#cb43-384" aria-hidden="true" tabindex="-1"></a>Many packages include data, either because they are needed for examples, or because the aim of the package is to distribute a dataset (probably with some functions to access it).</span>
+<span id="cb43-385"><a href="#cb43-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-386"><a href="#cb43-386" aria-hidden="true" tabindex="-1"></a>Data are stored in <span class="in">`data/`</span> as <span class="in">`.rda`</span> files and can be loaded into R with the <span class="in">`data()`</span> function.</span>
+<span id="cb43-387"><a href="#cb43-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-388"><a href="#cb43-388" aria-hidden="true" tabindex="-1"></a><span class="in">```{r penguins, eval = FALSE}</span></span>
+<span id="cb43-389"><a href="#cb43-389" aria-hidden="true" tabindex="-1"></a><span class="in">data("penguins", package = "palmerpenguins")</span></span>
+<span id="cb43-390"><a href="#cb43-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-391"><a href="#cb43-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-392"><a href="#cb43-392" aria-hidden="true" tabindex="-1"></a>The best way to add <span class="in">`.rda`</span> files is to use the function <span class="in">`use_data_raw()`</span> with the name of the dataset you want create.</span>
+<span id="cb43-393"><a href="#cb43-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-394"><a href="#cb43-394" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb43-395"><a href="#cb43-395" aria-hidden="true" tabindex="-1"></a><span class="in">use_data_raw(name = "dataset1")</span></span>
+<span id="cb43-396"><a href="#cb43-396" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb43-397"><a href="#cb43-397" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-398"><a href="#cb43-398" aria-hidden="true" tabindex="-1"></a><span class="in">usethis::use_data(dataset1, overwrite = TRUE)</span></span>
-<span id="cb43-399"><a href="#cb43-399" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-400"><a href="#cb43-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-401"><a href="#cb43-401" aria-hidden="true" tabindex="-1"></a>Add the code needed to reproducibly create <span class="in">`dataset1`</span>, perhaps importing and processing data files that you have copied into <span class="in">`data-raw/`</span>.</span>
+<span id="cb43-398"><a href="#cb43-398" aria-hidden="true" tabindex="-1"></a>This will create <span class="in">`data_raw/`</span> and add a file called <span class="in">`dataset1.R`</span> that looks like this.</span>
+<span id="cb43-399"><a href="#cb43-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-400"><a href="#cb43-400" aria-hidden="true" tabindex="-1"></a><span class="in">```{r data_set1, eval = FALSE}</span></span>
+<span id="cb43-401"><a href="#cb43-401" aria-hidden="true" tabindex="-1"></a><span class="in">## code to prepare `dataset1` dataset goes here</span></span>
 <span id="cb43-402"><a href="#cb43-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-403"><a href="#cb43-403" aria-hidden="true" tabindex="-1"></a>When you run the entire script, the code will create <span class="in">`dataset1.rda`</span> in <span class="in">`data/`</span>.</span>
-<span id="cb43-404"><a href="#cb43-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-405"><a href="#cb43-405" aria-hidden="true" tabindex="-1"></a><span class="fu">### Documenting data</span></span>
-<span id="cb43-406"><a href="#cb43-406" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-407"><a href="#cb43-407" aria-hidden="true" tabindex="-1"></a>Data in <span class="in">`data/`</span> need to be documented.</span>
-<span id="cb43-408"><a href="#cb43-408" aria-hidden="true" tabindex="-1"></a>Write the documentation for the data using roxygen2 and save it in <span class="in">`R/`</span>.</span>
-<span id="cb43-409"><a href="#cb43-409" aria-hidden="true" tabindex="-1"></a>I usually call this file <span class="in">`data.R`</span> and document all the datasets in it.</span>
-<span id="cb43-410"><a href="#cb43-410" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-411"><a href="#cb43-411" aria-hidden="true" tabindex="-1"></a>In my traitstrap package, one of the data objects is called trait.</span>
-<span id="cb43-412"><a href="#cb43-412" aria-hidden="true" tabindex="-1"></a>Here is the entry from <span class="in">`R/data.R`</span>:</span>
-<span id="cb43-413"><a href="#cb43-413" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-414"><a href="#cb43-414" aria-hidden="true" tabindex="-1"></a><span class="in">    #' Trait data</span></span>
-<span id="cb43-415"><a href="#cb43-415" aria-hidden="true" tabindex="-1"></a><span class="in">    #'</span></span>
-<span id="cb43-416"><a href="#cb43-416" aria-hidden="true" tabindex="-1"></a><span class="in">    #' A dataset containing plant traits in control plots on Svalbard from PFCT4</span></span>
-<span id="cb43-417"><a href="#cb43-417" aria-hidden="true" tabindex="-1"></a><span class="in">    #' TraitTrain course.</span></span>
-<span id="cb43-418"><a href="#cb43-418" aria-hidden="true" tabindex="-1"></a><span class="in">    #'</span></span>
-<span id="cb43-419"><a href="#cb43-419" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @format A data frame with 53940 rows and 10 variables:</span></span>
-<span id="cb43-420"><a href="#cb43-420" aria-hidden="true" tabindex="-1"></a><span class="in">    #' \describe{</span></span>
-<span id="cb43-421"><a href="#cb43-421" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Taxon}{species name}</span></span>
-<span id="cb43-422"><a href="#cb43-422" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Site}{site name}</span></span>
-<span id="cb43-423"><a href="#cb43-423" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{PlotID}{plot name}</span></span>
-<span id="cb43-424"><a href="#cb43-424" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Trait}{trait name with unit}</span></span>
-<span id="cb43-425"><a href="#cb43-425" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Value}{trait value}</span></span>
-<span id="cb43-426"><a href="#cb43-426" aria-hidden="true" tabindex="-1"></a><span class="in">    #' }</span></span>
-<span id="cb43-427"><a href="#cb43-427" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @source \url{http://https://www.uib.no/en/rg/EECRG/114808/plant-functional-traits-course-4}</span></span>
-<span id="cb43-428"><a href="#cb43-428" aria-hidden="true" tabindex="-1"></a><span class="in">    "trait"</span></span>
-<span id="cb43-429"><a href="#cb43-429" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-430"><a href="#cb43-430" aria-hidden="true" tabindex="-1"></a>The first line gives the title followed by the desciption.</span>
-<span id="cb43-431"><a href="#cb43-431" aria-hidden="true" tabindex="-1"></a>The \@format field lets you describe the data.</span>
-<span id="cb43-432"><a href="#cb43-432" aria-hidden="true" tabindex="-1"></a>The last line has the object name in quotes (note no #' first).</span>
-<span id="cb43-433"><a href="#cb43-433" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-434"><a href="#cb43-434" aria-hidden="true" tabindex="-1"></a><span class="fu">## Adding other files</span></span>
-<span id="cb43-435"><a href="#cb43-435" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-436"><a href="#cb43-436" aria-hidden="true" tabindex="-1"></a>R gets upset if there are files where they are not supposed to be in the R package.</span>
-<span id="cb43-437"><a href="#cb43-437" aria-hidden="true" tabindex="-1"></a>You cannot put extra files into the package root directory.</span>
-<span id="cb43-438"><a href="#cb43-438" aria-hidden="true" tabindex="-1"></a>The solution is to put extra files into subdirectories in <span class="in">`inst/`</span>.</span>
-<span id="cb43-439"><a href="#cb43-439" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-440"><a href="#cb43-440" aria-hidden="true" tabindex="-1"></a>If you want to include raw data files because your package has functions to process them, they can go in <span class="in">`inst/extdata/`</span>.</span>
-<span id="cb43-441"><a href="#cb43-441" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-442"><a href="#cb43-442" aria-hidden="true" tabindex="-1"></a>When the package is compiled, <span class="in">`inst/`</span> will be removed and <span class="in">`extdata/`</span> will be put into the package root directory.</span>
-<span id="cb43-443"><a href="#cb43-443" aria-hidden="true" tabindex="-1"></a>The path to the file can the be accessed with <span class="in">`system.file()`</span>.</span>
+<span id="cb43-403"><a href="#cb43-403" aria-hidden="true" tabindex="-1"></a><span class="in">usethis::use_data(dataset1, overwrite = TRUE)</span></span>
+<span id="cb43-404"><a href="#cb43-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-405"><a href="#cb43-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-406"><a href="#cb43-406" aria-hidden="true" tabindex="-1"></a>Add the code needed to reproducibly create <span class="in">`dataset1`</span>, perhaps importing and processing data files that you have copied into <span class="in">`data-raw/`</span>.</span>
+<span id="cb43-407"><a href="#cb43-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-408"><a href="#cb43-408" aria-hidden="true" tabindex="-1"></a>When you run the entire script, the code will create <span class="in">`dataset1.rda`</span> in <span class="in">`data/`</span>.</span>
+<span id="cb43-409"><a href="#cb43-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-410"><a href="#cb43-410" aria-hidden="true" tabindex="-1"></a><span class="fu">### Documenting data</span></span>
+<span id="cb43-411"><a href="#cb43-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-412"><a href="#cb43-412" aria-hidden="true" tabindex="-1"></a>Data in <span class="in">`data/`</span> need to be documented.</span>
+<span id="cb43-413"><a href="#cb43-413" aria-hidden="true" tabindex="-1"></a>Write the documentation for the data using roxygen2 and save it in <span class="in">`R/`</span>.</span>
+<span id="cb43-414"><a href="#cb43-414" aria-hidden="true" tabindex="-1"></a>I usually call this file <span class="in">`data.R`</span> and document all the datasets in it.</span>
+<span id="cb43-415"><a href="#cb43-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-416"><a href="#cb43-416" aria-hidden="true" tabindex="-1"></a>In my traitstrap package, one of the data objects is called trait.</span>
+<span id="cb43-417"><a href="#cb43-417" aria-hidden="true" tabindex="-1"></a>Here is the entry from <span class="in">`R/data.R`</span>:</span>
+<span id="cb43-418"><a href="#cb43-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-419"><a href="#cb43-419" aria-hidden="true" tabindex="-1"></a><span class="in">    #' Trait data</span></span>
+<span id="cb43-420"><a href="#cb43-420" aria-hidden="true" tabindex="-1"></a><span class="in">    #'</span></span>
+<span id="cb43-421"><a href="#cb43-421" aria-hidden="true" tabindex="-1"></a><span class="in">    #' A dataset containing plant traits in control plots on Svalbard from PFCT4</span></span>
+<span id="cb43-422"><a href="#cb43-422" aria-hidden="true" tabindex="-1"></a><span class="in">    #' TraitTrain course.</span></span>
+<span id="cb43-423"><a href="#cb43-423" aria-hidden="true" tabindex="-1"></a><span class="in">    #'</span></span>
+<span id="cb43-424"><a href="#cb43-424" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @format A data frame with 53940 rows and 10 variables:</span></span>
+<span id="cb43-425"><a href="#cb43-425" aria-hidden="true" tabindex="-1"></a><span class="in">    #' \describe{</span></span>
+<span id="cb43-426"><a href="#cb43-426" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Taxon}{species name}</span></span>
+<span id="cb43-427"><a href="#cb43-427" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Site}{site name}</span></span>
+<span id="cb43-428"><a href="#cb43-428" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{PlotID}{plot name}</span></span>
+<span id="cb43-429"><a href="#cb43-429" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Trait}{trait name with unit}</span></span>
+<span id="cb43-430"><a href="#cb43-430" aria-hidden="true" tabindex="-1"></a><span class="in">    #'   \item{Value}{trait value}</span></span>
+<span id="cb43-431"><a href="#cb43-431" aria-hidden="true" tabindex="-1"></a><span class="in">    #' }</span></span>
+<span id="cb43-432"><a href="#cb43-432" aria-hidden="true" tabindex="-1"></a><span class="in">    #' @source \url{http://https://www.uib.no/en/rg/EECRG/114808/plant-functional-traits-course-4}</span></span>
+<span id="cb43-433"><a href="#cb43-433" aria-hidden="true" tabindex="-1"></a><span class="in">    "trait"</span></span>
+<span id="cb43-434"><a href="#cb43-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-435"><a href="#cb43-435" aria-hidden="true" tabindex="-1"></a>The first line gives the title followed by the desciption.</span>
+<span id="cb43-436"><a href="#cb43-436" aria-hidden="true" tabindex="-1"></a>The <span class="in">`@format`</span> field lets you describe the data.</span>
+<span id="cb43-437"><a href="#cb43-437" aria-hidden="true" tabindex="-1"></a>The last line has the object name in quotes (note no <span class="in">`#'`</span> first).</span>
+<span id="cb43-438"><a href="#cb43-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-439"><a href="#cb43-439" aria-hidden="true" tabindex="-1"></a><span class="fu">## Adding other files</span></span>
+<span id="cb43-440"><a href="#cb43-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-441"><a href="#cb43-441" aria-hidden="true" tabindex="-1"></a>R gets upset if there are files where they are not supposed to be in the R package.</span>
+<span id="cb43-442"><a href="#cb43-442" aria-hidden="true" tabindex="-1"></a>You cannot put extra files into the package root directory.</span>
+<span id="cb43-443"><a href="#cb43-443" aria-hidden="true" tabindex="-1"></a>The solution is to put extra files into subdirectories in <span class="in">`inst/`</span>.</span>
 <span id="cb43-444"><a href="#cb43-444" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-445"><a href="#cb43-445" aria-hidden="true" tabindex="-1"></a><span class="in">```{r system-file}</span></span>
-<span id="cb43-446"><a href="#cb43-446" aria-hidden="true" tabindex="-1"></a><span class="in">path &lt;- system.file("extdata", package = "readr")</span></span>
-<span id="cb43-447"><a href="#cb43-447" aria-hidden="true" tabindex="-1"></a><span class="in">list.files(path)</span></span>
-<span id="cb43-448"><a href="#cb43-448" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-445"><a href="#cb43-445" aria-hidden="true" tabindex="-1"></a>If you want to include raw data files because your package has functions to process them, they can go in <span class="in">`inst/extdata/`</span>.</span>
+<span id="cb43-446"><a href="#cb43-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-447"><a href="#cb43-447" aria-hidden="true" tabindex="-1"></a>When the package is compiled, <span class="in">`inst/`</span> will be removed and <span class="in">`extdata/`</span> will be put into the package root directory.</span>
+<span id="cb43-448"><a href="#cb43-448" aria-hidden="true" tabindex="-1"></a>The path to the file can the be accessed with <span class="in">`system.file()`</span>.</span>
 <span id="cb43-449"><a href="#cb43-449" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-450"><a href="#cb43-450" aria-hidden="true" tabindex="-1"></a>Tutorials and other resources can also be put into suitable directories in <span class="in">`inst/`</span>.</span>
-<span id="cb43-451"><a href="#cb43-451" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-452"><a href="#cb43-452" aria-hidden="true" tabindex="-1"></a><span class="fu">## Checking {#sec-checking}</span></span>
-<span id="cb43-453"><a href="#cb43-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-454"><a href="#cb43-454" aria-hidden="true" tabindex="-1"></a>Now we are ready to check the package compiles correctly.</span>
-<span id="cb43-455"><a href="#cb43-455" aria-hidden="true" tabindex="-1"></a>The check function is slow (it checks many aspects of the package), so before running it, run some functions that check different aspects of the package.</span>
+<span id="cb43-450"><a href="#cb43-450" aria-hidden="true" tabindex="-1"></a><span class="in">```{r system-file}</span></span>
+<span id="cb43-451"><a href="#cb43-451" aria-hidden="true" tabindex="-1"></a><span class="in">path &lt;- system.file("extdata", package = "readr")</span></span>
+<span id="cb43-452"><a href="#cb43-452" aria-hidden="true" tabindex="-1"></a><span class="in">list.files(path)</span></span>
+<span id="cb43-453"><a href="#cb43-453" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-454"><a href="#cb43-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-455"><a href="#cb43-455" aria-hidden="true" tabindex="-1"></a>Tutorials and other resources can also be put into suitable directories in <span class="in">`inst/`</span>.</span>
 <span id="cb43-456"><a href="#cb43-456" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-457"><a href="#cb43-457" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pre-check}</span></span>
-<span id="cb43-458"><a href="#cb43-458" aria-hidden="true" tabindex="-1"></a><span class="in"># build the documentation</span></span>
-<span id="cb43-459"><a href="#cb43-459" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::document()</span></span>
-<span id="cb43-460"><a href="#cb43-460" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-461"><a href="#cb43-461" aria-hidden="true" tabindex="-1"></a><span class="in"># check the examples work</span></span>
-<span id="cb43-462"><a href="#cb43-462" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::run_examples()</span></span>
-<span id="cb43-463"><a href="#cb43-463" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-464"><a href="#cb43-464" aria-hidden="true" tabindex="-1"></a><span class="in"># check the tests work</span></span>
-<span id="cb43-465"><a href="#cb43-465" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::test()</span></span>
-<span id="cb43-466"><a href="#cb43-466" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-467"><a href="#cb43-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-468"><a href="#cb43-468" aria-hidden="true" tabindex="-1"></a>After fixing any problems, check the entire package either with the <span class="in">`Check`</span> button in the Build tab (in the same panel as the Environment tab), or with <span class="in">`devtools::check()`</span>.</span>
-<span id="cb43-469"><a href="#cb43-469" aria-hidden="true" tabindex="-1"></a>They do exactly the same work, but the Check button leaves the console available.</span>
-<span id="cb43-470"><a href="#cb43-470" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-471"><a href="#cb43-471" aria-hidden="true" tabindex="-1"></a>Check is very thorough.</span>
-<span id="cb43-472"><a href="#cb43-472" aria-hidden="true" tabindex="-1"></a>It will almost certainly report errors, warnings or notes the first times you run it.</span>
-<span id="cb43-473"><a href="#cb43-473" aria-hidden="true" tabindex="-1"></a>Identify the problems, fix them and run check again.</span>
-<span id="cb43-474"><a href="#cb43-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-475"><a href="#cb43-475" aria-hidden="true" tabindex="-1"></a>Now use</span>
-<span id="cb43-476"><a href="#cb43-476" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-477"><a href="#cb43-477" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-all2}</span></span>
-<span id="cb43-478"><a href="#cb43-478" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::load_all()</span></span>
-<span id="cb43-479"><a href="#cb43-479" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb43-480"><a href="#cb43-480" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-481"><a href="#cb43-481" aria-hidden="true" tabindex="-1"></a>and give your functions a test drive.</span>
-<span id="cb43-482"><a href="#cb43-482" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-483"><a href="#cb43-483" aria-hidden="true" tabindex="-1"></a>::: callout-caution</span>
-<span id="cb43-484"><a href="#cb43-484" aria-hidden="true" tabindex="-1"></a><span class="fu">## Don't `source()` functions</span></span>
+<span id="cb43-457"><a href="#cb43-457" aria-hidden="true" tabindex="-1"></a><span class="fu">## Checking {#sec-checking}</span></span>
+<span id="cb43-458"><a href="#cb43-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-459"><a href="#cb43-459" aria-hidden="true" tabindex="-1"></a>Now we are ready to check the package compiles correctly.</span>
+<span id="cb43-460"><a href="#cb43-460" aria-hidden="true" tabindex="-1"></a>The check function is slow (it checks many aspects of the package), so before running it, run some functions that check different aspects of the package.</span>
+<span id="cb43-461"><a href="#cb43-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-462"><a href="#cb43-462" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pre-check}</span></span>
+<span id="cb43-463"><a href="#cb43-463" aria-hidden="true" tabindex="-1"></a><span class="in"># build the documentation</span></span>
+<span id="cb43-464"><a href="#cb43-464" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::document()</span></span>
+<span id="cb43-465"><a href="#cb43-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-466"><a href="#cb43-466" aria-hidden="true" tabindex="-1"></a><span class="in"># check the examples work</span></span>
+<span id="cb43-467"><a href="#cb43-467" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::run_examples()</span></span>
+<span id="cb43-468"><a href="#cb43-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-469"><a href="#cb43-469" aria-hidden="true" tabindex="-1"></a><span class="in"># check the tests work</span></span>
+<span id="cb43-470"><a href="#cb43-470" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::test()</span></span>
+<span id="cb43-471"><a href="#cb43-471" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-472"><a href="#cb43-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-473"><a href="#cb43-473" aria-hidden="true" tabindex="-1"></a>After fixing any problems, check the entire package either with the <span class="in">`Check`</span> button in the Build tab (in the same panel as the Environment tab), or with <span class="in">`devtools::check()`</span>.</span>
+<span id="cb43-474"><a href="#cb43-474" aria-hidden="true" tabindex="-1"></a>They do exactly the same work, but the Check button leaves the console available.</span>
+<span id="cb43-475"><a href="#cb43-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-476"><a href="#cb43-476" aria-hidden="true" tabindex="-1"></a>Check is very thorough.</span>
+<span id="cb43-477"><a href="#cb43-477" aria-hidden="true" tabindex="-1"></a>It will almost certainly report errors, warnings or notes the first times you run it.</span>
+<span id="cb43-478"><a href="#cb43-478" aria-hidden="true" tabindex="-1"></a>Identify the problems, fix them and run check again.</span>
+<span id="cb43-479"><a href="#cb43-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-480"><a href="#cb43-480" aria-hidden="true" tabindex="-1"></a>Now use</span>
+<span id="cb43-481"><a href="#cb43-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-482"><a href="#cb43-482" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-all2}</span></span>
+<span id="cb43-483"><a href="#cb43-483" aria-hidden="true" tabindex="-1"></a><span class="in">devtools::load_all()</span></span>
+<span id="cb43-484"><a href="#cb43-484" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb43-485"><a href="#cb43-485" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-486"><a href="#cb43-486" aria-hidden="true" tabindex="-1"></a>You must resist the temptation to <span class="in">`source()`</span> your functions (or otherwise load them through the RStudio interface). </span>
+<span id="cb43-486"><a href="#cb43-486" aria-hidden="true" tabindex="-1"></a>and give your functions a test drive.</span>
 <span id="cb43-487"><a href="#cb43-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-488"><a href="#cb43-488" aria-hidden="true" tabindex="-1"></a>This will cause problems for <span class="in">`devtools::load_all()`</span> as the sourced functions will mask the versions loaded by <span class="in">`load_all()`</span>, and may not work properly. </span>
-<span id="cb43-489"><a href="#cb43-489" aria-hidden="true" tabindex="-1"></a>Either delete any functions you have sourced, or restart your R session.</span>
+<span id="cb43-488"><a href="#cb43-488" aria-hidden="true" tabindex="-1"></a>::: callout-caution</span>
+<span id="cb43-489"><a href="#cb43-489" aria-hidden="true" tabindex="-1"></a><span class="fu">## Don't `source()` functions</span></span>
 <span id="cb43-490"><a href="#cb43-490" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-491"><a href="#cb43-491" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb43-491"><a href="#cb43-491" aria-hidden="true" tabindex="-1"></a>You must resist the temptation to <span class="in">`source()`</span> your functions (or otherwise load them through the RStudio interface). </span>
 <span id="cb43-492"><a href="#cb43-492" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-493"><a href="#cb43-493" aria-hidden="true" tabindex="-1"></a><span class="fu">## Build and install {#sec-build-and-install}</span></span>
-<span id="cb43-494"><a href="#cb43-494" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-495"><a href="#cb43-495" aria-hidden="true" tabindex="-1"></a>When you are happy with your package, use the "Install" button in the build tab to install your package.</span>
-<span id="cb43-496"><a href="#cb43-496" aria-hidden="true" tabindex="-1"></a>Now you can load it with <span class="in">`library()`</span> as you would any other package.</span>
+<span id="cb43-493"><a href="#cb43-493" aria-hidden="true" tabindex="-1"></a>This will cause problems for <span class="in">`devtools::load_all()`</span> as the sourced functions will mask the versions loaded by <span class="in">`load_all()`</span>, and may not work properly. </span>
+<span id="cb43-494"><a href="#cb43-494" aria-hidden="true" tabindex="-1"></a>Either delete any functions you have sourced, or restart your R session.</span>
+<span id="cb43-495"><a href="#cb43-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-496"><a href="#cb43-496" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb43-497"><a href="#cb43-497" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-498"><a href="#cb43-498" aria-hidden="true" tabindex="-1"></a><span class="fu">## Build and install {#sec-build-and-install}</span></span>
+<span id="cb43-499"><a href="#cb43-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-500"><a href="#cb43-500" aria-hidden="true" tabindex="-1"></a>When you are happy with your package, use the "Install" button in the build tab to install your package.</span>
+<span id="cb43-501"><a href="#cb43-501" aria-hidden="true" tabindex="-1"></a>Now you can load it with <span class="in">`library()`</span> as you would any other package.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
