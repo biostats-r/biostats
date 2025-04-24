@@ -22,6 +22,7 @@ quarto::quarto_render("DataManagement")
 quarto::quarto_render("writing_a_package")
 
 # working in R
+fs::file_delete(list.files(here::here("docs/workingInR/"), recursive = TRUE, full.names = TRUE))
 quarto::quarto_render("WorkingInR")
 
 # quarto markdown
