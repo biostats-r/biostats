@@ -1,0 +1,326 @@
+```{r setup, include=FALSE}
+source("R/setup.R")
+```
+
+# Running code repeatedly {#sec-iterate}
+
+
+It is very common to need to run some code repeatedly, for example, to import multiple files, fit models to multiple datasets, or make multiple figures. 
+
+One strategy is to create multiple copies of the code. 
+This is a bad idea, especially if there are many copies, violating the DRY (Don't Repeat Yourself) principle.
+The problem is that the code can become very long, and it is hard to makes changes in multiple places if you need to update it.
+Instead it is better to use code to run the task iteratively, so that you only need one copy of the code.
+
+
+There are a number of strategies for doing this.
+
+## Vectorisation
+
+In some computer languages, if you want to add the element of a vector you need to iterate over them
+
+```{r}
+v <- c(1, 9, 27)
+answer <- 0
+for(i in 1:length(v)) {
+  answer <- answer + v[i]
+}
+answer
+
+```
+
+Fortunately we don't need to do this in R as we can use the function `sum()` which is vectorised. 
+The iterating that is needed to calculate the answer is done internally.
+
+```{r}
+sum(v)
+
+```
+
+Many R functions are vectorised. If a vectorised function exists for your problem, it is probably the fastest and easiest solution. 
+
+Not all functions are vectorised, and sometimes we need something more complex than a single function, and we need another solution.
+
+
+## `for` loops
+
+You will sometimes see code using `for()` loops to iterate.
+Similar syntax is used in many computer languages.
+
+The minimal code to run a `for` loop is
+
+```{r}
+#| label: for-loop
+
+for ( i in 1:5) { # i is the counter
+  print(1:i) # do something with i
+}
+```
+
+Well written for loops are fast, but there are some downsides.
+If we want to keep the result from a `for` loop, we need to declare it in advance with the correct size. If we write the loop badly, expanding the result one element at a time, it can be very slow.
+
+```{r}
+#| eval: false
+# good
+length <- 2000
+answer <- numeric(length = length) # declare object
+for(i in 1:length) {
+  answer[i] <- rnorm(1) # put result into the i'th element of the answer
+}
+
+# bad
+answer <- NULL # empty object
+for(i in 1:length) {
+  answer <- c(answer, rnorm(1)) # extend answer by one element
+}
+
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-cap: Results from `bench::mark()` showing that the vectorised code runs about two orders faster than the well written loop, which in turn runs about two orders of magnitude faster, and calls the garbage collector less often. The speed differential will depend on the number of iterations and the complexity of the code within the loop.
+#| fig-alt: Plot showing how fast vectorised code is compared to a well written and a badly written loop. 
+
+length <- 2000
+
+bm <- bench::mark(
+  vectorised = rnorm(n = length),
+  `good\nloop` = {
+    answer <- numeric(length = length)
+    for(i in 1:length) {
+      answer[i] <- rnorm(1)
+    }
+  },
+  
+  `bad\nloop` = {
+    for(i in 1:length) {
+      answer <- c(answer, rnorm(1))
+    }
+  },
+  min_iterations = 50,
+  max_iterations = 50,
+  check = FALSE
+) 
+bm |>  ggplot2::autoplot()
+```
+
+
+
+
+Another problem with `for` loops is that if they are used to update and object, and the code fails, only part of the object will have changed.
+With `purrr::map()` and related functions, either everything works, or nothing changes.
+
+## `purrr` package
+
+The `purrr` package is the package I usually use for iterating.= when a vectorised solution is not available.
+The most important function is `map()`. 
+The first argument to `map()` is the vector (possibly a list) we want to iterate over, the second is a function. 
+Each element of the data will be given in turn to the first available argument of the function in the second argument.
+
+
+```{r}
+library(tidyverse) # need purrr package
+lst <- list(a = 1:5, b = 3:7, c = 5:11)
+
+# calculate mean of each element of lst
+map(.x = lst, .f = mean)
+```
+
+We often pipe the data for the first argument into map. 
+Extra arguments to the function can be given after it, but often it is more convenient to make an anonymous function to include extra arguments or combine functions.
+Anonymous functions can be specified with the keyword `function()` or the shortcut `\()`
+
+```{r}
+lst |> map(mean, na.rm = TRUE)
+
+# \(x) makes a function with an argument x
+lst |> map(\(x)mean(x, na.rm = TRUE))
+```
+
+::: callout-tip
+## Extracting named elements
+
+If we want to extract a named element from a vector (including lists), we can use `map()` with the name of the element. 
+This is useful, for example, when extracting p-values from a list of models.
+```{r}
+#| label: named-elements
+
+# power test by simulation
+1:5 |> # 5 replicates - needs many more
+  map(\(i){
+    # simulate data
+    x <- rep(c("control", "treat"), each = 10)
+    y <- rnorm(20)
+    # run t-test
+    t.test(y ~ x)
+  }) |> 
+  map("p.value") # extract p-values
+
+```
+:::
+
+`map()` always returns a list. 
+We can pass this list to another `map()` for further processing, or combine the different list elements into one object. 
+For example, if each list element is a data.frame, we can use `list_rbind()` to combine them into a single data.frame.
+
+```{r}
+cities <- list(
+  vestland = tibble(city = "Bergen"),
+  rogaland = tibble(city = "Stavanger")
+  )
+
+cities |> 
+  list_rbind(names_to = "fylke")
+```
+
+
+
+
+There are a family of functions, including `map_dbl()` and `map_chr()` that map the input and transform the results to return an atomic vector.
+The results of each element must be of the correct type or an error is thrown.
+
+```{r}
+lst |> map_dbl(mean)
+```
+
+
+::: callout-tip
+
+It is often useful for the names of the list or vector you are iterating over to have named elements. 
+This can be done with the `set_names()` function.
+
+```{r}
+#| label: set-names
+letters[1:5] |> set_names() # sets values as names
+```
+
+:::
+
+Sometimes we need to iterate over multiple objects at the same time. The function `map2()` and `pmap()`, which iterate over two objects and any number respectively, can help.
+
+
+::: callout-tip
+Even the best code can run into problems.
+If you are iterating some slow code `possibly()` or `safely()` can let you keep the iterations that worked.
+
+```{r}
+#| label: safely
+
+safe_log <- safely(log) # make safe function of log()
+
+list("a", 10, 100) |>
+  map(safe_log) |> 
+  transpose() # put results together
+```
+
+
+:::
+
+### Mapping within a data.frame
+
+We can use `map()` within a dataframe if we first use `group_by()` and `nest()` to make a compact version of the data. Now we can use `map()` within a `mutate()`
+
+```{r}
+#| label: nest
+penguins |> 
+  # group by species
+  group_by(species) |>
+  # nest - each group becomes a single row with a list column
+  nest() |> 
+  # map over the list column to fit a model then extract coefficients
+  mutate(models = map(data, \(d)lm(bill_length_mm ~ body_mass_g, data = d)),
+         coefs = map(models, broom::tidy)) |>
+  select(species, coefs) |> 
+  # unnest to see the coefficients
+  unnest(coefs)
+```
+
+
+## Parralisation
+
+R will run each iteration in a sequence, one after another.
+This can be slow and it might be possible to make the code run faster by running the code in parallel, making use of the multiple cores on your computer.
+
+This can sound rather daunting, but is actually quite simple with the `furrr` package.
+First we need to set up the type of parallelisation we want to use. Options include
+
+-   sequential. This is the default, and runs the iterations sequentially, not in parallel.
+-   multisession. This sets up separate R sessions on the same computer.
+
+```{r}
+#| label: furrr-setup
+library(furrr)
+
+
+plan(multisession)
+
+```
+
+
+
+Now we can use the `furrr` package to replace our `purrr` functions with `future_*()` functions.
+For example, replace `map()` with `future_map()`.
+
+
+```{r}
+#| label: time-furrr
+library(tictoc) # timing
+tic() # start timer
+res <- map(1:10, \(i)Sys.sleep(5)) # sleeps for five seconds ten times sequentially
+toc() # stop timer
+
+tic() # start timer
+res <- future_map(1:10, \(i)Sys.sleep(5)) # sleeps ten times in parallel
+toc() # stop timer
+
+```
+
+
+If each iteration of the loop is very fast to run, there might not be much advantage to setting up paralellisation as the overhead needed to manage the parallelisation might outweigh the benefit.
+
+Parallelisation can be provided by other packages including `parallel`, `snow`, and `foreach`.
+
+::: callout-important
+## Nested iteration
+
+Sometimes we want to iterate within another loop.
+Don't set up parallel processing on both as you will run out of available cores and everything will run very slowly.
+:::
+
+## Alternatives iterating
+
+There are several alternatives to `purrr` for iterating. 
+
+Base R has a set of function
+
+ - `lappy()` iterates over a vector and returns a list the same length. It is used in a similar way to `purrr::map`.
+ - `sapply()` as with `lapply()` but it tries to simplfy the data into a vector or matrix. `sapply()` will coerce all the output to the same type, which can be a problem.
+ - `vapply()` is safer to use than `sapply()` as you have to pre-specify the format of the return. It can be used in a similar way to `purrr::map_int()` and related functions.
+ - `mapply()` is a multvariate version of `sapply()`, taking several vectors rather than just one, and processing the first element of each vector, and then the second, etc. It is similar in aim to `purrr::pmap()`
+ - `apply()` iterates over the rows (1) or columns (2) of a matrix-like objects, or slices of multidimensional arrays.
+
+These functions are not consistent with the order and case of the arguments, which can cause confusion when changing between them.
+
+`plyr` has a range of consistent function that take and return variety of data structures.
+For example, `ldply()` takes a list (l) and returns a data.frame (d), and `alply()` takes an array (a) and returns a list.
+
+::: callout-important
+## `plyr` conflicts
+
+The `plyr` package has several name conflicts with the `dplyr` package.
+If you load the `plyr` package much of your `dplyr` code will stop working, with strange error messages. 
+It's better to call the functions with their package (e.g. `plyr::adply`), and also use the conflicted package.
+:::
+
+
+
+
+
+::: {.column-margin}
+## Contributors {.unlisted .unnumbered}
+
+-   Richard Telford
+:::
