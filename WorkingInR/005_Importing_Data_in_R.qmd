@@ -630,6 +630,46 @@ biomass_l <- read_excel(path = "data/biomass2015.xls", sheet = "Site L")
 
 Many of the arguments for skipping rows at the start of the file, enforcing column types, etc, are similar to those in `readr::read_delim()`
 
+::: callout-important
+## Setting the locale on windows computers
+
+The locale captures the defaults that vary between countries.
+If you are using a windows computer, the locale may not have been set correctly.
+This would cause the next exercise to fail, and any text with the  Norwegian letters "å", "ø" and "æ" or other diacritics.
+
+Check if there is a problem by running
+```{r}
+#| label: Sys-getlocale
+#| eval: false
+
+Sys.getlocale()
+
+```
+
+If this returns "C", then you have a problem. To see the problem, run `"å"` (with quotes) in the console.
+
+We can fix the problem permanently by editing the .rprofile file with instructions to set the locale correctly. To do this, run
+
+```{r}
+#| label: create-rprofile
+#| eval: false
+usethis::edit_r_profile()
+```
+
+This will create and open a .rprofile file.
+Now add the following line to the file, save it, and restart R (Session > Restart R).
+
+```{r}
+#| label: edit-rprofile
+#| eval: false
+
+Sys.setlocale(locale = "Norwegian.UTF-8")
+```
+
+Other locale languages are [avaliable](https://learn.microsoft.com/nb-no/cpp/c-runtime-library/language-strings?view=msvc-170&viewFallbackFrom=vs-2017), but always use "UTF-8" character encoding.
+
+:::
+
 ::: callout-note
 ## Exercise
 
