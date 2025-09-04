@@ -824,9 +824,22 @@ Figure&nbsp;11.1: Contents of a CSV file viewed in the text editor Notepad
 </section><section id="importing-delimited-files" class="level2 page-columns page-full" data-number="11.5"><h2 data-number="11.5" class="anchored" data-anchor-id="importing-delimited-files">
 <span class="header-section-number">11.5</span> Importing delimited files</h2>
 <p>We can import delimited files such as csv files with <code><a href="https://readr.tidyverse.org/reference/read_delim.html">readr::read_delim()</a></code>. <code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_delim()</a></code> will import the data as a tibble.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span><code>readr</code> vs base R
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Both <code>readr</code> and base R have functions for importing text files. They have different arguments, different defaults and behave differently, so be careful not to mix them up. <code>readr</code> functions have an underscore separating the words whereas base R uses a dot.</p>
+</div>
+</div>
 <p>In the following example, we import the file <code>weather.csv</code> located in the subfolder <code>data</code> of the current RStudio project into the object <code>weather</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span> <span class="co"># readr is part of the tidyverse</span></span>
 <span><span class="va">weather</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_delim</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"data/weather.csv"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 12 Columns: 4
@@ -2363,548 +2376,556 @@ window.onload = function() {
 <span id="cb62-157"><a href="#cb62-157" aria-hidden="true" tabindex="-1"></a>We can import delimited files such as csv files with <span class="in">`readr::read_delim()`</span>.</span>
 <span id="cb62-158"><a href="#cb62-158" aria-hidden="true" tabindex="-1"></a><span class="in">`read_delim()`</span> will import the data as a tibble.</span>
 <span id="cb62-159"><a href="#cb62-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-160"><a href="#cb62-160" aria-hidden="true" tabindex="-1"></a>In the following example, we import the file <span class="in">`weather.csv`</span> located in the subfolder <span class="in">`data`</span> of the current RStudio project into the object <span class="in">`weather`</span>. </span>
-<span id="cb62-161"><a href="#cb62-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-164"><a href="#cb62-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-165"><a href="#cb62-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: delim-csv</span></span>
-<span id="cb62-166"><a href="#cb62-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb62-167"><a href="#cb62-167" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb62-168"><a href="#cb62-168" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb62-169"><a href="#cb62-169" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/weather.csv"</span>)</span>
-<span id="cb62-170"><a href="#cb62-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-171"><a href="#cb62-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-172"><a href="#cb62-172" aria-hidden="true" tabindex="-1"></a>When the function is executed, the console shows a short series of messages.</span>
-<span id="cb62-173"><a href="#cb62-173" aria-hidden="true" tabindex="-1"></a>In the frame above, the message <span class="in">`Column specification`</span> tells you that the content of the column <span class="in">`month`</span> has been recognized as of data type <span class="in">`character`</span>, and that the three other columns have been recognized as <span class="in">`double`</span> (which is similar to <span class="in">`numeric`</span>).  </span>
-<span id="cb62-174"><a href="#cb62-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-175"><a href="#cb62-175" aria-hidden="true" tabindex="-1"></a>Now the tibble <span class="in">`weather`</span> is available in R as you may see in the tab <span class="in">`Environment`</span> (see @fig-csv-env). </span>
-<span id="cb62-176"><a href="#cb62-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-177"><a href="#cb62-177" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r} </span></span>
-<span id="cb62-178"><a href="#cb62-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-csv-env</span></span>
-<span id="cb62-179"><a href="#cb62-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb62-180"><a href="#cb62-180" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: The _tibble_ weather is now stored in R.</span></span>
-<span id="cb62-181"><a href="#cb62-181" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: &gt;</span></span>
-<span id="cb62-182"><a href="#cb62-182" aria-hidden="true" tabindex="-1"></a><span class="co">#|   Screenshot of the environment tab showing one object "weather" with 12</span></span>
-<span id="cb62-183"><a href="#cb62-183" aria-hidden="true" tabindex="-1"></a><span class="co">#|   obsevations and 4 variables.</span></span>
-<span id="cb62-184"><a href="#cb62-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "100%"</span></span>
-<span id="cb62-185"><a href="#cb62-185" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/csv-env.png"</span>)</span>
-<span id="cb62-186"><a href="#cb62-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-187"><a href="#cb62-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-188"><a href="#cb62-188" aria-hidden="true" tabindex="-1"></a>You can display the table as follows:</span>
-<span id="cb62-189"><a href="#cb62-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-190"><a href="#cb62-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r weather, echo=TRUE} </span></span>
-<span id="cb62-191"><a href="#cb62-191" aria-hidden="true" tabindex="-1"></a>weather</span>
-<span id="cb62-192"><a href="#cb62-192" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-193"><a href="#cb62-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-194"><a href="#cb62-194" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb62-195"><a href="#cb62-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## Remember to assign!</span></span>
-<span id="cb62-196"><a href="#cb62-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-197"><a href="#cb62-197" aria-hidden="true" tabindex="-1"></a>If you don't assign (<span class="in">`&lt;-`</span>) the imported data to a name, the tibble will be printed to the screen and then lost. </span>
-<span id="cb62-198"><a href="#cb62-198" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-199"><a href="#cb62-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-200"><a href="#cb62-200" aria-hidden="true" tabindex="-1"></a><span class="fu">### File paths</span></span>
+<span id="cb62-160"><a href="#cb62-160" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
+<span id="cb62-161"><a href="#cb62-161" aria-hidden="true" tabindex="-1"></a><span class="fu">## `readr` vs base R</span></span>
+<span id="cb62-162"><a href="#cb62-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-163"><a href="#cb62-163" aria-hidden="true" tabindex="-1"></a>Both <span class="in">`readr`</span> and base R have functions for importing text files.</span>
+<span id="cb62-164"><a href="#cb62-164" aria-hidden="true" tabindex="-1"></a>They have different arguments, different defaults and behave differently, so be careful not to mix them up.</span>
+<span id="cb62-165"><a href="#cb62-165" aria-hidden="true" tabindex="-1"></a><span class="in">`readr`</span> functions have an underscore separating the words whereas base R uses a dot. </span>
+<span id="cb62-166"><a href="#cb62-166" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-167"><a href="#cb62-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-168"><a href="#cb62-168" aria-hidden="true" tabindex="-1"></a>In the following example, we import the file <span class="in">`weather.csv`</span> located in the subfolder <span class="in">`data`</span> of the current RStudio project into the object <span class="in">`weather`</span>. </span>
+<span id="cb62-169"><a href="#cb62-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-172"><a href="#cb62-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-173"><a href="#cb62-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: delim-csv</span></span>
+<span id="cb62-174"><a href="#cb62-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb62-175"><a href="#cb62-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb62-176"><a href="#cb62-176" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># readr is part of the tidyverse</span></span>
+<span id="cb62-177"><a href="#cb62-177" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/weather.csv"</span>)</span>
+<span id="cb62-178"><a href="#cb62-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-179"><a href="#cb62-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-180"><a href="#cb62-180" aria-hidden="true" tabindex="-1"></a>When the function is executed, the console shows a short series of messages.</span>
+<span id="cb62-181"><a href="#cb62-181" aria-hidden="true" tabindex="-1"></a>In the frame above, the message <span class="in">`Column specification`</span> tells you that the content of the column <span class="in">`month`</span> has been recognized as of data type <span class="in">`character`</span>, and that the three other columns have been recognized as <span class="in">`double`</span> (which is similar to <span class="in">`numeric`</span>).  </span>
+<span id="cb62-182"><a href="#cb62-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-183"><a href="#cb62-183" aria-hidden="true" tabindex="-1"></a>Now the tibble <span class="in">`weather`</span> is available in R as you may see in the tab <span class="in">`Environment`</span> (see @fig-csv-env). </span>
+<span id="cb62-184"><a href="#cb62-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-185"><a href="#cb62-185" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r} </span></span>
+<span id="cb62-186"><a href="#cb62-186" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-csv-env</span></span>
+<span id="cb62-187"><a href="#cb62-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb62-188"><a href="#cb62-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: The _tibble_ weather is now stored in R.</span></span>
+<span id="cb62-189"><a href="#cb62-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: &gt;</span></span>
+<span id="cb62-190"><a href="#cb62-190" aria-hidden="true" tabindex="-1"></a><span class="co">#|   Screenshot of the environment tab showing one object "weather" with 12</span></span>
+<span id="cb62-191"><a href="#cb62-191" aria-hidden="true" tabindex="-1"></a><span class="co">#|   obsevations and 4 variables.</span></span>
+<span id="cb62-192"><a href="#cb62-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "100%"</span></span>
+<span id="cb62-193"><a href="#cb62-193" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/csv-env.png"</span>)</span>
+<span id="cb62-194"><a href="#cb62-194" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-195"><a href="#cb62-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-196"><a href="#cb62-196" aria-hidden="true" tabindex="-1"></a>You can display the table as follows:</span>
+<span id="cb62-197"><a href="#cb62-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-198"><a href="#cb62-198" aria-hidden="true" tabindex="-1"></a><span class="in">```{r weather, echo=TRUE} </span></span>
+<span id="cb62-199"><a href="#cb62-199" aria-hidden="true" tabindex="-1"></a>weather</span>
+<span id="cb62-200"><a href="#cb62-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-201"><a href="#cb62-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-202"><a href="#cb62-202" aria-hidden="true" tabindex="-1"></a>The first argument to <span class="in">`read_delim()`</span> is <span class="in">`file`</span>. </span>
-<span id="cb62-203"><a href="#cb62-203" aria-hidden="true" tabindex="-1"></a>This wants the location of the file on your computer.</span>
-<span id="cb62-204"><a href="#cb62-204" aria-hidden="true" tabindex="-1"></a>Before we can import a file, we have to find it!</span>
-<span id="cb62-205"><a href="#cb62-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-206"><a href="#cb62-206" aria-hidden="true" tabindex="-1"></a>You might be tempted to write the absolute path to the file, something like:</span>
+<span id="cb62-202"><a href="#cb62-202" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb62-203"><a href="#cb62-203" aria-hidden="true" tabindex="-1"></a><span class="fu">## Remember to assign!</span></span>
+<span id="cb62-204"><a href="#cb62-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-205"><a href="#cb62-205" aria-hidden="true" tabindex="-1"></a>If you don't assign (<span class="in">`&lt;-`</span>) the imported data to a name, the tibble will be printed to the screen and then lost. </span>
+<span id="cb62-206"><a href="#cb62-206" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb62-207"><a href="#cb62-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-208"><a href="#cb62-208" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb62-209"><a href="#cb62-209" aria-hidden="true" tabindex="-1"></a><span class="st">"c:/user/bad13/documents/project/my_file.csv"</span></span>
-<span id="cb62-210"><a href="#cb62-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-211"><a href="#cb62-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-212"><a href="#cb62-212" aria-hidden="true" tabindex="-1"></a>This would be a bad idea. </span>
-<span id="cb62-213"><a href="#cb62-213" aria-hidden="true" tabindex="-1"></a>Why?</span>
-<span id="cb62-214"><a href="#cb62-214" aria-hidden="true" tabindex="-1"></a>Because this path only works on your current computer (provided you don't move the file). </span>
-<span id="cb62-215"><a href="#cb62-215" aria-hidden="true" tabindex="-1"></a>This code won't work for anyone else, so you cannot share the code with your supervisor and have them run it, nor archive it with a manuscript. </span>
-<span id="cb62-216"><a href="#cb62-216" aria-hidden="true" tabindex="-1"></a>The code is not reproducible.</span>
-<span id="cb62-217"><a href="#cb62-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-218"><a href="#cb62-218" aria-hidden="true" tabindex="-1"></a>Much better is to a path relative to your RStudio project (remember to use an RStudio project - for more info about them, read @sec-working-project).</span>
-<span id="cb62-219"><a href="#cb62-219" aria-hidden="true" tabindex="-1"></a>If the contents of your RStudio project looked like this</span>
-<span id="cb62-220"><a href="#cb62-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-223"><a href="#cb62-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-224"><a href="#cb62-224" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: file-tree</span></span>
-<span id="cb62-225"><a href="#cb62-225" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: page-right</span></span>
-<span id="cb62-226"><a href="#cb62-226" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb62-227"><a href="#cb62-227" aria-hidden="true" tabindex="-1"></a><span class="do">## good</span></span>
-<span id="cb62-228"><a href="#cb62-228" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span>
-<span id="cb62-229"><a href="#cb62-229" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"demo2"</span>)</span>
-<span id="cb62-230"><a href="#cb62-230" aria-hidden="true" tabindex="-1"></a><span class="fu">dir_create</span>(tmp)</span>
-<span id="cb62-231"><a href="#cb62-231" aria-hidden="true" tabindex="-1"></a>withr<span class="sc">::</span><span class="fu">with_dir</span>(tmp, {</span>
-<span id="cb62-232"><a href="#cb62-232" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"my_project.Rproj"</span>)</span>
-<span id="cb62-233"><a href="#cb62-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"data"</span>)</span>
-<span id="cb62-234"><a href="#cb62-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"data/2022-8-15_lake-tilo-diatoms.csv"</span>)</span>
-<span id="cb62-235"><a href="#cb62-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"data/2022-3-24_lake-tilo-diatoms.csv"</span>)</span>
-<span id="cb62-236"><a href="#cb62-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"data/2022-3-24_lake-tilo-chemistry.csv"</span>)</span>
-<span id="cb62-237"><a href="#cb62-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"R"</span>)</span>
-<span id="cb62-238"><a href="#cb62-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"R/01_import.R"</span>)</span>
-<span id="cb62-239"><a href="#cb62-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"R/02_analyse.R"</span>)</span>
-<span id="cb62-240"><a href="#cb62-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-241"><a href="#cb62-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"quarto"</span>)</span>
-<span id="cb62-242"><a href="#cb62-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"quarto/manuscript.qmd"</span>)</span>
-<span id="cb62-243"><a href="#cb62-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"quarto/references.bib"</span>)</span>
-<span id="cb62-244"><a href="#cb62-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"output"</span>)</span>
-<span id="cb62-245"><a href="#cb62-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"output/manuscript.pdf"</span>)</span>
-<span id="cb62-246"><a href="#cb62-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-247"><a href="#cb62-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_tree</span>()</span>
-<span id="cb62-248"><a href="#cb62-248" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb62-249"><a href="#cb62-249" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-250"><a href="#cb62-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-251"><a href="#cb62-251" aria-hidden="true" tabindex="-1"></a>Now we could use</span>
-<span id="cb62-252"><a href="#cb62-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-253"><a href="#cb62-253" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb62-254"><a href="#cb62-254" aria-hidden="true" tabindex="-1"></a><span class="st">"data/2022-3-24_lake-tilo-chemistry.csv"</span></span>
-<span id="cb62-255"><a href="#cb62-255" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-256"><a href="#cb62-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-257"><a href="#cb62-257" aria-hidden="true" tabindex="-1"></a>to access the chemistry data.</span>
-<span id="cb62-258"><a href="#cb62-258" aria-hidden="true" tabindex="-1"></a>If we move the RStudio project to a different location on your computer, or another computer, the code will still work.</span>
-<span id="cb62-259"><a href="#cb62-259" aria-hidden="true" tabindex="-1"></a>You don't even need to type the full name: just type the quote marks and a few characters and autocomplete will start making suggestions.</span>
+<span id="cb62-208"><a href="#cb62-208" aria-hidden="true" tabindex="-1"></a><span class="fu">### File paths</span></span>
+<span id="cb62-209"><a href="#cb62-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-210"><a href="#cb62-210" aria-hidden="true" tabindex="-1"></a>The first argument to <span class="in">`read_delim()`</span> is <span class="in">`file`</span>. </span>
+<span id="cb62-211"><a href="#cb62-211" aria-hidden="true" tabindex="-1"></a>This wants the location of the file on your computer.</span>
+<span id="cb62-212"><a href="#cb62-212" aria-hidden="true" tabindex="-1"></a>Before we can import a file, we have to find it!</span>
+<span id="cb62-213"><a href="#cb62-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-214"><a href="#cb62-214" aria-hidden="true" tabindex="-1"></a>You might be tempted to write the absolute path to the file, something like:</span>
+<span id="cb62-215"><a href="#cb62-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-216"><a href="#cb62-216" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb62-217"><a href="#cb62-217" aria-hidden="true" tabindex="-1"></a><span class="st">"c:/user/bad13/documents/project/my_file.csv"</span></span>
+<span id="cb62-218"><a href="#cb62-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-219"><a href="#cb62-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-220"><a href="#cb62-220" aria-hidden="true" tabindex="-1"></a>This would be a bad idea. </span>
+<span id="cb62-221"><a href="#cb62-221" aria-hidden="true" tabindex="-1"></a>Why?</span>
+<span id="cb62-222"><a href="#cb62-222" aria-hidden="true" tabindex="-1"></a>Because this path only works on your current computer (provided you don't move the file). </span>
+<span id="cb62-223"><a href="#cb62-223" aria-hidden="true" tabindex="-1"></a>This code won't work for anyone else, so you cannot share the code with your supervisor and have them run it, nor archive it with a manuscript. </span>
+<span id="cb62-224"><a href="#cb62-224" aria-hidden="true" tabindex="-1"></a>The code is not reproducible.</span>
+<span id="cb62-225"><a href="#cb62-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-226"><a href="#cb62-226" aria-hidden="true" tabindex="-1"></a>Much better is to a path relative to your RStudio project (remember to use an RStudio project - for more info about them, read @sec-working-project).</span>
+<span id="cb62-227"><a href="#cb62-227" aria-hidden="true" tabindex="-1"></a>If the contents of your RStudio project looked like this</span>
+<span id="cb62-228"><a href="#cb62-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-231"><a href="#cb62-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-232"><a href="#cb62-232" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: file-tree</span></span>
+<span id="cb62-233"><a href="#cb62-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: page-right</span></span>
+<span id="cb62-234"><a href="#cb62-234" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb62-235"><a href="#cb62-235" aria-hidden="true" tabindex="-1"></a><span class="do">## good</span></span>
+<span id="cb62-236"><a href="#cb62-236" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span>
+<span id="cb62-237"><a href="#cb62-237" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"demo2"</span>)</span>
+<span id="cb62-238"><a href="#cb62-238" aria-hidden="true" tabindex="-1"></a><span class="fu">dir_create</span>(tmp)</span>
+<span id="cb62-239"><a href="#cb62-239" aria-hidden="true" tabindex="-1"></a>withr<span class="sc">::</span><span class="fu">with_dir</span>(tmp, {</span>
+<span id="cb62-240"><a href="#cb62-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"my_project.Rproj"</span>)</span>
+<span id="cb62-241"><a href="#cb62-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"data"</span>)</span>
+<span id="cb62-242"><a href="#cb62-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"data/2022-8-15_lake-tilo-diatoms.csv"</span>)</span>
+<span id="cb62-243"><a href="#cb62-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"data/2022-3-24_lake-tilo-diatoms.csv"</span>)</span>
+<span id="cb62-244"><a href="#cb62-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"data/2022-3-24_lake-tilo-chemistry.csv"</span>)</span>
+<span id="cb62-245"><a href="#cb62-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"R"</span>)</span>
+<span id="cb62-246"><a href="#cb62-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"R/01_import.R"</span>)</span>
+<span id="cb62-247"><a href="#cb62-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"R/02_analyse.R"</span>)</span>
+<span id="cb62-248"><a href="#cb62-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-249"><a href="#cb62-249" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"quarto"</span>)</span>
+<span id="cb62-250"><a href="#cb62-250" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"quarto/manuscript.qmd"</span>)</span>
+<span id="cb62-251"><a href="#cb62-251" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"quarto/references.bib"</span>)</span>
+<span id="cb62-252"><a href="#cb62-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_create</span>(<span class="st">"output"</span>)</span>
+<span id="cb62-253"><a href="#cb62-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file_create</span>(<span class="st">"output/manuscript.pdf"</span>)</span>
+<span id="cb62-254"><a href="#cb62-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-255"><a href="#cb62-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir_tree</span>()</span>
+<span id="cb62-256"><a href="#cb62-256" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb62-257"><a href="#cb62-257" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-258"><a href="#cb62-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-259"><a href="#cb62-259" aria-hidden="true" tabindex="-1"></a>Now we could use</span>
 <span id="cb62-260"><a href="#cb62-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-261"><a href="#cb62-261" aria-hidden="true" tabindex="-1"></a>There is still a problem though. </span>
-<span id="cb62-262"><a href="#cb62-262" aria-hidden="true" tabindex="-1"></a>When we use a quarto document, the working directory is the directory where the quarto document is stored. </span>
-<span id="cb62-263"><a href="#cb62-263" aria-hidden="true" tabindex="-1"></a>This can cause some confusion, which we can avoid if we use the <span class="in">`here`</span> package to find the RStudio project root.</span>
+<span id="cb62-261"><a href="#cb62-261" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb62-262"><a href="#cb62-262" aria-hidden="true" tabindex="-1"></a><span class="st">"data/2022-3-24_lake-tilo-chemistry.csv"</span></span>
+<span id="cb62-263"><a href="#cb62-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-264"><a href="#cb62-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-265"><a href="#cb62-265" aria-hidden="true" tabindex="-1"></a>Our import code would now look like this</span>
-<span id="cb62-266"><a href="#cb62-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-267"><a href="#cb62-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r here, echo=TRUE, eval = FALSE} </span></span>
-<span id="cb62-268"><a href="#cb62-268" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"here"</span>)</span>
-<span id="cb62-269"><a href="#cb62-269" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"data/weather.csv"</span>))</span>
-<span id="cb62-270"><a href="#cb62-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-271"><a href="#cb62-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-272"><a href="#cb62-272" aria-hidden="true" tabindex="-1"></a>Using <span class="in">`here`</span> is highly recommended.</span>
-<span id="cb62-273"><a href="#cb62-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-274"><a href="#cb62-274" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
-<span id="cb62-275"><a href="#cb62-275" aria-hidden="true" tabindex="-1"></a><span class="fu">## Forward slashes and backslashes</span></span>
-<span id="cb62-276"><a href="#cb62-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-277"><a href="#cb62-277" aria-hidden="true" tabindex="-1"></a>Remember to use forward slashes <span class="in">`/`</span> to separate directories in the path. </span>
-<span id="cb62-278"><a href="#cb62-278" aria-hidden="true" tabindex="-1"></a>If you use back slashes <span class="in">`\`</span>, you will get an error as these are used to escape the following character (e.g., <span class="in">`\t`</span> is a tab). </span>
-<span id="cb62-279"><a href="#cb62-279" aria-hidden="true" tabindex="-1"></a>If you really want back slashes, use two of them <span class="in">`\\`</span> as the first will escape the second.</span>
-<span id="cb62-280"><a href="#cb62-280" aria-hidden="true" tabindex="-1"></a>If you let autocomplete fill in your path, it will do it correctly</span>
-<span id="cb62-281"><a href="#cb62-281" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-282"><a href="#cb62-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-283"><a href="#cb62-283" aria-hidden="true" tabindex="-1"></a><span class="fu">### Delimiters</span></span>
+<span id="cb62-265"><a href="#cb62-265" aria-hidden="true" tabindex="-1"></a>to access the chemistry data.</span>
+<span id="cb62-266"><a href="#cb62-266" aria-hidden="true" tabindex="-1"></a>If we move the RStudio project to a different location on your computer, or another computer, the code will still work.</span>
+<span id="cb62-267"><a href="#cb62-267" aria-hidden="true" tabindex="-1"></a>You don't even need to type the full name: just type the quote marks and a few characters and autocomplete will start making suggestions.</span>
+<span id="cb62-268"><a href="#cb62-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-269"><a href="#cb62-269" aria-hidden="true" tabindex="-1"></a>There is still a problem though. </span>
+<span id="cb62-270"><a href="#cb62-270" aria-hidden="true" tabindex="-1"></a>When we use a quarto document, the working directory is the directory where the quarto document is stored. </span>
+<span id="cb62-271"><a href="#cb62-271" aria-hidden="true" tabindex="-1"></a>This can cause some confusion, which we can avoid if we use the <span class="in">`here`</span> package to find the RStudio project root.</span>
+<span id="cb62-272"><a href="#cb62-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-273"><a href="#cb62-273" aria-hidden="true" tabindex="-1"></a>Our import code would now look like this</span>
+<span id="cb62-274"><a href="#cb62-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-275"><a href="#cb62-275" aria-hidden="true" tabindex="-1"></a><span class="in">```{r here, echo=TRUE, eval = FALSE} </span></span>
+<span id="cb62-276"><a href="#cb62-276" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"here"</span>)</span>
+<span id="cb62-277"><a href="#cb62-277" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"data/weather.csv"</span>))</span>
+<span id="cb62-278"><a href="#cb62-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-279"><a href="#cb62-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-280"><a href="#cb62-280" aria-hidden="true" tabindex="-1"></a>Using <span class="in">`here`</span> is highly recommended.</span>
+<span id="cb62-281"><a href="#cb62-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-282"><a href="#cb62-282" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
+<span id="cb62-283"><a href="#cb62-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## Forward slashes and backslashes</span></span>
 <span id="cb62-284"><a href="#cb62-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-285"><a href="#cb62-285" aria-hidden="true" tabindex="-1"></a>The second argument to <span class="in">`read_delim()`</span> is the column delimiter <span class="in">`delim`</span>.  </span>
-<span id="cb62-286"><a href="#cb62-286" aria-hidden="true" tabindex="-1"></a>It used to be very important to specify the delimiter (or choose a function such as <span class="in">`read_csv()`</span> that had it set by default), but, after a recent update, <span class="in">`read_delim()`</span> will guess what the delimiter is and we only need to specify it if it gets it wrong.</span>
-<span id="cb62-287"><a href="#cb62-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-288"><a href="#cb62-288" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb62-289"><a href="#cb62-289" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb62-285"><a href="#cb62-285" aria-hidden="true" tabindex="-1"></a>Remember to use forward slashes <span class="in">`/`</span> to separate directories in the path. </span>
+<span id="cb62-286"><a href="#cb62-286" aria-hidden="true" tabindex="-1"></a>If you use back slashes <span class="in">`\`</span>, you will get an error as these are used to escape the following character (e.g., <span class="in">`\t`</span> is a tab). </span>
+<span id="cb62-287"><a href="#cb62-287" aria-hidden="true" tabindex="-1"></a>If you really want back slashes, use two of them <span class="in">`\\`</span> as the first will escape the second.</span>
+<span id="cb62-288"><a href="#cb62-288" aria-hidden="true" tabindex="-1"></a>If you let autocomplete fill in your path, it will do it correctly</span>
+<span id="cb62-289"><a href="#cb62-289" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb62-290"><a href="#cb62-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-291"><a href="#cb62-291" aria-hidden="true" tabindex="-1"></a>Import the "weather.csv" data into R and assign it to an name.</span>
-<span id="cb62-292"><a href="#cb62-292" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-293"><a href="#cb62-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-294"><a href="#cb62-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-295"><a href="#cb62-295" aria-hidden="true" tabindex="-1"></a><span class="fu">### Review the imported data</span></span>
-<span id="cb62-296"><a href="#cb62-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-297"><a href="#cb62-297" aria-hidden="true" tabindex="-1"></a>Once you have imported the data, it is important to inspect it to check that everything has worked as expected.</span>
+<span id="cb62-291"><a href="#cb62-291" aria-hidden="true" tabindex="-1"></a><span class="fu">### Delimiters</span></span>
+<span id="cb62-292"><a href="#cb62-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-293"><a href="#cb62-293" aria-hidden="true" tabindex="-1"></a>The second argument to <span class="in">`read_delim()`</span> is the column delimiter <span class="in">`delim`</span>.  </span>
+<span id="cb62-294"><a href="#cb62-294" aria-hidden="true" tabindex="-1"></a>It used to be very important to specify the delimiter (or choose a function such as <span class="in">`read_csv()`</span> that had it set by default), but, after a recent update, <span class="in">`read_delim()`</span> will guess what the delimiter is and we only need to specify it if it gets it wrong.</span>
+<span id="cb62-295"><a href="#cb62-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-296"><a href="#cb62-296" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb62-297"><a href="#cb62-297" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
 <span id="cb62-298"><a href="#cb62-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-299"><a href="#cb62-299" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>does it have the correct number of columns (may indicate problems with the delimiter)</span>
-<span id="cb62-300"><a href="#cb62-300" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>are the columns the expected type</span>
-<span id="cb62-301"><a href="#cb62-301" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>are the values correct.</span>
+<span id="cb62-299"><a href="#cb62-299" aria-hidden="true" tabindex="-1"></a>Import the "weather.csv" data into R and assign it to an name.</span>
+<span id="cb62-300"><a href="#cb62-300" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-301"><a href="#cb62-301" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-302"><a href="#cb62-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-303"><a href="#cb62-303" aria-hidden="true" tabindex="-1"></a>To do this, we can print the object or <span class="in">`View()`</span> it. </span>
-<span id="cb62-304"><a href="#cb62-304" aria-hidden="true" tabindex="-1"></a>We can also get details of the column specification</span>
-<span id="cb62-305"><a href="#cb62-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-308"><a href="#cb62-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-309"><a href="#cb62-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: spec</span></span>
-<span id="cb62-310"><a href="#cb62-310" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span>(weather)</span>
-<span id="cb62-311"><a href="#cb62-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-312"><a href="#cb62-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-313"><a href="#cb62-313" aria-hidden="true" tabindex="-1"></a>Any parsing problems (for example if there text in a column that should be numeric) will be shown with <span class="in">`problems()`</span></span>
-<span id="cb62-314"><a href="#cb62-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-317"><a href="#cb62-317" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-318"><a href="#cb62-318" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: problems</span></span>
-<span id="cb62-319"><a href="#cb62-319" aria-hidden="true" tabindex="-1"></a><span class="fu">problems</span>(weather)</span>
-<span id="cb62-320"><a href="#cb62-320" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-321"><a href="#cb62-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-322"><a href="#cb62-322" aria-hidden="true" tabindex="-1"></a>Here, there are no parsing problems so we get a tibble with zero rows.</span>
-<span id="cb62-323"><a href="#cb62-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-324"><a href="#cb62-324" aria-hidden="true" tabindex="-1"></a>Let's try another example. </span>
-<span id="cb62-325"><a href="#cb62-325" aria-hidden="true" tabindex="-1"></a>File weather2.csv has semi-colons as delimiters.</span>
-<span id="cb62-326"><a href="#cb62-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-327"><a href="#cb62-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{r delim-csv2bis, echo=TRUE} </span></span>
-<span id="cb62-328"><a href="#cb62-328" aria-hidden="true" tabindex="-1"></a>weather2 <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/weather2.csv"</span>)</span>
-<span id="cb62-329"><a href="#cb62-329" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span>(weather)</span>
-<span id="cb62-330"><a href="#cb62-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-331"><a href="#cb62-331" aria-hidden="true" tabindex="-1"></a>Here, the message <span class="in">`Column specification`</span> tells you that the content of the columns <span class="in">`month`</span> and <span class="in">`Wind (m/s)`</span> has been recognized as of data type <span class="in">`character`</span>, and that the two other columns have been recognized as <span class="in">`number`</span>. </span>
-<span id="cb62-332"><a href="#cb62-332" aria-hidden="true" tabindex="-1"></a>While <span class="in">`read_delim()`</span> got things right about the number of variables, something went wrong with the variables as we could expect <span class="in">`Wind (m/s)`</span> to be recognized as <span class="in">`double`</span>.</span>
-<span id="cb62-333"><a href="#cb62-333" aria-hidden="true" tabindex="-1"></a>To find out about this issue we need to review the imported data in the object <span class="in">`weather2`</span> and compare it to the original file <span class="in">`weather2.csv`</span>.</span>
+<span id="cb62-303"><a href="#cb62-303" aria-hidden="true" tabindex="-1"></a><span class="fu">### Review the imported data</span></span>
+<span id="cb62-304"><a href="#cb62-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-305"><a href="#cb62-305" aria-hidden="true" tabindex="-1"></a>Once you have imported the data, it is important to inspect it to check that everything has worked as expected.</span>
+<span id="cb62-306"><a href="#cb62-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-307"><a href="#cb62-307" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>does it have the correct number of columns (may indicate problems with the delimiter)</span>
+<span id="cb62-308"><a href="#cb62-308" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>are the columns the expected type</span>
+<span id="cb62-309"><a href="#cb62-309" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>are the values correct.</span>
+<span id="cb62-310"><a href="#cb62-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-311"><a href="#cb62-311" aria-hidden="true" tabindex="-1"></a>To do this, we can print the object or <span class="in">`View()`</span> it. </span>
+<span id="cb62-312"><a href="#cb62-312" aria-hidden="true" tabindex="-1"></a>We can also get details of the column specification</span>
+<span id="cb62-313"><a href="#cb62-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-316"><a href="#cb62-316" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-317"><a href="#cb62-317" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: spec</span></span>
+<span id="cb62-318"><a href="#cb62-318" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span>(weather)</span>
+<span id="cb62-319"><a href="#cb62-319" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-320"><a href="#cb62-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-321"><a href="#cb62-321" aria-hidden="true" tabindex="-1"></a>Any parsing problems (for example if there text in a column that should be numeric) will be shown with <span class="in">`problems()`</span></span>
+<span id="cb62-322"><a href="#cb62-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-325"><a href="#cb62-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-326"><a href="#cb62-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: problems</span></span>
+<span id="cb62-327"><a href="#cb62-327" aria-hidden="true" tabindex="-1"></a><span class="fu">problems</span>(weather)</span>
+<span id="cb62-328"><a href="#cb62-328" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-329"><a href="#cb62-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-330"><a href="#cb62-330" aria-hidden="true" tabindex="-1"></a>Here, there are no parsing problems so we get a tibble with zero rows.</span>
+<span id="cb62-331"><a href="#cb62-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-332"><a href="#cb62-332" aria-hidden="true" tabindex="-1"></a>Let's try another example. </span>
+<span id="cb62-333"><a href="#cb62-333" aria-hidden="true" tabindex="-1"></a>File weather2.csv has semi-colons as delimiters.</span>
 <span id="cb62-334"><a href="#cb62-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-335"><a href="#cb62-335" aria-hidden="true" tabindex="-1"></a>The example above shows the importance of carefully verifying that the imported data in R matches the original data set.</span>
-<span id="cb62-336"><a href="#cb62-336" aria-hidden="true" tabindex="-1"></a>The following figure compares the content of the file <span class="in">`weather2.csv`</span> (@fig-comp-fig left) to the content of the object <span class="in">`weather2`</span> (@fig-comp-fig right):</span>
-<span id="cb62-337"><a href="#cb62-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-338"><a href="#cb62-338" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r}</span></span>
-<span id="cb62-339"><a href="#cb62-339" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-comp-fig</span></span>
-<span id="cb62-340"><a href="#cb62-340" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb62-341"><a href="#cb62-341" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: The data in the object does not match the data in the file.</span></span>
-<span id="cb62-342"><a href="#cb62-342" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: &gt;</span></span>
-<span id="cb62-343"><a href="#cb62-343" aria-hidden="true" tabindex="-1"></a><span class="co">#|   Screenshots of the original text file with decimals separated by commas and</span></span>
-<span id="cb62-344"><a href="#cb62-344" aria-hidden="true" tabindex="-1"></a><span class="co">#|   the imported object in R, mostly without decimal separators</span></span>
-<span id="cb62-345"><a href="#cb62-345" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "100%"</span></span>
-<span id="cb62-346"><a href="#cb62-346" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/comp.png"</span>)</span>
-<span id="cb62-347"><a href="#cb62-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-348"><a href="#cb62-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-349"><a href="#cb62-349" aria-hidden="true" tabindex="-1"></a>Looking at the rows in both pictures, one can understand that all commas have simply been ignored, excepted those in the last column.</span>
-<span id="cb62-350"><a href="#cb62-350" aria-hidden="true" tabindex="-1"></a>To solve that issue, you must impose the separator using <span class="in">`locale = locale(decimal_mark = ",")`</span>:</span>
-<span id="cb62-351"><a href="#cb62-351" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-352"><a href="#cb62-352" aria-hidden="true" tabindex="-1"></a><span class="in">```{r delim-csv2ter, echo=TRUE} </span></span>
-<span id="cb62-353"><a href="#cb62-353" aria-hidden="true" tabindex="-1"></a>weather3 <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
-<span id="cb62-354"><a href="#cb62-354" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather2.csv"</span>,</span>
-<span id="cb62-355"><a href="#cb62-355" aria-hidden="true" tabindex="-1"></a>  <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">decimal_mark =</span> <span class="st">","</span>)</span>
-<span id="cb62-356"><a href="#cb62-356" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-357"><a href="#cb62-357" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-358"><a href="#cb62-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-359"><a href="#cb62-359" aria-hidden="true" tabindex="-1"></a>The last column is now recognized as <span class="in">`double`</span> and the data in the object <span class="in">`weather3`</span> matches the data in the file:</span>
-<span id="cb62-360"><a href="#cb62-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-361"><a href="#cb62-361" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r comp2, echo=FALSE, fig.cap="_The data in the object now matches the data in the file._", out.width="100%"}</span></span>
-<span id="cb62-362"><a href="#cb62-362" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/comp2.png"</span>)</span>
-<span id="cb62-363"><a href="#cb62-363" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-364"><a href="#cb62-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-365"><a href="#cb62-365" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
-<span id="cb62-366"><a href="#cb62-366" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decimal seperators</span></span>
-<span id="cb62-367"><a href="#cb62-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-368"><a href="#cb62-368" aria-hidden="true" tabindex="-1"></a>While <span class="in">`readr`</span> can guess the column delimiter, it cannot guess the decimal separator.</span>
-<span id="cb62-369"><a href="#cb62-369" aria-hidden="true" tabindex="-1"></a>The English/American standard is to use "." as the separator. </span>
-<span id="cb62-370"><a href="#cb62-370" aria-hidden="true" tabindex="-1"></a>In Norway it is common to use a comma as the decimal separator (but "." are also common).</span>
-<span id="cb62-371"><a href="#cb62-371" aria-hidden="true" tabindex="-1"></a>If you don't specify the decimal separator, <span class="in">`readr`</span> assumes that the comma is a thousand separator and ignores it. </span>
-<span id="cb62-372"><a href="#cb62-372" aria-hidden="true" tabindex="-1"></a>Then the values can be 10x higher than expected.</span>
-<span id="cb62-373"><a href="#cb62-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-374"><a href="#cb62-374" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-335"><a href="#cb62-335" aria-hidden="true" tabindex="-1"></a><span class="in">```{r delim-csv2bis, echo=TRUE} </span></span>
+<span id="cb62-336"><a href="#cb62-336" aria-hidden="true" tabindex="-1"></a>weather2 <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/weather2.csv"</span>)</span>
+<span id="cb62-337"><a href="#cb62-337" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span>(weather)</span>
+<span id="cb62-338"><a href="#cb62-338" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-339"><a href="#cb62-339" aria-hidden="true" tabindex="-1"></a>Here, the message <span class="in">`Column specification`</span> tells you that the content of the columns <span class="in">`month`</span> and <span class="in">`Wind (m/s)`</span> has been recognized as of data type <span class="in">`character`</span>, and that the two other columns have been recognized as <span class="in">`number`</span>. </span>
+<span id="cb62-340"><a href="#cb62-340" aria-hidden="true" tabindex="-1"></a>While <span class="in">`read_delim()`</span> got things right about the number of variables, something went wrong with the variables as we could expect <span class="in">`Wind (m/s)`</span> to be recognized as <span class="in">`double`</span>.</span>
+<span id="cb62-341"><a href="#cb62-341" aria-hidden="true" tabindex="-1"></a>To find out about this issue we need to review the imported data in the object <span class="in">`weather2`</span> and compare it to the original file <span class="in">`weather2.csv`</span>.</span>
+<span id="cb62-342"><a href="#cb62-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-343"><a href="#cb62-343" aria-hidden="true" tabindex="-1"></a>The example above shows the importance of carefully verifying that the imported data in R matches the original data set.</span>
+<span id="cb62-344"><a href="#cb62-344" aria-hidden="true" tabindex="-1"></a>The following figure compares the content of the file <span class="in">`weather2.csv`</span> (@fig-comp-fig left) to the content of the object <span class="in">`weather2`</span> (@fig-comp-fig right):</span>
+<span id="cb62-345"><a href="#cb62-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-346"><a href="#cb62-346" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r}</span></span>
+<span id="cb62-347"><a href="#cb62-347" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-comp-fig</span></span>
+<span id="cb62-348"><a href="#cb62-348" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb62-349"><a href="#cb62-349" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: The data in the object does not match the data in the file.</span></span>
+<span id="cb62-350"><a href="#cb62-350" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-alt: &gt;</span></span>
+<span id="cb62-351"><a href="#cb62-351" aria-hidden="true" tabindex="-1"></a><span class="co">#|   Screenshots of the original text file with decimals separated by commas and</span></span>
+<span id="cb62-352"><a href="#cb62-352" aria-hidden="true" tabindex="-1"></a><span class="co">#|   the imported object in R, mostly without decimal separators</span></span>
+<span id="cb62-353"><a href="#cb62-353" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "100%"</span></span>
+<span id="cb62-354"><a href="#cb62-354" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/comp.png"</span>)</span>
+<span id="cb62-355"><a href="#cb62-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-356"><a href="#cb62-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-357"><a href="#cb62-357" aria-hidden="true" tabindex="-1"></a>Looking at the rows in both pictures, one can understand that all commas have simply been ignored, excepted those in the last column.</span>
+<span id="cb62-358"><a href="#cb62-358" aria-hidden="true" tabindex="-1"></a>To solve that issue, you must impose the separator using <span class="in">`locale = locale(decimal_mark = ",")`</span>:</span>
+<span id="cb62-359"><a href="#cb62-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-360"><a href="#cb62-360" aria-hidden="true" tabindex="-1"></a><span class="in">```{r delim-csv2ter, echo=TRUE} </span></span>
+<span id="cb62-361"><a href="#cb62-361" aria-hidden="true" tabindex="-1"></a>weather3 <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb62-362"><a href="#cb62-362" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather2.csv"</span>,</span>
+<span id="cb62-363"><a href="#cb62-363" aria-hidden="true" tabindex="-1"></a>  <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">decimal_mark =</span> <span class="st">","</span>)</span>
+<span id="cb62-364"><a href="#cb62-364" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-365"><a href="#cb62-365" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-366"><a href="#cb62-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-367"><a href="#cb62-367" aria-hidden="true" tabindex="-1"></a>The last column is now recognized as <span class="in">`double`</span> and the data in the object <span class="in">`weather3`</span> matches the data in the file:</span>
+<span id="cb62-368"><a href="#cb62-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-369"><a href="#cb62-369" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r comp2, echo=FALSE, fig.cap="_The data in the object now matches the data in the file._", out.width="100%"}</span></span>
+<span id="cb62-370"><a href="#cb62-370" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/comp2.png"</span>)</span>
+<span id="cb62-371"><a href="#cb62-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-372"><a href="#cb62-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-373"><a href="#cb62-373" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
+<span id="cb62-374"><a href="#cb62-374" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decimal seperators</span></span>
 <span id="cb62-375"><a href="#cb62-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-376"><a href="#cb62-376" aria-hidden="true" tabindex="-1"></a><span class="fu">### read_csv2()</span></span>
-<span id="cb62-377"><a href="#cb62-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-378"><a href="#cb62-378" aria-hidden="true" tabindex="-1"></a>A shortcut for files with a ";" as the column delimiter **and** commas as the decimal separator is <span class="in">`read_csv2()`</span>. </span>
-<span id="cb62-379"><a href="#cb62-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-380"><a href="#cb62-380" aria-hidden="true" tabindex="-1"></a><span class="in">```{r read-csv2, echo=TRUE} </span></span>
-<span id="cb62-381"><a href="#cb62-381" aria-hidden="true" tabindex="-1"></a>weather_csv2 <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="at">file =</span> <span class="st">"data/weather2.csv"</span>)</span>
-<span id="cb62-382"><a href="#cb62-382" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-376"><a href="#cb62-376" aria-hidden="true" tabindex="-1"></a>While <span class="in">`readr`</span> can guess the column delimiter, it cannot guess the decimal separator.</span>
+<span id="cb62-377"><a href="#cb62-377" aria-hidden="true" tabindex="-1"></a>The English/American standard is to use "." as the separator. </span>
+<span id="cb62-378"><a href="#cb62-378" aria-hidden="true" tabindex="-1"></a>In Norway it is common to use a comma as the decimal separator (but "." are also common).</span>
+<span id="cb62-379"><a href="#cb62-379" aria-hidden="true" tabindex="-1"></a>If you don't specify the decimal separator, <span class="in">`readr`</span> assumes that the comma is a thousand separator and ignores it. </span>
+<span id="cb62-380"><a href="#cb62-380" aria-hidden="true" tabindex="-1"></a>Then the values can be 10x higher than expected.</span>
+<span id="cb62-381"><a href="#cb62-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-382"><a href="#cb62-382" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb62-383"><a href="#cb62-383" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-384"><a href="#cb62-384" aria-hidden="true" tabindex="-1"></a>Note the message above <span class="in">`Column specification`</span> that indicates which symbols <span class="in">`read_csv2()`</span> has considered when importing the data. The resulting tibble looks correct:</span>
+<span id="cb62-384"><a href="#cb62-384" aria-hidden="true" tabindex="-1"></a><span class="fu">### read_csv2()</span></span>
 <span id="cb62-385"><a href="#cb62-385" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-386"><a href="#cb62-386" aria-hidden="true" tabindex="-1"></a><span class="in">```{r read-csv-tibble2, echo=TRUE} </span></span>
-<span id="cb62-387"><a href="#cb62-387" aria-hidden="true" tabindex="-1"></a>weather_csv2</span>
-<span id="cb62-388"><a href="#cb62-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-389"><a href="#cb62-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-390"><a href="#cb62-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-391"><a href="#cb62-391" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb62-392"><a href="#cb62-392" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb62-386"><a href="#cb62-386" aria-hidden="true" tabindex="-1"></a>A shortcut for files with a ";" as the column delimiter **and** commas as the decimal separator is <span class="in">`read_csv2()`</span>. </span>
+<span id="cb62-387"><a href="#cb62-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-388"><a href="#cb62-388" aria-hidden="true" tabindex="-1"></a><span class="in">```{r read-csv2, echo=TRUE} </span></span>
+<span id="cb62-389"><a href="#cb62-389" aria-hidden="true" tabindex="-1"></a>weather_csv2 <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="at">file =</span> <span class="st">"data/weather2.csv"</span>)</span>
+<span id="cb62-390"><a href="#cb62-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-391"><a href="#cb62-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-392"><a href="#cb62-392" aria-hidden="true" tabindex="-1"></a>Note the message above <span class="in">`Column specification`</span> that indicates which symbols <span class="in">`read_csv2()`</span> has considered when importing the data. The resulting tibble looks correct:</span>
 <span id="cb62-393"><a href="#cb62-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-394"><a href="#cb62-394" aria-hidden="true" tabindex="-1"></a>Import the file weather2.csv. Make sure it has imported correctly.</span>
-<span id="cb62-395"><a href="#cb62-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-396"><a href="#cb62-396" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-394"><a href="#cb62-394" aria-hidden="true" tabindex="-1"></a><span class="in">```{r read-csv-tibble2, echo=TRUE} </span></span>
+<span id="cb62-395"><a href="#cb62-395" aria-hidden="true" tabindex="-1"></a>weather_csv2</span>
+<span id="cb62-396"><a href="#cb62-396" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-397"><a href="#cb62-397" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-398"><a href="#cb62-398" aria-hidden="true" tabindex="-1"></a><span class="fu">### Useful arguments</span></span>
-<span id="cb62-399"><a href="#cb62-399" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-400"><a href="#cb62-400" aria-hidden="true" tabindex="-1"></a><span class="in">`read_delim()`</span> and the other functions discussed above have a multitude of arguments that allow for adjusting the way data is read and displayed. </span>
-<span id="cb62-401"><a href="#cb62-401" aria-hidden="true" tabindex="-1"></a>Here we review a handful of them.</span>
-<span id="cb62-402"><a href="#cb62-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-403"><a href="#cb62-403" aria-hidden="true" tabindex="-1"></a><span class="fu">#### n_max</span></span>
-<span id="cb62-404"><a href="#cb62-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-405"><a href="#cb62-405" aria-hidden="true" tabindex="-1"></a><span class="in">`n_max`</span> sets a limit to the number of *observations* to be read.</span>
-<span id="cb62-406"><a href="#cb62-406" aria-hidden="true" tabindex="-1"></a>Note that <span class="in">`n_max`</span> does not consider the first row (header) of the data file as an observation. </span>
+<span id="cb62-398"><a href="#cb62-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-399"><a href="#cb62-399" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb62-400"><a href="#cb62-400" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb62-401"><a href="#cb62-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-402"><a href="#cb62-402" aria-hidden="true" tabindex="-1"></a>Import the file weather2.csv. Make sure it has imported correctly.</span>
+<span id="cb62-403"><a href="#cb62-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-404"><a href="#cb62-404" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-405"><a href="#cb62-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-406"><a href="#cb62-406" aria-hidden="true" tabindex="-1"></a><span class="fu">### Useful arguments</span></span>
 <span id="cb62-407"><a href="#cb62-407" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-408"><a href="#cb62-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-409"><a href="#cb62-409" aria-hidden="true" tabindex="-1"></a><span class="in">```{r nmax, echo=TRUE, message=FALSE} </span></span>
-<span id="cb62-410"><a href="#cb62-410" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
-<span id="cb62-411"><a href="#cb62-411" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather.csv"</span>,</span>
-<span id="cb62-412"><a href="#cb62-412" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_max =</span> <span class="dv">6</span></span>
-<span id="cb62-413"><a href="#cb62-413" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-414"><a href="#cb62-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-415"><a href="#cb62-415" aria-hidden="true" tabindex="-1"></a><span class="in">```{r nmax2, echo=TRUE} </span></span>
-<span id="cb62-416"><a href="#cb62-416" aria-hidden="true" tabindex="-1"></a>weather</span>
-<span id="cb62-417"><a href="#cb62-417" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-418"><a href="#cb62-418" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-419"><a href="#cb62-419" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-420"><a href="#cb62-420" aria-hidden="true" tabindex="-1"></a><span class="fu">#### skip</span></span>
-<span id="cb62-421"><a href="#cb62-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-422"><a href="#cb62-422" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`skip`</span> may be used to skip rows when reading the data file.  </span>
-<span id="cb62-423"><a href="#cb62-423" aria-hidden="true" tabindex="-1"></a>Be aware that:</span>
-<span id="cb62-424"><a href="#cb62-424" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>the header in the original data file counts as one row,</span>
-<span id="cb62-426"><a href="#cb62-426" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>the first row that comes after those which have been skipped becomes the header for the resulting tibble.</span>
+<span id="cb62-408"><a href="#cb62-408" aria-hidden="true" tabindex="-1"></a><span class="in">`read_delim()`</span> and the other functions discussed above have a multitude of arguments that allow for adjusting the way data is read and displayed. </span>
+<span id="cb62-409"><a href="#cb62-409" aria-hidden="true" tabindex="-1"></a>Here we review a handful of them.</span>
+<span id="cb62-410"><a href="#cb62-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-411"><a href="#cb62-411" aria-hidden="true" tabindex="-1"></a><span class="fu">#### n_max</span></span>
+<span id="cb62-412"><a href="#cb62-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-413"><a href="#cb62-413" aria-hidden="true" tabindex="-1"></a><span class="in">`n_max`</span> sets a limit to the number of *observations* to be read.</span>
+<span id="cb62-414"><a href="#cb62-414" aria-hidden="true" tabindex="-1"></a>Note that <span class="in">`n_max`</span> does not consider the first row (header) of the data file as an observation. </span>
+<span id="cb62-415"><a href="#cb62-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-416"><a href="#cb62-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-417"><a href="#cb62-417" aria-hidden="true" tabindex="-1"></a><span class="in">```{r nmax, echo=TRUE, message=FALSE} </span></span>
+<span id="cb62-418"><a href="#cb62-418" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb62-419"><a href="#cb62-419" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather.csv"</span>,</span>
+<span id="cb62-420"><a href="#cb62-420" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_max =</span> <span class="dv">6</span></span>
+<span id="cb62-421"><a href="#cb62-421" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-422"><a href="#cb62-422" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-423"><a href="#cb62-423" aria-hidden="true" tabindex="-1"></a><span class="in">```{r nmax2, echo=TRUE} </span></span>
+<span id="cb62-424"><a href="#cb62-424" aria-hidden="true" tabindex="-1"></a>weather</span>
+<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-426"><a href="#cb62-426" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-427"><a href="#cb62-427" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-428"><a href="#cb62-428" aria-hidden="true" tabindex="-1"></a>In the following example, we read the data file <span class="in">`weather.csv`</span> and skip the first row:</span>
+<span id="cb62-428"><a href="#cb62-428" aria-hidden="true" tabindex="-1"></a><span class="fu">#### skip</span></span>
 <span id="cb62-429"><a href="#cb62-429" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-430"><a href="#cb62-430" aria-hidden="true" tabindex="-1"></a><span class="in">```{r skip, echo=TRUE, message=FALSE} </span></span>
-<span id="cb62-431"><a href="#cb62-431" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
-<span id="cb62-432"><a href="#cb62-432" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather.csv"</span>,</span>
-<span id="cb62-433"><a href="#cb62-433" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">1</span></span>
-<span id="cb62-434"><a href="#cb62-434" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-435"><a href="#cb62-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-436"><a href="#cb62-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-437"><a href="#cb62-437" aria-hidden="true" tabindex="-1"></a><span class="in">```{r skip2, echo=TRUE} </span></span>
-<span id="cb62-438"><a href="#cb62-438" aria-hidden="true" tabindex="-1"></a>weather</span>
-<span id="cb62-439"><a href="#cb62-439" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-440"><a href="#cb62-440" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-441"><a href="#cb62-441" aria-hidden="true" tabindex="-1"></a>As expected, the first row (with the header) is skipped, and the data from the observation <span class="in">`January`</span> have become the header of the tibble.</span>
-<span id="cb62-442"><a href="#cb62-442" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`col_names()`</span> introduced below will be useful for solving this issue.</span>
-<span id="cb62-443"><a href="#cb62-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-444"><a href="#cb62-444" aria-hidden="true" tabindex="-1"></a><span class="fu">#### col_names</span></span>
-<span id="cb62-445"><a href="#cb62-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-446"><a href="#cb62-446" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`col_names`</span> may be used to define the name of the variables/columns of the tibble.</span>
-<span id="cb62-447"><a href="#cb62-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-448"><a href="#cb62-448" aria-hidden="true" tabindex="-1"></a><span class="in">`col_names =`</span> may also be followed by the actual variable names that you want to use.</span>
-<span id="cb62-449"><a href="#cb62-449" aria-hidden="true" tabindex="-1"></a>In that case, write <span class="in">`col_names = c()`</span> and list the names between the parentheses.</span>
-<span id="cb62-450"><a href="#cb62-450" aria-hidden="true" tabindex="-1"></a>Be aware that the first row of the original data file, which would have been the column names, will become the first row of the resulting tibble.</span>
-<span id="cb62-451"><a href="#cb62-451" aria-hidden="true" tabindex="-1"></a>This means that if you want to replace existing names, you should also</span>
-<span id="cb62-452"><a href="#cb62-452" aria-hidden="true" tabindex="-1"></a>use the <span class="in">`skip`</span> argument.</span>
+<span id="cb62-430"><a href="#cb62-430" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`skip`</span> may be used to skip rows when reading the data file.  </span>
+<span id="cb62-431"><a href="#cb62-431" aria-hidden="true" tabindex="-1"></a>Be aware that:</span>
+<span id="cb62-432"><a href="#cb62-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-433"><a href="#cb62-433" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>the header in the original data file counts as one row,</span>
+<span id="cb62-434"><a href="#cb62-434" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>the first row that comes after those which have been skipped becomes the header for the resulting tibble.</span>
+<span id="cb62-435"><a href="#cb62-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-436"><a href="#cb62-436" aria-hidden="true" tabindex="-1"></a>In the following example, we read the data file <span class="in">`weather.csv`</span> and skip the first row:</span>
+<span id="cb62-437"><a href="#cb62-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-438"><a href="#cb62-438" aria-hidden="true" tabindex="-1"></a><span class="in">```{r skip, echo=TRUE, message=FALSE} </span></span>
+<span id="cb62-439"><a href="#cb62-439" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb62-440"><a href="#cb62-440" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather.csv"</span>,</span>
+<span id="cb62-441"><a href="#cb62-441" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">1</span></span>
+<span id="cb62-442"><a href="#cb62-442" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-443"><a href="#cb62-443" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-444"><a href="#cb62-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-445"><a href="#cb62-445" aria-hidden="true" tabindex="-1"></a><span class="in">```{r skip2, echo=TRUE} </span></span>
+<span id="cb62-446"><a href="#cb62-446" aria-hidden="true" tabindex="-1"></a>weather</span>
+<span id="cb62-447"><a href="#cb62-447" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-448"><a href="#cb62-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-449"><a href="#cb62-449" aria-hidden="true" tabindex="-1"></a>As expected, the first row (with the header) is skipped, and the data from the observation <span class="in">`January`</span> have become the header of the tibble.</span>
+<span id="cb62-450"><a href="#cb62-450" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`col_names()`</span> introduced below will be useful for solving this issue.</span>
+<span id="cb62-451"><a href="#cb62-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-452"><a href="#cb62-452" aria-hidden="true" tabindex="-1"></a><span class="fu">#### col_names</span></span>
 <span id="cb62-453"><a href="#cb62-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-454"><a href="#cb62-454" aria-hidden="true" tabindex="-1"></a>Here is an example:</span>
+<span id="cb62-454"><a href="#cb62-454" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`col_names`</span> may be used to define the name of the variables/columns of the tibble.</span>
 <span id="cb62-455"><a href="#cb62-455" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-456"><a href="#cb62-456" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-names, echo=TRUE, message = FALSE} </span></span>
-<span id="cb62-457"><a href="#cb62-457" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
-<span id="cb62-458"><a href="#cb62-458" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather.csv"</span>,</span>
-<span id="cb62-459"><a href="#cb62-459" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">1</span>,</span>
-<span id="cb62-460"><a href="#cb62-460" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"Month"</span>, <span class="st">"Temp"</span>, <span class="st">"Precip"</span>, <span class="st">"Wind"</span>)</span>
-<span id="cb62-461"><a href="#cb62-461" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-462"><a href="#cb62-462" aria-hidden="true" tabindex="-1"></a>weather</span>
-<span id="cb62-463"><a href="#cb62-463" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-464"><a href="#cb62-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-465"><a href="#cb62-465" aria-hidden="true" tabindex="-1"></a>If lots of column names are badly formatted, it may be easier to use <span class="in">`janitor::clean_names()`</span> to improve them.</span>
-<span id="cb62-466"><a href="#cb62-466" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-467"><a href="#cb62-467" aria-hidden="true" tabindex="-1"></a><span class="in">```{r janitor, echo=TRUE, message=FALSE} </span></span>
-<span id="cb62-468"><a href="#cb62-468" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/weather.csv"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb62-469"><a href="#cb62-469" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
+<span id="cb62-456"><a href="#cb62-456" aria-hidden="true" tabindex="-1"></a><span class="in">`col_names =`</span> may also be followed by the actual variable names that you want to use.</span>
+<span id="cb62-457"><a href="#cb62-457" aria-hidden="true" tabindex="-1"></a>In that case, write <span class="in">`col_names = c()`</span> and list the names between the parentheses.</span>
+<span id="cb62-458"><a href="#cb62-458" aria-hidden="true" tabindex="-1"></a>Be aware that the first row of the original data file, which would have been the column names, will become the first row of the resulting tibble.</span>
+<span id="cb62-459"><a href="#cb62-459" aria-hidden="true" tabindex="-1"></a>This means that if you want to replace existing names, you should also</span>
+<span id="cb62-460"><a href="#cb62-460" aria-hidden="true" tabindex="-1"></a>use the <span class="in">`skip`</span> argument.</span>
+<span id="cb62-461"><a href="#cb62-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-462"><a href="#cb62-462" aria-hidden="true" tabindex="-1"></a>Here is an example:</span>
+<span id="cb62-463"><a href="#cb62-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-464"><a href="#cb62-464" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-names, echo=TRUE, message = FALSE} </span></span>
+<span id="cb62-465"><a href="#cb62-465" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb62-466"><a href="#cb62-466" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/weather.csv"</span>,</span>
+<span id="cb62-467"><a href="#cb62-467" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">1</span>,</span>
+<span id="cb62-468"><a href="#cb62-468" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"Month"</span>, <span class="st">"Temp"</span>, <span class="st">"Precip"</span>, <span class="st">"Wind"</span>)</span>
+<span id="cb62-469"><a href="#cb62-469" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb62-470"><a href="#cb62-470" aria-hidden="true" tabindex="-1"></a>weather</span>
 <span id="cb62-471"><a href="#cb62-471" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-472"><a href="#cb62-472" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-473"><a href="#cb62-473" aria-hidden="true" tabindex="-1"></a><span class="fu">#### col_types </span></span>
+<span id="cb62-473"><a href="#cb62-473" aria-hidden="true" tabindex="-1"></a>If lots of column names are badly formatted, it may be easier to use <span class="in">`janitor::clean_names()`</span> to improve them.</span>
 <span id="cb62-474"><a href="#cb62-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-475"><a href="#cb62-475" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`col_types`</span> may be used to modify the data type of the variables.</span>
-<span id="cb62-476"><a href="#cb62-476" aria-hidden="true" tabindex="-1"></a>This is useful for example when you need to set a variable as <span class="in">`factor`</span> whereas R has defined it as <span class="in">`character`</span>.</span>
-<span id="cb62-477"><a href="#cb62-477" aria-hidden="true" tabindex="-1"></a>Here is an example with three simple variables.</span>
-<span id="cb62-478"><a href="#cb62-478" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-479"><a href="#cb62-479" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types, echo=TRUE} </span></span>
-<span id="cb62-480"><a href="#cb62-480" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/groups.csv"</span>)</span>
-<span id="cb62-481"><a href="#cb62-481" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-482"><a href="#cb62-482" aria-hidden="true" tabindex="-1"></a>As the message clearly indicates, the first and last variables are recognized as <span class="in">`double`</span> (i.e. <span class="in">`numeric`</span>) while the second one is recognized as <span class="in">`character`</span>. </span>
-<span id="cb62-483"><a href="#cb62-483" aria-hidden="true" tabindex="-1"></a>The tibble in the object <span class="in">`counts`</span> displays as follows:</span>
-<span id="cb62-484"><a href="#cb62-484" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types2, echo=TRUE} </span></span>
-<span id="cb62-485"><a href="#cb62-485" aria-hidden="true" tabindex="-1"></a>counts</span>
-<span id="cb62-486"><a href="#cb62-486" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-487"><a href="#cb62-487" aria-hidden="true" tabindex="-1"></a>Let's use <span class="in">`col_types = cols()`</span> to manually set the data types to <span class="in">`double`</span>, <span class="in">`factor`</span> and <span class="in">`integer`</span>, respectively.</span>
-<span id="cb62-488"><a href="#cb62-488" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-489"><a href="#cb62-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types3, echo=TRUE} </span></span>
-<span id="cb62-490"><a href="#cb62-490" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
-<span id="cb62-491"><a href="#cb62-491" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/groups.csv"</span>,</span>
-<span id="cb62-492"><a href="#cb62-492" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="fu">col_double</span>(), <span class="fu">col_factor</span>(), <span class="fu">col_integer</span>())</span>
-<span id="cb62-493"><a href="#cb62-493" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-475"><a href="#cb62-475" aria-hidden="true" tabindex="-1"></a><span class="in">```{r janitor, echo=TRUE, message=FALSE} </span></span>
+<span id="cb62-476"><a href="#cb62-476" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/weather.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-477"><a href="#cb62-477" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
+<span id="cb62-478"><a href="#cb62-478" aria-hidden="true" tabindex="-1"></a>weather</span>
+<span id="cb62-479"><a href="#cb62-479" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-480"><a href="#cb62-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-481"><a href="#cb62-481" aria-hidden="true" tabindex="-1"></a><span class="fu">#### col_types </span></span>
+<span id="cb62-482"><a href="#cb62-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-483"><a href="#cb62-483" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`col_types`</span> may be used to modify the data type of the variables.</span>
+<span id="cb62-484"><a href="#cb62-484" aria-hidden="true" tabindex="-1"></a>This is useful for example when you need to set a variable as <span class="in">`factor`</span> whereas R has defined it as <span class="in">`character`</span>.</span>
+<span id="cb62-485"><a href="#cb62-485" aria-hidden="true" tabindex="-1"></a>Here is an example with three simple variables.</span>
+<span id="cb62-486"><a href="#cb62-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-487"><a href="#cb62-487" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types, echo=TRUE} </span></span>
+<span id="cb62-488"><a href="#cb62-488" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/groups.csv"</span>)</span>
+<span id="cb62-489"><a href="#cb62-489" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-490"><a href="#cb62-490" aria-hidden="true" tabindex="-1"></a>As the message clearly indicates, the first and last variables are recognized as <span class="in">`double`</span> (i.e. <span class="in">`numeric`</span>) while the second one is recognized as <span class="in">`character`</span>. </span>
+<span id="cb62-491"><a href="#cb62-491" aria-hidden="true" tabindex="-1"></a>The tibble in the object <span class="in">`counts`</span> displays as follows:</span>
+<span id="cb62-492"><a href="#cb62-492" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types2, echo=TRUE} </span></span>
+<span id="cb62-493"><a href="#cb62-493" aria-hidden="true" tabindex="-1"></a>counts</span>
 <span id="cb62-494"><a href="#cb62-494" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-495"><a href="#cb62-495" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-496"><a href="#cb62-496" aria-hidden="true" tabindex="-1"></a>Now the tibble displays like this, with the correct data types for each column:</span>
-<span id="cb62-497"><a href="#cb62-497" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types4, echo=TRUE} </span></span>
-<span id="cb62-498"><a href="#cb62-498" aria-hidden="true" tabindex="-1"></a>counts</span>
-<span id="cb62-499"><a href="#cb62-499" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-500"><a href="#cb62-500" aria-hidden="true" tabindex="-1"></a>If you only need to modify one or a few variables, you must name it/them when writing the code:</span>
-<span id="cb62-501"><a href="#cb62-501" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-502"><a href="#cb62-502" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types5, echo=TRUE} </span></span>
-<span id="cb62-503"><a href="#cb62-503" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
-<span id="cb62-504"><a href="#cb62-504" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/groups.csv"</span>,</span>
-<span id="cb62-505"><a href="#cb62-505" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">group =</span> <span class="fu">col_factor</span>())</span>
-<span id="cb62-506"><a href="#cb62-506" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-495"><a href="#cb62-495" aria-hidden="true" tabindex="-1"></a>Let's use <span class="in">`col_types = cols()`</span> to manually set the data types to <span class="in">`double`</span>, <span class="in">`factor`</span> and <span class="in">`integer`</span>, respectively.</span>
+<span id="cb62-496"><a href="#cb62-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-497"><a href="#cb62-497" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types3, echo=TRUE} </span></span>
+<span id="cb62-498"><a href="#cb62-498" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb62-499"><a href="#cb62-499" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/groups.csv"</span>,</span>
+<span id="cb62-500"><a href="#cb62-500" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="fu">col_double</span>(), <span class="fu">col_factor</span>(), <span class="fu">col_integer</span>())</span>
+<span id="cb62-501"><a href="#cb62-501" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-502"><a href="#cb62-502" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-503"><a href="#cb62-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-504"><a href="#cb62-504" aria-hidden="true" tabindex="-1"></a>Now the tibble displays like this, with the correct data types for each column:</span>
+<span id="cb62-505"><a href="#cb62-505" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types4, echo=TRUE} </span></span>
+<span id="cb62-506"><a href="#cb62-506" aria-hidden="true" tabindex="-1"></a>counts</span>
 <span id="cb62-507"><a href="#cb62-507" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-508"><a href="#cb62-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-509"><a href="#cb62-509" aria-hidden="true" tabindex="-1"></a>The tibble displays like this:</span>
-<span id="cb62-510"><a href="#cb62-510" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types6, echo=TRUE} </span></span>
-<span id="cb62-511"><a href="#cb62-511" aria-hidden="true" tabindex="-1"></a>counts</span>
-<span id="cb62-512"><a href="#cb62-512" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-513"><a href="#cb62-513" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-514"><a href="#cb62-514" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-515"><a href="#cb62-515" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-516"><a href="#cb62-516" aria-hidden="true" tabindex="-1"></a><span class="in">`col_types`</span> is particularly useful when importing tabular data that includes formatted dates.</span>
-<span id="cb62-517"><a href="#cb62-517" aria-hidden="true" tabindex="-1"></a>Dates are usually recognized as <span class="in">`character`</span> when their format does not match the expected format set as default (locale, etc).</span>
-<span id="cb62-518"><a href="#cb62-518" aria-hidden="true" tabindex="-1"></a>In the following example, dates entered  as <span class="in">`yyyy-mm-dd`</span> in the last column are recognized as of type <span class="in">`date`</span>:</span>
-<span id="cb62-519"><a href="#cb62-519" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates1, echo=TRUE} </span></span>
-<span id="cb62-520"><a href="#cb62-520" aria-hidden="true" tabindex="-1"></a>countsdates <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/groups-dates1.csv"</span>)</span>
-<span id="cb62-521"><a href="#cb62-521" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-508"><a href="#cb62-508" aria-hidden="true" tabindex="-1"></a>If you only need to modify one or a few variables, you must name it/them when writing the code:</span>
+<span id="cb62-509"><a href="#cb62-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-510"><a href="#cb62-510" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types5, echo=TRUE} </span></span>
+<span id="cb62-511"><a href="#cb62-511" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb62-512"><a href="#cb62-512" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/groups.csv"</span>,</span>
+<span id="cb62-513"><a href="#cb62-513" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">group =</span> <span class="fu">col_factor</span>())</span>
+<span id="cb62-514"><a href="#cb62-514" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-515"><a href="#cb62-515" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-516"><a href="#cb62-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-517"><a href="#cb62-517" aria-hidden="true" tabindex="-1"></a>The tibble displays like this:</span>
+<span id="cb62-518"><a href="#cb62-518" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types6, echo=TRUE} </span></span>
+<span id="cb62-519"><a href="#cb62-519" aria-hidden="true" tabindex="-1"></a>counts</span>
+<span id="cb62-520"><a href="#cb62-520" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-521"><a href="#cb62-521" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-522"><a href="#cb62-522" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-523"><a href="#cb62-523" aria-hidden="true" tabindex="-1"></a>However, in the example below, dates entered as <span class="in">`dd-mm-yyyy`</span> are converted to <span class="in">`character`</span>:</span>
-<span id="cb62-524"><a href="#cb62-524" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-525"><a href="#cb62-525" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates2, echo=TRUE} </span></span>
-<span id="cb62-526"><a href="#cb62-526" aria-hidden="true" tabindex="-1"></a>countsdates <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/groups-dates2.csv"</span>)</span>
-<span id="cb62-527"><a href="#cb62-527" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-528"><a href="#cb62-528" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-529"><a href="#cb62-529" aria-hidden="true" tabindex="-1"></a>To solve this issue, add the function <span class="in">`col_date()`</span> in <span class="in">`cols()`</span> to help R understand how dates are formatted and shall be read.</span>
+<span id="cb62-523"><a href="#cb62-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-524"><a href="#cb62-524" aria-hidden="true" tabindex="-1"></a><span class="in">`col_types`</span> is particularly useful when importing tabular data that includes formatted dates.</span>
+<span id="cb62-525"><a href="#cb62-525" aria-hidden="true" tabindex="-1"></a>Dates are usually recognized as <span class="in">`character`</span> when their format does not match the expected format set as default (locale, etc).</span>
+<span id="cb62-526"><a href="#cb62-526" aria-hidden="true" tabindex="-1"></a>In the following example, dates entered  as <span class="in">`yyyy-mm-dd`</span> in the last column are recognized as of type <span class="in">`date`</span>:</span>
+<span id="cb62-527"><a href="#cb62-527" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates1, echo=TRUE} </span></span>
+<span id="cb62-528"><a href="#cb62-528" aria-hidden="true" tabindex="-1"></a>countsdates <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/groups-dates1.csv"</span>)</span>
+<span id="cb62-529"><a href="#cb62-529" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-530"><a href="#cb62-530" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-531"><a href="#cb62-531" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates3, echo=TRUE} </span></span>
-<span id="cb62-532"><a href="#cb62-532" aria-hidden="true" tabindex="-1"></a>countsdates <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
-<span id="cb62-533"><a href="#cb62-533" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/groups-dates2.csv"</span>,</span>
-<span id="cb62-534"><a href="#cb62-534" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">date =</span> <span class="fu">col_date</span>(<span class="st">"%d-%m-%Y"</span>))</span>
-<span id="cb62-535"><a href="#cb62-535" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-536"><a href="#cb62-536" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-537"><a href="#cb62-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-538"><a href="#cb62-538" aria-hidden="true" tabindex="-1"></a>The result is the following tibble now correctly formatted:</span>
-<span id="cb62-539"><a href="#cb62-539" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates4, echo=TRUE} </span></span>
-<span id="cb62-540"><a href="#cb62-540" aria-hidden="true" tabindex="-1"></a>countsdates</span>
-<span id="cb62-541"><a href="#cb62-541" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-542"><a href="#cb62-542" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-543"><a href="#cb62-543" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-544"><a href="#cb62-544" aria-hidden="true" tabindex="-1"></a>You will find the whole list of <span class="in">`cols()`</span> parameters for <span class="in">`col_types`</span>  <span class="co">[</span><span class="ot">here</span><span class="co">](https://readr.tidyverse.org/reference/cols.html)</span>{target="_blank"}.  </span>
+<span id="cb62-531"><a href="#cb62-531" aria-hidden="true" tabindex="-1"></a>However, in the example below, dates entered as <span class="in">`dd-mm-yyyy`</span> are converted to <span class="in">`character`</span>:</span>
+<span id="cb62-532"><a href="#cb62-532" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-533"><a href="#cb62-533" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates2, echo=TRUE} </span></span>
+<span id="cb62-534"><a href="#cb62-534" aria-hidden="true" tabindex="-1"></a>countsdates <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">"data/groups-dates2.csv"</span>)</span>
+<span id="cb62-535"><a href="#cb62-535" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-536"><a href="#cb62-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-537"><a href="#cb62-537" aria-hidden="true" tabindex="-1"></a>To solve this issue, add the function <span class="in">`col_date()`</span> in <span class="in">`cols()`</span> to help R understand how dates are formatted and shall be read.</span>
+<span id="cb62-538"><a href="#cb62-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-539"><a href="#cb62-539" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates3, echo=TRUE} </span></span>
+<span id="cb62-540"><a href="#cb62-540" aria-hidden="true" tabindex="-1"></a>countsdates <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb62-541"><a href="#cb62-541" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"data/groups-dates2.csv"</span>,</span>
+<span id="cb62-542"><a href="#cb62-542" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">date =</span> <span class="fu">col_date</span>(<span class="st">"%d-%m-%Y"</span>))</span>
+<span id="cb62-543"><a href="#cb62-543" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-544"><a href="#cb62-544" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-545"><a href="#cb62-545" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-546"><a href="#cb62-546" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb62-547"><a href="#cb62-547" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb62-548"><a href="#cb62-548" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-549"><a href="#cb62-549" aria-hidden="true" tabindex="-1"></a>Import the data from "biomass2015_H.csv". </span>
-<span id="cb62-550"><a href="#cb62-550" aria-hidden="true" tabindex="-1"></a>These data are plant biomass data from an alpine grassland near Mt Gonga, China. </span>
-<span id="cb62-551"><a href="#cb62-551" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-552"><a href="#cb62-552" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-553"><a href="#cb62-553" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb62-554"><a href="#cb62-554" aria-hidden="true" tabindex="-1"></a><span class="fu">## Very large files</span></span>
-<span id="cb62-555"><a href="#cb62-555" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-556"><a href="#cb62-556" aria-hidden="true" tabindex="-1"></a><span class="in">`readr`</span> imports objects into the computers memory. </span>
-<span id="cb62-557"><a href="#cb62-557" aria-hidden="true" tabindex="-1"></a>This is fine for most datasets. </span>
-<span id="cb62-558"><a href="#cb62-558" aria-hidden="true" tabindex="-1"></a>But very large datasets (gigabytes) - will not fit into memory and another solution is needed. </span>
-<span id="cb62-559"><a href="#cb62-559" aria-hidden="true" tabindex="-1"></a>We can use apache arrow with the <span class="co">[</span><span class="ot">`arrow` package</span><span class="co">](https://arrow.apache.org/docs/r/articles/dataset.html)</span> or duckDB with <span class="co">[</span><span class="ot">duckplyr</span><span class="co">](https://duckplyr.tidyverse.org/)</span>.</span>
-<span id="cb62-560"><a href="#cb62-560" aria-hidden="true" tabindex="-1"></a>Both can work with <span class="in">`dplyr`</span> functions to process large datasets efficiently.</span>
-<span id="cb62-561"><a href="#cb62-561" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-562"><a href="#cb62-562" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-546"><a href="#cb62-546" aria-hidden="true" tabindex="-1"></a>The result is the following tibble now correctly formatted:</span>
+<span id="cb62-547"><a href="#cb62-547" aria-hidden="true" tabindex="-1"></a><span class="in">```{r col-types-dates4, echo=TRUE} </span></span>
+<span id="cb62-548"><a href="#cb62-548" aria-hidden="true" tabindex="-1"></a>countsdates</span>
+<span id="cb62-549"><a href="#cb62-549" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-550"><a href="#cb62-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-551"><a href="#cb62-551" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-552"><a href="#cb62-552" aria-hidden="true" tabindex="-1"></a>You will find the whole list of <span class="in">`cols()`</span> parameters for <span class="in">`col_types`</span>  <span class="co">[</span><span class="ot">here</span><span class="co">](https://readr.tidyverse.org/reference/cols.html)</span>{target="_blank"}.  </span>
+<span id="cb62-553"><a href="#cb62-553" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-554"><a href="#cb62-554" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb62-555"><a href="#cb62-555" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb62-556"><a href="#cb62-556" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-557"><a href="#cb62-557" aria-hidden="true" tabindex="-1"></a>Import the data from "biomass2015_H.csv". </span>
+<span id="cb62-558"><a href="#cb62-558" aria-hidden="true" tabindex="-1"></a>These data are plant biomass data from an alpine grassland near Mt Gonga, China. </span>
+<span id="cb62-559"><a href="#cb62-559" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-560"><a href="#cb62-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-561"><a href="#cb62-561" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb62-562"><a href="#cb62-562" aria-hidden="true" tabindex="-1"></a><span class="fu">## Very large files</span></span>
 <span id="cb62-563"><a href="#cb62-563" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-564"><a href="#cb62-564" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-565"><a href="#cb62-565" aria-hidden="true" tabindex="-1"></a><span class="fu">### White space delimited files</span></span>
-<span id="cb62-566"><a href="#cb62-566" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-567"><a href="#cb62-567" aria-hidden="true" tabindex="-1"></a>Some files have white space separating the columns. </span>
-<span id="cb62-568"><a href="#cb62-568" aria-hidden="true" tabindex="-1"></a>If a single tab is used then <span class="in">`read_delim()`</span> will automatically detect it and work correctly.</span>
-<span id="cb62-569"><a href="#cb62-569" aria-hidden="true" tabindex="-1"></a>Sometimes multiple spaces are used so the columns line up, making the text file easy for humans to read.</span>
-<span id="cb62-570"><a href="#cb62-570" aria-hidden="true" tabindex="-1"></a><span class="in">`read_delim()`</span> will not work with these files as it expects a single delimiter. </span>
-<span id="cb62-571"><a href="#cb62-571" aria-hidden="true" tabindex="-1"></a>Instead we can use <span class="in">`read_table()`</span>, shown here with some test data.</span>
+<span id="cb62-564"><a href="#cb62-564" aria-hidden="true" tabindex="-1"></a><span class="in">`readr`</span> imports objects into the computers memory. </span>
+<span id="cb62-565"><a href="#cb62-565" aria-hidden="true" tabindex="-1"></a>This is fine for most datasets. </span>
+<span id="cb62-566"><a href="#cb62-566" aria-hidden="true" tabindex="-1"></a>But very large datasets (gigabytes) - will not fit into memory and another solution is needed. </span>
+<span id="cb62-567"><a href="#cb62-567" aria-hidden="true" tabindex="-1"></a>We can use apache arrow with the <span class="co">[</span><span class="ot">`arrow` package</span><span class="co">](https://arrow.apache.org/docs/r/articles/dataset.html)</span> or duckDB with <span class="co">[</span><span class="ot">duckplyr</span><span class="co">](https://duckplyr.tidyverse.org/)</span>.</span>
+<span id="cb62-568"><a href="#cb62-568" aria-hidden="true" tabindex="-1"></a>Both can work with <span class="in">`dplyr`</span> functions to process large datasets efficiently.</span>
+<span id="cb62-569"><a href="#cb62-569" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-570"><a href="#cb62-570" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-571"><a href="#cb62-571" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-572"><a href="#cb62-572" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-575"><a href="#cb62-575" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-576"><a href="#cb62-576" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: read-white-space</span></span>
-<span id="cb62-577"><a href="#cb62-577" aria-hidden="true" tabindex="-1"></a><span class="fu">read_table</span>(<span class="st">" Species   Value</span></span>
-<span id="cb62-578"><a href="#cb62-578" aria-hidden="true" tabindex="-1"></a><span class="st">            Navicula       1</span></span>
-<span id="cb62-579"><a href="#cb62-579" aria-hidden="true" tabindex="-1"></a><span class="st">            Cymbella       2"</span>)</span>
-<span id="cb62-580"><a href="#cb62-580" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-581"><a href="#cb62-581" aria-hidden="true" tabindex="-1"></a>Another type of data you will sometimes see is the fixed width format.</span>
-<span id="cb62-582"><a href="#cb62-582" aria-hidden="true" tabindex="-1"></a>There are no delimiters, but each field has the same position in each row. </span>
-<span id="cb62-583"><a href="#cb62-583" aria-hidden="true" tabindex="-1"></a>These files can be imported with <span class="in">`read_fwf()`</span>.</span>
-<span id="cb62-584"><a href="#cb62-584" aria-hidden="true" tabindex="-1"></a>Determining the position of each column can be painful unless you have good metadata.</span>
-<span id="cb62-585"><a href="#cb62-585" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-586"><a href="#cb62-586" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb62-587"><a href="#cb62-587" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb62-588"><a href="#cb62-588" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-589"><a href="#cb62-589" aria-hidden="true" tabindex="-1"></a>Import part "3a. Clegg et al. 2011 Hudson Lake Midge Temperature Data" from "alaska2011midge-t.txt"</span>
-<span id="cb62-590"><a href="#cb62-590" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-591"><a href="#cb62-591" aria-hidden="true" tabindex="-1"></a> <span class="dt">&lt;</span><span class="kw">details</span><span class="dt">&gt;</span></span>
-<span id="cb62-592"><a href="#cb62-592" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">summary</span><span class="dt">&gt;</span>Hint<span class="dt">&lt;/</span><span class="kw">summary</span><span class="dt">&gt;</span></span>
-<span id="cb62-593"><a href="#cb62-593" aria-hidden="true" tabindex="-1"></a><span class="in">`skip`</span> and </span>
-<span id="cb62-594"><a href="#cb62-594" aria-hidden="true" tabindex="-1"></a><span class="in">`n_max`</span> argument can be useful.</span>
-<span id="cb62-595"><a href="#cb62-595" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">details</span><span class="dt">&gt;</span> </span>
-<span id="cb62-596"><a href="#cb62-596" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-597"><a href="#cb62-597" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-598"><a href="#cb62-598" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb62-599"><a href="#cb62-599" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reading multiple files</span></span>
-<span id="cb62-600"><a href="#cb62-600" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-601"><a href="#cb62-601" aria-hidden="true" tabindex="-1"></a>If you want to read many files with the **same structure**, you can supply <span class="in">`read_delim()`</span> with a vector of files names.</span>
-<span id="cb62-602"><a href="#cb62-602" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-605"><a href="#cb62-605" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-606"><a href="#cb62-606" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: multiple-files</span></span>
-<span id="cb62-607"><a href="#cb62-607" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb62-573"><a href="#cb62-573" aria-hidden="true" tabindex="-1"></a><span class="fu">### White space delimited files</span></span>
+<span id="cb62-574"><a href="#cb62-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-575"><a href="#cb62-575" aria-hidden="true" tabindex="-1"></a>Some files have white space separating the columns. </span>
+<span id="cb62-576"><a href="#cb62-576" aria-hidden="true" tabindex="-1"></a>If a single tab is used then <span class="in">`read_delim()`</span> will automatically detect it and work correctly.</span>
+<span id="cb62-577"><a href="#cb62-577" aria-hidden="true" tabindex="-1"></a>Sometimes multiple spaces are used so the columns line up, making the text file easy for humans to read.</span>
+<span id="cb62-578"><a href="#cb62-578" aria-hidden="true" tabindex="-1"></a><span class="in">`read_delim()`</span> will not work with these files as it expects a single delimiter. </span>
+<span id="cb62-579"><a href="#cb62-579" aria-hidden="true" tabindex="-1"></a>Instead we can use <span class="in">`read_table()`</span>, shown here with some test data.</span>
+<span id="cb62-580"><a href="#cb62-580" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-583"><a href="#cb62-583" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-584"><a href="#cb62-584" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: read-white-space</span></span>
+<span id="cb62-585"><a href="#cb62-585" aria-hidden="true" tabindex="-1"></a><span class="fu">read_table</span>(<span class="st">" Species   Value</span></span>
+<span id="cb62-586"><a href="#cb62-586" aria-hidden="true" tabindex="-1"></a><span class="st">            Navicula       1</span></span>
+<span id="cb62-587"><a href="#cb62-587" aria-hidden="true" tabindex="-1"></a><span class="st">            Cymbella       2"</span>)</span>
+<span id="cb62-588"><a href="#cb62-588" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-589"><a href="#cb62-589" aria-hidden="true" tabindex="-1"></a>Another type of data you will sometimes see is the fixed width format.</span>
+<span id="cb62-590"><a href="#cb62-590" aria-hidden="true" tabindex="-1"></a>There are no delimiters, but each field has the same position in each row. </span>
+<span id="cb62-591"><a href="#cb62-591" aria-hidden="true" tabindex="-1"></a>These files can be imported with <span class="in">`read_fwf()`</span>.</span>
+<span id="cb62-592"><a href="#cb62-592" aria-hidden="true" tabindex="-1"></a>Determining the position of each column can be painful unless you have good metadata.</span>
+<span id="cb62-593"><a href="#cb62-593" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-594"><a href="#cb62-594" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb62-595"><a href="#cb62-595" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb62-596"><a href="#cb62-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-597"><a href="#cb62-597" aria-hidden="true" tabindex="-1"></a>Import part "3a. Clegg et al. 2011 Hudson Lake Midge Temperature Data" from "alaska2011midge-t.txt"</span>
+<span id="cb62-598"><a href="#cb62-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-599"><a href="#cb62-599" aria-hidden="true" tabindex="-1"></a> <span class="dt">&lt;</span><span class="kw">details</span><span class="dt">&gt;</span></span>
+<span id="cb62-600"><a href="#cb62-600" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">summary</span><span class="dt">&gt;</span>Hint<span class="dt">&lt;/</span><span class="kw">summary</span><span class="dt">&gt;</span></span>
+<span id="cb62-601"><a href="#cb62-601" aria-hidden="true" tabindex="-1"></a><span class="in">`skip`</span> and </span>
+<span id="cb62-602"><a href="#cb62-602" aria-hidden="true" tabindex="-1"></a><span class="in">`n_max`</span> argument can be useful.</span>
+<span id="cb62-603"><a href="#cb62-603" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">details</span><span class="dt">&gt;</span> </span>
+<span id="cb62-604"><a href="#cb62-604" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-605"><a href="#cb62-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-606"><a href="#cb62-606" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb62-607"><a href="#cb62-607" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reading multiple files</span></span>
 <span id="cb62-608"><a href="#cb62-608" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-609"><a href="#cb62-609" aria-hidden="true" tabindex="-1"></a><span class="co"># get a vector of files</span></span>
-<span id="cb62-610"><a href="#cb62-610" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"data/"</span>, <span class="at">pattern =</span> <span class="st">"csv"</span>)</span>
-<span id="cb62-611"><a href="#cb62-611" aria-hidden="true" tabindex="-1"></a>files</span>
-<span id="cb62-612"><a href="#cb62-612" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; file1.csv file2.csv</span></span>
-<span id="cb62-613"><a href="#cb62-613" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-614"><a href="#cb62-614" aria-hidden="true" tabindex="-1"></a><span class="co"># read them in at once</span></span>
-<span id="cb62-615"><a href="#cb62-615" aria-hidden="true" tabindex="-1"></a><span class="co"># record paths in a column called filename</span></span>
-<span id="cb62-616"><a href="#cb62-616" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(files, <span class="at">id =</span> <span class="st">"filename"</span>)</span>
-<span id="cb62-617"><a href="#cb62-617" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
-<span id="cb62-618"><a href="#cb62-618" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   filename      x     y</span></span>
-<span id="cb62-619"><a href="#cb62-619" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb62-620"><a href="#cb62-620" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 file1.csv     1     2</span></span>
-<span id="cb62-621"><a href="#cb62-621" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 file1.csv     3     4</span></span>
-<span id="cb62-622"><a href="#cb62-622" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 file2.csv     5     6</span></span>
-<span id="cb62-623"><a href="#cb62-623" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 file2.csv     7     8</span></span>
-<span id="cb62-624"><a href="#cb62-624" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-625"><a href="#cb62-625" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-626"><a href="#cb62-626" aria-hidden="true" tabindex="-1"></a>If the files do not have identical structures, perhaps one of the files has text where it should have a number, you either have to use the <span class="in">`col_types`</span> argument to convert everything to the same format, or iterate (@sec-iterate) over the files to import and fix them.</span>
-<span id="cb62-627"><a href="#cb62-627" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-628"><a href="#cb62-628" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-629"><a href="#cb62-629" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-630"><a href="#cb62-630" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-631"><a href="#cb62-631" aria-hidden="true" tabindex="-1"></a><span class="fu">## Excel files</span></span>
-<span id="cb62-632"><a href="#cb62-632" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-633"><a href="#cb62-633" aria-hidden="true" tabindex="-1"></a>Even though we don't recommend you use Excel files for your own data, you need to know how to import such data as you may be given Excel files for find them in a data repository.</span>
-<span id="cb62-634"><a href="#cb62-634" aria-hidden="true" tabindex="-1"></a>To make your analysis reproducible, it is important to keep the files in their original format rather than converting them to CSV so that all the processing is done with code.</span>
+<span id="cb62-609"><a href="#cb62-609" aria-hidden="true" tabindex="-1"></a>If you want to read many files with the **same structure**, you can supply <span class="in">`read_delim()`</span> with a vector of files names.</span>
+<span id="cb62-610"><a href="#cb62-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-613"><a href="#cb62-613" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-614"><a href="#cb62-614" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: multiple-files</span></span>
+<span id="cb62-615"><a href="#cb62-615" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb62-616"><a href="#cb62-616" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-617"><a href="#cb62-617" aria-hidden="true" tabindex="-1"></a><span class="co"># get a vector of files</span></span>
+<span id="cb62-618"><a href="#cb62-618" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"data/"</span>, <span class="at">pattern =</span> <span class="st">"csv"</span>)</span>
+<span id="cb62-619"><a href="#cb62-619" aria-hidden="true" tabindex="-1"></a>files</span>
+<span id="cb62-620"><a href="#cb62-620" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; file1.csv file2.csv</span></span>
+<span id="cb62-621"><a href="#cb62-621" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-622"><a href="#cb62-622" aria-hidden="true" tabindex="-1"></a><span class="co"># read them in at once</span></span>
+<span id="cb62-623"><a href="#cb62-623" aria-hidden="true" tabindex="-1"></a><span class="co"># record paths in a column called filename</span></span>
+<span id="cb62-624"><a href="#cb62-624" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(files, <span class="at">id =</span> <span class="st">"filename"</span>)</span>
+<span id="cb62-625"><a href="#cb62-625" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span id="cb62-626"><a href="#cb62-626" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   filename      x     y</span></span>
+<span id="cb62-627"><a href="#cb62-627" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb62-628"><a href="#cb62-628" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 file1.csv     1     2</span></span>
+<span id="cb62-629"><a href="#cb62-629" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 file1.csv     3     4</span></span>
+<span id="cb62-630"><a href="#cb62-630" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 file2.csv     5     6</span></span>
+<span id="cb62-631"><a href="#cb62-631" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 file2.csv     7     8</span></span>
+<span id="cb62-632"><a href="#cb62-632" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-633"><a href="#cb62-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-634"><a href="#cb62-634" aria-hidden="true" tabindex="-1"></a>If the files do not have identical structures, perhaps one of the files has text where it should have a number, you either have to use the <span class="in">`col_types`</span> argument to convert everything to the same format, or iterate (@sec-iterate) over the files to import and fix them.</span>
 <span id="cb62-635"><a href="#cb62-635" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-636"><a href="#cb62-636" aria-hidden="true" tabindex="-1"></a>Excel files can be imported with the <span class="in">`readxl`</span> package which is installed with <span class="in">`tidyverse`</span> but not loaded until you run <span class="in">`library(readxl)`</span>.</span>
-<span id="cb62-637"><a href="#cb62-637" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`read_excel()`</span> will import the data; it can be worth using <span class="in">`excel_sheets()`</span> first to check the names of the sheets.</span>
+<span id="cb62-636"><a href="#cb62-636" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-637"><a href="#cb62-637" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-638"><a href="#cb62-638" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-641"><a href="#cb62-641" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-642"><a href="#cb62-642" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: read-excel</span></span>
-<span id="cb62-643"><a href="#cb62-643" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb62-644"><a href="#cb62-644" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb62-645"><a href="#cb62-645" aria-hidden="true" tabindex="-1"></a><span class="fu">excel_sheets</span>(<span class="at">path =</span> <span class="st">"data/biomass2015.xls"</span>)</span>
-<span id="cb62-646"><a href="#cb62-646" aria-hidden="true" tabindex="-1"></a>biomass_l <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="at">path =</span> <span class="st">"data/biomass2015.xls"</span>, <span class="at">sheet =</span> <span class="st">"Site L"</span>)</span>
-<span id="cb62-647"><a href="#cb62-647" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-648"><a href="#cb62-648" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-649"><a href="#cb62-649" aria-hidden="true" tabindex="-1"></a>Many of the arguments for skipping rows at the start of the file, enforcing column types, etc, are similar to those in <span class="in">`readr::read_delim()`</span></span>
-<span id="cb62-650"><a href="#cb62-650" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-651"><a href="#cb62-651" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
-<span id="cb62-652"><a href="#cb62-652" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setting the locale on windows computers</span></span>
-<span id="cb62-653"><a href="#cb62-653" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-654"><a href="#cb62-654" aria-hidden="true" tabindex="-1"></a>The locale captures the defaults that vary between countries.</span>
-<span id="cb62-655"><a href="#cb62-655" aria-hidden="true" tabindex="-1"></a>If you are using a windows computer, the locale may not have been set correctly.</span>
-<span id="cb62-656"><a href="#cb62-656" aria-hidden="true" tabindex="-1"></a>This would cause the next exercise to fail, and any text with the  Norwegian letters "å", "ø" and "æ" or other diacritics.</span>
-<span id="cb62-657"><a href="#cb62-657" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-658"><a href="#cb62-658" aria-hidden="true" tabindex="-1"></a>Check if there is a problem by running</span>
-<span id="cb62-661"><a href="#cb62-661" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-662"><a href="#cb62-662" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: Sys-getlocale</span></span>
-<span id="cb62-663"><a href="#cb62-663" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb62-664"><a href="#cb62-664" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-665"><a href="#cb62-665" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getlocale</span>()</span>
-<span id="cb62-666"><a href="#cb62-666" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-667"><a href="#cb62-667" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-668"><a href="#cb62-668" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-669"><a href="#cb62-669" aria-hidden="true" tabindex="-1"></a>If this returns "C", then you have a problem. To see the problem, run <span class="in">`"å"`</span> (with quotes) in the console.</span>
-<span id="cb62-670"><a href="#cb62-670" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-671"><a href="#cb62-671" aria-hidden="true" tabindex="-1"></a>We can fix the problem permanently by editing the .rprofile file with instructions to set the locale correctly. To do this, run</span>
+<span id="cb62-639"><a href="#cb62-639" aria-hidden="true" tabindex="-1"></a><span class="fu">## Excel files</span></span>
+<span id="cb62-640"><a href="#cb62-640" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-641"><a href="#cb62-641" aria-hidden="true" tabindex="-1"></a>Even though we don't recommend you use Excel files for your own data, you need to know how to import such data as you may be given Excel files for find them in a data repository.</span>
+<span id="cb62-642"><a href="#cb62-642" aria-hidden="true" tabindex="-1"></a>To make your analysis reproducible, it is important to keep the files in their original format rather than converting them to CSV so that all the processing is done with code.</span>
+<span id="cb62-643"><a href="#cb62-643" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-644"><a href="#cb62-644" aria-hidden="true" tabindex="-1"></a>Excel files can be imported with the <span class="in">`readxl`</span> package which is installed with <span class="in">`tidyverse`</span> but not loaded until you run <span class="in">`library(readxl)`</span>.</span>
+<span id="cb62-645"><a href="#cb62-645" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`read_excel()`</span> will import the data; it can be worth using <span class="in">`excel_sheets()`</span> first to check the names of the sheets.</span>
+<span id="cb62-646"><a href="#cb62-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-649"><a href="#cb62-649" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-650"><a href="#cb62-650" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: read-excel</span></span>
+<span id="cb62-651"><a href="#cb62-651" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb62-652"><a href="#cb62-652" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb62-653"><a href="#cb62-653" aria-hidden="true" tabindex="-1"></a><span class="fu">excel_sheets</span>(<span class="at">path =</span> <span class="st">"data/biomass2015.xls"</span>)</span>
+<span id="cb62-654"><a href="#cb62-654" aria-hidden="true" tabindex="-1"></a>biomass_l <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="at">path =</span> <span class="st">"data/biomass2015.xls"</span>, <span class="at">sheet =</span> <span class="st">"Site L"</span>)</span>
+<span id="cb62-655"><a href="#cb62-655" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-656"><a href="#cb62-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-657"><a href="#cb62-657" aria-hidden="true" tabindex="-1"></a>Many of the arguments for skipping rows at the start of the file, enforcing column types, etc, are similar to those in <span class="in">`readr::read_delim()`</span></span>
+<span id="cb62-658"><a href="#cb62-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-659"><a href="#cb62-659" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
+<span id="cb62-660"><a href="#cb62-660" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setting the locale on windows computers</span></span>
+<span id="cb62-661"><a href="#cb62-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-662"><a href="#cb62-662" aria-hidden="true" tabindex="-1"></a>The locale captures the defaults that vary between countries.</span>
+<span id="cb62-663"><a href="#cb62-663" aria-hidden="true" tabindex="-1"></a>If you are using a windows computer, the locale may not have been set correctly.</span>
+<span id="cb62-664"><a href="#cb62-664" aria-hidden="true" tabindex="-1"></a>This would cause the next exercise to fail, and any text with the  Norwegian letters "å", "ø" and "æ" or other diacritics.</span>
+<span id="cb62-665"><a href="#cb62-665" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-666"><a href="#cb62-666" aria-hidden="true" tabindex="-1"></a>Check if there is a problem by running</span>
+<span id="cb62-669"><a href="#cb62-669" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-670"><a href="#cb62-670" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: Sys-getlocale</span></span>
+<span id="cb62-671"><a href="#cb62-671" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb62-672"><a href="#cb62-672" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-675"><a href="#cb62-675" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-676"><a href="#cb62-676" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: create-rprofile</span></span>
-<span id="cb62-677"><a href="#cb62-677" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb62-678"><a href="#cb62-678" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">edit_r_profile</span>()</span>
-<span id="cb62-679"><a href="#cb62-679" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-673"><a href="#cb62-673" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getlocale</span>()</span>
+<span id="cb62-674"><a href="#cb62-674" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-675"><a href="#cb62-675" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-676"><a href="#cb62-676" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-677"><a href="#cb62-677" aria-hidden="true" tabindex="-1"></a>If this returns "C", then you have a problem. To see the problem, run <span class="in">`"å"`</span> (with quotes) in the console.</span>
+<span id="cb62-678"><a href="#cb62-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-679"><a href="#cb62-679" aria-hidden="true" tabindex="-1"></a>We can fix the problem permanently by editing the .rprofile file with instructions to set the locale correctly. To do this, run</span>
 <span id="cb62-680"><a href="#cb62-680" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-681"><a href="#cb62-681" aria-hidden="true" tabindex="-1"></a>This will create and open a .rprofile file.</span>
-<span id="cb62-682"><a href="#cb62-682" aria-hidden="true" tabindex="-1"></a>Now add the following line to the file, save it, and restart R (Session &gt; Restart R).</span>
-<span id="cb62-683"><a href="#cb62-683" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-686"><a href="#cb62-686" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-687"><a href="#cb62-687" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: edit-rprofile</span></span>
-<span id="cb62-688"><a href="#cb62-688" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb62-689"><a href="#cb62-689" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-690"><a href="#cb62-690" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setlocale</span>(<span class="at">locale =</span> <span class="st">"Norwegian.UTF-8"</span>)</span>
-<span id="cb62-691"><a href="#cb62-691" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-692"><a href="#cb62-692" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-693"><a href="#cb62-693" aria-hidden="true" tabindex="-1"></a>Other locale languages are <span class="co">[</span><span class="ot">avaliable</span><span class="co">](https://learn.microsoft.com/nb-no/cpp/c-runtime-library/language-strings?view=msvc-170&amp;viewFallbackFrom=vs-2017)</span>, but always use "UTF-8" character encoding.</span>
-<span id="cb62-694"><a href="#cb62-694" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-695"><a href="#cb62-695" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-696"><a href="#cb62-696" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-697"><a href="#cb62-697" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb62-698"><a href="#cb62-698" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
-<span id="cb62-699"><a href="#cb62-699" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-700"><a href="#cb62-700" aria-hidden="true" tabindex="-1"></a>Import the biomass data from Site A from biomass2015.xls</span>
-<span id="cb62-701"><a href="#cb62-701" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-683"><a href="#cb62-683" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-684"><a href="#cb62-684" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: create-rprofile</span></span>
+<span id="cb62-685"><a href="#cb62-685" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb62-686"><a href="#cb62-686" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">edit_r_profile</span>()</span>
+<span id="cb62-687"><a href="#cb62-687" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-688"><a href="#cb62-688" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-689"><a href="#cb62-689" aria-hidden="true" tabindex="-1"></a>This will create and open a .rprofile file.</span>
+<span id="cb62-690"><a href="#cb62-690" aria-hidden="true" tabindex="-1"></a>Now add the following line to the file, save it, and restart R (Session &gt; Restart R).</span>
+<span id="cb62-691"><a href="#cb62-691" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-694"><a href="#cb62-694" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-695"><a href="#cb62-695" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: edit-rprofile</span></span>
+<span id="cb62-696"><a href="#cb62-696" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb62-697"><a href="#cb62-697" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-698"><a href="#cb62-698" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setlocale</span>(<span class="at">locale =</span> <span class="st">"Norwegian.UTF-8"</span>)</span>
+<span id="cb62-699"><a href="#cb62-699" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-700"><a href="#cb62-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-701"><a href="#cb62-701" aria-hidden="true" tabindex="-1"></a>Other locale languages are <span class="co">[</span><span class="ot">avaliable</span><span class="co">](https://learn.microsoft.com/nb-no/cpp/c-runtime-library/language-strings?view=msvc-170&amp;viewFallbackFrom=vs-2017)</span>, but always use "UTF-8" character encoding.</span>
 <span id="cb62-702"><a href="#cb62-702" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-703"><a href="#cb62-703" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-704"><a href="#cb62-704" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb62-705"><a href="#cb62-705" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
-<span id="cb62-706"><a href="#cb62-706" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-707"><a href="#cb62-707" aria-hidden="true" tabindex="-1"></a>You may find the following links useful:</span>
-<span id="cb62-708"><a href="#cb62-708" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-709"><a href="#cb62-709" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="co">[</span><span class="ot">R for Data Science - Data import</span><span class="co">](https://r4ds.had.co.nz/data-import.html)</span>{target="_blank"}</span>
-<span id="cb62-710"><a href="#cb62-710" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="co">[</span><span class="ot">Data Import Cheatsheet - readr/readxl</span><span class="co">](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-import.pdf)</span>{target="_blank"}</span>
-<span id="cb62-711"><a href="#cb62-711" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="co">[</span><span class="ot">readr</span><span class="co">](https://readr.tidyverse.org/)</span>{target="_blank"}</span>
-<span id="cb62-712"><a href="#cb62-712" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb62-713"><a href="#cb62-713" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-703"><a href="#cb62-703" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-704"><a href="#cb62-704" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-705"><a href="#cb62-705" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb62-706"><a href="#cb62-706" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise</span></span>
+<span id="cb62-707"><a href="#cb62-707" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-708"><a href="#cb62-708" aria-hidden="true" tabindex="-1"></a>Import the biomass data from Site A from biomass2015.xls</span>
+<span id="cb62-709"><a href="#cb62-709" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-710"><a href="#cb62-710" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-711"><a href="#cb62-711" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-712"><a href="#cb62-712" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb62-713"><a href="#cb62-713" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
 <span id="cb62-714"><a href="#cb62-714" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-715"><a href="#cb62-715" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
-<span id="cb62-716"><a href="#cb62-716" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
-<span id="cb62-717"><a href="#cb62-717" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-718"><a href="#cb62-718" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Jonathan Soulé</span>
-<span id="cb62-719"><a href="#cb62-719" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Aud Halbritter</span>
-<span id="cb62-720"><a href="#cb62-720" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Richard Telford</span>
-<span id="cb62-721"><a href="#cb62-721" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-715"><a href="#cb62-715" aria-hidden="true" tabindex="-1"></a>You may find the following links useful:</span>
+<span id="cb62-716"><a href="#cb62-716" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-717"><a href="#cb62-717" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="co">[</span><span class="ot">R for Data Science - Data import</span><span class="co">](https://r4ds.had.co.nz/data-import.html)</span>{target="_blank"}</span>
+<span id="cb62-718"><a href="#cb62-718" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="co">[</span><span class="ot">Data Import Cheatsheet - readr/readxl</span><span class="co">](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-import.pdf)</span>{target="_blank"}</span>
+<span id="cb62-719"><a href="#cb62-719" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="co">[</span><span class="ot">readr</span><span class="co">](https://readr.tidyverse.org/)</span>{target="_blank"}</span>
+<span id="cb62-720"><a href="#cb62-720" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-721"><a href="#cb62-721" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-722"><a href="#cb62-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-723"><a href="#cb62-723" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb62-724"><a href="#cb62-724" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
+<span id="cb62-725"><a href="#cb62-725" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-726"><a href="#cb62-726" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Jonathan Soulé</span>
+<span id="cb62-727"><a href="#cb62-727" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Aud Halbritter</span>
+<span id="cb62-728"><a href="#cb62-728" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Richard Telford</span>
+<span id="cb62-729"><a href="#cb62-729" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
