@@ -45,4 +45,5 @@ quarto::quarto_render("StatisticsInR")
 
 
 # data lifecycle
+fs::file_delete(list.files(here::here("docs/data_lifecycle/"), recursive = TRUE, full.names = TRUE))
 quarto::quarto_render("data_lifecycle")
