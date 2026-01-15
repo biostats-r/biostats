@@ -4,7 +4,9 @@ execute:
 ---
 
 
-``` {r setup, include=FALSE}
+``` {r}
+#| label: setup
+#| include: false
 source("R/setup.R")
 library(patchwork)
 ```
@@ -27,14 +29,22 @@ You should
 You can use barplots to show amounts.
 `geom_bar()` will count how many observations there are of each type.
 
-```{r bar, fig.height = 3, fig.width = 3}
+```{r}
+#| label: bar
+#| fig-height: 3
+#| fig-width: 3
+#| fig-alt: A barplot showing the number of each species of penguin.
 ggplot(penguins, aes(x = species)) +
   geom_bar()
 ```
 
 If we have already calculated the amount, then we can use `geom_col()` to get an identical figure.
 
-```{r col, fig.height = 3, fig.width = 3}
+```{r}
+#| label: col
+#| fig-height: 3
+#| fig-width: 3
+#| fig-alt: A barplot showing the number of penguins.
 penguins |>
   count(species) |>
   ggplot(aes(x = species, y = n)) +
@@ -48,7 +58,10 @@ These can be made with `geom_histogram()` and `geom_density()`, respectively.
 Histograms split the data into bins and usually show the number of observations in each bin. 
 Density plots use a kernel smoother (often a Gaussian kernel - the normal bell-shaped curve) to give a smooth version of a histogram.
 
-```{r hist-density, fig.keep='none', message = FALSE}
+```{r}
+#| label: hist-density
+#| message: false
+#| fig-keep: none
 base <- ggplot(penguins, aes(x = flipper_length_mm))
 p_hist <- base + geom_histogram()
 p_dens <- base + geom_density()
@@ -56,7 +69,13 @@ p_hist
 p_dens
 ```
 
-```{r hist-density-patch, echo = FALSE, fig.height = 5, fig.width = 7}
+```{r}
+#| label: hist-density-patch
+#| echo: false
+#| fig-height: 5
+#| fig-width: 7
+#| fig-alt: >
+#|   A histogram (left) and a density plot (right) of penguin flipper length.
 p_hist + labs(title = "geom_histogram()") +
   p_dens + labs(title = "geom_density()")
 ```
@@ -102,7 +121,10 @@ Change the `adjust` argument in `geom_density`
 If we want show the distribution of a continuous variable conditioned by a categorical variable, we can add a fill aesthetic to the histogram or density plot.  
 
 
-```{r hist-density2, fig.keep='none', message = FALSE}
+```{r}
+#| label: hist-density2
+#| message: false
+#| fig-keep: none
 base <- ggplot(penguins, aes(x = flipper_length_mm, fill = species))
 p_hist <- base + geom_histogram()
 p_dens <- base + geom_density(alpha = 0.4) # set alpha to make transparent
@@ -111,7 +133,14 @@ p_hist
 p_dens
 ```
 
-```{r hist-density2-patch, echo = FALSE, fig.height = 5, fig.width = 7}
+```{r}
+#| label: hist-density2-patch
+#| echo: false
+#| fig-height: 5
+#| fig-width: 7
+#| fig-alt: >
+#|   A histogram (left) and a density plot (right) of penguin flipper length,
+#|   coloured by species.
 p_hist + labs(title = "geom_histogram()") +
   p_dens + labs(title = "geom_density()")
 ```
@@ -142,7 +171,8 @@ Which position is easiest to interpret?
 ## Many distributions of a continuous variable
 
 
-```{r boxplots-etc}
+```{r}
+#| label: boxplots-etc
 base <- ggplot(penguins, aes(x = species, y = flipper_length_mm))
 
 p_prange <- base + stat_summary(fun.data = mean_sdl)
@@ -154,7 +184,12 @@ library(ggbeeswarm)
 p_quasi <- base + geom_quasirandom(aes(colour = species))
 ```
 
-```{r boxplots-etc-plot, echo=FALSE}
+```{r}
+#| label: boxplots-etc-plot
+#| echo: false
+#| fig-alt: >
+#|   Six alternative plots for showing a few distributions of continuious
+#|   variables.
 p_prange + labs(title = "geom_pointrange()") +
   p_box + labs(title = "geom_boxplot()") +
   p_vio + labs(title = "geom_violin()") +
@@ -180,7 +215,11 @@ It is possible to use multiple geoms on top of each other, for example, `geom_qu
 
 ## Many distributions of a continuous variable split by a categorical variable
 
-```{r boxplots-etc2, fig.height = 4, fig.width=4}
+```{r}
+#| label: boxplots-etc2
+#| fig-height: 4
+#| fig-width: 4
+#| fig-alt: Violin plot of penguin flipper length, coloured by sex.
 penguins |>
   drop_na(flipper_length_mm, sex) |>
   ggplot(aes(x = species, y = flipper_length_mm)) +
@@ -188,7 +227,7 @@ penguins |>
 ```
 
 Need to decide which variable to have on the x-axis and which to have as fill.
-Can also use facets with more complex plots.
+You can also use facets with more complex plots.
 
 
 
@@ -196,7 +235,12 @@ Can also use facets with more complex plots.
 
 The standard plot for two continuous variables is the scatterplot, which we can get with `geom_point()`.
 
-```{r scatter, fig.height = 4, fig.width=4}
+```{r}
+#| label: scatter
+#| fig-height: 4
+#| fig-width: 4
+#| fig-alt: >
+#|   Scatterplot of penguin bill length against body mass, coloured by species.
 ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
   geom_point() +
   labs(x = "Body mass, g", y = "Bill length,  mm", colour = "Species")
@@ -218,7 +262,14 @@ Now where there are many points the plot will appear darker.
 
 ### 2D density
 
-```{r density2d, eval=TRUE, fig.height=5, fig.width=5}
+```{r}
+#| label: density2d
+#| eval: true
+#| fig-height: 5
+#| fig-width: 5
+#| fig-alt: >
+#|   A 2-d density plot of penguin bill depth against bill length,
+#|   coloured by species.
 ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_density2d()
 ```
@@ -234,7 +285,11 @@ Some choices
 
 ### GGally::ggpairs
 
-```{r ggpairs, message = FALSE}
+```{r}
+#| label: ggpairs
+#| message: false
+#| fig-alt: >
+#|   A matrix of plots showing the relationships between all pairs of variables.
 library(GGally)
 penguins |>
   select(-year) |>
@@ -246,7 +301,9 @@ penguins |>
 
 First calculate the correlations between the numeric variables, then reshape the data into long format, 
 
-```{r correlation, eval=TRUE}
+```{r}
+#| label: correlation
+#| eval: true
 # Select only numeric variables and remove all NAs
 penguin_matrix <- penguins |>
   select(bill_length_mm:body_mass_g) |>
@@ -266,7 +323,12 @@ cor_long <- cor_matrix |>
 
 Now we can use the function `geom_tile()` to plot the data.
 
-```{r heatmap, eval=TRUE}
+```{r}
+#| label: heatmap
+#| eval: true
+#| fig-alt: >
+#|   A heatmap of correlations between different variables in 
+#|   the penguin dataset.
 ggplot(data = cor_long, aes(x = rowname, y = colname, fill = cor)) +
   geom_tile() +
   scale_fill_gradient2() +
@@ -275,7 +337,12 @@ ggplot(data = cor_long, aes(x = rowname, y = colname, fill = cor)) +
 
 Alternatively, we can use `geom_point()` and use the size aesthetic to scale the points by the absolute value of the correlation to give more visual weight to the larger correlations.
 
-```{r heatmap-circles, eval=TRUE}
+```{r}
+#| label: heatmap-circles
+#| eval: true
+#| fig-alt: >
+#|   An alternative version of the heatmap, showing circles scaled 
+#|   by the magnitude of the correlation.
 ggplot(data = cor_long, aes(x = rowname, y = colname, colour = cor, size = abs(cor))) +
   geom_point() +
   scale_colour_gradient2() +
@@ -289,7 +356,10 @@ ggplot(data = cor_long, aes(x = rowname, y = colname, colour = cor, size = abs(c
 Temporal data are often plotted with line plots.
 Time is usually on the x axis.
 
-```{r lines, eval=TRUE}
+```{r}
+#| label: lines
+#| eval: true
+#| fig-alt: Line plot showing unemployment between 1970 and 2015.
 ggplot(economics, aes(x = date, y = unemploy)) +
   geom_line() +
   labs(x = "", y = "Unemployment")

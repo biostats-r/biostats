@@ -4,7 +4,9 @@ execute:
 ---
 
 
-``` {r setup, include=FALSE}
+``` {r}
+#| label: setup
+#| include: false
 source("R/setup.R")
 ```
 
@@ -15,14 +17,28 @@ source("R/setup.R")
 The `colour` aesthetic give colour for points and lines, while the `fill` aesthetic gives colour to areas.
 It is very easy to forget this.
 
-```{r wrong-aes, fig.cap = "Use fill for areas.", fig.height= 3, fig.width = 3.5, message=FALSE}
+```{r}
+#| label: wrong-aes
+#| message: false
+#| fig-cap: Use fill for areas.
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: >
+#|   Histogram of penguin bill lengths. The histogram bars are dark grey bars,
+#|   while the lines around the bars are coloured by species. 
 ggplot(penguins, aes(x = bill_length_mm, colour = species)) +
   geom_histogram()
 ```
 
 You can set the colour of points or lines and the fill of areas by setting it in the `geom_*()` used.
 
-```{r fill-colour-set, fig.height = 3, fig.width = 3.5}
+```{r}
+#| label: fill-colour-set
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: >
+#|   Histogram of penguin flipper lengths, with pink bars surrounded by purple
+#|   lines.
 ggplot(penguins, aes(x = flipper_length_mm)) +
   geom_histogram(colour = "purple", fill = "pink")
 ```
@@ -55,14 +71,24 @@ Qualitative palettes have no natural order to the colours.
 Use them for categorical variables.
 In the `penguins` dataset, species, island, and sex are categorical variables.
 
-```{r qual-fills}
+```{r}
+#| label: qual-fills
+#| fig-alt: >
+#|   Density plot of penguin flipper length with the default fills for each 
+#|   species.
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density()
 ```
 
 You can change the default colours/fill by either picking your own colours with `scale_colour_manual()` or `scale_fill_manual()`.
 
-```{r qual-manual, fig.width = 3.5, fig.height = 3}
+```{r}
+#| label: qual-manual
+#| fig-width: 3.5
+#| fig-height: 3
+#| fig-alt: >
+#|   Density plot of penguin flipper length with the manually selected fills
+#|   for each species.
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density() +
   scale_fill_manual(values = c(
@@ -76,12 +102,21 @@ Picking your own colours can be hard!
 
 Normally better to use some built in qualitative palettes, for example these from the `RColorBrewer` package.
 
-```{r qual-brewer, fig.height = 4}
+```{r}
+#| label: qual-brewer
+#| fig-height: 4
+#| fig-alt: The qualitative colour palettes available from RColorBrewer
 RColorBrewer::display.brewer.all(type = "qual")
 ```
 You can use these with `scale_colour_brewer()` or `scale_fill_brewer()`
 
-```{r qual-set1, fig.width = 3.5, fig.height = 3}
+```{r}
+#| label: qual-set1
+#| fig-width: 3.5
+#| fig-height: 3
+#| fig-alt: >
+#|   Density plot of penguin flipper length with the Set1 palette from 
+#|   RColorBrewer.
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density() +
   scale_fill_brewer(palette = "Set1")
@@ -93,7 +128,10 @@ Sequential colour/fill scales are useful for ordinal variables - for example, hi
 
 Here are some examples from the `RColorBrewer` package, which can be used as above.
 
-```{r seq-brewer, fig.height = 4}
+```{r}
+#| label: seq-brewer
+#| fig-height: 4
+#| fig-alt: The sequential colour palettes available from RColorBrewer.
 RColorBrewer::display.brewer.all(type = "seq")
 ```
 Another example of a sequential colour/fill palette is viridis, which can be used with `scale_fill_viridis_d()`. 
@@ -105,7 +143,10 @@ Diverging colour/fill scales are useful for ordinal variables with a natural mid
 
 Here are some examples from the `RColorBrewer` package, which can be used as above.
 
-```{r div-brewer, fig.height = 4}
+```{r}
+#| label: div-brewer
+#| fig-height: 4
+#| fig-alt: The diverging colour palettes available from RColorBrewer
 RColorBrewer::display.brewer.all(type = "div")
 ```
 
@@ -117,7 +158,15 @@ You can do this in several ways, but the easiest is to use the `gghighlight` pac
 `gghighlight` takes a logical statement which determines which points or lines get coloured. 
 This plot focuses on the Adelie penguins.
 
-```{r highlights, fig.height = 3.5, fig.width = 3.5, message=FALSE}
+```{r}
+#| label: highlights
+#| message: false
+#| warning: false
+#| fig-height: 3.5
+#| fig-width: 3.5
+#| fig-alt: >
+#|   Scatterplot of penguin bill length against body mass, with Adelie penguins
+#|   highlighted in red.
 library(gghighlight)
 ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
   geom_point() +
@@ -146,12 +195,19 @@ There are many examples of colour palettes in the `paletteer` package
 
 ### Colour blind friendly colours
 
-About 1/8 men and 1/200 women are colour blind.
-We need to use colour and fill palettes that are colourblind friendly.
+About 1/12 men and 1/200 women have colour vision deficiency.
+We need to use colour and fill palettes that are colour-blind friendly.
 Some popular scales are not. 
-For example, we can use the `colorBlindness` to simulate how this figure is perceived by people with different forms of colour vision deficiency.
+For example, we can use the `colorBlindness` package to simulate how this figure is perceived by people with different forms of colour vision deficiency.
 
-```{r not-colourblind-friendly, fig.cap = "Default ggplot fill.", fig.height = 3, fig.width=3.5}
+```{r}
+#| label: not-colourblind-friendly
+#| fig-cap: Default ggplot fill.
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: > 
+#|   Density plot of penguin flipper lengths by species, 
+#|   with the default fill colours.
 p3 <- ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_density(alpha = 0.5) +
   scale_fill_discrete()
@@ -160,7 +216,14 @@ p3
 
 
 
-```{r colour-blindr-default, echo = TRUE, fig.cap = "How people with different types of colourblindness see the default colour scale."}
+```{r}
+#| label: colour-blindr-default
+#| echo: true
+#| fig-cap: How people with different types of colourblindness see the default colour
+#|   scale.
+#| fig-alt: > 
+#|   Simulation of how the previous figure would be seen by people with
+#|   different types of colour vision deficiency.
 library(colorBlindness)
 cvdPlot(p3)
 ```
@@ -169,13 +232,28 @@ That was hopeless.
 It won't even print well in black and white (shown by the Desaturated panel). 
 Let's try a different palette.
 
-```{r viridis-colourblind, fig.cap = "Viridis fill.", fig.height = 3, fig.width=3.5, message = FALSE}
+```{r}
+#| label: viridis-colourblind
+#| message: false
+#| fig-cap: Viridis fill.
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: Repeat of the previous figure with a colour-blind friendly palette.
 p3_v <- p3 + scale_fill_viridis_d()
 p3_v
 ```
 
 
-```{r viridis-colourblind2, echo = FALSE, fig.cap = "How people with different types of colourblindness see the viridis colour scale."}
+```{r}
+#| label: viridis-colourblind2
+#| echo: false
+#| fig-cap: >
+#|   How people with different types of colourblindness see the viridis colour
+#|   scale.
+#| fig-alt: >
+#|   Simulation of how people with different types of colour blindness would see
+#|   the figure with colour-blind friendly palette.
+#|   
 cvdPlot(p3_v)
 ```
 
@@ -187,7 +265,15 @@ Always test that your colour palette is colourblind friendly, or use one known t
 Transparency is set by the `alpha` aesthetic, where 0 is completely transparent and 1 is opaque.
 The overlap between partially transparent objects is more opaque. 
 
-```{r alpha, fig.width=5, fig.height=2, fig.cap = "Alpha values", echo = FALSE}
+```{r}
+#| label: alpha
+#| echo: false
+#| fig-width: 5
+#| fig-height: 2
+#| fig-cap: Alpha values
+#| fig-alt: >
+#|   Overlapping circles with different values of alpha setting the
+#|   transparency.
 tibble(x0 = 0:5, r = 0.5, alpha = x0 / 5) |>
   crossing(y0 = c(0, 0.4)) |>
   ggplot(aes(x0 = x0, y0 = y0, r = r, alpha = I(alpha))) +
@@ -212,7 +298,13 @@ Be careful using transparency when different colours overlap, as it can appear t
 
 You can change the shape of all the points made by, for example, `geom_point()` by setting the shape.
 
-```{r shape-set, fig.width = 3, fig.height=3}
+```{r}
+#| label: shape-set
+#| fig-width: 3
+#| fig-height: 3
+#| fig-alt: >
+#|   Scatterplot of penguin bill depth against bill length with crosses instead
+#|   of the default circles.
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_point(shape = 4)
 ```
@@ -221,7 +313,12 @@ If you map a discrete variable to the `shape` aesthetic, points made by `geom_po
 Many of the shapes are difficult to distinguish when small, so it is usually best to use shape with colour to distinguish groups.
 These are the available shapes.
 
-```{r shapes, fig.cap = "Shapes", fig.height=2.5, echo = FALSE}
+```{r}
+#| label: shapes
+#| echo: false
+#| fig-cap: Shapes
+#| fig-alt: The different shapes available for plotting and their numeric codes. 
+#| fig-height: 2.5
 step <- 9
 tibble(shape = 0:25, x = (shape) %% step, y = (shape) %/% step) |>
   ggplot(aes(x = x, y = y, shape = I(shape), label = shape)) +
@@ -235,7 +332,13 @@ Shapes 21-24 take a `fill` and a `colour` aesthetic, whereas all the other shape
 
 If you want to change the shape from the default shapes, use `scale_shape_manual()`.
 
-```{r scale-shape-manual, fig.width = 3.5, fig.height = 3}
+```{r}
+#| label: scale-shape-manual
+#| fig-width: 4.5
+#| fig-height: 4
+#| fig-alt: >
+#|   Scatterplot of penguin bill length against body mass with manually chosen
+#|   shapes for each species.
 ggplot(
   penguins,
   aes(x = body_mass_g, y = bill_length_mm, colour = species, shape = species)
@@ -250,7 +353,13 @@ ggplot(
 
 You can change the line types of all the lines made by, for example, `geom_line()` by setting the linetype.
 
-```{r chickweight, fig.height = 3, fig.width = 3.5}
+```{r}
+#| label: chickweight
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: >
+#|   Plot of chick weight over time for different diets. Each chick is
+#|   represented by a dashed line.
 ggplot(ChickWeight, aes(
   x = Time,
   y = weight,
@@ -264,7 +373,13 @@ ggplot(ChickWeight, aes(
 If you map a discrete variable to the `linetype` aesthetic, lines made by `geom_line`, `geom_path`, etc will have different line types or the different values in the variable.
 Line types can sometimes be used in addition to colour to make it easier to differentiate lines.
 
-```{r chickweight2, fig.height = 3, fig.width = 3.5}
+```{r}
+#| label: chickweight2
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: > 
+#|   Plot of chick weight over time for different diets. Each chick is
+#|   represented by a line, with a different line type for each diet.
 ggplot(
   ChickWeight,
   aes(x = Time, y = weight, group = Chick, colour = Diet, linetype = Diet)
@@ -279,6 +394,7 @@ If you need to change the linetypes assigned to each value, you can use `scale_l
 #| fig-height: 2.5
 #| fig-width: 3
 #| fig-cap: "Some named linetypes"
+#| fig-alt: Five linetypes and their names.
 #| echo: false
 
 tibble(

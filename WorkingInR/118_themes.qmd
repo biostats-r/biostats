@@ -4,13 +4,18 @@ execute:
 ---
 
 
-``` {r setup, include=FALSE}
+``` {r}
+#| label: setup
+#| include: false
 source("R/setup.R")
 ```
 
 # Themes {#sec-themes}
 
-```{r default-theme, eval=TRUE, include=FALSE}
+```{r}
+#| label: default-theme
+#| eval: true
+#| include: false
 theme_set(theme_grey())
 ```
 
@@ -18,7 +23,9 @@ Themes let you customise the non-data elements of a plot.
 You can change the whole theme, or update just a few elements.
 Here is a plot with the default theme.
 
-```{r theme-plot, fig.keep='none'}
+```{r}
+#| label: theme-plot
+#| fig-keep: none
 library(ggplot2)
 p1 <- ggplot(penguins, aes(
   x = body_mass_g,
@@ -29,7 +36,15 @@ p1 <- ggplot(penguins, aes(
 p1
 ```
 
-```{r theme-grey, echo = FALSE, fig.cap = "The default theme, `theme_grey()`", fig.height=3, fig.width=4}
+```{r}
+#| label: theme-grey
+#| echo: false
+#| fig-cap: The default theme, `theme_grey()`
+#| fig-alt: >
+#|   Scatterplot of penguin bill length against body mass with the default theme
+#|   - a grey background to the plot with white gridlines
+#| fig-height: 3
+#| fig-width: 4
 p1 + theme_grey()
 ```
 
@@ -37,7 +52,14 @@ p1 + theme_grey()
 
 You can change the whole theme to a new pre-built theme by adding one of the `theme_*()` functions.
 
-```{r complete-themes,  fig.cap = "`theme_classic()`", fig.height=3, fig.width=4}
+```{r}
+#| label: complete-themes
+#| fig-cap: '`theme_classic()`'
+#| fig-height: 3
+#| fig-width: 4
+#| fig-alt: >
+#|   The previous plot with the classic theme - white background without
+#|   gridlines and axis lines only on the bottom and left side of the plot.
 p1 +
   theme_classic()
 ```
@@ -45,7 +67,11 @@ p1 +
 There are many pre-built themes, some in `ggplot2`, others in the `ggthemes`, `cowplot`, and other packages. 
 You can also write your own.
 
-```{r many-themes, echo = FALSE, fig.cap = "Various themes from `ggplot2` and `gthemes`."}
+```{r}
+#| label: many-themes
+#| echo: false
+#| fig-cap: Various themes from `ggplot2` and `gthemes`.
+#| fig-alt: Four copies of the previous plot with different themes.
 library(ggthemes)
 library(patchwork)
 bs <- 8
@@ -66,18 +92,25 @@ All the `theme_*()` functions have an argument to set the base size of the font.
 The default (about size 11 for most themes) is normally fine for manuscripts and theses, but too small for presentations.
 Increase it to 18 or 20 so the audience at the back of the auditorium can read the text.
 
-```{r base-size,  fig.cap = "`theme_classic()`", fig.height=3, fig.width=5}
+```{r}
+#| label: base-size
+#| fig-cap: '`theme_classic()` with a large font.'
+#| fig-alt: The previous plot with a large font, suitable for a presentation.
+#| fig-height: 3
+#| fig-width: 5
 p1 +
   theme_classic(base_size = 18)
 ```
 
 ## Setting the default theme
 
-If you are making several figures and want them all to have the same theme, you can set the default with `theme_set()`.
+If you are making several figures and want them all to have the same theme, you can set the default with `set_theme()`.
 I do this in the first chunk of quarto and R markdown documents.
 
-```{r theme_set, eval = FALSE}
-theme_set(theme_classic())
+```{r}
+#| label: theme_set
+#| eval: false
+set_theme(theme_classic())
 ```
 
 ## Changing individual elements of the theme
@@ -89,25 +122,43 @@ Below are a few examples.
 
 Sometimes long axis labels need rotating to stop them overlapping.
 
-```{r theme_rotate, fig.height=3, fig.width=2}
+```{r}
+#| label: theme_rotate
+#| fig-height: 3
+#| fig-width: 2
+#| fig-alt: Boxplot of penguin body masses with the species names overlapping.
 p2 <- ggplot(penguins, aes(x = species, y = body_mass_g)) +
   geom_boxplot()
 p2
 ```
-```{r theme_rotate2, fig.height=3, fig.width=2}
+```{r}
+#| label: theme_rotate2
+#| fig-height: 3
+#| fig-width: 2
+#| fig-alt: >
+#|  The previous plot with the axis labels rotated by 45° to avoid overlapping.
 p2 +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 Reading angled text is hard work, so consider alternative solutions to this problem, such as dodging the axis labels
 
-```{r axis-dodge, fig.height=3, fig.width=2}
+```{r}
+#| label: axis-dodge
+#| fig-height: 3
+#| fig-width: 2
+#| fig-alt: The previous plot with the axis labels offset to avoid overlapping.
 p2 + scale_x_discrete(guide = guide_axis(n.dodge = 2))
 ```
 
 Or flipping the plot.
 
-```{r flip, fig.height=3, fig.width=3}
+```{r}
+#| label: flip
+#| fig-height: 3
+#| fig-width: 3
+#| fig-alt: >
+#|   The previous plot flipped so the boxplots and their labels are horizontal.
 p2 + coord_flip()
 ```
 
@@ -116,14 +167,25 @@ p2 + coord_flip()
 By default, the legend is put to the right of the plot.
 It can be moved with the `legend.position` argument to `theme()`.
 
-```{r legend-position, fig.height=3, fig.width=4}
+```{r}
+#| label: legend-position
+#| fig-height: 3
+#| fig-width: 4
+#| fig-alt: >
+#|   Scatterplot with the legend on the bottom rather than the default location
+#|   on the right.
 p1 + theme(legend.position = "bottom")
 ```
 
 If there is space, the legend can be moved into the plot by giving `legend.position` the x and y coordinates relative to the plot (0 is left or bottom, 1 is top or right).
 Use `legend.justification` to specify which corner of the legend should be in the position set by `legend.position` justify the legend.
 
-```{r legend-position2, fig.height=3, fig.width=4}
+```{r}
+#| label: legend-position2
+#| fig-height: 3
+#| fig-width: 4
+#| fig-alt: >
+#|   Scatterplot with the legend moved into an empty place within the plot.
 p1 +
   theme(
     legend.position = c(x = 0.99, y = 0.01),
@@ -133,7 +195,11 @@ p1 +
 
 The legend can be removed with 
 
-```{r legend-none, fig.height=3, fig.width=4}
+```{r}
+#| label: legend-none
+#| fig-height: 3
+#| fig-width: 4
+#| fig-alt: Scatterplot with the legend removed.
 p1 + theme(legend.position = "none")
 ```
 
@@ -144,7 +210,12 @@ If a plot has multiple legends, and you want to keep some of them, you get more 
 
 You can remove non-data elements of the plot by setting them to `element_blank()`.
 
-```{r element-blank, fig.height=3, fig.width=4, fig.cap = "Removing gridlines with `element_blank()`"}
+```{r}
+#| label: element-blank
+#| fig-height: 3
+#| fig-width: 4
+#| fig-cap: Removing gridlines with `element_blank()`
+#| fig-alt: Scatterplot with the gridlines removed.
 p1 + theme(panel.grid = element_blank())
 ```
 
