@@ -1,5 +1,6 @@
 ```{r setup, include=FALSE}
 source("R/setup.R")
+rm(penguins)# revert to original dataframe
 ```
 
 # Working with single tables in `dplyr` {#sec-working-with-single-tables-in-dplyr}
@@ -40,14 +41,17 @@ More than once, `tidylog` has helped identified bugs in my code.
 
 ## The `penguins` dataset
 
-This tutorial will use the `penguins` dataset from the [`palmerpenguins` package](https://github.com/allisonhorst/palmerpenguins).
-This dataset includes measurements of three species of penguin.
+This tutorial will use the `penguins` dataset that is included with R.
+The `penguins` dataset contains morphological data on three species of penguin. 
+You will meet this dataset repeatedly as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
+To improve printing, we've converted the `penguins` data.frame into a tibble.
 
 ```{r penguins}
-# Load the data
-data("penguins", package = "palmerpenguins")
 # Show the data
 penguins
+
+# convert to tibble to improve printing
+penguins <- as_tibble(penguins)
 ```
 
 ## Selecting columns with `select()`
@@ -58,16 +62,16 @@ The first argument is the data, which is supplied by the pipe `|>`, the next arg
 The names do not need quote marks.
 
 ```{r select1}
-#select species, bill_length_mm & bill_depth_mm
+#select species, bill_len & bill_dep
 penguins |>
-  select(species, bill_length_mm, bill_depth_mm)
+  select(species, bill_len, bill_dep)
 ```
 
 This is equivalent to the base R code
 
 ```{r select1.5}
-#select species, bill_length_mm & bill_depth_mm
-penguins[, c("species", "bill_length_mm", "bill_depth_mm")]
+#select species, bill_len & bill_dep
+penguins[, c("species", "bill_len", "bill_dep")]
 ```
 
 Remember that if you want to use the output of this code in a further analysis, you need to assign it to an object name with `<-`.
@@ -78,7 +82,7 @@ Remember that if you want to use the output of this code in a further analysis, 
 From the `penguins` data, select
 
 -   `species`
--   `species` and `bill_length_mm`
+-   `species` and `bill_len`
 -   all columns except year
 
 <details>
@@ -106,8 +110,8 @@ Fortunately there are some helper functions.
 If you want to `select()` adjacent columns, you can use the notation `first:last`.
 
 ```{r select2}
-#select species to bill_depth_mm
-penguins |> select(species:bill_depth_mm)
+#select species to bill_dep
+penguins |> select(species:bill_dep)
 ```
 
 Sometimes it is easier to remove the columns you don't want.
@@ -122,11 +126,11 @@ If there is a pattern to the column names that we want to select (or remove), th
 For example, to select columns that start with "bill", we can use `starts_with()`.
 
 ```{r select4}
-#select bill_length_mm & bill_depth_mm"
+#select bill_len & bill_dep"
 penguins |> select(starts_with("bill"))
 ```
 
-Conversely, if we want to select all columns that end with "mm", we can use `ends_with()`.
+Conversely, if we want to select all columns that end with "len", we can use `ends_with()`.
 `contains()` is more flexible and `matches()` is the most powerful of the helper functions, using regular expressions to identify the columns (see the regular expression tutorial).
 
 Sometimes, you might want to select all the columns of a certain type.
@@ -148,7 +152,7 @@ From the `penguins` data, select
 
 -   all columns except year
 -   all non-numeric columns
--   `species` and columns ending in "mm"
+-   `species` and columns ending in "len"
 
 <details>
 
@@ -207,7 +211,7 @@ Filtering rows that meet some condition is a very common task.
 For example, to filter rows of `penguins` that have a bill length greater than 40 mm, we can use
 
 ```{r filter1}
-penguins |> filter(bill_length_mm > 40)
+penguins |> filter(bill_len > 40)
 ```
 
 This will filter out each row where the condition is `TRUE`.
@@ -215,7 +219,7 @@ This will filter out each row where the condition is `TRUE`.
 The base R equivalent of this is
 
 ```{r filter_base}
-penguins[penguins$bill_length_mm > 40, ]
+penguins[penguins$bill_len > 40, ]
 ```
 
 Generally, `filter` makes it easier to understand, especially with more complex criteria.
@@ -257,21 +261,21 @@ If we want all criteria to be `TRUE`, we can separate them by a comma (or by an 
 
 ```{r filter-AND}
 penguins |>
-  filter(bill_length_mm > 40, bill_depth_mm > 18)
+  filter(bill_len > 40, bill_dep > 18)
 ```
 
 If we want rows where any of the criteria is `TRUE`, we can separate them by a `|`.
 
 ```{r filter-OR}
 penguins |>
-  filter(bill_length_mm > 40 | bill_depth_mm > 18)
+  filter(bill_len > 40 | bill_dep > 18)
 ```
 
 We can negate a criterion by putting `!` in front of it.
 So to filter rows that do not have bills longer than 40 mm we can use
 
 ```{r filter-NOT}
-penguins |> filter(!bill_length_mm > 40)
+penguins |> filter(!bill_len > 40)
 ```
 
 Of course, in this example, we could also use `<=` as the test.
@@ -399,7 +403,7 @@ To make a new column called `body_mass_kg` we can use
 
 ```{r}
 penguins |>
-  mutate(body_mass_kg = body_mass_g / 1000)
+  mutate(body_mass_kg = body_mass / 1000)
 ```
 
 There are lots of functions that are useful to use with mutate.
@@ -442,8 +446,8 @@ Remember to separate arguments with a comma.
 
 ```{r summarise1}
 penguins |> summarise(
-  flipper_len_mean = mean(flipper_length_mm, na.rm = TRUE),
-  flipper_len_sd = sd(flipper_length_mm, na.rm = TRUE)
+  flipper_len_mean = mean(flipper_len, na.rm = TRUE),
+  flipper_len_sd = sd(flipper_len, na.rm = TRUE)
   )
 ```
 
@@ -480,7 +484,7 @@ This can be done with the `across()` helper function.
 ```{r across}
 penguins |>
    summarise(
-     across(c(bill_length_mm, bill_depth_mm),
+     across(c(bill_len, bill_dep),
             .fns = \(x)mean(x, na.rm = TRUE)))
 
 #using a list of functions
@@ -503,7 +507,7 @@ To find the mean flipper length for each species, we need to `group_by()` specie
 ```{r group-by}
 penguins |>
   group_by(species) |>
-  summarise(mean_flipper_length = mean(flipper_length_mm))
+  summarise(mean_flipper_length = mean(flipper_len))
 ```
 
 Grouped data can be ungrouped with `ungroup()`.
@@ -537,14 +541,14 @@ penguins |>
 To sort the data frame by one or more of the variables we can use `arrange()`.
 
 ```{r arrange1}
-penguins |> arrange(bill_length_mm, bill_depth_mm)
+penguins |> arrange(bill_len, bill_dep)
 ```
 
 This will sort smallest first.
 To reverse the sort order, use `desc()`
 
 ```{r arrange2}
-penguins |> arrange(desc(bill_length_mm), desc(bill_depth_mm))
+penguins |> arrange(desc(bill_len), desc(bill_dep))
 ```
 
 ::: callout-note

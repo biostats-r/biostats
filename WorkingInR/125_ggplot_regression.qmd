@@ -20,7 +20,7 @@ It can be turned off with `se = FALSE`, and changed from the default 95% with th
 #| fig-alt: >
 #|   Scatterplot of penguin bill length against body mass with a smoother
 #|   showing trends in the data.
-ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm)) +
+ggplot(penguins, aes(x = body_mass, y = bill_len)) +
   geom_point() +
   geom_smooth()
 ```
@@ -32,7 +32,7 @@ So to show a linear model, use `method = "lm"`.
 #| fig-alt: >
 #|   Scatterplot of penguin bill length against body mass with a linear model
 #|   showing the trend in the data.
-ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm)) +
+ggplot(penguins, aes(x = body_mass, y = bill_len)) +
   geom_point() +
   geom_smooth(method = "lm")
 ```
@@ -65,7 +65,7 @@ For example, if we want to fit a model for the relationship between penguin body
 First fit the model
 
 ```{r smo-mod}
-mod <- lm(bill_length_mm ~ body_mass_g + species,
+mod <- lm(bill_len ~ body_mass + species,
   data = penguins
 )
 ```
@@ -86,7 +86,7 @@ Now we can plot them, using geom_ribbon() and `geom_line()` to recreate what `ge
 #| fig-alt: >
 #|   Scatterplot of penguin bill length against body mass, coloured by species,
 #|   with the predictions and confidence interval of a linear model added. 
-ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, fill = species)) +
+ggplot(penguins, aes(x = body_mass, y = bill_len, fill = species)) +
   geom_point(aes(colour = species)) +
   geom_ribbon(aes(ymin = .lower, ymax = .upper), data = preds, alpha = 0.3) +
   geom_line(aes(y = .fitted, colour = species), data = preds) +

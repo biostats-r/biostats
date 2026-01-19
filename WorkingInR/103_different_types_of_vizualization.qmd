@@ -62,7 +62,7 @@ Density plots use a kernel smoother (often a Gaussian kernel - the normal bell-s
 #| label: hist-density
 #| message: false
 #| fig-keep: none
-base <- ggplot(penguins, aes(x = flipper_length_mm))
+base <- ggplot(penguins, aes(x = flipper_len))
 p_hist <- base + geom_histogram()
 p_dens <- base + geom_density()
 p_hist
@@ -125,7 +125,7 @@ If we want show the distribution of a continuous variable conditioned by a categ
 #| label: hist-density2
 #| message: false
 #| fig-keep: none
-base <- ggplot(penguins, aes(x = flipper_length_mm, fill = species))
+base <- ggplot(penguins, aes(x = flipper_len, fill = species))
 p_hist <- base + geom_histogram()
 p_dens <- base + geom_density(alpha = 0.4) # set alpha to make transparent
 
@@ -173,7 +173,7 @@ Which position is easiest to interpret?
 
 ```{r}
 #| label: boxplots-etc
-base <- ggplot(penguins, aes(x = species, y = flipper_length_mm))
+base <- ggplot(penguins, aes(x = species, y = flipper_len))
 
 p_prange <- base + stat_summary(fun.data = mean_sdl)
 p_box <- base + geom_boxplot(aes(fill = species))
@@ -221,8 +221,8 @@ It is possible to use multiple geoms on top of each other, for example, `geom_qu
 #| fig-width: 4
 #| fig-alt: Violin plot of penguin flipper length, coloured by sex.
 penguins |>
-  drop_na(flipper_length_mm, sex) |>
-  ggplot(aes(x = species, y = flipper_length_mm)) +
+  drop_na(flipper_len, sex) |>
+  ggplot(aes(x = species, y = flipper_len)) +
   geom_violin(aes(fill = sex))
 ```
 
@@ -241,7 +241,7 @@ The standard plot for two continuous variables is the scatterplot, which we can 
 #| fig-width: 4
 #| fig-alt: >
 #|   Scatterplot of penguin bill length against body mass, coloured by species.
-ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
+ggplot(penguins, aes(x = body_mass, y = bill_len, colour = species)) +
   geom_point() +
   labs(x = "Body mass, g", y = "Bill length,  mm", colour = "Species")
 ```
@@ -270,7 +270,7 @@ Now where there are many points the plot will appear darker.
 #| fig-alt: >
 #|   A 2-d density plot of penguin bill depth against bill length,
 #|   coloured by species.
-ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+ggplot(data = penguins, aes(x = bill_len, y = bill_dep, colour = species)) +
   geom_density2d()
 ```
 
@@ -306,8 +306,8 @@ First calculate the correlations between the numeric variables, then reshape the
 #| eval: true
 # Select only numeric variables and remove all NAs
 penguin_matrix <- penguins |>
-  select(bill_length_mm:body_mass_g) |>
-  drop_na(bill_length_mm)
+  select(bill_len:body_mass) |>
+  drop_na(bill_len)
 
 # Calculate the correlation between all variables and rearrange the table
 cor_matrix <- cor(penguin_matrix)
