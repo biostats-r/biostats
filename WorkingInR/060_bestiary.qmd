@@ -149,9 +149,12 @@ Round brackets can be used to force the order of evaluation
 
 ```{r}
 x <- 10
-x > 0 | x < 20  # is x between 0 and 20
-x > 0 | x < 20  & x %% 2 == 1 # is x an odd number between 0 and 20. Wrong order of evaluation.
-(x < 20 | x > 0)  & x %% 2 == 1 # Brackets force correct order.
+# is x between 0 and 20?
+x > 0 | x < 20
+# is x an odd number between 0 and 20? Wrong order of evaluation.
+x > 0 | x < 20  & x %% 2 == 1 
+# Brackets force correct order.
+(x < 20 | x > 0)  & x %% 2 == 1 
 ```
 
 It is probably a good idea to always use brackets in statements with multiple Boolean operators to make the order of evaluation clear to the reader. 
@@ -203,7 +206,16 @@ x <- rnorm(n = 10, mean = 1 sd = 0.5)
 ```
 
 
-![Rstudio puts a cross in the margin and underlines the unexpected text after the missing comma.](figures/missing_comma.png)
+```{r}
+#| label: fig-missing-comma
+#| fig.cap: > 
+#|   Rstudio puts a cross in the margin and underlines the unexpected text
+#|   after the missing comma.
+#| fig-alt: Screenshot showing how RStudio responds to a missing comma.
+knitr::include_graphics("figures/missing_comma.png")
+```
+
+![()
 
 
 ## Dot
@@ -300,14 +312,14 @@ Other characters that can be used in formula include `* + | / : ^` which take on
 The following linear model has a formula that has bill length as the response and species, year, and the interaction between year and species as predictors.
 
 ```{r formula}
-lm(bill_length_mm ~ species + year + species:year, data = penguins)
+lm(bill_len ~ species + year + species:year, data = penguins)
 ```
 
 This model can also be run with the following formulae with more concise notation.
 
 ```{r formula2, eval = FALSE}
-lm(bill_length_mm ~ species * year, data = penguins)
-lm(bill_length_mm ~ (species + year) ^ 2, data = penguins)
+lm(bill_len ~ species * year, data = penguins)
+lm(bill_len ~ (species + year) ^ 2, data = penguins)
 ```
 
 All give exactly the same result.
@@ -397,16 +409,16 @@ Some of the mathematical operators are used by tidyverse and associated packages
 
 
 ```{r}
-p_box <- ggplot(penguins, aes(x = species, y = bill_length_mm)) +
+p_box <- ggplot(penguins, aes(x = species, y = bill_len)) +
   geom_boxplot() +
   labs(x = "Species", y = "Bill length mm")
 ```
 
-`patchwork` uses `+` and `/` to arrange separate plots into one combined plot, and uses `&` to modify all the plots.  
+`patchwork` uses `+`, `|`, and `/` to arrange separate plots into one combined plot, and uses `&` to modify all the plots.  
 
 
 ```{r patchwork, warning = FALSE, fig.cap="Boxplot and violin plot combined with `patchwork`"}
-p_violin <- ggplot(penguins, aes(x = species, y = bill_length_mm)) +
+p_violin <- ggplot(penguins, aes(x = species, y = bill_len)) +
   geom_violin() +
   labs(x = "Species", y = "Bill length mm")
 
