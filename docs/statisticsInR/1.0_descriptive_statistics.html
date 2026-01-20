@@ -2,16 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.592">
+<meta name="generator" content="quarto-1.8.20">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Statistics in R - 4&nbsp; Descriptive Statistics</title>
+<title>4&nbsp; Descriptive Statistics – Statistics in R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -38,43 +45,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -86,23 +63,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <meta name="quarto:offset" content="./">
 <link href="./2.1_simple_linear_regression.html" rel="next">
 <link href="./0.2_types_of_data.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7fcc278e5cff05d3108fdca62cff0c71.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5aa1d2b69dd70a877b51c7f7d5713d8d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7fcc278e5cff05d3108fdca62cff0c71.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-f98e92d6b7d17a2916b368dbfe70d301.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c12caaf279539df50e879a8b23fbf6c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-f98e92d6b7d17a2916b368dbfe70d301.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -111,153 +98,365 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
-}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 </head>
-<body class="nav-sidebar floating slimcontent">
+<body class="nav-sidebar floating slimcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span>
-</h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./1.0_descriptive_statistics.html">Descriptive statistics</a></li><li class="breadcrumb-item"><a href="./1.0_descriptive_statistics.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Statistics in R</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
-    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+    <a href="https://github.com/biostats-r/biostats" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
 <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
-            <i class="bi bi-bi-twitter pe-1"></i>
-          Twitter
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
-            <i class="bi bi-bi-facebook pe-1"></i>
-          Facebook
-          </a>
-        </li>
-    </ul>
-<a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Statistics in R</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Statistics in R</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Introduction</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./0.1_introduction_to_stats.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to statistics</span></a>
+  <a href="./0.1_introduction_to_stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to statistics</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./0.2_types_of_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Types of data</span></a>
+  <a href="./0.2_types_of_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Types of data</span></span></a>
   </div>
 </li>
-    </ul>
+      </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Descriptive statistics</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Descriptive statistics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./1.0_descriptive_statistics.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></a>
+  <a href="./1.0_descriptive_statistics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></span></a>
   </div>
 </li>
-    </ul>
+      </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Regression models</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Regression models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.1_simple_linear_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></a>
+  <a href="./2.1_simple_linear_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.2_anova.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Anova</span></a>
+  <a href="./2.2_anova.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Anova</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.X_introduction_to_GLMs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></a>
+  <a href="./2.X_introduction_to_GLMs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to generalised linear models</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.X_binomial_GLM.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></a>
+  <a href="./2.X_binomial_GLM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binomial generalized linear models</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./2.X_mle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Maximum likelihood estimation”</span></a>
+  <a href="./2.X_mle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Maximum likelihood estimation</span></span></a>
   </div>
 </li>
-    </ul>
+      </ul>
 </li>
     </ul>
 </div>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<p><a href="https://biostats.w.uib.no/"><img src="https://biostats.w.uib.no/files/2020/01/biostats-button-res2.png" title="bioST@TS | When biology adds up, at last…" class="img-fluid" alt="Link to biostats website"></a> <br><a href="../index.html"><img src="../figures/icons_all.png" title="BioST@TS books" alt="Link to biostats books" width="250" height="50"></a></p>
+</div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
 <li>
-<a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">4.1</span> Introduction</a>
+<a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">4.1</span> Introduction</a>
   <ul class="collapse">
-<li><a href="#mean" id="toc-mean" class="nav-link" data-scroll-target="#mean"> <span class="header-section-number">4.1.1</span> Mean</a></li>
-  <li><a href="#median" id="toc-median" class="nav-link" data-scroll-target="#median"> <span class="header-section-number">4.1.2</span> Median</a></li>
-  <li><a href="#minimum-maximum-range-midpoint-and-mode" id="toc-minimum-maximum-range-midpoint-and-mode" class="nav-link" data-scroll-target="#minimum-maximum-range-midpoint-and-mode"> <span class="header-section-number">4.1.3</span> 3. Minimum, maximum, range, midpoint, and mode</a></li>
-  <li><a href="#variance-standard-deviation-and-standard-error" id="toc-variance-standard-deviation-and-standard-error" class="nav-link" data-scroll-target="#variance-standard-deviation-and-standard-error"> <span class="header-section-number">4.1.4</span> 4. Variance, standard deviation, and standard error</a></li>
-  <li><a href="#quartiles" id="toc-quartiles" class="nav-link" data-scroll-target="#quartiles"> <span class="header-section-number">4.1.5</span> 5. Quartiles</a></li>
+<li><a href="#mean" id="toc-mean" class="nav-link" data-scroll-target="#mean"><span class="header-section-number">4.1.1</span> Mean</a></li>
+  <li><a href="#median" id="toc-median" class="nav-link" data-scroll-target="#median"><span class="header-section-number">4.1.2</span> Median</a></li>
+  <li><a href="#minimum-maximum-range-midpoint-and-mode" id="toc-minimum-maximum-range-midpoint-and-mode" class="nav-link" data-scroll-target="#minimum-maximum-range-midpoint-and-mode"><span class="header-section-number">4.1.3</span> Minimum, maximum, range, midpoint, and mode</a></li>
+  <li><a href="#variance-standard-deviation-and-standard-error" id="toc-variance-standard-deviation-and-standard-error" class="nav-link" data-scroll-target="#variance-standard-deviation-and-standard-error"><span class="header-section-number">4.1.4</span> Variance, standard deviation, and standard error</a></li>
+  <li><a href="#quartiles" id="toc-quartiles" class="nav-link" data-scroll-target="#quartiles"><span class="header-section-number">4.1.5</span> Quartiles</a></li>
   </ul>
 </li>
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./1.0_descriptive_statistics.html">Descriptive statistics</a></li><li class="breadcrumb-item"><a href="./1.0_descriptive_statistics.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
 <span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Descriptive Statistics</span>
-</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> code</button></div></div>
 </div>
 
 
@@ -265,17 +464,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
 
-</header><div class="callout-note callout callout-style-default callout-captioned">
+
+</header><div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
-Before you start
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Before you start
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -287,21 +488,19 @@ Before you start
 <p>You are interested in the heights of plants in an alpine meadow.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="./Users/joshisoriginal/Downloads/treeInMeadow.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Photo credit: Joshua Lynn</figcaption><p></p>
-</figure>
+<figcaption>Photo credit: Joshua Lynn</figcaption></figure>
 </div>
 <p>You have measured the heights of five of the plant species, entered the values (in cm) into the below table, and now you want to summarize the plant heights for the meadow. Notice that the one tree species, <em>Juniper communis</em>, is much taller than the other species in this meadow.</p>
 <div class="cell">
-
-</div>
-<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>              Species Height
-1    Juniper communis    200
-2         Betula nana     50
+<pre><code># A tibble: 5 × 2
+  species             height
+  &lt;chr&gt;                &lt;dbl&gt;
+1 Juniper communis       200
+2 Betula nana             50
 3 Vaccinium myrtillus     15
-4       Festuca rubra     20
-5     Veronica alpina     10</code></pre>
+4 Festuca rubra           20
+5 Veronica alpina         10</code></pre>
 </div>
 </div>
 <p>Descriptive statistics summarize or characterize a given sample and are the foundation of statistical tests and data visualizations. In this section, we will define a number of descriptive statistics and learn how to calculate them in R using our plant height sample from the above meadow.</p>
@@ -313,16 +512,20 @@ Before you start
 <p>Where <span class="math inline">\(\overline{x}\)</span> is the mean of the sample equal to the sum (<span class="math inline">\(\sum\)</span>) of all observations, <em>i</em>, divided by the total number of observations, <em>n</em>.</p>
 <p>In R, the function that calculates the mean is called <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>. We will first look at our height data and the use the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> function to find the value for our data:</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">height_data</span><span class="op">)</span> <span class="co"># we use `head()` to look at our data set already loaded into R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span> <span class="co"># we use `head()` to look at our data set already loaded into R</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">height_data</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Species Height
-1    Juniper communis    200
-2         Betula nana     50
+<pre><code># A tibble: 5 × 2
+  species             height
+  &lt;chr&gt;                &lt;dbl&gt;
+1 Juniper communis       200
+2 Betula nana             50
 3 Vaccinium myrtillus     15
-4       Festuca rubra     20
-5     Veronica alpina     10</code></pre>
+4 Festuca rubra           20
+5 Veronica alpina         10</code></pre>
 </div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">height_data</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># then we use the `mean()` function to calculate the mean for our height sample</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># then we use the `mean()` function to calculate the mean for our height sample</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">height_data</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 59</code></pre>
 </div>
@@ -335,24 +538,27 @@ Before you start
 <p>Provided that the sample contains an odd number <em>n</em> of entries, the median is the value of the <span class="math inline">\((\frac{(n+1)}{2})\)</span> entry in the sample. If the sample contains an even number <em>n</em> of entries, then the median is the mean of the values of the <span class="math inline">\((\frac{n}{2})\)</span> and the <span class="math inline">\((\frac{n}{2} + 1)\)</span> entries.</p>
 <p>In R, the function that calculates the median is called <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">height_data</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># takes the median of the height data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">height_data</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="co"># takes the median of the height data</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 20</code></pre>
 </div>
 </div>
 <p>Above, we have the median height of our odd numbered sample. Let’s say we go back to our meadow and measure the height of a new species, <em>Viola biflora</em>. Now our sample has six entries. How does that change the median?</p>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">)</span> <span class="co"># we use `head()` to look at our new data set already loaded into R </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># we use `head()` to look at our new data set already loaded into R</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Species Height
-1    Juniper communis    200
-2         Betula nana     50
+<pre><code># A tibble: 6 × 2
+  species             height
+  &lt;chr&gt;                &lt;dbl&gt;
+1 Juniper communis       200
+2 Betula nana             50
 3 Vaccinium myrtillus     15
-4       Festuca rubra     20
-5     Veronica alpina     10
-6       Viola biflora     10</code></pre>
+4 Festuca rubra           20
+5 Veronica alpina         10
+6 Viola biflora           10</code></pre>
 </div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># takes the median</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="co"># takes the median</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 17.5</code></pre>
 </div>
@@ -360,15 +566,15 @@ Before you start
 <p>We see that the median of the even sample is between the two middle values in the data, 15 and 20.</p>
 <p></p>
 </section><section id="minimum-maximum-range-midpoint-and-mode" class="level3" data-number="4.1.3"><h3 data-number="4.1.3" class="anchored" data-anchor-id="minimum-maximum-range-midpoint-and-mode">
-<span class="header-section-number">4.1.3</span> 3. Minimum, maximum, range, midpoint, and mode</h3>
+<span class="header-section-number">4.1.3</span> Minimum, maximum, range, midpoint, and mode</h3>
 <p>The <em>minimum</em> and <em>maximum</em> of a sample are the smallest and largest entries, respectively.</p>
 <p>In R, the functions that calculate the minimum and maximum are called <code><a href="https://rdrr.io/r/base/Extremes.html">min()</a></code> and <code><a href="https://rdrr.io/r/base/Extremes.html">max()</a></code>, respectively:</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># find the minimum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="co"># find the minimum</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 10</code></pre>
 </div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># find the maximum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="co"># find the maximum</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 200</code></pre>
 </div>
@@ -377,15 +583,18 @@ Before you start
 <p>The <em>range</em> defines the spread of the data and is the difference between the minimum and maximum values. Note, a range may be expressed as a single value (the actual difference between maximum and minimum) or by writing minimum-maximum. For instance, the range of the series (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) can be expressed as 9 or 1-10.</p>
 <p>In R, the function that calculates the range is <code><a href="https://rdrr.io/r/base/range.html">range()</a></code>. However, <code><a href="https://rdrr.io/r/base/range.html">range()</a></code> returns a vector that contains the minimum and the maximum, respectively. To calculate the difference between these values, you may use <code>diff(range())</code> or <code>max()-min()</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># find the range of the sample as a vector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># find the range of the sample as a vector</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  10 200</code></pre>
 </div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span><span class="op">)</span> <span class="co"># find the range as difference between minimum and maximum values with diff()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># find the range as difference between minimum and maximum values with diff()</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 190</code></pre>
 </div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># find the range as difference between minimum and maximum values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># find the range as difference between minimum and maximum values</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 190</code></pre>
 </div>
@@ -394,7 +603,7 @@ Before you start
 <p>The <em>midpoint</em> of a sample is the value equidistant from the minimum and the maximum. It can be calculated by taking taking the mean of the minumum and maximum value of a sample.</p>
 <p>In R, you can calculate the midpoint of a sample with:</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 105</code></pre>
 </div>
@@ -403,15 +612,18 @@ Before you start
 <p>Finally, the <em>mode</em> of a sample is the most frequent or common value. A sample may have multiple modes if there are more than one value in the sample that are equally common.</p>
 <p>There is not a standard <em>mode</em> function in R, so here, we present a method to find the most common value of a sample. We will use the <code>tidyverse</code> package to manipulate the data and find the <em>mode</em> (see the basics in R for more on <code>tidyverse</code>):</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">height_mode</span> <span class="op">&lt;-</span> <span class="va">height_data2</span> <span class="op">%&gt;%</span> <span class="co"># use "pipe operators", `%&gt;%`, to pass the data for further manipulations</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Height</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># group the data by their height values</span>
-  <span class="fu">summarise</span><span class="op">(</span>N_height <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># count `n()` how many entries have the same value </span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">N_height</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">N_height</span><span class="op">)</span><span class="op">)</span> <span class="co"># return the mode by pulling out the values with the highest count</span>
-
-<span class="va">height_mode</span> <span class="co"># see the mode</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># use "pipe operators", `|&gt;`, to pass the data for further manipulations</span></span>
+<span><span class="va">height_mode</span> <span class="op">&lt;-</span> <span class="va">height_data2</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">height</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># group the data by their height values</span></span>
+<span><span class="co"># count `n()` how many entries have the same value</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span>N_height <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="co"># return the mode by pulling out the values with the highest count</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">N_height</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">N_height</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">height_mode</span> <span class="co"># see the mode</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
-  Height N_height
+  height N_height
    &lt;dbl&gt;    &lt;int&gt;
 1     10        2</code></pre>
 </div>
@@ -419,14 +631,14 @@ Before you start
 <p>We see that the most common value of height in our dataset is 10 cm and there are two species with that height.</p>
 <p></p>
 </section><section id="variance-standard-deviation-and-standard-error" class="level3" data-number="4.1.4"><h3 data-number="4.1.4" class="anchored" data-anchor-id="variance-standard-deviation-and-standard-error">
-<span class="header-section-number">4.1.4</span> 4. Variance, standard deviation, and standard error</h3>
+<span class="header-section-number">4.1.4</span> Variance, standard deviation, and standard error</h3>
 <p>Means and medians describe the central tendency of a sample, but they give us no information on the spread or dispersion of the data used to find this central tendency. We cover measures of sample dispersion in this section.</p>
 <p>The <em>variance</em> (var or <span class="math inline">\(\sigma^2\)</span>) corresponds to the mean of the squared differences from the mean. Mathematically, variance (<span class="math inline">\(\sigma^2\)</span>) of the sample (x) is:</p>
 <p><span class="math display">\[\sigma^2 (x) = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n}\]</span></p>
 <p>Where we take an entry in the sample, <span class="math inline">\(x_i\)</span>, and calculate the difference between its value and the mean, <span class="math inline">\(\overline{x}\)</span>, then square it. Do the same for all the entries, <em>n</em>, in the sample. Finally, calculate the mean of these squared differences (divide by <em>n</em>) and you get the variance. Note-variance is always positive because of the squared difference.</p>
 <p>In R, the function that calculates the variance is <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># finds the variance of the sample</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="co"># finds the variance of the sample</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5564.167</code></pre>
 </div>
@@ -435,11 +647,11 @@ Before you start
 <p>The standard deviation (sd or <span class="math inline">\(\sigma\)</span>) is the square root of the variance. Unlike the variance, the standard deviation has the same unit as the mean, median or any entry in the sample because of this square root transformation. This makes it very useful as it can be used in combination with the mean to define how values are spread around the mean. Often, you will find this expressed as mean +/- sd.</p>
 <p>In R, the standard deviation is obtained via the function <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>. Note that you will obtain the same result by calculating “manually” the square root of the variance with <code>sqrt(var())</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># finds the standard deviation of the sample</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="co"># finds the standard deviation of the sample</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 74.59334</code></pre>
 </div>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span><span class="op">)</span> <span class="co"># alternative method to find the standard deviation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span><span class="op">)</span> <span class="co"># alternative method to find the standard deviation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 74.59334</code></pre>
 </div>
@@ -450,7 +662,9 @@ Before you start
 <p>Where <span class="math inline">\(\sigma\)</span> is the standard deviation of the sample and <em>n</em> is the number of independent observations in the sample.</p>
 <p>There is no standard function to calculate a samples standard error in R, but many statistical test functions will calculate the standard error for a parameter as part of the output. Here is a way to calculate the se from scratch:</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span><span class="op">)</span> <span class="co"># take the sd of the sample and divide by the square root, `sqrt()`, of the number of observations or `length()` of the sample. </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># take the sd of the sample and divide by the square root, `sqrt()`, </span></span>
+<span><span class="co"># of the number of observations or `length()` of the sample.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 30.4526</code></pre>
 </div>
@@ -458,19 +672,22 @@ Before you start
 <p>We can interpret the se as the expected “error” in our estimate of mean plant height. What would happen to the standard error if we measured the height of every plant in the meadow? This is an important point! The standard error of a mean estimate approaches zero as we increase the number of observations ($_ 0 $ as <span class="math inline">\(n \rightarrow \infty\)</span>).</p>
 <p></p>
 </section><section id="quartiles" class="level3" data-number="4.1.5"><h3 data-number="4.1.5" class="anchored" data-anchor-id="quartiles">
-<span class="header-section-number">4.1.5</span> 5. Quartiles</h3>
+<span class="header-section-number">4.1.5</span> Quartiles</h3>
 <p>Take a sample, sort the data from smallest to largest and split it in four equal subsets. The quartiles are the values of the sample that cut it off in four.</p>
 <p>Quartiles are called: Q1: the first quartile under which the first 25% of the data in the set can be found, Q2: the second quartile under which the first 50% of the data in the set can be found (Q2 is also the median), Q3: the third quartile under which the first 75% of the data in the set can be found.</p>
 <p>In addition, one refers to: Q0: the minimum value in the set, Q4: the maximum value in the set.</p>
 <p>Note that the set of data between Q1 and Q3 (which contains the middle 50% of the data) is the interquartile range (IQR).</p>
 <p>In R, quartiles may be obtained using the function <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>. (NB: this is not a typo, quantile refers to the intervals (0, 25, 50, 75, 100%) at which the quartiles, the values in the data, are assessed). If you choose to use only <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code> with no other argument than the vector containing the sample, R returns Q0, Q1, Q2, Q3, and Q4. If you need only Q1, Q2 and Q3, you use an extra argument (see the following example):</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span> <span class="co"># Find the Q0, Q1, Q2, Q3, and Q4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span> <span class="co"># Find the Q0, Q1, Q2, Q3, and Q4</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    0%    25%    50%    75%   100% 
  10.00  11.25  17.50  42.50 200.00 </code></pre>
 </div>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">Height</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span> <span class="co"># Find the Q1, Q2, and Q3 by defining which quartiles (in proportions) using the probs argument</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Find the Q1, Q2, and Q3 by defining which quartiles (in proportions)</span></span>
+<span><span class="co"># using the probs argument</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">height_data2</span><span class="op">$</span><span class="va">height</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  25%   50%   75% 
 11.25 17.50 42.50 </code></pre>
@@ -478,30 +695,36 @@ Before you start
 </div>
 <p>Quartiles can be visualized with <code>ggplot()</code> and <code>geom_boxplot()</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="va">height_data2</span>, <span class="fu">aes</span><span class="op">(</span>y<span class="op">=</span><span class="va">Height</span>, x<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="co"># assign the vector "x" as the y variable in the 'aes' argument and pass it to 'geom_boxplot' </span>
-  <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Height Boxplot"</span><span class="op">)</span><span class="op">+</span> <span class="fu">xlab</span><span class="op">(</span>label<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">+</span> <span class="co"># this and the following lines label the axes and quartiles</span>
-  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.1</span>, y <span class="op">=</span> <span class="fl">200</span>, label <span class="op">=</span> <span class="st">"&lt;-Q4 or max"</span><span class="op">)</span><span class="op">+</span>
-  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.42</span>, y <span class="op">=</span> <span class="fl">42.50</span>, label <span class="op">=</span> <span class="st">"&lt;-Q3"</span><span class="op">)</span><span class="op">+</span>
-  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.42</span>, y <span class="op">=</span> <span class="fl">18</span>, label <span class="op">=</span> <span class="st">"&lt;-Q2"</span><span class="op">)</span><span class="op">+</span>
-  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.42</span>, y <span class="op">=</span> <span class="fl">11</span>, label <span class="op">=</span> <span class="st">"&lt;-Q1"</span><span class="op">)</span><span class="op">+</span>
-  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.063</span>, y <span class="op">=</span> <span class="fl">5</span>, label <span class="op">=</span> <span class="st">"^Q0 or min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">height_data2</span>, <span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">height</span>, x <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="co"># assign the vector "x" as the y variable in 'aes' and pass it to 'geom_boxplot'</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Height Boxplot"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span>label <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span> <span class="co"># this and the following lines label the axes and quartiles</span></span>
+<span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.1</span>, y <span class="op">=</span> <span class="fl">200</span>, label <span class="op">=</span> <span class="st">"&lt;-Q4 or max"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.42</span>, y <span class="op">=</span> <span class="fl">42.50</span>, label <span class="op">=</span> <span class="st">"&lt;-Q3"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.42</span>, y <span class="op">=</span> <span class="fl">18</span>, label <span class="op">=</span> <span class="st">"&lt;-Q2"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.42</span>, y <span class="op">=</span> <span class="fl">11</span>, label <span class="op">=</span> <span class="st">"&lt;-Q1"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.063</span>, y <span class="op">=</span> <span class="fl">5</span>, label <span class="op">=</span> <span class="st">"^Q0 or min"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-quartiles-boxplot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="1.0_descriptive_statistics_files/figure-html/fig-quartiles-boxplot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.1: <strong>?(caption)</strong></figcaption><p></p>
-</figure>
+<div id="fig-quartiles-boxplot" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-quartiles-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="1.0_descriptive_statistics_files/figure-html/fig-quartiles-boxplot-1.png" id="fig-quartiles-boxplot" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-quartiles-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1
+</figcaption></figure>
 </div>
 </div>
 </div>
 <p>We can see the distribution of the height data and its quartiles with the boxplot. Note how much of an outlier <em>Juniper communis</em> is relative to the other species.</p>
 <p></p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-empty-content callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
-Further reading
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -517,243 +740,479 @@ Further reading
 <li>Joshua Lynn</li>
 <li>Kwaku P. Adjei</li>
 </ul></section></div></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
     }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-    } else {
-      disableStylesheet(alternateStylesheets);
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
-      return false;
-    }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  let localAlternateSentinel = 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } 
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    setTimeout(function() {
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
-    });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
-    }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
-  }
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
     };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
-        popup.appendChild(citeDiv);
-      });
-      return popup.innerHTML;
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-  }
-});
-</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./0.2_types_of_data.html" class="pagination-link">
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./0.2_types_of_data.html" class="pagination-link" aria-label="Types of data">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Types of data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./2.1_simple_linear_regression.html" class="pagination-link">
+      <a href="./2.1_simple_linear_regression.html" class="pagination-link" aria-label="Simple linear Regression">
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple linear Regression</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb39" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Descriptive Statistics</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Descriptive Statistics</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, eval=TRUE, include=FALSE}</span></span>
@@ -762,281 +1221,300 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># source figure settings</span></span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"../Templates/biostats_theme.R"</span>)</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Before you start</span></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>You should be familiar with basic statistical theory and the basics of R.</span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Before you start</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>You should be familiar with basic statistical theory and the basics of R.</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>You are interested in the heights of plants in an alpine meadow. </span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="al">![Photo credit: Joshua Lynn](/Users/joshisoriginal/Downloads/treeInMeadow.jpg)</span></span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>You have measured the heights of five of the plant species, entered the values (in cm) into the below table,  and now you want to summarize the plant heights for the meadow.</span>
-<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>Notice that the one tree species, *Juniper communis*, is much taller than the other species in this meadow.  </span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r height data setup, echo=FALSE}</span></span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a><span class="co"># create a height table</span></span>
-<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>Species <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Juniper communis"</span>, <span class="st">"Betula nana"</span>, <span class="st">"Vaccinium myrtillus"</span>, <span class="st">"Festuca rubra"</span>, <span class="st">"Veronica alpina"</span>)</span>
-<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>Height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">10</span>)</span>
-<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>height_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(Species, Height)</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>You are interested in the heights of plants in an alpine meadow. </span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="al">![Photo credit: Joshua Lynn](/Users/joshisoriginal/Downloads/treeInMeadow.jpg)</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>You have measured the heights of five of the plant species, entered the values (in cm) into the below table,  and now you want to summarize the plant heights for the meadow.</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>Notice that the one tree species, *Juniper communis*, is much taller than the other species in this meadow.  </span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r height data setup, echo=FALSE}</span></span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a><span class="co"># create a height table</span></span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Juniper communis"</span>, <span class="st">"Betula nana"</span>, <span class="st">"Vaccinium myrtillus"</span>, </span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Festuca rubra"</span>, <span class="st">"Veronica alpina"</span>)</span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">10</span>)</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>height_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(species, height)</span>
 <span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a><span class="co">#create a second one to show median and mode</span></span>
-<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>Species <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Juniper communis"</span>, <span class="st">"Betula nana"</span>, <span class="st">"Vaccinium myrtillus"</span>, <span class="st">"Festuca rubra"</span>, <span class="st">"Veronica alpina"</span>,</span>
-<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>             <span class="st">"Viola biflora"</span>)</span>
-<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a>Height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>height_data2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(Species, Height)</span>
-<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{r view table, echo=FALSE, eval= TRUE}</span></span>
-<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(height_data)</span>
-<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a>Descriptive statistics summarize or characterize a given sample and are the foundation of statistical tests and data visualizations.</span>
-<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a>In this section, we will define a number of descriptive statistics and learn how to calculate them in R using our plant height sample from the above meadow. </span>
-<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/br&gt;</span></span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a><span class="co"># create a second one to show median and mode</span></span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Juniper communis"</span>, <span class="st">"Betula nana"</span>, <span class="st">"Vaccinium myrtillus"</span>, <span class="st">"Festuca rubra"</span>, </span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a><span class="st">"Veronica alpina"</span>, <span class="st">"Viola biflora"</span></span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a>height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a>height_data2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(species, height)</span>
+<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r view table, echo=FALSE, eval= TRUE}</span></span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(height_data)</span>
+<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a>Descriptive statistics summarize or characterize a given sample and are the foundation of statistical tests and data visualizations.</span>
+<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a>In this section, we will define a number of descriptive statistics and learn how to calculate them in R using our plant height sample from the above meadow. </span>
 <span id="cb39-52"><a href="#cb39-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb39-54"><a href="#cb39-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### Mean</span></span>
+<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-56"><a href="#cb39-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a>To start, we will describe our height data by its *mean* (or average), which is the most commonly used measure of central tendency of a sample (in our case - height). </span>
-<span id="cb39-58"><a href="#cb39-58" aria-hidden="true" tabindex="-1"></a>A measure of central tendency describes a typical value within a sample. </span>
-<span id="cb39-59"><a href="#cb39-59" aria-hidden="true" tabindex="-1"></a>The mean is often called the average and is one of the measures of the central tendency of your sample.</span>
-<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a>The mean is the sum of all the values in your sample divided by the number of values in the sample set. </span>
-<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a>Mathematically described as: </span>
-<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a>$$\overline{x} = \frac{\sum_{i=1}^n x_i}{n}$$ </span>
+<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Mean</span></span>
+<span id="cb39-58"><a href="#cb39-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-59"><a href="#cb39-59" aria-hidden="true" tabindex="-1"></a>To start, we will describe our height data by its *mean* (or average), which is the most commonly used measure of central tendency of a sample (in our case - height). </span>
+<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a>A measure of central tendency describes a typical value within a sample. </span>
+<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a>The mean is often called the average and is one of the measures of the central tendency of your sample.</span>
+<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a>The mean is the sum of all the values in your sample divided by the number of values in the sample set. </span>
+<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a>Mathematically described as: </span>
 <span id="cb39-64"><a href="#cb39-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a>Where $\overline{x}$ is the mean of the sample equal to the sum ($\sum$) of all observations, _i_, divided by the total number of observations, _n_. </span>
+<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a>$$\overline{x} = \frac{\sum_{i=1}^n x_i}{n}$$ </span>
 <span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the mean is called <span class="in">`mean()`</span>. </span>
-<span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a>We will first look at our height data and the use the <span class="in">`mean()`</span> function to find the value for our data:</span>
-<span id="cb39-69"><a href="#cb39-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-70"><a href="#cb39-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mean, echo=TRUE, eval=TRUE}</span></span>
-<span id="cb39-71"><a href="#cb39-71" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(height_data) <span class="co"># we use `head()` to look at our data set already loaded into R</span></span>
-<span id="cb39-72"><a href="#cb39-72" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(height_data<span class="sc">$</span>Height) <span class="co"># then we use the `mean()` function to calculate the mean for our height sample</span></span>
-<span id="cb39-73"><a href="#cb39-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-74"><a href="#cb39-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-75"><a href="#cb39-75" aria-hidden="true" tabindex="-1"></a>And so, we have a mean of 59 cm for the height of our five plant species. </span>
-<span id="cb39-76"><a href="#cb39-76" aria-hidden="true" tabindex="-1"></a>But notice how the mean is higher than 4 of the species. </span>
-<span id="cb39-77"><a href="#cb39-77" aria-hidden="true" tabindex="-1"></a>It seems reasonable to ask: in this case, is the mean an accurate representation of the samples central tendency?</span>
+<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a>Where $\overline{x}$ is the mean of the sample equal to the sum ($\sum$) of all observations, _i_, divided by the total number of observations, _n_. </span>
+<span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-69"><a href="#cb39-69" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the mean is called <span class="in">`mean()`</span>. </span>
+<span id="cb39-70"><a href="#cb39-70" aria-hidden="true" tabindex="-1"></a>We will first look at our height data and the use the <span class="in">`mean()`</span> function to find the value for our data:</span>
+<span id="cb39-71"><a href="#cb39-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-72"><a href="#cb39-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mean, echo=TRUE, eval=TRUE}</span></span>
+<span id="cb39-73"><a href="#cb39-73" aria-hidden="true" tabindex="-1"></a> <span class="co"># we use `head()` to look at our data set already loaded into R</span></span>
+<span id="cb39-74"><a href="#cb39-74" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(height_data)</span>
+<span id="cb39-75"><a href="#cb39-75" aria-hidden="true" tabindex="-1"></a><span class="co"># then we use the `mean()` function to calculate the mean for our height sample</span></span>
+<span id="cb39-76"><a href="#cb39-76" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(height_data<span class="sc">$</span>height) </span>
+<span id="cb39-77"><a href="#cb39-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb39-78"><a href="#cb39-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-79"><a href="#cb39-79" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/br&gt;</span></span>
-<span id="cb39-80"><a href="#cb39-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-81"><a href="#cb39-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-79"><a href="#cb39-79" aria-hidden="true" tabindex="-1"></a>And so, we have a mean of 59 cm for the height of our five plant species. </span>
+<span id="cb39-80"><a href="#cb39-80" aria-hidden="true" tabindex="-1"></a>But notice how the mean is higher than 4 of the species. </span>
+<span id="cb39-81"><a href="#cb39-81" aria-hidden="true" tabindex="-1"></a>It seems reasonable to ask: in this case, is the mean an accurate representation of the samples central tendency?</span>
 <span id="cb39-82"><a href="#cb39-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-83"><a href="#cb39-83" aria-hidden="true" tabindex="-1"></a><span class="fu">### Median</span></span>
+<span id="cb39-83"><a href="#cb39-83" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb39-84"><a href="#cb39-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-85"><a href="#cb39-85" aria-hidden="true" tabindex="-1"></a>The *median* is another measure of the central tendency of your sample. </span>
-<span id="cb39-86"><a href="#cb39-86" aria-hidden="true" tabindex="-1"></a>The median is the number “in the middle” of the sample, or, the middle value of a series of values sorted from smallest to largest.</span>
-<span id="cb39-87"><a href="#cb39-87" aria-hidden="true" tabindex="-1"></a>Given that the median only considers the middle of value, it may more accurately estimate a samples central tendency by not putting as much weight on *outliers*, or values that very are different from the rest of the sample.</span>
+<span id="cb39-85"><a href="#cb39-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-86"><a href="#cb39-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-87"><a href="#cb39-87" aria-hidden="true" tabindex="-1"></a><span class="fu">### Median</span></span>
 <span id="cb39-88"><a href="#cb39-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-89"><a href="#cb39-89" aria-hidden="true" tabindex="-1"></a>Provided that the sample contains an odd number _n_ of entries, the median is the value of the $(\frac{(n+1)}{2})$ entry in the sample. </span>
-<span id="cb39-90"><a href="#cb39-90" aria-hidden="true" tabindex="-1"></a>If the sample contains an even number _n_ of entries, then the median is the mean of the values of the $(\frac{n}{2})$ and the $(\frac{n}{2} + 1)$ entries.</span>
-<span id="cb39-91"><a href="#cb39-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-92"><a href="#cb39-92" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the median is called <span class="in">`median()`</span>:</span>
-<span id="cb39-93"><a href="#cb39-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-94"><a href="#cb39-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r median odd, echo=TRUE, eval=TRUE}</span></span>
-<span id="cb39-95"><a href="#cb39-95" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(height_data<span class="sc">$</span>Height) <span class="co"># takes the median of the height data</span></span>
-<span id="cb39-96"><a href="#cb39-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-89"><a href="#cb39-89" aria-hidden="true" tabindex="-1"></a>The *median* is another measure of the central tendency of your sample. </span>
+<span id="cb39-90"><a href="#cb39-90" aria-hidden="true" tabindex="-1"></a>The median is the number “in the middle” of the sample, or, the middle value of a series of values sorted from smallest to largest.</span>
+<span id="cb39-91"><a href="#cb39-91" aria-hidden="true" tabindex="-1"></a>Given that the median only considers the middle of value, it may more accurately estimate a samples central tendency by not putting as much weight on *outliers*, or values that very are different from the rest of the sample.</span>
+<span id="cb39-92"><a href="#cb39-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-93"><a href="#cb39-93" aria-hidden="true" tabindex="-1"></a>Provided that the sample contains an odd number _n_ of entries, the median is the value of the $(\frac{(n+1)}{2})$ entry in the sample. </span>
+<span id="cb39-94"><a href="#cb39-94" aria-hidden="true" tabindex="-1"></a>If the sample contains an even number _n_ of entries, then the median is the mean of the values of the $(\frac{n}{2})$ and the $(\frac{n}{2} + 1)$ entries.</span>
+<span id="cb39-95"><a href="#cb39-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-96"><a href="#cb39-96" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the median is called <span class="in">`median()`</span>:</span>
 <span id="cb39-97"><a href="#cb39-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-98"><a href="#cb39-98" aria-hidden="true" tabindex="-1"></a>Above, we have the median height of our odd numbered sample.</span>
-<span id="cb39-99"><a href="#cb39-99" aria-hidden="true" tabindex="-1"></a>Let's say we go back to our meadow and measure the height of a new species, *Viola biflora*.</span>
-<span id="cb39-100"><a href="#cb39-100" aria-hidden="true" tabindex="-1"></a>Now our sample has six entries. </span>
-<span id="cb39-101"><a href="#cb39-101" aria-hidden="true" tabindex="-1"></a>How does that change the median?</span>
-<span id="cb39-102"><a href="#cb39-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-103"><a href="#cb39-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r median even, echo=TRUE, eval=TRUE}</span></span>
-<span id="cb39-104"><a href="#cb39-104" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(height_data2) <span class="co"># we use `head()` to look at our new data set already loaded into R </span></span>
-<span id="cb39-105"><a href="#cb39-105" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(height_data2<span class="sc">$</span>Height) <span class="co"># takes the median</span></span>
-<span id="cb39-106"><a href="#cb39-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-107"><a href="#cb39-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-108"><a href="#cb39-108" aria-hidden="true" tabindex="-1"></a>We see that the median of the even sample is between the two middle values in the data, 15 and 20.</span>
-<span id="cb39-109"><a href="#cb39-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-110"><a href="#cb39-110" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/br&gt;</span></span>
-<span id="cb39-111"><a href="#cb39-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-98"><a href="#cb39-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{r median odd, echo=TRUE, eval=TRUE}</span></span>
+<span id="cb39-99"><a href="#cb39-99" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(height_data<span class="sc">$</span>height) <span class="co"># takes the median of the height data</span></span>
+<span id="cb39-100"><a href="#cb39-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-101"><a href="#cb39-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-102"><a href="#cb39-102" aria-hidden="true" tabindex="-1"></a>Above, we have the median height of our odd numbered sample.</span>
+<span id="cb39-103"><a href="#cb39-103" aria-hidden="true" tabindex="-1"></a>Let's say we go back to our meadow and measure the height of a new species, *Viola biflora*.</span>
+<span id="cb39-104"><a href="#cb39-104" aria-hidden="true" tabindex="-1"></a>Now our sample has six entries. </span>
+<span id="cb39-105"><a href="#cb39-105" aria-hidden="true" tabindex="-1"></a>How does that change the median?</span>
+<span id="cb39-106"><a href="#cb39-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-107"><a href="#cb39-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r median even, echo=TRUE, eval=TRUE}</span></span>
+<span id="cb39-108"><a href="#cb39-108" aria-hidden="true" tabindex="-1"></a><span class="co"># we use `head()` to look at our new data set already loaded into R</span></span>
+<span id="cb39-109"><a href="#cb39-109" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(height_data2) </span>
+<span id="cb39-110"><a href="#cb39-110" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(height_data2<span class="sc">$</span>height) <span class="co"># takes the median</span></span>
+<span id="cb39-111"><a href="#cb39-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb39-112"><a href="#cb39-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-113"><a href="#cb39-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-114"><a href="#cb39-114" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3. Minimum, maximum, range, midpoint, and mode</span></span>
-<span id="cb39-115"><a href="#cb39-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a>The *minimum* and *maximum* of a sample are the smallest and largest entries, respectively. </span>
+<span id="cb39-113"><a href="#cb39-113" aria-hidden="true" tabindex="-1"></a>We see that the median of the even sample is between the two middle values in the data, 15 and 20.</span>
+<span id="cb39-114"><a href="#cb39-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-115"><a href="#cb39-115" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-117"><a href="#cb39-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-118"><a href="#cb39-118" aria-hidden="true" tabindex="-1"></a>In R, the functions that calculate the minimum and maximum  are called <span class="in">`min()`</span> and <span class="in">`max()`</span>, respectively:</span>
-<span id="cb39-119"><a href="#cb39-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-120"><a href="#cb39-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r min and max, echo = TRUE, eval=TRUE}</span></span>
-<span id="cb39-121"><a href="#cb39-121" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(height_data2<span class="sc">$</span>Height) <span class="co"># find the minimum</span></span>
-<span id="cb39-122"><a href="#cb39-122" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(height_data2<span class="sc">$</span>Height) <span class="co"># find the maximum</span></span>
-<span id="cb39-123"><a href="#cb39-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-124"><a href="#cb39-124" aria-hidden="true" tabindex="-1"></a>We see that <span class="in">`min()`</span> picked out the height of the shortest species in our data (*Veronica alpina* and *Viola biflora*) and `max()` picked out the height of the tallest species (*Juniper communis*). </span>
-<span id="cb39-125"><a href="#cb39-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-126"><a href="#cb39-126" aria-hidden="true" tabindex="-1"></a>The *range* defines the spread of the data and is the difference between the minimum and maximum values.</span>
-<span id="cb39-127"><a href="#cb39-127" aria-hidden="true" tabindex="-1"></a>Note, a range may be expressed as a single value (the actual difference between maximum and minimum) or by writing minimum-maximum. </span>
-<span id="cb39-128"><a href="#cb39-128" aria-hidden="true" tabindex="-1"></a>For instance, the range of the series (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) can be expressed as 9 or 1-10.</span>
-<span id="cb39-129"><a href="#cb39-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-130"><a href="#cb39-130" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the range is <span class="in">`range()`</span>. </span>
-<span id="cb39-131"><a href="#cb39-131" aria-hidden="true" tabindex="-1"></a>However, <span class="in">`range()`</span> returns a vector that contains the minimum and the maximum, respectively.</span>
-<span id="cb39-132"><a href="#cb39-132" aria-hidden="true" tabindex="-1"></a>To calculate the difference between these values, you may use <span class="in">`diff(range())`</span> or <span class="in">`max()-min()`</span>:</span>
-<span id="cb39-133"><a href="#cb39-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-134"><a href="#cb39-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r range, echo = TRUE, eval=TRUE}</span></span>
-<span id="cb39-135"><a href="#cb39-135" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(height_data2<span class="sc">$</span>Height) <span class="co"># find the range of the sample as a vector</span></span>
-<span id="cb39-136"><a href="#cb39-136" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">range</span>(height_data2<span class="sc">$</span>Height)) <span class="co"># find the range as difference between minimum and maximum values with diff()</span></span>
-<span id="cb39-137"><a href="#cb39-137" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(height_data2<span class="sc">$</span>Height)<span class="sc">-</span><span class="fu">min</span>(height_data2<span class="sc">$</span>Height) <span class="co"># find the range as difference between minimum and maximum values</span></span>
-<span id="cb39-138"><a href="#cb39-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-139"><a href="#cb39-139" aria-hidden="true" tabindex="-1"></a>We see that the <span class="in">`range()`</span> returns our minimum and maximum height values, while the other two functions return the difference between the minumum and and maximum height values.</span>
-<span id="cb39-140"><a href="#cb39-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-141"><a href="#cb39-141" aria-hidden="true" tabindex="-1"></a>The *midpoint* of a sample is the value equidistant from the minimum and the maximum. </span>
-<span id="cb39-142"><a href="#cb39-142" aria-hidden="true" tabindex="-1"></a>It can be calculated by taking taking the mean of the minumum and maximum value of a sample.</span>
-<span id="cb39-143"><a href="#cb39-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-144"><a href="#cb39-144" aria-hidden="true" tabindex="-1"></a>In R, you can calculate the midpoint of a sample with: </span>
-<span id="cb39-145"><a href="#cb39-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-146"><a href="#cb39-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{r midpoint, echo = TRUE, eval=TRUE}</span></span>
-<span id="cb39-147"><a href="#cb39-147" aria-hidden="true" tabindex="-1"></a>(<span class="fu">max</span>(height_data2<span class="sc">$</span>Height) <span class="sc">+</span> <span class="fu">min</span>(height_data2<span class="sc">$</span>Height))<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb39-148"><a href="#cb39-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-149"><a href="#cb39-149" aria-hidden="true" tabindex="-1"></a>Notice how the midpoint is still greater than the height of five of the species measured because of the relative tallness of *Juniper communis* compared to the rest of the community.</span>
-<span id="cb39-150"><a href="#cb39-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-151"><a href="#cb39-151" aria-hidden="true" tabindex="-1"></a>Finally, the *mode* of a sample is the most frequent or common value. </span>
-<span id="cb39-152"><a href="#cb39-152" aria-hidden="true" tabindex="-1"></a>A sample may have multiple modes if there are more than one value in the sample that are equally common. </span>
+<span id="cb39-118"><a href="#cb39-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-119"><a href="#cb39-119" aria-hidden="true" tabindex="-1"></a><span class="fu">### Minimum, maximum, range, midpoint, and mode</span></span>
+<span id="cb39-120"><a href="#cb39-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-121"><a href="#cb39-121" aria-hidden="true" tabindex="-1"></a>The *minimum* and *maximum* of a sample are the smallest and largest entries, respectively. </span>
+<span id="cb39-122"><a href="#cb39-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-123"><a href="#cb39-123" aria-hidden="true" tabindex="-1"></a>In R, the functions that calculate the minimum and maximum  are called <span class="in">`min()`</span> and <span class="in">`max()`</span>, respectively:</span>
+<span id="cb39-124"><a href="#cb39-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-125"><a href="#cb39-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{r min and max, echo = TRUE, eval=TRUE}</span></span>
+<span id="cb39-126"><a href="#cb39-126" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(height_data2<span class="sc">$</span>height) <span class="co"># find the minimum</span></span>
+<span id="cb39-127"><a href="#cb39-127" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(height_data2<span class="sc">$</span>height) <span class="co"># find the maximum</span></span>
+<span id="cb39-128"><a href="#cb39-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-129"><a href="#cb39-129" aria-hidden="true" tabindex="-1"></a>We see that <span class="in">`min()`</span> picked out the height of the shortest species in our data (*Veronica alpina* and *Viola biflora*) and `max()` picked out the height of the tallest species (*Juniper communis*). </span>
+<span id="cb39-130"><a href="#cb39-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-131"><a href="#cb39-131" aria-hidden="true" tabindex="-1"></a>The *range* defines the spread of the data and is the difference between the minimum and maximum values.</span>
+<span id="cb39-132"><a href="#cb39-132" aria-hidden="true" tabindex="-1"></a>Note, a range may be expressed as a single value (the actual difference between maximum and minimum) or by writing minimum-maximum. </span>
+<span id="cb39-133"><a href="#cb39-133" aria-hidden="true" tabindex="-1"></a>For instance, the range of the series (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) can be expressed as 9 or 1-10.</span>
+<span id="cb39-134"><a href="#cb39-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-135"><a href="#cb39-135" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the range is <span class="in">`range()`</span>. </span>
+<span id="cb39-136"><a href="#cb39-136" aria-hidden="true" tabindex="-1"></a>However, <span class="in">`range()`</span> returns a vector that contains the minimum and the maximum, respectively.</span>
+<span id="cb39-137"><a href="#cb39-137" aria-hidden="true" tabindex="-1"></a>To calculate the difference between these values, you may use <span class="in">`diff(range())`</span> or <span class="in">`max()-min()`</span>:</span>
+<span id="cb39-138"><a href="#cb39-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-139"><a href="#cb39-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r range, echo = TRUE, eval=TRUE}</span></span>
+<span id="cb39-140"><a href="#cb39-140" aria-hidden="true" tabindex="-1"></a><span class="co"># find the range of the sample as a vector</span></span>
+<span id="cb39-141"><a href="#cb39-141" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(height_data2<span class="sc">$</span>height)</span>
+<span id="cb39-142"><a href="#cb39-142" aria-hidden="true" tabindex="-1"></a><span class="co"># find the range as difference between minimum and maximum values with diff()</span></span>
+<span id="cb39-143"><a href="#cb39-143" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">range</span>(height_data2<span class="sc">$</span>height)) </span>
+<span id="cb39-144"><a href="#cb39-144" aria-hidden="true" tabindex="-1"></a><span class="co"># find the range as difference between minimum and maximum values</span></span>
+<span id="cb39-145"><a href="#cb39-145" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(height_data2<span class="sc">$</span>height) <span class="sc">-</span> <span class="fu">min</span>(height_data2<span class="sc">$</span>height) </span>
+<span id="cb39-146"><a href="#cb39-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-147"><a href="#cb39-147" aria-hidden="true" tabindex="-1"></a>We see that the <span class="in">`range()`</span> returns our minimum and maximum height values, while the other two functions return the difference between the minumum and and maximum height values.</span>
+<span id="cb39-148"><a href="#cb39-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-149"><a href="#cb39-149" aria-hidden="true" tabindex="-1"></a>The *midpoint* of a sample is the value equidistant from the minimum and the maximum. </span>
+<span id="cb39-150"><a href="#cb39-150" aria-hidden="true" tabindex="-1"></a>It can be calculated by taking taking the mean of the minumum and maximum value of a sample.</span>
+<span id="cb39-151"><a href="#cb39-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-152"><a href="#cb39-152" aria-hidden="true" tabindex="-1"></a>In R, you can calculate the midpoint of a sample with: </span>
 <span id="cb39-153"><a href="#cb39-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-154"><a href="#cb39-154" aria-hidden="true" tabindex="-1"></a>There is not a standard *mode* function in R, so here, we present a method to find the most common value of a sample.</span>
-<span id="cb39-155"><a href="#cb39-155" aria-hidden="true" tabindex="-1"></a>We will use the <span class="in">`tidyverse`</span> package to manipulate the data and find the *mode* (see the basics in R for more on <span class="in">`tidyverse`</span>):</span>
-<span id="cb39-156"><a href="#cb39-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-157"><a href="#cb39-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mode, echo=TRUE, eval=TRUE}</span></span>
-<span id="cb39-158"><a href="#cb39-158" aria-hidden="true" tabindex="-1"></a>height_mode <span class="ot">&lt;-</span> height_data2 <span class="sc">%&gt;%</span> <span class="co"># use "pipe operators", `%&gt;%`, to pass the data for further manipulations</span></span>
-<span id="cb39-159"><a href="#cb39-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Height) <span class="sc">%&gt;%</span> <span class="co"># group the data by their height values</span></span>
-<span id="cb39-160"><a href="#cb39-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">N_height =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># count `n()` how many entries have the same value </span></span>
-<span id="cb39-161"><a href="#cb39-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(N_height <span class="sc">==</span> <span class="fu">max</span>(N_height)) <span class="co"># return the mode by pulling out the values with the highest count</span></span>
-<span id="cb39-162"><a href="#cb39-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-163"><a href="#cb39-163" aria-hidden="true" tabindex="-1"></a>height_mode <span class="co"># see the mode</span></span>
-<span id="cb39-164"><a href="#cb39-164" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-165"><a href="#cb39-165" aria-hidden="true" tabindex="-1"></a>We see that the most common value of height in our dataset is 10 cm and there are two species with that height. </span>
-<span id="cb39-166"><a href="#cb39-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-167"><a href="#cb39-167" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/br&gt;</span></span>
-<span id="cb39-168"><a href="#cb39-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-169"><a href="#cb39-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-170"><a href="#cb39-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-171"><a href="#cb39-171" aria-hidden="true" tabindex="-1"></a><span class="fu">### 4. Variance, standard deviation, and standard error</span></span>
-<span id="cb39-172"><a href="#cb39-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-173"><a href="#cb39-173" aria-hidden="true" tabindex="-1"></a>Means and medians describe the central tendency of a sample, but they give us no information on the spread or dispersion of the data used to find this central tendency. </span>
-<span id="cb39-174"><a href="#cb39-174" aria-hidden="true" tabindex="-1"></a>We cover measures of sample dispersion in this section.</span>
-<span id="cb39-175"><a href="#cb39-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-176"><a href="#cb39-176" aria-hidden="true" tabindex="-1"></a>The *variance* (var or $\sigma^2$) corresponds to the mean of the squared differences from the mean. </span>
-<span id="cb39-177"><a href="#cb39-177" aria-hidden="true" tabindex="-1"></a>Mathematically, variance ($\sigma^2$) of the sample (x) is: </span>
-<span id="cb39-178"><a href="#cb39-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-179"><a href="#cb39-179" aria-hidden="true" tabindex="-1"></a>$$\sigma^2 (x) = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n}$$</span>
+<span id="cb39-154"><a href="#cb39-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r midpoint, echo = TRUE, eval=TRUE}</span></span>
+<span id="cb39-155"><a href="#cb39-155" aria-hidden="true" tabindex="-1"></a>(<span class="fu">max</span>(height_data2<span class="sc">$</span>height) <span class="sc">+</span> <span class="fu">min</span>(height_data2<span class="sc">$</span>height)) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb39-156"><a href="#cb39-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-157"><a href="#cb39-157" aria-hidden="true" tabindex="-1"></a>Notice how the midpoint is still greater than the height of five of the species measured because of the relative tallness of *Juniper communis* compared to the rest of the community.</span>
+<span id="cb39-158"><a href="#cb39-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-159"><a href="#cb39-159" aria-hidden="true" tabindex="-1"></a>Finally, the *mode* of a sample is the most frequent or common value. </span>
+<span id="cb39-160"><a href="#cb39-160" aria-hidden="true" tabindex="-1"></a>A sample may have multiple modes if there are more than one value in the sample that are equally common. </span>
+<span id="cb39-161"><a href="#cb39-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-162"><a href="#cb39-162" aria-hidden="true" tabindex="-1"></a>There is not a standard *mode* function in R, so here, we present a method to find the most common value of a sample.</span>
+<span id="cb39-163"><a href="#cb39-163" aria-hidden="true" tabindex="-1"></a>We will use the <span class="in">`tidyverse`</span> package to manipulate the data and find the *mode* (see the basics in R for more on <span class="in">`tidyverse`</span>):</span>
+<span id="cb39-164"><a href="#cb39-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-165"><a href="#cb39-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mode, echo=TRUE, eval=TRUE}</span></span>
+<span id="cb39-166"><a href="#cb39-166" aria-hidden="true" tabindex="-1"></a><span class="co"># use "pipe operators", `|&gt;`, to pass the data for further manipulations</span></span>
+<span id="cb39-167"><a href="#cb39-167" aria-hidden="true" tabindex="-1"></a>height_mode <span class="ot">&lt;-</span> height_data2 <span class="sc">|&gt;</span></span>
+<span id="cb39-168"><a href="#cb39-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(height) <span class="sc">|&gt;</span> <span class="co"># group the data by their height values</span></span>
+<span id="cb39-169"><a href="#cb39-169" aria-hidden="true" tabindex="-1"></a><span class="co"># count `n()` how many entries have the same value</span></span>
+<span id="cb39-170"><a href="#cb39-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">N_height =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb39-171"><a href="#cb39-171" aria-hidden="true" tabindex="-1"></a><span class="co"># return the mode by pulling out the values with the highest count</span></span>
+<span id="cb39-172"><a href="#cb39-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(N_height <span class="sc">==</span> <span class="fu">max</span>(N_height)) </span>
+<span id="cb39-173"><a href="#cb39-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-174"><a href="#cb39-174" aria-hidden="true" tabindex="-1"></a>height_mode <span class="co"># see the mode</span></span>
+<span id="cb39-175"><a href="#cb39-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-176"><a href="#cb39-176" aria-hidden="true" tabindex="-1"></a>We see that the most common value of height in our dataset is 10 cm and there are two species with that height. </span>
+<span id="cb39-177"><a href="#cb39-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-178"><a href="#cb39-178" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb39-179"><a href="#cb39-179" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-180"><a href="#cb39-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-181"><a href="#cb39-181" aria-hidden="true" tabindex="-1"></a>Where we take an entry in the sample, $x_i$, and calculate the difference between its value and the mean, $\overline{x}$, then square it. </span>
-<span id="cb39-182"><a href="#cb39-182" aria-hidden="true" tabindex="-1"></a>Do the same for all the entries, _n_, in the sample. </span>
-<span id="cb39-183"><a href="#cb39-183" aria-hidden="true" tabindex="-1"></a>Finally, calculate the mean of these squared differences (divide by _n_) and you get the variance. </span>
-<span id="cb39-184"><a href="#cb39-184" aria-hidden="true" tabindex="-1"></a>Note-variance is always positive because of the squared difference.</span>
-<span id="cb39-185"><a href="#cb39-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-186"><a href="#cb39-186" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the variance is <span class="in">`var()`</span>:</span>
-<span id="cb39-187"><a href="#cb39-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-188"><a href="#cb39-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r variance, echo=TRUE, eval=TRUE}</span></span>
-<span id="cb39-189"><a href="#cb39-189" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(height_data2<span class="sc">$</span>Height) <span class="co"># finds the variance of the sample</span></span>
-<span id="cb39-190"><a href="#cb39-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-191"><a href="#cb39-191" aria-hidden="true" tabindex="-1"></a>Here, we get the variance of the height data- the variance is over 27 times larger than the tallest species' height! </span>
-<span id="cb39-192"><a href="#cb39-192" aria-hidden="true" tabindex="-1"></a>Why might that be?</span>
-<span id="cb39-193"><a href="#cb39-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-194"><a href="#cb39-194" aria-hidden="true" tabindex="-1"></a>The standard deviation (sd or $\sigma$) is the square root of the variance. </span>
-<span id="cb39-195"><a href="#cb39-195" aria-hidden="true" tabindex="-1"></a>Unlike the variance, the standard deviation has the same unit as the mean, median or any entry in the sample because of this square root transformation. </span>
-<span id="cb39-196"><a href="#cb39-196" aria-hidden="true" tabindex="-1"></a>This makes it very useful as it can be used in combination with the mean to define how values are spread around the mean. </span>
-<span id="cb39-197"><a href="#cb39-197" aria-hidden="true" tabindex="-1"></a>Often, you will find this expressed as mean +/- sd.</span>
+<span id="cb39-181"><a href="#cb39-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-182"><a href="#cb39-182" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variance, standard deviation, and standard error</span></span>
+<span id="cb39-183"><a href="#cb39-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-184"><a href="#cb39-184" aria-hidden="true" tabindex="-1"></a>Means and medians describe the central tendency of a sample, but they give us no information on the spread or dispersion of the data used to find this central tendency. </span>
+<span id="cb39-185"><a href="#cb39-185" aria-hidden="true" tabindex="-1"></a>We cover measures of sample dispersion in this section.</span>
+<span id="cb39-186"><a href="#cb39-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-187"><a href="#cb39-187" aria-hidden="true" tabindex="-1"></a>The *variance* (var or $\sigma^2$) corresponds to the mean of the squared differences from the mean. </span>
+<span id="cb39-188"><a href="#cb39-188" aria-hidden="true" tabindex="-1"></a>Mathematically, variance ($\sigma^2$) of the sample (x) is: </span>
+<span id="cb39-189"><a href="#cb39-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-190"><a href="#cb39-190" aria-hidden="true" tabindex="-1"></a>$$\sigma^2 (x) = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n}$$</span>
+<span id="cb39-191"><a href="#cb39-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-192"><a href="#cb39-192" aria-hidden="true" tabindex="-1"></a>Where we take an entry in the sample, $x_i$, and calculate the difference between its value and the mean, $\overline{x}$, then square it. </span>
+<span id="cb39-193"><a href="#cb39-193" aria-hidden="true" tabindex="-1"></a>Do the same for all the entries, _n_, in the sample. </span>
+<span id="cb39-194"><a href="#cb39-194" aria-hidden="true" tabindex="-1"></a>Finally, calculate the mean of these squared differences (divide by _n_) and you get the variance. </span>
+<span id="cb39-195"><a href="#cb39-195" aria-hidden="true" tabindex="-1"></a>Note-variance is always positive because of the squared difference.</span>
+<span id="cb39-196"><a href="#cb39-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-197"><a href="#cb39-197" aria-hidden="true" tabindex="-1"></a>In R, the function that calculates the variance is <span class="in">`var()`</span>:</span>
 <span id="cb39-198"><a href="#cb39-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-199"><a href="#cb39-199" aria-hidden="true" tabindex="-1"></a>In R, the standard deviation is obtained via the function <span class="in">`sd()`</span>. </span>
-<span id="cb39-200"><a href="#cb39-200" aria-hidden="true" tabindex="-1"></a>Note that you will obtain the same result by calculating “manually” the square root of the variance with <span class="in">`sqrt(var())`</span>:</span>
-<span id="cb39-201"><a href="#cb39-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-202"><a href="#cb39-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{r standard deviation, echo=TRUE, eval=TRUE}</span></span>
-<span id="cb39-203"><a href="#cb39-203" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(height_data2<span class="sc">$</span>Height) <span class="co"># finds the standard deviation of the sample</span></span>
-<span id="cb39-204"><a href="#cb39-204" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">var</span>(height_data2<span class="sc">$</span>Height)) <span class="co"># alternative method to find the standard deviation</span></span>
-<span id="cb39-205"><a href="#cb39-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-206"><a href="#cb39-206" aria-hidden="true" tabindex="-1"></a>Note how much closer the sd is to the values within our height data.</span>
-<span id="cb39-207"><a href="#cb39-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-208"><a href="#cb39-208" aria-hidden="true" tabindex="-1"></a>*Standard error* is a popular way of showing dispersion around a mean for modeling purposes because it further accounts for sampling effort, or the number of values/ replication in the sample, and is used in many frequentist statistical tests (see t-tests page).</span>
-<span id="cb39-209"><a href="#cb39-209" aria-hidden="true" tabindex="-1"></a>The standard error (se or $\sigma_\overline{x}$, given it is a measure of dispersion on a calculated mean $\overline{x}$) is:</span>
-<span id="cb39-210"><a href="#cb39-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-211"><a href="#cb39-211" aria-hidden="true" tabindex="-1"></a>$$\sigma_\overline{x} = \frac{\sigma}{\sqrt{n}}$$</span>
+<span id="cb39-199"><a href="#cb39-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r variance, echo=TRUE, eval=TRUE}</span></span>
+<span id="cb39-200"><a href="#cb39-200" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(height_data2<span class="sc">$</span>height) <span class="co"># finds the variance of the sample</span></span>
+<span id="cb39-201"><a href="#cb39-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-202"><a href="#cb39-202" aria-hidden="true" tabindex="-1"></a>Here, we get the variance of the height data- the variance is over 27 times larger than the tallest species' height! </span>
+<span id="cb39-203"><a href="#cb39-203" aria-hidden="true" tabindex="-1"></a>Why might that be?</span>
+<span id="cb39-204"><a href="#cb39-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-205"><a href="#cb39-205" aria-hidden="true" tabindex="-1"></a>The standard deviation (sd or $\sigma$) is the square root of the variance. </span>
+<span id="cb39-206"><a href="#cb39-206" aria-hidden="true" tabindex="-1"></a>Unlike the variance, the standard deviation has the same unit as the mean, median or any entry in the sample because of this square root transformation. </span>
+<span id="cb39-207"><a href="#cb39-207" aria-hidden="true" tabindex="-1"></a>This makes it very useful as it can be used in combination with the mean to define how values are spread around the mean. </span>
+<span id="cb39-208"><a href="#cb39-208" aria-hidden="true" tabindex="-1"></a>Often, you will find this expressed as mean +/- sd.</span>
+<span id="cb39-209"><a href="#cb39-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-210"><a href="#cb39-210" aria-hidden="true" tabindex="-1"></a>In R, the standard deviation is obtained via the function <span class="in">`sd()`</span>. </span>
+<span id="cb39-211"><a href="#cb39-211" aria-hidden="true" tabindex="-1"></a>Note that you will obtain the same result by calculating “manually” the square root of the variance with <span class="in">`sqrt(var())`</span>:</span>
 <span id="cb39-212"><a href="#cb39-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-213"><a href="#cb39-213" aria-hidden="true" tabindex="-1"></a>Where $\sigma$ is the standard deviation of the sample and *n* is the number of independent observations in the sample.</span>
-<span id="cb39-214"><a href="#cb39-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-215"><a href="#cb39-215" aria-hidden="true" tabindex="-1"></a>There is no standard function to calculate a samples standard error in R, but many statistical test functions will calculate the standard error for a parameter as part of the output. </span>
-<span id="cb39-216"><a href="#cb39-216" aria-hidden="true" tabindex="-1"></a>Here is a way to calculate the se from scratch:</span>
-<span id="cb39-217"><a href="#cb39-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-218"><a href="#cb39-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{r standard error, echo=TRUE, eval=TRUE}</span></span>
-<span id="cb39-219"><a href="#cb39-219" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(height_data2<span class="sc">$</span>Height)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">length</span>(height_data2<span class="sc">$</span>Height)) <span class="co"># take the sd of the sample and divide by the square root, `sqrt()`, of the number of observations or `length()` of the sample. </span></span>
-<span id="cb39-220"><a href="#cb39-220" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-221"><a href="#cb39-221" aria-hidden="true" tabindex="-1"></a>We can interpret the se as the expected "error" in our estimate of mean plant height. </span>
-<span id="cb39-222"><a href="#cb39-222" aria-hidden="true" tabindex="-1"></a>What would happen to the standard error if we measured the height of every plant in the meadow? </span>
-<span id="cb39-223"><a href="#cb39-223" aria-hidden="true" tabindex="-1"></a>This is an important point! </span>
-<span id="cb39-224"><a href="#cb39-224" aria-hidden="true" tabindex="-1"></a>The standard error of a mean estimate approaches zero as we increase the number of observations ($\sigma_\overline{x} \sim 0 $ as $n \rightarrow \infty$).</span>
+<span id="cb39-213"><a href="#cb39-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r standard deviation, echo=TRUE, eval=TRUE}</span></span>
+<span id="cb39-214"><a href="#cb39-214" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(height_data2<span class="sc">$</span>height) <span class="co"># finds the standard deviation of the sample</span></span>
+<span id="cb39-215"><a href="#cb39-215" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">var</span>(height_data2<span class="sc">$</span>height)) <span class="co"># alternative method to find the standard deviation</span></span>
+<span id="cb39-216"><a href="#cb39-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-217"><a href="#cb39-217" aria-hidden="true" tabindex="-1"></a>Note how much closer the sd is to the values within our height data.</span>
+<span id="cb39-218"><a href="#cb39-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-219"><a href="#cb39-219" aria-hidden="true" tabindex="-1"></a>*Standard error* is a popular way of showing dispersion around a mean for modeling purposes because it further accounts for sampling effort, or the number of values/ replication in the sample, and is used in many frequentist statistical tests (see t-tests page).</span>
+<span id="cb39-220"><a href="#cb39-220" aria-hidden="true" tabindex="-1"></a>The standard error (se or $\sigma_\overline{x}$, given it is a measure of dispersion on a calculated mean $\overline{x}$) is:</span>
+<span id="cb39-221"><a href="#cb39-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-222"><a href="#cb39-222" aria-hidden="true" tabindex="-1"></a>$$\sigma_\overline{x} = \frac{\sigma}{\sqrt{n}}$$</span>
+<span id="cb39-223"><a href="#cb39-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-224"><a href="#cb39-224" aria-hidden="true" tabindex="-1"></a>Where $\sigma$ is the standard deviation of the sample and *n* is the number of independent observations in the sample.</span>
 <span id="cb39-225"><a href="#cb39-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-226"><a href="#cb39-226" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/br&gt;</span></span>
-<span id="cb39-227"><a href="#cb39-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-226"><a href="#cb39-226" aria-hidden="true" tabindex="-1"></a>There is no standard function to calculate a samples standard error in R, but many statistical test functions will calculate the standard error for a parameter as part of the output. </span>
+<span id="cb39-227"><a href="#cb39-227" aria-hidden="true" tabindex="-1"></a>Here is a way to calculate the se from scratch:</span>
 <span id="cb39-228"><a href="#cb39-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-229"><a href="#cb39-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-230"><a href="#cb39-230" aria-hidden="true" tabindex="-1"></a><span class="fu">### 5. Quartiles</span></span>
-<span id="cb39-231"><a href="#cb39-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-232"><a href="#cb39-232" aria-hidden="true" tabindex="-1"></a>Take a sample, sort the data from smallest to largest and split it in four equal subsets.</span>
-<span id="cb39-233"><a href="#cb39-233" aria-hidden="true" tabindex="-1"></a>The quartiles are the values of the sample that cut it off in four.</span>
-<span id="cb39-234"><a href="#cb39-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-235"><a href="#cb39-235" aria-hidden="true" tabindex="-1"></a>Quartiles are called:</span>
-<span id="cb39-236"><a href="#cb39-236" aria-hidden="true" tabindex="-1"></a>Q1: the first quartile under which the first 25% of the data in the set can be found,</span>
-<span id="cb39-237"><a href="#cb39-237" aria-hidden="true" tabindex="-1"></a>Q2: the second quartile under which the first 50% of the data in the set can be found (Q2 is also the median),</span>
-<span id="cb39-238"><a href="#cb39-238" aria-hidden="true" tabindex="-1"></a>Q3: the third quartile under which the first 75% of the data in the set can be found.</span>
-<span id="cb39-239"><a href="#cb39-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-240"><a href="#cb39-240" aria-hidden="true" tabindex="-1"></a>In addition, one refers to:</span>
-<span id="cb39-241"><a href="#cb39-241" aria-hidden="true" tabindex="-1"></a>Q0: the minimum value in the set,</span>
-<span id="cb39-242"><a href="#cb39-242" aria-hidden="true" tabindex="-1"></a>Q4: the maximum value in the set.</span>
-<span id="cb39-243"><a href="#cb39-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-244"><a href="#cb39-244" aria-hidden="true" tabindex="-1"></a>Note that the set of data between Q1 and Q3 (which contains the middle 50% of the data) is the interquartile range (IQR).</span>
-<span id="cb39-245"><a href="#cb39-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-246"><a href="#cb39-246" aria-hidden="true" tabindex="-1"></a>In R, quartiles may be obtained using the function <span class="in">`quantile()`</span>.</span>
-<span id="cb39-247"><a href="#cb39-247" aria-hidden="true" tabindex="-1"></a>(NB: this is not a typo, quantile refers to the intervals (0, 25, 50, 75, 100%) at which the quartiles, the values in the data, are assessed). </span>
-<span id="cb39-248"><a href="#cb39-248" aria-hidden="true" tabindex="-1"></a>If you choose to use only <span class="in">`quantile()`</span> with no other argument than the vector containing the sample, R returns Q0, Q1, Q2, Q3, and Q4. </span>
-<span id="cb39-249"><a href="#cb39-249" aria-hidden="true" tabindex="-1"></a>If you need only Q1, Q2 and Q3, you use an extra argument (see the following example):</span>
-<span id="cb39-250"><a href="#cb39-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-251"><a href="#cb39-251" aria-hidden="true" tabindex="-1"></a><span class="in">```{r quartiles, echo = TRUE}</span></span>
-<span id="cb39-252"><a href="#cb39-252" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(height_data2<span class="sc">$</span>Height) <span class="co"># Find the Q0, Q1, Q2, Q3, and Q4</span></span>
-<span id="cb39-253"><a href="#cb39-253" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(height_data2<span class="sc">$</span>Height, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)) <span class="co"># Find the Q1, Q2, and Q3 by defining which quartiles (in proportions) using the probs argument</span></span>
-<span id="cb39-254"><a href="#cb39-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-255"><a href="#cb39-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-256"><a href="#cb39-256" aria-hidden="true" tabindex="-1"></a>Quartiles can be visualized with <span class="in">`ggplot()`</span> and <span class="in">`geom_boxplot()`</span>:</span>
-<span id="cb39-257"><a href="#cb39-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-258"><a href="#cb39-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig-quartiles-boxplot, echo=TRUE}</span></span>
-<span id="cb39-259"><a href="#cb39-259" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(height_data2, <span class="fu">aes</span>(<span class="at">y=</span>Height, <span class="at">x=</span><span class="st">""</span>))<span class="sc">+</span><span class="fu">geom_boxplot</span>()<span class="sc">+</span><span class="co"># assign the vector "x" as the y variable in the 'aes' argument and pass it to 'geom_boxplot' </span></span>
-<span id="cb39-260"><a href="#cb39-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Height Boxplot"</span>)<span class="sc">+</span> <span class="fu">xlab</span>(<span class="at">label=</span><span class="st">""</span>)<span class="sc">+</span> <span class="co"># this and the following lines label the axes and quartiles</span></span>
-<span id="cb39-261"><a href="#cb39-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.1</span>, <span class="at">y =</span> <span class="dv">200</span>, <span class="at">label =</span> <span class="st">"&lt;-Q4 or max"</span>)<span class="sc">+</span></span>
-<span id="cb39-262"><a href="#cb39-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.42</span>, <span class="at">y =</span> <span class="fl">42.50</span>, <span class="at">label =</span> <span class="st">"&lt;-Q3"</span>)<span class="sc">+</span></span>
-<span id="cb39-263"><a href="#cb39-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.42</span>, <span class="at">y =</span> <span class="dv">18</span>, <span class="at">label =</span> <span class="st">"&lt;-Q2"</span>)<span class="sc">+</span></span>
-<span id="cb39-264"><a href="#cb39-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.42</span>, <span class="at">y =</span> <span class="dv">11</span>, <span class="at">label =</span> <span class="st">"&lt;-Q1"</span>)<span class="sc">+</span></span>
-<span id="cb39-265"><a href="#cb39-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.063</span>, <span class="at">y =</span> <span class="dv">5</span>, <span class="at">label =</span> <span class="st">"^Q0 or min"</span>)</span>
-<span id="cb39-266"><a href="#cb39-266" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-267"><a href="#cb39-267" aria-hidden="true" tabindex="-1"></a>We can see the distribution of the height data and its quartiles with the boxplot. </span>
-<span id="cb39-268"><a href="#cb39-268" aria-hidden="true" tabindex="-1"></a>Note how much of an outlier *Juniper communis* is relative to the other species.  </span>
-<span id="cb39-269"><a href="#cb39-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-270"><a href="#cb39-270" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/br&gt;</span></span>
+<span id="cb39-229"><a href="#cb39-229" aria-hidden="true" tabindex="-1"></a><span class="in">```{r standard error, echo=TRUE, eval=TRUE}</span></span>
+<span id="cb39-230"><a href="#cb39-230" aria-hidden="true" tabindex="-1"></a><span class="co"># take the sd of the sample and divide by the square root, `sqrt()`, </span></span>
+<span id="cb39-231"><a href="#cb39-231" aria-hidden="true" tabindex="-1"></a><span class="co"># of the number of observations or `length()` of the sample.</span></span>
+<span id="cb39-232"><a href="#cb39-232" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(height_data2<span class="sc">$</span>height) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(height_data2<span class="sc">$</span>height))</span>
+<span id="cb39-233"><a href="#cb39-233" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-234"><a href="#cb39-234" aria-hidden="true" tabindex="-1"></a>We can interpret the se as the expected "error" in our estimate of mean plant height. </span>
+<span id="cb39-235"><a href="#cb39-235" aria-hidden="true" tabindex="-1"></a>What would happen to the standard error if we measured the height of every plant in the meadow? </span>
+<span id="cb39-236"><a href="#cb39-236" aria-hidden="true" tabindex="-1"></a>This is an important point! </span>
+<span id="cb39-237"><a href="#cb39-237" aria-hidden="true" tabindex="-1"></a>The standard error of a mean estimate approaches zero as we increase the number of observations ($\sigma_\overline{x} \sim 0 $ as $n \rightarrow \infty$).</span>
+<span id="cb39-238"><a href="#cb39-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-239"><a href="#cb39-239" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb39-240"><a href="#cb39-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-241"><a href="#cb39-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-242"><a href="#cb39-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-243"><a href="#cb39-243" aria-hidden="true" tabindex="-1"></a><span class="fu">### Quartiles</span></span>
+<span id="cb39-244"><a href="#cb39-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-245"><a href="#cb39-245" aria-hidden="true" tabindex="-1"></a>Take a sample, sort the data from smallest to largest and split it in four equal subsets.</span>
+<span id="cb39-246"><a href="#cb39-246" aria-hidden="true" tabindex="-1"></a>The quartiles are the values of the sample that cut it off in four.</span>
+<span id="cb39-247"><a href="#cb39-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-248"><a href="#cb39-248" aria-hidden="true" tabindex="-1"></a>Quartiles are called:</span>
+<span id="cb39-249"><a href="#cb39-249" aria-hidden="true" tabindex="-1"></a>Q1: the first quartile under which the first 25% of the data in the set can be found,</span>
+<span id="cb39-250"><a href="#cb39-250" aria-hidden="true" tabindex="-1"></a>Q2: the second quartile under which the first 50% of the data in the set can be found (Q2 is also the median),</span>
+<span id="cb39-251"><a href="#cb39-251" aria-hidden="true" tabindex="-1"></a>Q3: the third quartile under which the first 75% of the data in the set can be found.</span>
+<span id="cb39-252"><a href="#cb39-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-253"><a href="#cb39-253" aria-hidden="true" tabindex="-1"></a>In addition, one refers to:</span>
+<span id="cb39-254"><a href="#cb39-254" aria-hidden="true" tabindex="-1"></a>Q0: the minimum value in the set,</span>
+<span id="cb39-255"><a href="#cb39-255" aria-hidden="true" tabindex="-1"></a>Q4: the maximum value in the set.</span>
+<span id="cb39-256"><a href="#cb39-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-257"><a href="#cb39-257" aria-hidden="true" tabindex="-1"></a>Note that the set of data between Q1 and Q3 (which contains the middle 50% of the data) is the interquartile range (IQR).</span>
+<span id="cb39-258"><a href="#cb39-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-259"><a href="#cb39-259" aria-hidden="true" tabindex="-1"></a>In R, quartiles may be obtained using the function <span class="in">`quantile()`</span>.</span>
+<span id="cb39-260"><a href="#cb39-260" aria-hidden="true" tabindex="-1"></a>(NB: this is not a typo, quantile refers to the intervals (0, 25, 50, 75, 100%) at which the quartiles, the values in the data, are assessed). </span>
+<span id="cb39-261"><a href="#cb39-261" aria-hidden="true" tabindex="-1"></a>If you choose to use only <span class="in">`quantile()`</span> with no other argument than the vector containing the sample, R returns Q0, Q1, Q2, Q3, and Q4. </span>
+<span id="cb39-262"><a href="#cb39-262" aria-hidden="true" tabindex="-1"></a>If you need only Q1, Q2 and Q3, you use an extra argument (see the following example):</span>
+<span id="cb39-263"><a href="#cb39-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-264"><a href="#cb39-264" aria-hidden="true" tabindex="-1"></a><span class="in">```{r quartiles, echo = TRUE}</span></span>
+<span id="cb39-265"><a href="#cb39-265" aria-hidden="true" tabindex="-1"></a> <span class="co"># Find the Q0, Q1, Q2, Q3, and Q4</span></span>
+<span id="cb39-266"><a href="#cb39-266" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(height_data2<span class="sc">$</span>height)</span>
+<span id="cb39-267"><a href="#cb39-267" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the Q1, Q2, and Q3 by defining which quartiles (in proportions)</span></span>
+<span id="cb39-268"><a href="#cb39-268" aria-hidden="true" tabindex="-1"></a><span class="co"># using the probs argument</span></span>
+<span id="cb39-269"><a href="#cb39-269" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(height_data2<span class="sc">$</span>height, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>))</span>
+<span id="cb39-270"><a href="#cb39-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb39-271"><a href="#cb39-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-272"><a href="#cb39-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-272"><a href="#cb39-272" aria-hidden="true" tabindex="-1"></a>Quartiles can be visualized with <span class="in">`ggplot()`</span> and <span class="in">`geom_boxplot()`</span>:</span>
 <span id="cb39-273"><a href="#cb39-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-274"><a href="#cb39-274" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb39-275"><a href="#cb39-275" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further reading</span></span>
-<span id="cb39-276"><a href="#cb39-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-277"><a href="#cb39-277" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-278"><a href="#cb39-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-279"><a href="#cb39-279" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
-<span id="cb39-280"><a href="#cb39-280" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
-<span id="cb39-281"><a href="#cb39-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-282"><a href="#cb39-282" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Joshua Lynn</span>
-<span id="cb39-283"><a href="#cb39-283" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Kwaku P. Adjei</span>
-<span id="cb39-284"><a href="#cb39-284" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb39-274"><a href="#cb39-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig-quartiles-boxplot, echo=TRUE}</span></span>
+<span id="cb39-275"><a href="#cb39-275" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(height_data2, <span class="fu">aes</span>(<span class="at">y =</span> height, <span class="at">x =</span> <span class="st">""</span>)) <span class="sc">+</span></span>
+<span id="cb39-276"><a href="#cb39-276" aria-hidden="true" tabindex="-1"></a><span class="co"># assign the vector "x" as the y variable in 'aes' and pass it to 'geom_boxplot'</span></span>
+<span id="cb39-277"><a href="#cb39-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
+<span id="cb39-278"><a href="#cb39-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Height Boxplot"</span>) <span class="sc">+</span></span>
+<span id="cb39-279"><a href="#cb39-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="at">label =</span> <span class="st">""</span>) <span class="sc">+</span> <span class="co"># this and the following lines label the axes and quartiles</span></span>
+<span id="cb39-280"><a href="#cb39-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.1</span>, <span class="at">y =</span> <span class="dv">200</span>, <span class="at">label =</span> <span class="st">"&lt;-Q4 or max"</span>) <span class="sc">+</span></span>
+<span id="cb39-281"><a href="#cb39-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.42</span>, <span class="at">y =</span> <span class="fl">42.50</span>, <span class="at">label =</span> <span class="st">"&lt;-Q3"</span>) <span class="sc">+</span></span>
+<span id="cb39-282"><a href="#cb39-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.42</span>, <span class="at">y =</span> <span class="dv">18</span>, <span class="at">label =</span> <span class="st">"&lt;-Q2"</span>) <span class="sc">+</span></span>
+<span id="cb39-283"><a href="#cb39-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.42</span>, <span class="at">y =</span> <span class="dv">11</span>, <span class="at">label =</span> <span class="st">"&lt;-Q1"</span>) <span class="sc">+</span></span>
+<span id="cb39-284"><a href="#cb39-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.063</span>, <span class="at">y =</span> <span class="dv">5</span>, <span class="at">label =</span> <span class="st">"^Q0 or min"</span>)</span>
+<span id="cb39-285"><a href="#cb39-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-286"><a href="#cb39-286" aria-hidden="true" tabindex="-1"></a>We can see the distribution of the height data and its quartiles with the boxplot. </span>
+<span id="cb39-287"><a href="#cb39-287" aria-hidden="true" tabindex="-1"></a>Note how much of an outlier *Juniper communis* is relative to the other species.  </span>
+<span id="cb39-288"><a href="#cb39-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-289"><a href="#cb39-289" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb39-290"><a href="#cb39-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-291"><a href="#cb39-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-292"><a href="#cb39-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-293"><a href="#cb39-293" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb39-294"><a href="#cb39-294" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further reading</span></span>
+<span id="cb39-295"><a href="#cb39-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-296"><a href="#cb39-296" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-297"><a href="#cb39-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-298"><a href="#cb39-298" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb39-299"><a href="#cb39-299" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contributors {.unlisted .unnumbered}</span></span>
+<span id="cb39-300"><a href="#cb39-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-301"><a href="#cb39-301" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Joshua Lynn</span>
+<span id="cb39-302"><a href="#cb39-302" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Kwaku P. Adjei</span>
+<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

@@ -18,7 +18,7 @@ x
 
 This tutorial shows you how to cope with missing values in R, focusing on manipulating data with the `tidyverse` package, running statistical analyses, and making figures with `ggplot2`.
 
-The `penguins` dataset from `palmerpenguins` is used as an example.
+The `penguins` dataset is used as an example.
 
 ## Data handling with missing values
 
@@ -35,7 +35,7 @@ We could use this, for example, to find the number of missing values in a column
 
 ```{r is.na.sum}
 penguins |>
-  summarise(n_missing = sum(is.na(bill_length_mm)))
+  summarise(n_missing = sum(is.na(bill_len)))
 ```
 
 
@@ -54,11 +54,11 @@ In `readxl::read_excel()`, the default for the `na` argument is just for blank c
 ### Removing rows with missing values
 
 We can remove rows with `NA` in particular columns from a data frame using `drop_na()`.
-For example, to remove rows in the `penguins` data set with an `NA` in the `bill_length_mm` or `bill_depth_mm` columns, we could use
+For example, to remove rows in the `penguins` data set with an `NA` in the `bill_len` or `bill_dep` columns, we could use
 
 ```{r drop-na}
 penguins |>
-  drop_na(bill_length_mm, bill_depth_mm)
+  drop_na(bill_len, bill_dep)
 ```
 
 Alternatively, we can use `filter()` and `is.na()`. 
@@ -66,7 +66,7 @@ This is most useful when removing `NA` is one of several arguments to `filter`.
 
 ```{r filter-na}
 penguins |>
-  filter(species == "Gentoo", !is.na(bill_length_mm))
+  filter(species == "Gentoo", !is.na(bill_len))
 ```
 
 
@@ -88,9 +88,9 @@ Here, the code replaces missing values for bill length with the mean value for b
 ```{r replace-na}
 penguins |>
   mutate(
-    bill_length_mm = replace_na(
-      data = bill_length_mm,
-      replace = mean(bill_length_mm, na.rm = TRUE)
+    bill_len = replace_na(
+      data = bill_len,
+      replace = mean(bill_len, na.rm = TRUE)
     )
   )
 ```
@@ -199,8 +199,8 @@ If you want to find the correlation between two vectors without the `NA`, then u
 
 ```{r cor}
 cor(
-  x = penguins$bill_length_mm,
-  y = penguins$bill_depth_mm,
+  x = penguins$bill_len,
+  y = penguins$bill_dep,
   use = "pairwise.complete.obs"
 )
 ```
@@ -209,7 +209,7 @@ If you have a matrix (or data frame), and want to calculate a correlation matrix
 
 ```{r cor-matrix}
 penguins |>
-  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |>
+  select(bill_len, bill_dep, flipper_len, body_mass) |>
   cor(use = "pairwise.complete.obs")
 ```
 
@@ -220,7 +220,7 @@ This behaviour is controlled by the `na.action` argument.
 This is great if we are interested in the model coefficients, but it can cause problems if there are `NA` in the data and we want to add the residuals, fitted values, or predictions into the original data frame for plotting.
 
 ```{r lm-omit, error = TRUE}
-mod <- lm(bill_length_mm ~ body_mass_g, data = penguins)
+mod <- lm(bill_len ~ body_mass, data = penguins)
 
 penguins |> mutate(fit = fitted(mod))
 ```
@@ -229,7 +229,7 @@ The problem is that there are fewer observation in the model (which omitted the 
 We can make this work by using `na.action = na.exclude` which will pad the fitted values with `NA` so that it is the same length as the original data.
 
 ```{r lm-exclude, error = TRUE}
-mod <- lm(bill_length_mm ~ body_mass_g, data = penguins, na.action = na.exclude)
+mod <- lm(bill_len ~ body_mass, data = penguins, na.action = na.exclude)
 
 penguins |> mutate(fit = fitted(mod))
 ```
@@ -241,7 +241,7 @@ This can cause problems if `NA` have caused different numbers of observations to
 
 ```{r bad-anova, error = TRUE}
 mod2 <- lm(
-  bill_length_mm ~ body_mass_g + sex,
+  bill_len ~ body_mass + sex,
   data = penguins,
   na.action = na.exclude
 )

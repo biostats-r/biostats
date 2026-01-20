@@ -1,4 +1,6 @@
-``` {r setup, include=FALSE}
+``` {r}
+#| label: setup
+#| include: false
 source("R/setup.R")
 ```
 
@@ -21,7 +23,10 @@ If not, see @sec-tidyverse.
 
 To activate `ggplot2`, you can use
 
-```{r load, eval=TRUE, echo=TRUE}
+```{r}
+#| label: load
+#| eval: true
+#| echo: true
 library(ggplot2)
 ```
 
@@ -42,11 +47,17 @@ These different components combined make up a figure.
 
 ## The code
 
-The code for to make a scatterplot with the `penguins` dataset from the [`palmerpenguins` package](getting-started-with-r.html#palmerpenguins) looks something like this:
+The code for to make a scatterplot with the `penguins` dataset looks something like this:
 
-```{r ggplot2-1, fig.height = 3, fig.width=3.5, warning = FALSE}
+```{r}
+#| label: ggplot2-1
+#| warning: false
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: >
+#|   Scatterplot of penguin bill length against body mass, coloured by species.
 ggplot(data = penguins,
-       mapping = aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
+       mapping = aes(x = body_mass, y = bill_len, colour = species)) +
   geom_point() +
   labs(x = "Body mass, g", y = "Bill length, mm", colour = "Species") +
   theme_bw()
@@ -66,6 +77,8 @@ You can think of it as different layers that are put on top of each other see @f
 #| label: fig-ggplot-hierarchy
 #| echo: false
 #| fig-cap: "Visualization of how ggplots are built."
+#| fig-alt: >
+#|   Schematic showing how ggplot figures are built from different layers.
 #| out-width: '100%'
 
 knitr::include_graphics("figures/ggplot_setup.png")
@@ -82,7 +95,15 @@ To make a figure we use the function `ggplot()`.
 The first argument in this function is for the **data object** containing all the variables that you need to make a figure.
 Generally, it is advisable to have the data in a long format (@sec-tidying-data-with-tidyr).
 
-```{r data1, echo = TRUE, eval = TRUE, fig.height = 3, fig.width = 3}
+```{r}
+#| label: data1
+#| echo: true
+#| eval: true
+#| fig-height: 3
+#| fig-width: 3
+#| fig-alt: >
+#|   The blank canvas ggplot figures start with before adding aesthetics and
+#|   geometries.
 ggplot(data = penguins)
 
 ```
@@ -99,9 +120,14 @@ Other important elements are shape, fill, size, colour and line type, which desc
 In the penguin example, if we want to plot the bill length against the bill depth, we choose these two variables as `x` and `y`.
 As a second aesthetic we have chosen to map species to colour.
 
-```{r aestetic, eval = TRUE, fig.height = 3, fig.width=3}
-ggplot(penguins, aes(x = bill_length_mm,
-                     y = bill_depth_mm,
+```{r}
+#| label: aestetic
+#| eval: true
+#| fig-height: 3
+#| fig-width: 3
+#| fig-alt: A ggplot without any geometries
+ggplot(penguins, aes(x = bill_len,
+                     y = bill_dep,
                      colour = species))
 ```
 
@@ -120,14 +146,21 @@ See @sec-choosing-your-visualisation for an overview.
 Here, we will use four different geoms to display aspects of the penguins data in different ways.
 The legend is automatically plotted on the right side when needed.
 
-```{r add-geom, fig.keep = 'none', eval = TRUE, fig.height=3, fig.width=3, warning = FALSE}
-p1 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r}
+#| label: add-geom
+#| eval: true
+#| warning: false
+#| fig-keep: none
+#| fig-height: 3
+#| fig-width: 3
+
+p1 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, colour = species)) +
   geom_point()
-p2 <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+p2 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, colour = species)) +
   geom_density2d()
 p3 <- ggplot(penguins, aes(x = species, fill = island)) +
   geom_bar()
-p4 <- ggplot(penguins, aes(x = species, y = bill_depth_mm, fill = species)) +
+p4 <- ggplot(penguins, aes(x = species, y = bill_dep, fill = species)) +
   geom_boxplot()
 
 p1
@@ -136,7 +169,11 @@ p3
 p4
 ```
 
-```{r four-geoms, echo = FALSE, warning=FALSE}
+```{r}
+#| label: four-geoms
+#| echo: false
+#| warning: false
+#| fig-alt: ggplot figures with a selection of geometries
 library(patchwork)
 p1 + labs(title = "geom_point()") +
   p2 + labs(title = "geom_density2d()") +
@@ -228,9 +265,17 @@ In other words you can manually change the axis text, labels, ticks, add breaks,
 Here is just a small selection to show what is possible.
 We can log transform the y axis, change the axis titles, and change the colours.
 
-```{r scales, eval = TRUE, fig.height = 3, fig.width=3.5, warning = FALSE}
-ggplot(penguins, aes(x = bill_length_mm,
-                     y = bill_depth_mm,
+```{r}
+#| label: scales
+#| eval: true
+#| warning: false
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: > 
+#|   Scatterplot of bill length against bill depth with scales used to modify
+#|   axes and colour scales.
+ggplot(penguins, aes(x = bill_len,
+                     y = bill_dep,
                      colour = species)) +
   geom_point() +
   scale_y_log10() +
@@ -245,7 +290,8 @@ ggplot(penguins, aes(x = bill_length_mm,
 
  <details>
   <summary>Hint</summary>
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 ggplot(data = ___, mapping = aes(x = ___, y = ___, fill = ___)) +
   geom___() +
   scale________()
@@ -260,10 +306,16 @@ ggplot(data = ___, mapping = aes(x = ___, y = ___, fill = ___)) +
 
 The axis titles can be renamed, and a title and tag can be added.
 
-```{r labs, eval = TRUE, fig.height = 3, fig.width = 3.5, warning = FALSE}
+```{r}
+#| label: labs
+#| eval: true
+#| warning: false
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: Scatterplot with axis labels and title.
 ggplot(penguins, aes(
-  x = bill_length_mm,
-  y = bill_depth_mm,
+  x = bill_len,
+  y = bill_dep,
   colour = species
 )) +
   geom_point() +
@@ -301,9 +353,17 @@ violin_plot +
 
 In the next example, we use `facet_wrap()` to split the penguin data into 3 panels, one for each island.
 
-```{r facets, eval = TRUE, fig.height = 3, fig.width=5, warning = FALSE}
-ggplot(penguins, aes(x = bill_length_mm,
-                     y = bill_depth_mm,
+```{r}
+#| label: facets
+#| eval: true
+#| warning: false
+#| fig-height: 3
+#| fig-width: 5
+#| fig-alt: >
+#|   Scatterplot of penguin bill depth against bill length, coloured by species,
+#|   faceted by island.
+ggplot(penguins, aes(x = bill_len,
+                     y = bill_dep,
                      colour = species)) +
   geom_point() +
   facet_wrap(facets = vars(island))
@@ -311,9 +371,17 @@ ggplot(penguins, aes(x = bill_length_mm,
 
 If you want to split the data by two variables, `facet_grid()` can be useful.
 
-```{r facets-grid, eval = TRUE, fig.height = 3, fig.width=5, warning = FALSE}
-ggplot(penguins, aes(x = bill_length_mm,
-                     y = bill_depth_mm,
+```{r}
+#| label: facets-grid
+#| eval: true
+#| fig-height: 3
+#| fig-width: 5
+#| warning: false
+#| fig-alt: >
+#|   Scatterplot of penguin bill depth against bill length, coloured by species,
+#|   faceted by island and sex. 
+ggplot(penguins, aes(x = bill_len,
+                     y = bill_dep,
                      colour = species)) +
   geom_point() +
   facet_grid(rows = vars(island), cols = vars(sex))
@@ -327,7 +395,8 @@ ggplot(penguins, aes(x = bill_length_mm,
 
  <details>
   <summary>Hint</summary>
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 scatter_plot +
   facet_wrap(vars(___))
 ```
@@ -343,9 +412,17 @@ In our example, we will change the axis tile text size, the colour of the axis t
 
 See @sec-themes for more about using themes.
 
-```{r theme, eval = TRUE, fig.height = 3, fig.width=5, warning = FALSE}
-ggplot(penguins, aes(x = bill_length_mm,
-                     y = bill_depth_mm,
+```{r}
+#| label: theme
+#| eval: true
+#| warning: false
+#| fig-height: 3
+#| fig-width: 5
+#| fig-alt: > 
+#|   Scatterplot faceted by island, using theme to change the size and
+#|   colour of text.
+ggplot(penguins, aes(x = bill_len,
+                     y = bill_dep,
                      colour = species)) +
   geom_point() +
   facet_wrap(facets = vars(island)) +
@@ -362,7 +439,8 @@ ggplot(penguins, aes(x = bill_length_mm,
 
  <details>
   <summary>Hint</summary>
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 scatter_plot +
   theme___()
  
@@ -380,15 +458,22 @@ You can imagine the different components (geom, scale, stats) of the plot as dif
 
 For example, you want to plot the data below and the smoother on top, and not the other way round.
 
-```{r wrong-order, fig.keep='none', eval = TRUE, fig.height = 3, fig.width=3.5, warning = FALSE, message = FALSE}
-points_on_top <- ggplot(penguins, aes(x = bill_length_mm,
-                                      y = bill_depth_mm, 
+```{r}
+#| label: wrong-order
+#| eval: true
+#| warning: false
+#| message: false
+#| fig-keep: none
+#| fig-height: 3
+#| fig-width: 3.5
+points_on_top <- ggplot(penguins, aes(x = bill_len,
+                                      y = bill_dep, 
                                       colour = species)) +
   geom_smooth() +
   geom_point()
 
-smooth_on_top <- ggplot(penguins, aes(x = bill_length_mm,
-                                      y = bill_depth_mm,
+smooth_on_top <- ggplot(penguins, aes(x = bill_len,
+                                      y = bill_dep,
                                       colour = species)) +
   geom_point() +
   geom_smooth()
@@ -396,9 +481,20 @@ smooth_on_top <- ggplot(penguins, aes(x = bill_length_mm,
 points_on_top
 smooth_on_top
 ```
-```{r wrong-order-plot, echo = FALSE, message = FALSE, fig.height = 3, fig.width=6, warning = FALSE}
+```{r}
+#| label: wrong-order-plot
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-height: 3
+#| fig-width: 6
+#| fig-alt: > 
+#|   Scatterplots with a smoother. In the left plot, the points obscure the
+#|   smooth line. In the right plot, the smooth line is drawn on
+#|   top of the points. 
 points_on_top + labs(title = "Points on top") +
-  smooth_on_top + labs(title = "Smooth on top") & theme(legend.position = "none")
+  smooth_on_top + labs(title = "Smooth on top") & 
+  theme(legend.position = "none")
 
 ```
 
@@ -409,7 +505,8 @@ points_on_top + labs(title = "Points on top") +
 
  <details>
   <summary>Hint</summary>
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 ggplot(data = ___, mapping = aes(x = ___, y = ___)) +
   geom____() +
   geom____()
@@ -429,8 +526,10 @@ You can also comment lines out (by putting a `#` in front of them).
 I recommend typing `NULL` on the line after the plot code so that if there is a extra `+` after removing a line, the plot won't give a strange error by adding the next line of code.
 
 
-```{r bad-code, eval = FALSE}
-ggplot(penguins, aes(x = species, y = bill_length_mm)) +
+```{r}
+#| label: bad-code
+#| eval: false
+ggplot(penguins, aes(x = species, y = bill_len)) +
   geom_violin() + # extra + after commenting out labs()
 #  labs(x = "Species", y = Bill length)
 NULL #This will end the plot code
@@ -444,8 +543,13 @@ Let us look at some common mistakes and how the ggplot is displayed or not.
 
 If you forget to specify the data ggplot will not be able to make a plot and you will get the following error message:
 
-```{r no-data, echo=TRUE, error=TRUE, fig.height = 3, fig.width=3.5}
-ggplot(aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+```{r}
+#| label: no-data
+#| echo: true
+#| error: true
+#| fig-height: 3
+#| fig-width: 3.5
+ggplot(aes(x = bill_len, y = bill_dep, colour = species)) +
   geom_point()
 ```
 
@@ -453,7 +557,13 @@ ggplot(aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
 ### Missing aesthetics
 
 If you forget to define the aesthetics `aes()` you will also get an error message and a empty image:
-```{r no-aestetics, echo=TRUE, error=TRUE, eval=TRUE, fig.height = 3, fig.width=3.5}
+```{r}
+#| label: no-aestetics
+#| echo: true
+#| error: true
+#| eval: true
+#| fig-height: 3
+#| fig-width: 3.5
 ggplot(data = penguins) +
   geom_point()
 ```
@@ -462,9 +572,13 @@ ggplot(data = penguins) +
 
 If the geometry is missing `geom_point()`, ggplot will draw a empty plot, with axis labels, but show not data, because you have not defined how to plot the data.
 
-```{r no-geom, fig.height = 3, fig.width=3.5}
-ggplot(data = penguins, aes(x = bill_length_mm,
-                            y = bill_depth_mm,
+```{r}
+#| label: no-geom
+#| fig-height: 3
+#| fig-width: 3.5
+#| fig-alt: An empty plot because the geometry was forgotten.
+ggplot(data = penguins, aes(x = bill_len,
+                            y = bill_dep,
                             colour = species))
 ```
 
@@ -474,8 +588,9 @@ ggplot(data = penguins, aes(x = bill_length_mm,
 I make lots of mistakes and my plots don't work. 
 Please help me fix them.
 
-```{r, eval = FALSE}
-ggplot(penguins, aes(x = bill_length, y = bill_depth)) |>
+```{r}
+#| eval: false
+ggplot(penguins, aes(x = bill_len, y = bill_dep)) |>
   geom_point() +
   labs(x = "Bill length", y = "Bill width")
 ```
@@ -490,7 +605,7 @@ ggplot(penguins, aes(x = bill_length, y = bill_depth)) |>
 #| label: bad-code-plus-first
 #| eval: false
 #| tidy: false
-ggplot(penguins, aes(x = bill_length, y = bill_depth))
+ggplot(penguins, aes(x = bill_len, y = bill_dep))
 +geom_point()
 +labs(x = "Bill length", y = "Bill width")
 ```
@@ -502,8 +617,9 @@ ggplot(penguins, aes(x = bill_length, y = bill_depth))
 </details> 
 
 Why is this plot without colour?
-```{r, eval = FALSE}
-ggplot(penguins, aes(x = bill_length, y = bill_depth, fill = species)) +
+```{r}
+#| eval: false
+ggplot(penguins, aes(x = bill_len, y = bill_dep, fill = species)) +
   geom_point() +
   scale_fill_viridis_c() +
   labs(x = "Bill length", y = "Bill width")

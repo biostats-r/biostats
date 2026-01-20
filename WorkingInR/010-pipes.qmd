@@ -15,7 +15,7 @@ If we want to run several functions in turn, for example, if we wanted to find t
 You could nest one function inside the other.
 
 ```{r nested-function}
-summarise(group_by(penguins, species), mean = mean(bill_length_mm, na.rm = TRUE))
+summarise(group_by(penguins, species), mean = mean(bill_len, na.rm = TRUE))
 ```
 
 This sort of works, but with larger problems using more function, this solution becomes almost impossible to read and it is very easy to make mistakes and forget which brackets belong to which function.
@@ -24,7 +24,7 @@ Another strategy is to make and use intermediate objects
 
 ```{r intermediate-objects}
 penguins_grouped <- group_by(penguins, species)
-summarise(penguins_grouped, mean = mean(bill_length_mm, na.rm = TRUE))
+summarise(penguins_grouped, mean = mean(bill_len, na.rm = TRUE))
 ```
 
 This works better, but can generate many intermediates and it can be difficult to ensure that the correct one is used.
@@ -36,7 +36,7 @@ Pipes pass the results from one function directly into the next function.
 ```{r pipes}
 penguins |>
   group_by(species) |>
-  summarise(mean = mean(bill_length_mm, na.rm = TRUE))
+  summarise(mean = mean(bill_len, na.rm = TRUE))
 ```
 
 The pipe basically means "and then", so the above code can be read as "take the penguin data *and then* group by species *and then* summarise the mean bill length".
@@ -83,11 +83,11 @@ We can force this by naming the `formula` argument, so that `data` is the first 
 ```{r second-argument, eval = FALSE}
 # un-named argument = fails
 penguins |>
-  lm(bill_length ~ species)
+  lm(bill_len ~ species)
 
 # named first argument, penguins pipes into second argument
 penguins |>
-  lm(formula = bill_length ~ species)
+  lm(formula = bill_len ~ species)
 ```
 
 Or we can use the placeholder `_`
@@ -95,7 +95,7 @@ Or we can use the placeholder `_`
 ```{r placeholder-argument, eval = FALSE}
 # named first argument, penguins pipes into second argument
 penguins |>
-  lm(bill_length ~ species, data = _) # R 4.2 and newer only
+  lm(bill_len ~ species, data = _) # R 4.2 and newer only
 ```
 
 More complex arrangements, for example using the piped object multiple times, can be done by writing a function, or using the `pipebind` package.
@@ -156,7 +156,7 @@ Re-write the following code to use pipes, then check then result is the same.
 
 adelie <- filter(penguins, species == "Adelie")
 adelie_grouped <- group_by(adelie, sex)
-adelie_summary <- summarise(adelie_grouped, mean_body_mass = mean(body_mass_g))
+adelie_summary <- summarise(adelie_grouped, mean_body_mass = mean(body_mass))
 ```
 
 

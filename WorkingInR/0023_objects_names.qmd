@@ -1,6 +1,5 @@
 ``` {r setup, include=FALSE}
 source("R/setup.R")
-rm(penguins)
 ```
 
 # Objects and names
@@ -32,7 +31,7 @@ library(dplyr)
 library(ggplot2)
 library(patchwork)
 # Jitter plot example
-plot3 <- ggplot(data = palmerpenguins::penguins, aes(x = species, y = body_mass_g)) +
+plot3 <- ggplot(data = penguins, aes(x = species, y = body_mass)) +
   geom_jitter(aes(color = species),
     width = 0.1,
     alpha = 0.7,
@@ -41,12 +40,12 @@ plot3 <- ggplot(data = palmerpenguins::penguins, aes(x = species, y = body_mass_
   scale_color_manual(values = c("darkorange", "darkorchid", "cyan4"))
 
 # Histogram example
-plot2 <- ggplot(data = palmerpenguins::penguins, aes(x = flipper_length_mm)) +
+plot2 <- ggplot(data = penguins, aes(x = flipper_len)) +
   geom_histogram(aes(fill = species), alpha = 0.5, position = "identity", bins = 30) +
   scale_fill_manual(values = c("darkorange", "darkorchid", "cyan4"))
 
 # Count penguins for each species / sex
-plot1 <- ggplot(palmerpenguins::penguins, aes(x = sex, fill = species)) +
+plot1 <- ggplot(penguins, aes(x = sex, fill = species)) +
   geom_bar(alpha = 0.8, show.legend = FALSE) +
   scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
   theme_minimal() +
@@ -57,7 +56,7 @@ plot1 <- ggplot(palmerpenguins::penguins, aes(x = sex, fill = species)) +
 
 Let's take a look at the following figure. It is made of 3 plots, each of them based on different variables taken from a single data set: 
 
-```{r palmer-figure, echo = FALSE}
+```{r}
 #| label: palmer-figure
 #| echo: false
 #| warning: false
@@ -183,7 +182,7 @@ knitr::include_graphics("figures/view.png")
 
 ::: callout-note 
 ## Exercise 
-`View()` the `penguins` dataset from `palmerpenguins`. 
+`View()` the `penguins` dataset.
 Compare with what you get by printing the penguins dataset.
 Which do you find most useful?
 :::
@@ -225,19 +224,16 @@ If the package is loaded, they can be used by typing their name.
 ```{r pi}
 pi
 month.abb # abbreviated month names
+penguins
 ```
 
-To make objects in packages available you can either load the package with `library()` first, or use `data()`.
+To make datasets in packages available you can either load the package with `library()` first, or use `data()`.
 
 ```{r data, error = TRUE}
-penguins # not available yet
-data(penguins, package = "palmerpenguins")
-penguins # available now
+sleepstudy # not available yet
+data(lme4, package = "sleepstudy")
+sleepstudy # available now
 ```
-
-
-The `penguins` dataset contains morphological data on three species of penguin. 
-You will meet this dataset repeatedly as it provides a convenient set of variables and observations well-suited for illustrating many purposes.
 
 ::: {.column-margin}
 ## Contributors {.unlisted .unnumbered}
