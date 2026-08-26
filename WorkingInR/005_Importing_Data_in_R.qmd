@@ -33,19 +33,41 @@ You will need the following packages (in addition to those installed earlier)
 
 To import some data, you first need to download some. 
 
-We have made some files available which you can download with 
+We have made some files available which you can download by running the following chunk: 
 
 ```{r}
 #| label: download
 #| eval: false
-usethis::use_zip("biostats-r/biostats-data")
+# make function to download data
+get_from_github <- function(repo, branch = "main", newdir = "data") {
+  # check Rstudio project activated
+  if (is.null(rstudioapi::getActiveProject())) {
+    stop("You should be using an RStudio project")
+  }
+
+  # download data into your project
+  url <- paste0("https://github.com/", repo, "/archive/", branch, ".zip")
+  destfile <- paste0(basename(repo), "-", branch, ".zip")
+  download.file(url = url, destfile = destfile)
+
+  # unzip the .zip file
+  unzip(zipfile = destfile)
+
+  # rename directory
+  file.rename(tools::file_path_sans_ext(destfile), newdir)
+
+  # remove the zip file
+  file.remove(destfile)
+}
+
+get_from_github("biostats-r/biostats-data", newdir = "data")
 ```
 
-When asked, agree to delete the zip file.
+<!-- When asked, agree to delete the zip file. -->
 
-This will make a new directory called something like "biostats-r-biostats-data-9db4ebe/".
-Rename this directory "data". 
-You can do this in the RStudio file tab.
+<!-- This will make a new directory called something like "biostats-r-biostats-data-9db4ebe/". -->
+<!-- Rename this directory "data".  -->
+<!-- You can do this in the RStudio file tab. -->
 
 :::
 

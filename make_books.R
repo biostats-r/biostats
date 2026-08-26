@@ -40,13 +40,13 @@ copy_delete("writing_a_package", "package")
 
 # working in R
 fs::file_delete(list.files(here::here("docs/workingInR/"), recursive = TRUE, full.names = TRUE))
-quarto::quarto_render("WorkingInR")
+quarto::quarto_render(input = "WorkingInR")
 copy_delete("WorkingInR", "workingInR")
 
 
 # quarto markdown
 fs::file_delete(list.files(here::here("docs/quarto/"), recursive = TRUE, full.names = TRUE))
-quarto::quarto_render("quarto")
+quarto::quarto_render(input = "quarto")
 copy_delete("quarto", "quarto")
 {
   quarto::quarto_render(input = "quarto/demo_presentation.qmd", output_file = "demo_presentation.html")
