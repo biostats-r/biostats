@@ -110,7 +110,7 @@ Natural Earth datasets can be downloaded directly from the [website](https://www
 #| results: hide
 
 # download if needed
-if (!file.exists("maps/ne_10m_rivers_europe.shp")) {
+if (!file.exists("maps/ne_10m_rivers_europe.gpkg")) {
   ne_download(
     scale = 10, type = "rivers_lake_centerlines", category = "physical",
     destdir = "maps/", load = FALSE
@@ -162,10 +162,12 @@ and add
 Save the file and restart R (Session \> Restart R).
 
 Now `ggOceanMaps` is ready to use.
+It will check you want to use the directory.
 
 ```{r}
 #| label: ggOceanMaps
 #| message: false
+#| warning: false
 #| fig-alt: Base map from ggOceanMaps
 library(ggOceanMaps)
 # limits are given longitude min/max, latitude min/max
@@ -204,9 +206,17 @@ This is a map of the fylke of Norway.
 #| message: false
 library(sf)
 
-# https://kartkatalog.geonorge.no/metadata/norske-fylker-og-kommuner-illustrasjonsdata-2024-klippet-etter-kyst/a9c64d66-f484-4a8f-a7b4-723fdaa578d3
+# Download from https://github.com/robhop/fylker-og-kommuner/
+# More maps at https://kartkatalog.geonorge.no/
 
-fylker <- st_read("data/Fylker.geojson")
+if (!file.exists("maps/Fylker-L.geojson")) {
+  download.file(
+    url = "raw.githubusercontent.com/robhop/fylker-og-kommuner/ae8782500090144c2b74d6bb2a89365a7ff2236d/Fylker-L.geojson",
+    destfile = "maps/Fylker-L.geojson") 
+}
+
+
+fylker <- st_read("maps/Fylker-L.geojson")
 
 ggplot(fylker) +
   geom_sf()
@@ -225,7 +235,7 @@ ggplot(fylker) +
 
 -   Species occurrence data - [GBIF](https://www.gbif.org/) - download with the `rgbif` package
 
-Tell be about data sources you find useful.
+Tell me about data sources you find useful.
 :::
 
 ::: callout-tip
@@ -244,14 +254,14 @@ You can find the coordinate system of a `sf` class object with `sf::st_crs()`.
 sf::st_crs(fylker)
 ```
 
-This gives a lot of information, the most important is that the coordinate reference systems is UTM zone 33N.
+This gives a lot of information, the most important is that the coordinate reference systems is WGS84 which has [EPSG](https://epsg.io/) code 4326.
 
 If we need to change a coordinate reference systems, we can do that with `sf::st_transform()`.
-You need to know the [EPSG](https://epsg.io/) code of the target reference system, or the wkt.
-The EPSG code for WGS84 is 4326.
+You need to know the [EPSG](https://epsg.io/) code of the target reference system, or the wkt. 
+For example to convert `flyker` to UTM zone 33N (code 32633), we could use
 
 ```{r}
-fylker2 <- sf::st_transform(fylker, crs = 4326)
+fylker2 <- sf::st_transform(fylker, crs = 32633)
 ```
 
 `geom_sf()` will automatically transform coordinate systems (if they are specified).
@@ -359,6 +369,7 @@ Now you can use `ggmap`
 #| label: ggmap
 #| message: false
 #| fig-alt: Map of Bergen
+#| eval: false
 
 library(ggmap)
 
@@ -400,8 +411,8 @@ If the data are already a `sf` object they can be plotted with `geom_sf()`.
 #| results: hide
 #| fig-alt: maps of aquaculture sites in Norway plotted with different packages
 
-# aquaculture sites downloaded from Barentswatch.no/fiskinfo
-aquaculture <- st_read("data/flate-ihht-akvakulturregisteret20220928.geojson")
+# aquaculture sites downloaded from Barentswatch.no/data/datasets
+aquaculture <- st_read("maps/flate-ihht-akvakulturregisteret20260807.geojson")
 
 # with rnaturalearth
 ggplot() +
@@ -498,13 +509,18 @@ Here, I use data on 2021 phosphorous discharge in municipal wastewater from [SSB
 #| fig-alt: >
 #|   Cloropleth map of phosphate discharges by fylke.
 #|   Discharges are hightest in Vestland
-p_discharge <- readxl::read_excel(
-  path = "data/05280_20230421-012359.xlsx",
-  skip = 4, n_max = 11
+
+p_discharge <- read_delim(
+    file = "data/05280_20260908-162931.csv",
+    delim = ";",
+    skip = 1,
+    locale = locale(encoding = "ISO-8859-1"), # trying Latin-1 encoding
+    na = c("", "..")
 ) |>
   janitor::clean_names() |>
+  filter(str_detect(region, "^\\d{2} ")) |> 
   separate_wider_regex(
-    cols = x1, # split fist column
+    cols = region, # split region column
     patterns = c(Fylkesnummer = "\\d{2}", " ", Fylkesnavn = ".*")
   ) # using regular expressions
 # \\d{2} = 2 numbers
@@ -512,12 +528,11 @@ p_discharge <- readxl::read_excel(
 # ".*" = any number of any character, ie everything else
 
 # join to fylker
-fylker_2021 <- st_read("data/fylker2021.json") # older flyker map to match data
-fylker_discharge <- fylker_2021 |>
-  left_join(p_discharge, by = "Fylkesnummer")
+fylker_discharge <- fylker |>
+  left_join(p_discharge, by = join_by("fylkesnummer" == Fylkesnummer))
 
 ggplot(fylker_discharge) +
-  geom_sf(aes(fill = total_discharge)) +
+  geom_sf(aes(fill = phosphorus_tot_p_tonnes_2024_total_discharge)) +
   labs(fill = "Wastewater\nP discharge\n(tonnes)")
 ```
 
@@ -539,15 +554,17 @@ This is a cartogram, which can be made with the `cartogram` package.
 
 library(cartogram)
 
-# simplify sf object for speed
-fylker_discharge_sim <- sf::st_simplify(fylker_discharge, dTolerance = 1000)
+# reproject and simplify sf object for speed
+fylker_discharge_sim <- sf::st_transform(fylker_discharge, crs = 32633) |> 
+  sf::st_simplify(dTolerance = 1000)
 
 # make cartogram
-kart <- cartogram_cont(fylker_discharge_sim, weight = "total_discharge", itermax = 5)
+
+kart <- cartogram_cont(fylker_discharge_sim, weight = "phosphorus_tot_p_tonnes_2024_total_discharge", itermax = 5)
 
 # plot cartogram
 ggplot(kart) +
-  geom_sf(aes(fill = total_discharge)) +
+  geom_sf(aes(fill = phosphorus_tot_p_tonnes_2024_total_discharge)) +
   labs(fill = "Wastewater\nP discharge\ntonnes") +
   theme(
     legend.position.inside = c(.99, .01),
@@ -594,7 +611,7 @@ library(tidyterra)
 
 # import digital elevation model
 # data from https://topotools.cr.usgs.gov/gmted_viewer/viewer.htm
-norway_dem <- rast("data/50N000E_20101117_gmted_med300.tif")
+norway_dem <- rast("data/GMTED_30arc_35874599-050d-4ea1-a6a5-2903ab8f7f0f/usgs_gmted2010_30arcsec_mean_stat_35874599-050d-4ea1-a6a5-2903ab8f7f0f.tiff")
 
 # make coastline mask
 coast_vector <- fylker |>
@@ -607,7 +624,7 @@ coast_vector <- fylker |>
 vestland_extent <- ext(4.5, 9, 59, 62)
 vestland_dem <- crop(norway_dem, vestland_extent) |>
   mask(coast_vector) |>
-  rename(Elevation = `50N000E_20101117_gmted_med300`)
+  rename(Elevation = `usgs_gmted2010_30arcsec_mean_stat_35874599-050d-4ea1-a6a5-2903ab8f7f0f`)
 
 # plot
 ggplot() +
@@ -727,7 +744,8 @@ library(leaflet) # NB uses pipes |> not +
 
 leaflet() |> # initialise map
   setView(lng = 5.3, lat = 60.4, zoom = 9) |> # set initial map area
-  addTiles() |> # add background map
+   addProviderTiles(provider = providers$Stadia.StamenToner) |> 
+  #addTiles() |> # add background map
   addPolygons(data = aquaculture, popup = aquaculture$name) # add fish farms
 ```
 
