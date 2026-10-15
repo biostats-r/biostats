@@ -167,16 +167,18 @@ You can see this mode by clicking on "Source" above the document
 
 ```{r}
 #| echo: false
-fs::dir_create(here::here("docs/quarto/Pics"))
+# here() stops at _quarto.yml; the pictures and published site live in the git repo.
+root <- rprojroot::find_root(rprojroot::is_git_root)
+fs::dir_create(fs::path(root, "docs/quarto/Pics"))
 Sys.sleep(0.05)
 fs::file_copy(
-  here::here("quarto/Pics/source-editor.png"),
-  here::here("docs/quarto/Pics/source-editor.png"),
+  fs::path(root, "quarto/Pics/source-editor.png"),
+  fs::path(root, "docs/quarto/Pics/source-editor.png"),
   overwrite = TRUE
 )
 fs::file_copy(
-  here::here("quarto/Pics/visual-editor.png"),
-  here::here("docs/quarto/Pics/visual-editor.png"),
+  fs::path(root, "quarto/Pics/visual-editor.png"),
+  fs::path(root, "docs/quarto/Pics/visual-editor.png"),
   overwrite = TRUE
 )
 ```
@@ -705,7 +707,7 @@ Use some inline R code to report the number of leaf thickness measurements for *
 :::
 
 ::: callout-tip
-## Rounding numbers
+## Formatting numbers
 
 Numbers should be rounded to an appropriate number of decimal places when reported in the text or a table to avoid spurious precision.
 
@@ -741,4 +743,5 @@ Make sure to do all calculations, analyses and figures on the full precision num
 The mean *Bistorta vivipara* height is currently given to the nearest nanometre. 
 This precision is spurious. 
 Edit the inline code in the document so that the mean height and its standard error are shown to two decimal places.
+Also report the P value from the ANOVA testing the effect of treatment on height, and format the number.
 :::
