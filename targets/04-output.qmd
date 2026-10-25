@@ -5,13 +5,14 @@ editor_options:
 ---
 
 
-### Output files
+### Quarto document
 
 The results and figures of an analysis are usually presented in a report or presentation or both.
 One or more output files, such as a quarto document and presentations can be added to a targets pipeline.
 
-Each **target** from the pipeline can be loaded and used in the quarto document.
-The targets that are used in the quarto document need to be loaded into the current environment.
+All **targets** created in the pipeline can then be used in the quarto document.
+The pipeline and the quarto document run in different R sessions.
+And the targets that are used in the quarto document therefore need to be loaded into the current session.
 For this we can use `tar_load()` or `tar_read()`.
 The first function is used when a target is used several times.
 `tar_read()` is useful if a target is only needed once, e.g. to show a figure.
@@ -33,6 +34,14 @@ If you are using a R package exclusively in the quarto script, the package can b
 
 The `tarchetypes` packages has to be loaded in the `_target.R` file.
 It has a number of useful helper functions including `tar_quarto()` which is needed to render quarto files in the targets pipeline.
+
+::: callout-important
+## ggplot2 and gt
+
+When you create a plot using `ggplot2` or a table with `gt`, they do not create a finished plot or table.
+When displaying the plot or table, they run a special printing function in the background.
+Therefore, some libraries like `ggplot2` and `gt` need to be loaded again in the quarto document, even if they have already been loaded in the `_target.R` file.
+:::
 
 
 ::: callout-note
